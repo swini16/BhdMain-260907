@@ -1,0 +1,797 @@
+{% doc %}
+  @prompt
+    Update the dynamic featured product section to specifically detect and display different products for US visitors, Canadian visitors, and other global regions. Replace any existing region detection with country-specific logic., addd quantity selector, add to cart button, buy with shop and apple pay buttons, more payment option subtext less prominent link, view full details link and a share link
+, make the view full details button look cleaner and remove the bottom one as we only need one. ... half the width of the biuy with shop pay and apple pay buttons and place side by side - make sure it is linked correctly to each checkout option and that the shop pay and apple pay fonts are stylized correctly for the brand service they represent. 
+put the share button below the picture.
+remember all my field inputs from the current entry so when u override the code i dont have to reenter the title and subtitles that i carefully crafted an that u overwrite forget and default
+, Resize and move the view full details button beside on the right of the quanitity selector . Make it look like the other buttons. 
+the shop pay and apple pay buttons should have "Buy with" shop pay or "Buy with" apple pay on them. 
+, compress and move the right half upwards so that more payment options button's bottom limits are in line with the bottom limits of the picture 
+
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .geo-featured-product-{{ ai_gen_id }} {
+    margin: {{ block.settings.margin_top }}px 0 {{ block.settings.margin_bottom }}px 0;
+  }
+
+  .geo-featured-product__container-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .geo-featured-product__header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  .geo-featured-product__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin-bottom: 10px;
+  }
+
+  .geo-featured-product__subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+  }
+
+  .geo-featured-product__content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .geo-featured-product__image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .geo-featured-product__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    border-radius: {{ block.settings.image_border_radius }}px;
+  }
+
+  .geo-featured-product__image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+    border-radius: {{ block.settings.image_border_radius }}px;
+  }
+
+  .geo-featured-product__image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 300px;
+  }
+
+  .geo-featured-product__share-button-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .geo-featured-product__share-button-{{ ai_gen_id }}:hover {
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+  .geo-featured-product__share-icon-{{ ai_gen_id }} {
+    width: 18px;
+    height: 18px;
+  }
+
+  .geo-featured-product__details-{{ ai_gen_id }} {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .geo-featured-product__product-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.product_title_size }}px;
+    color: {{ block.settings.product_title_color }};
+    margin-bottom: 10px;
+  }
+
+  .geo-featured-product__price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    color: {{ block.settings.price_color }};
+    margin-bottom: 10px;
+  }
+
+  .geo-featured-product__description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    color: {{ block.settings.description_color }};
+    margin-bottom: 15px;
+  }
+
+  .geo-featured-product__form-{{ ai_gen_id }} {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .geo-featured-product__quantity-row-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .geo-featured-product__quantity-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+  }
+
+  .geo-featured-product__quantity-label-{{ ai_gen_id }} {
+    margin-right: 10px;
+    font-size: {{ block.settings.description_size }}px;
+    color: {{ block.settings.description_color }};
+  }
+
+  .geo-featured-product__quantity-selector-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .geo-featured-product__quantity-button-{{ ai_gen_id }} {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .geo-featured-product__quantity-input-{{ ai_gen_id }} {
+    width: 40px;
+    height: 32px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    -moz-appearance: textfield;
+  }
+
+  .geo-featured-product__quantity-input-{{ ai_gen_id }}::-webkit-outer-spin-button,
+  .geo-featured-product__quantity-input-{{ ai_gen_id }}::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .geo-featured-product__view-details-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: {{ block.settings.button_text_size | minus: 2 }}px;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+  }
+
+  .geo-featured-product__view-details-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+  }
+
+  .geo-featured-product__buttons-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .geo-featured-product__button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: {{ block.settings.button_text_size }}px;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+  }
+
+  .geo-featured-product__button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+  }
+
+  .geo-featured-product__payment-buttons-{{ ai_gen_id }} {
+    margin-top: 8px;
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+
+  .geo-featured-product__payment-button-{{ ai_gen_id }} {
+    flex: 1;
+    padding: 10px;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .geo-featured-product__payment-button--shop-pay-{{ ai_gen_id }} {
+    background-color: #5A31F4;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+    font-weight: 600;
+  }
+
+  .geo-featured-product__payment-button--apple-pay-{{ ai_gen_id }} {
+    background-color: black;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+    font-weight: 500;
+  }
+
+  .geo-featured-product__more-payment-options-{{ ai_gen_id }} {
+    text-align: center;
+    font-size: 12px;
+    color: {{ block.settings.description_color }};
+    opacity: 0.8;
+    margin-top: 4px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  @media screen and (min-width: 768px) {
+    .geo-featured-product__content-{{ ai_gen_id }} {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .geo-featured-product__image-wrapper-{{ ai_gen_id }} {
+      margin-bottom: 0;
+    }
+
+    .geo-featured-product__details-{{ ai_gen_id }} {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .geo-featured-product__product-info-{{ ai_gen_id }} {
+      margin-bottom: auto;
+    }
+
+    .geo-featured-product__quantity-row-{{ ai_gen_id }} {
+      justify-content: flex-start;
+    }
+  }
+{% endstyle %}
+
+<div class="geo-featured-product-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="geo-featured-product__container-{{ ai_gen_id }}">
+    {% if block.settings.title != blank or block.settings.subtitle != blank %}
+      <div class="geo-featured-product__header-{{ ai_gen_id }}">
+        {% if block.settings.title != blank %}
+          <h2 class="geo-featured-product__title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+        {% endif %}
+        {% if block.settings.subtitle != blank %}
+          <div class="geo-featured-product__subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% liquid
+      assign visitor_country = localization.country.iso_code
+      
+      if visitor_country == 'US'
+        assign featured_product = block.settings.us_product
+        assign region_text = block.settings.us_region_text
+      elsif visitor_country == 'CA'
+        assign featured_product = block.settings.ca_product
+        assign region_text = block.settings.ca_region_text
+      else
+        assign featured_product = block.settings.global_product
+        assign region_text = block.settings.global_region_text
+      endif
+    %}
+
+    <div class="geo-featured-product__content-{{ ai_gen_id }}">
+      {% if featured_product != blank %}
+        <div class="geo-featured-product__image-wrapper-{{ ai_gen_id }}">
+          {% if featured_product.featured_image %}
+            <img 
+              src="{{ featured_product.featured_image | image_url: width: 400 }}" 
+              alt="{{ featured_product.featured_image.alt | escape }}" 
+              loading="lazy" 
+              width="{{ featured_product.featured_image.width }}" 
+              height="{{ featured_product.featured_image.height }}"
+              class="geo-featured-product__image-{{ ai_gen_id }}"
+            >
+          {% else %}
+            <div class="geo-featured-product__image-placeholder-{{ ai_gen_id }}">
+              {{ 'product-apparel-1' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+          <button type="button" class="geo-featured-product__share-button-{{ ai_gen_id }}" aria-label="Share product">
+            <svg class="geo-featured-product__share-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="geo-featured-product__details-{{ ai_gen_id }}">
+          <div class="geo-featured-product__product-info-{{ ai_gen_id }}">
+            <h3 class="geo-featured-product__product-title-{{ ai_gen_id }}">{{ featured_product.title }}</h3>
+            <div class="geo-featured-product__price-{{ ai_gen_id }}">{{ featured_product.price | money }}  {{ shop.currency }} </div>
+            {% if region_text != blank %}
+              <div class="geo-featured-product__description-{{ ai_gen_id }}">{{ region_text }}</div>
+            {% else %}
+              <div class="geo-featured-product__description-{{ ai_gen_id }}">{{ featured_product.description | strip_html | truncatewords: 20 }}</div>
+            {% endif %}
+          </div>
+          
+          <form method="post" action="/cart/add" class="geo-featured-product__form-{{ ai_gen_id }}">
+            <input type="hidden" name="id" value="{{ featured_product.selected_or_first_available_variant.id }}">
+            
+            <div class="geo-featured-product__quantity-row-{{ ai_gen_id }}">
+              <div class="geo-featured-product__quantity-wrapper-{{ ai_gen_id }}">
+                <label for="Quantity-{{ ai_gen_id }}" class="geo-featured-product__quantity-label-{{ ai_gen_id }}">Quantity:</label>
+                <div class="geo-featured-product__quantity-selector-{{ ai_gen_id }}">
+                  <button 
+                    type="button" 
+                    class="geo-featured-product__quantity-button-{{ ai_gen_id }}" 
+                    data-action="decrease"
+                    aria-label="Decrease quantity"
+                  >-</button>
+                  <input 
+                    type="number" 
+                    id="Quantity-{{ ai_gen_id }}" 
+                    name="quantity" 
+                    value="1" 
+                    min="1" 
+                    class="geo-featured-product__quantity-input-{{ ai_gen_id }}"
+                    aria-label="Quantity"
+                  >
+                  <button 
+                    type="button" 
+                    class="geo-featured-product__quantity-button-{{ ai_gen_id }}" 
+                    data-action="increase"
+                    aria-label="Increase quantity"
+                  >+</button>
+                </div>
+              </div>
+              
+              <a href="{{ featured_product.url }}" class="geo-featured-product__view-details-{{ ai_gen_id }}">
+                View full details
+              </a>
+            </div>
+            
+            <div class="geo-featured-product__buttons-{{ ai_gen_id }}">
+              <button type="submit" class="geo-featured-product__button-{{ ai_gen_id }}">
+                Add to cart
+              </button>
+              
+              <div class="geo-featured-product__payment-buttons-{{ ai_gen_id }}">
+                <button 
+                  type="button" 
+                  class="geo-featured-product__payment-button-{{ ai_gen_id }} geo-featured-product__payment-button--shop-pay-{{ ai_gen_id }}"
+                  data-shopify-payment-button
+                  data-payment-button="shopify"
+                >
+                  Buy with Shop Pay
+                </button>
+                <button 
+                  type="button" 
+                  class="geo-featured-product__payment-button-{{ ai_gen_id }} geo-featured-product__payment-button--apple-pay-{{ ai_gen_id }}"
+                  data-shopify-payment-button
+                  data-payment-button="apple-pay"
+                >
+                  Buy with Apple Pay
+                </button>
+              </div>
+              <div class="geo-featured-product__more-payment-options-{{ ai_gen_id }}">
+                More payment options
+              </div>
+            </div>
+          </form>
+        </div>
+      {% else %}
+        <div class="geo-featured-product__image-wrapper-{{ ai_gen_id }}">
+          <div class="geo-featured-product__image-placeholder-{{ ai_gen_id }}">
+            {{ 'product-apparel-1' | placeholder_svg_tag }}
+          </div>
+        </div>
+        <div class="geo-featured-product__details-{{ ai_gen_id }}">
+          <h3 class="geo-featured-product__product-title-{{ ai_gen_id }}">No product selected</h3>
+          <div class="geo-featured-product__description-{{ ai_gen_id }}">Please select products in the block settings for each region.</div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const block = document.querySelector('.geo-featured-product-{{ ai_gen_id }}');
+    if (!block) return;
+    
+    // Quantity selector functionality
+    const quantityButtons = block.querySelectorAll('.geo-featured-product__quantity-button-{{ ai_gen_id }}');
+    const quantityInput = block.querySelector('.geo-featured-product__quantity-input-{{ ai_gen_id }}');
+    
+    if (quantityButtons.length && quantityInput) {
+      quantityButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const action = button.dataset.action;
+          let currentValue = parseInt(quantityInput.value, 10);
+          
+          if (action === 'decrease' && currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+          } else if (action === 'increase') {
+            quantityInput.value = currentValue + 1;
+          }
+        });
+      });
+    }
+    
+    // Share button functionality
+    const shareButton = block.querySelector('.geo-featured-product__share-button-{{ ai_gen_id }}');
+    if (shareButton && navigator.share) {
+      shareButton.addEventListener('click', async () => {
+        try {
+          await navigator.share({
+            title: '{{ featured_product.title | escape }}',
+            url: window.location.href
+          });
+        } catch (err) {
+          console.error('Share failed:', err);
+        }
+      });
+    } else if (shareButton) {
+      // Fallback for browsers that don't support navigator.share
+      shareButton.addEventListener('click', () => {
+        const tempInput = document.createElement('input');
+        document.body.appendChild(tempInput);
+        tempInput.value = window.location.href;
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
+        // You could show a tooltip or notification here
+        alert('Link copied to clipboard!');
+      });
+    }
+    
+    // Payment buttons functionality
+    const shopPayButton = block.querySelector('[data-payment-button="shopify"]');
+    const applePayButton = block.querySelector('[data-payment-button="apple-pay"]');
+    
+    if (shopPayButton) {
+      shopPayButton.addEventListener('click', () => {
+        // Trigger Shop Pay checkout
+        const form = block.querySelector('form');
+        if (form) {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'checkout_type';
+          input.value = 'shop_pay';
+          form.appendChild(input);
+          form.submit();
+        }
+      });
+    }
+    
+    if (applePayButton) {
+      applePayButton.addEventListener('click', () => {
+        // Check if Apple Pay is available
+        if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
+          // Trigger Apple Pay checkout
+          const form = block.querySelector('form');
+          if (form) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'checkout_type';
+            input.value = 'apple_pay';
+            form.appendChild(input);
+            form.submit();
+          }
+        } else {
+          alert('Apple Pay is not available on this device or browser.');
+        }
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Geo Featured Product",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Featured for your region"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "We've selected the perfect product for you"
+    },
+    {
+      "type": "header",
+      "content": "United States"
+    },
+    {
+      "type": "product",
+      "id": "us_product",
+      "label": "Product for US visitors"
+    },
+    {
+      "type": "textarea",
+      "id": "us_region_text",
+      "label": "US region text",
+      "default": "This product is perfect for our US customers with free domestic shipping!"
+    },
+    {
+      "type": "header",
+      "content": "Canada"
+    },
+    {
+      "type": "product",
+      "id": "ca_product",
+      "label": "Product for Canadian visitors"
+    },
+    {
+      "type": "textarea",
+      "id": "ca_region_text",
+      "label": "Canada region text",
+      "default": "Selected specifically for our Canadian customers with local support!"
+    },
+    {
+      "type": "header",
+      "content": "Global"
+    },
+    {
+      "type": "product",
+      "id": "global_product",
+      "label": "Product for all other visitors"
+    },
+    {
+      "type": "textarea",
+      "id": "global_region_text",
+      "label": "Global region text",
+      "default": "We ship worldwide! This product is perfect for international customers."
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size",
+      "default": 28
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Product title color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "product_title_size",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Product title size",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#e32c2c"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Price size",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Description size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Button text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Geo Featured Product"
+    }
+  ]
+}
+{% endschema %}

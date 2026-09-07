@@ -1,0 +1,229 @@
+{% doc %}
+  @prompt
+    Update the region-specific product display to include appropriate currency symbols - show CAD for Canadian visitors and USD for US visitors. Make sure the currency indicators are displayed alongside prices.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .region-currency-display-{{ ai_gen_id }} {
+    margin-bottom: 20px;
+  }
+  .region-currency-price-{{ ai_gen_id }} {
+    font-weight: {{ block.settings.price_font_weight }};
+    font-size: {{ block.settings.price_font_size }}px;
+    color: {{ block.settings.price_color }};margin-bottom: 8px;
+  }
+  
+  .region-currency-converted-{{ ai_gen_id }} {
+    font-size: {{ block.settings.converted_font_size }}px;
+    color: {{ block.settings.converted_price_color }};
+    margin-top: 5px;
+  }
+  
+  .region-currency-label-{{ ai_gen_id }} {
+    display: inline-block;
+    font-size: {{ block.settings.currency_label_size }}px;
+    background-color: {{ block.settings.currency_label_bg }};
+    color: {{ block.settings.currency_label_color }};
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 5px;
+  }
+{% endstyle %}
+
+<div class="region-currency-display-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if product %}<div class="region-currency-price-{{ ai_gen_id }}">
+      {{ product.price | money }}<span class="region-currency-label-{{ ai_gen_id }}">
+        {% if block.settings.default_currency == 'USD' %}
+          USD
+        {% else %}
+          CAD
+        {% endif %}
+      </span>
+    </div>
+    {% if block.settings.show_converted_price %}
+      <div class="region-currency-converted-{{ ai_gen_id }}">
+        {% if block.settings.default_currency == 'USD' %}
+          {% assign converted_price = product.price | times: block.settings.cad_exchange_rate %}
+          {{ converted_price | money }}
+          <span class="region-currency-label-{{ ai_gen_id }}">CAD</span>
+        {% else %}
+          {% assign converted_price = product.price | divided_by: block.settings.cad_exchange_rate %}
+          {{ converted_price | money }}
+          <span class="region-currency-label-{{ ai_gen_id }}">USD</span>
+        {% endif %}
+      </div>
+    {% endif %}
+    {% if block.settings.show_shipping_info %}
+      <div class="region-currency-shipping-{{ ai_gen_id }}" style="margin-top: 10px; font-size: {{ block.settings.shipping_text_size }}px; color: {{ block.settings.shipping_text_color }};">
+        {% if block.settings.default_currency == 'USD' %}
+          {{ block.settings.us_shipping_text }}
+        {% else %}
+          {{ block.settings.ca_shipping_text }}
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Regional Currency Display",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Currency Settings"
+    },
+    {
+      "type": "select",
+      "id": "default_currency",
+      "label": "Default currency",
+      "options": [
+        {
+          "value": "USD",
+          "label": "US Dollar (USD)"
+        },
+        {
+          "value": "CAD",
+          "label": "Canadian Dollar (CAD)"
+        }
+      ],
+      "default": "USD"
+    },
+    {
+      "type": "range",
+      "id": "cad_exchange_rate",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "CAD to USD exchange rate",
+      "default": 1.3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_converted_price",
+      "label": "Show converted price",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Price Display"
+    },
+    {
+      "type": "range",
+      "id": "price_font_size",
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Price font size",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "price_font_weight",
+      "label": "Price font weight",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "bold",
+          "label": "Bold"
+        }
+      ],
+      "default": "bold"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "converted_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Converted price font size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "converted_price_color",
+      "label": "Converted price color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "currency_label_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Currency label size",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "currency_label_bg",
+      "label": "Currency label background",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "color",
+      "id": "currency_label_color",
+      "label": "Currency label text color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Shipping Information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_info",
+      "label": "Show shipping information",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "us_shipping_text",
+      "label": "US shipping text",
+      "default": "Free shipping within the United States"
+    },
+    {
+      "type": "text",
+      "id": "ca_shipping_text",
+      "label": "Canada shipping text",
+      "default": "Free shipping within Canada"
+    },
+    {
+      "type": "range",
+      "id": "shipping_text_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Shipping text size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "shipping_text_color",
+      "label": "Shipping text color",
+      "default": "#666666"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Regional Currency Display"
+    }
+  ]
+}
+{% endschema %}

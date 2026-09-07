@@ -1,0 +1,173 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "custom_css": [
+        ".image-with-text__media.image-with-text__media--adapt.gradient.color-background-1.global-media-settings.media {border-radius: 12px;}"
+      ],
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "image_banner_mmHJqa": {
+      "type": "image-banner",
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "image": "shopify:\/\/shop_images\/Instagram_Posts_1_55093b9a-527c-43bb-a210-51045fbd1aea.png",
+        "image_overlay_opacity": 0,
+        "image_height": "small",
+        "adapt_height_first_image": true,
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "background-1",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": true,
+        "custom_class_name": ""
+      }
+    },
+    "support_block_jbqfwa": {
+      "type": "support-block",
+      "blocks": {
+        "column_PVYMWd": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Glucose.svg",
+            "title": "Glucose",
+            "text": "<p>Glucose, the simplest form of sugar, serves as the primary energy source for all cells in our bodies. Additionally, glucose is essential for facilitating rapid hydration through advanced technologies such as Sodium Glucose Linked Transport (SGLT), which efficiently transports both sodium and glucose to support hydration processes within the body.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_eKBrrR": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Dehydrated_Lemons.svg",
+            "title": "Dehydrated Lemons",
+            "text": "<p>A crystallized lemon flavouring that is made from real lemon juice and oils.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_8yHAnC": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/baking_soda.svg",
+            "title": "Baking Soda",
+            "text": "<p>A critical electrolyte found in the plasma of our blood is the <br\/>combination of sodium cations (+) and bicarbonate anions (-), playing a crucial role in maintaining the body's pH balance and supporting variousphysiological functions.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_NxTGaK": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Potassium.svg",
+            "title": "Potassium",
+            "text": "<p>Potassium is the predominant electrolyte found within your cells. It is among the more challenging electrolytes to obtain through our typical diet.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_UUKGUF": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Salt.svg",
+            "title": "Salts",
+            "text": "<p>Sodium and Chloride are the most common electrolytes in your blood and needs constant replenishment. When you consume salt, it can help <br\/>increase your thirst and encourage you to drink more water, leading to <br\/>better hydration.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_8gqBKK": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Citric_Acid.svg",
+            "title": "Citric Acid",
+            "text": "<p>Citric acid is used for flavor enhancement, antioxidant protection, and as a source of citrate for energy production. Its versatile properties improve taste, effectiveness, and stability of the product.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "column_PVYMWd",
+        "column_eKBrrR",
+        "column_8yHAnC",
+        "column_NxTGaK",
+        "column_UUKGUF",
+        "column_8gqBKK"
+      ],
+      "custom_css": [
+        ".support-block-card .support-block-card__image-wrapper {display: flex; justify-content: flex-start;}",
+        ".support-block-card__info h3,.title.h1 {color: #449fd6;}",
+        "h6 {color: rgb(68, 159, 214);}"
+      ],
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "title": "Ingredients",
+        "heading_size": "h1",
+        "sub_heading": "The Best Difference",
+        "description": "Simple . Scientific . Hydration",
+        "button_label": "",
+        "button_link": "",
+        "button_style_secondary": false,
+        "column_alignment": "center",
+        "columns_desktop": 3,
+        "background_style": "primary",
+        "color_scheme": "background-1",
+        "block_style": "grid__item",
+        "block_column_alignment": "left",
+        "icon_outer_size": "",
+        "icon_size": "",
+        "image_radius": "",
+        "block_color_scheme": "background-1",
+        "vertical_position": "veritcal_center",
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "swiper_enable": false,
+        "desktop_column": 4,
+        "tablet_column": 3,
+        "mobile_column": 1,
+        "swiper_pagination": false,
+        "swiper_navigation": false,
+        "auto_play": 0,
+        "swipe_on_mobile": false,
+        "arrow_on_mobile": false,
+        "columns_mobile": "1",
+        "custom_class_name": "wdt-custom-support-block-home"
+      }
+    },
+    "image_banner_pa6KhE": {
+      "type": "image-banner",
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "image": "shopify:\/\/shop_images\/Instagram_Posts_5_163073c1-de7b-4830-802e-686ae816c5a5.png",
+        "image_overlay_opacity": 0,
+        "image_height": "small",
+        "adapt_height_first_image": true,
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "background-1",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": true,
+        "custom_class_name": ""
+      }
+    }
+  },
+  "order": [
+    "main",
+    "image_banner_mmHJqa",
+    "support_block_jbqfwa",
+    "image_banner_pa6KhE"
+  ]
+}

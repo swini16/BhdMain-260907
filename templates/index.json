@@ -1,0 +1,611 @@
+{
+  "sections": {
+    "blocks_883RKp": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_c1a6322_z9ab94": {
+          "type": "ai_gen_block_c1a6322",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Unlocking_Real_Hydration_6_a488d5de-6a25-48f6-a614-ce0312ecaea8.png",
+            "aspect_ratio": "16\/9",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 30,
+            "heading": "",
+            "text": "",
+            "button_label": "SHOP NOW",
+            "button_link": "shopify:\/\/products\/lemonade-best-hydrate",
+            "content_vertical_align": "center",
+            "content_horizontal_align": "center",
+            "text_align": "center",
+            "content_width": 500,
+            "content_background": false,
+            "content_background_color": "#ffffff",
+            "content_border_radius": 8,
+            "heading_size": 46,
+            "heading_color": "#ffffff",
+            "text_size": 20,
+            "text_color": "#ffffff",
+            "button_color": "#000f9f",
+            "button_hover_color": "#000000",
+            "button_text_color": "#ffffff",
+            "button_text_size": 24,
+            "button_border_radius": 4
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_c1a6322_z9ab94"
+      ],
+      "settings": {}
+    },
+    "deal_banner_gjQcJX": {
+      "type": "deal-banner",
+      "disabled": true,
+      "custom_css": [
+        ".deal-banner .banner__heading {color: #fff; font-size: 3.5rem;}",
+        "@media (min-width: 800px) {.deal-banner .banner__heading {color: #fff; font-size: 7rem; }}",
+        ".banner__box.content-container.content-container--full-width-mobile {color: #fff; font-size: 2rem;}",
+        ".button.button--primary {color: #fff; font-size: 4rem; background: red; padding: 20px; border-radius: 5px;}",
+        ".button[aria-disabled=\"true\"] {opacity: 1;}"
+      ],
+      "settings": {
+        "page_full_width": true,
+        "page_full_width_spacing": false,
+        "image": "shopify:\/\/shop_images\/Unlocking_Real_Hydration_6_a488d5de-6a25-48f6-a614-ce0312ecaea8.png",
+        "image_height": "small",
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "background-1",
+        "heading": "",
+        "sub-heading": "",
+        "text": "",
+        "deal_end_date": "",
+        "button_label_1": "Shop now",
+        "button_link_1": "shopify:\/\/products\/lemonade-best-hydrate",
+        "button_style_secondary_1": false,
+        "button_label_2": "",
+        "button_link_2": "",
+        "button_style_secondary_2": false,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "custom_class_name": ""
+      }
+    },
+    "1748528698b2b7cf09": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_161b32c_TJeMHL": {
+          "type": "ai_gen_block_161b32c",
+          "settings": {
+            "title": "The Science of Hydration",
+            "subtitle": "Try some of our Electrolyte Lemonade for YOUR Best Day!",
+            "us_product": "lemonade-electrolyte-best-hydrate",
+            "us_region_text": "5 Essential Electrolytes and only ~10% of the sugar of many competing products. All of what you need, none of what you don't :D FREE SHIPPING",
+            "ca_product": "lemonade-best-hydrate",
+            "ca_region_text": "A Canadian-Made product for our fellow proud Canadians. 5 Essential Electrolytes and only ~10% of the sugar of many competing products. All of what you need, none of what you don't :D FREE SHIPPING",
+            "global_product": "lemonade-best-hydrate",
+            "global_region_text": "We ship nation-wide in the Canada and USA within only a day or three- for free! :D",
+            "background_color": "#dcf1fb",
+            "border_radius": 8,
+            "image_border_radius": 8,
+            "margin_top": 30,
+            "margin_bottom": 30,
+            "title_color": "#000000",
+            "title_size": 28,
+            "subtitle_color": "#666666",
+            "subtitle_size": 16,
+            "product_title_color": "#000000",
+            "product_title_size": 24,
+            "price_color": "#e32c2c",
+            "price_size": 18,
+            "description_color": "#666666",
+            "description_size": 14,
+            "button_color": "#000000",
+            "button_hover_color": "#333333",
+            "button_text_color": "#ffffff",
+            "button_text_size": 16,
+            "button_border_radius": 4
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_161b32c_TJeMHL"
+      ],
+      "settings": {}
+    },
+    "featured_product_9i4Dym": {
+      "type": "featured-product",
+      "blocks": {
+        "text_kWfekT": {
+          "type": "text",
+          "settings": {
+            "text": "{{ section.settings.product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title_bkA8rP": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h1"
+          }
+        },
+        "text_Cr8R9w": {
+          "type": "text",
+          "settings": {
+            "text": "{{ section.settings.product.metafields.descriptors.subtitle.value }}",
+            "text_style": "subtitle"
+          }
+        },
+        "price_RXJkee": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker_mgqp6p": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "picker_method": "custom_color"
+          }
+        },
+        "quantity_selector_pXDW7L": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons_VLRNUK": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true
+          }
+        },
+        "deal_awMK69": {
+          "type": "deal",
+          "settings": {}
+        },
+        "share_LDE3jB": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        }
+      },
+      "block_order": [
+        "text_kWfekT",
+        "title_bkA8rP",
+        "text_Cr8R9w",
+        "price_RXJkee",
+        "variant_picker_mgqp6p",
+        "quantity_selector_pXDW7L",
+        "buy_buttons_VLRNUK",
+        "deal_awMK69",
+        "share_LDE3jB"
+      ],
+      "disabled": true,
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "product": "lemonade-best-hydrate",
+        "color_scheme": "background-1",
+        "secondary_background": true,
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "enable_product_zoom": "default",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "1748542062f01ab678": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_c1a6322_PpxaDM": {
+          "type": "ai_gen_block_c1a6322",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Unlocking_Real_Hydration_3.png",
+            "aspect_ratio": "16\/9",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 30,
+            "heading": "",
+            "text": "",
+            "button_label": "",
+            "button_link": "",
+            "content_vertical_align": "center",
+            "content_horizontal_align": "center",
+            "text_align": "center",
+            "content_width": 500,
+            "content_background": false,
+            "content_background_color": "#ffffff",
+            "content_border_radius": 8,
+            "heading_size": 58,
+            "heading_color": "#ffffff",
+            "text_size": 18,
+            "text_color": "#ffffff",
+            "button_color": "#000f9f",
+            "button_hover_color": "#000000",
+            "button_text_color": "#ffffff",
+            "button_text_size": 16,
+            "button_border_radius": 4
+          },
+          "blocks": {}
+        },
+        "ai_gen_block_c1a6322_P8LbKY": {
+          "type": "ai_gen_block_c1a6322",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Unlocking_Real_Hydration_2.png",
+            "aspect_ratio": "16\/9",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 30,
+            "heading": "",
+            "text": "",
+            "button_label": "",
+            "button_link": "",
+            "content_vertical_align": "center",
+            "content_horizontal_align": "center",
+            "text_align": "center",
+            "content_width": 500,
+            "content_background": false,
+            "content_background_color": "#ffffff",
+            "content_border_radius": 8,
+            "heading_size": 40,
+            "heading_color": "#ffffff",
+            "text_size": 18,
+            "text_color": "#ffffff",
+            "button_color": "#000f9f",
+            "button_hover_color": "#000000",
+            "button_text_color": "#ffffff",
+            "button_text_size": 16,
+            "button_border_radius": 4
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_c1a6322_PpxaDM",
+        "ai_gen_block_c1a6322_P8LbKY"
+      ],
+      "settings": {}
+    },
+    "image_banner_bHpbVz": {
+      "type": "image-banner",
+      "settings": {
+        "page_full_width": true,
+        "page_full_width_spacing": false,
+        "image": "shopify:\/\/shop_images\/Unlocking_Real_Hydration_7.png",
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "adapt_height_first_image": true,
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "background-1",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": true,
+        "custom_class_name": ""
+      }
+    },
+    "image_banner_a6cwPF": {
+      "type": "image-banner",
+      "settings": {
+        "page_full_width": true,
+        "page_full_width_spacing": false,
+        "image": "shopify:\/\/shop_images\/Unlocking_Real_Hydration_8.png",
+        "image_overlay_opacity": 0,
+        "image_height": "large",
+        "adapt_height_first_image": true,
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "background-1",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": true,
+        "custom_class_name": ""
+      }
+    },
+    "43913838-6d85-4e95-bf8e-37c1bddffec2": {
+      "type": "support-block",
+      "blocks": {
+        "column_B4qh7r": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Glucose.svg",
+            "title": "Glucose",
+            "text": "<p>Glucose, the simplest form of sugar, serves as the primary energy source for all cells in our bodies. Additionally, glucose is essential for facilitating rapid hydration through advanced technologies such as Sodium Glucose Linked Transport (SGLT), which efficiently transports both sodium and glucose to support hydration processes within the body.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "template--15737835585692__43913838-6d85-4e95-bf8e-37c1bddffec2-1677131203ef533fba-0": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Dehydrated_Lemons.svg",
+            "title": "Dehydrated Lemons",
+            "text": "<p>A crystallized lemon flavouring that is made from real lemon juice and oils.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_CiLRLn": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/baking_soda.svg",
+            "title": "Baking Soda",
+            "text": "<p>A critical electrolyte found in the plasma of our blood is the <br\/>combination of sodium cations (+) and bicarbonate anions (-), playing a crucial role in maintaining the body's pH balance and supporting variousphysiological functions.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_ngKJqm": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Potassium.svg",
+            "title": "Potassium",
+            "text": "<p>Potassium is the predominant electrolyte found within your cells. It is among the more challenging electrolytes to obtain through our typical diet.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "template--15737835585692__43913838-6d85-4e95-bf8e-37c1bddffec2-1677131203ef533fba-1": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Salt.svg",
+            "title": "Salt",
+            "text": "<p>Sodium and Chloride are the most common electrolytes in your blood and needs constant replenishment. When you consume salt, it can help <br\/>increase your thirst and encourage you to drink more water, leading to <br\/>better hydration.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "template--15737835585692__43913838-6d85-4e95-bf8e-37c1bddffec2-1677131203ef533fba-2": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Citric_Acid.svg",
+            "title": "Citric Acid",
+            "text": "<p>Citric acid is used for flavor enhancement, antioxidant protection, and as a source of citrate for energy production. Its versatile properties improve taste, effectiveness, and stability of the product.<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "column_B4qh7r",
+        "template--15737835585692__43913838-6d85-4e95-bf8e-37c1bddffec2-1677131203ef533fba-0",
+        "column_CiLRLn",
+        "column_ngKJqm",
+        "template--15737835585692__43913838-6d85-4e95-bf8e-37c1bddffec2-1677131203ef533fba-1",
+        "template--15737835585692__43913838-6d85-4e95-bf8e-37c1bddffec2-1677131203ef533fba-2"
+      ],
+      "custom_css": [
+        ".support-block-card .support-block-card__image-wrapper {display: flex; justify-content: flex-start;}",
+        ".support-block-card__info h3,.title.h1 {color: #449fd6;}",
+        "h6 {color: rgb(68, 159, 214);}"
+      ],
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "title": "Ingredients",
+        "heading_size": "h1",
+        "sub_heading": "The Best Difference",
+        "description": "Simple . Scientific . Hydration",
+        "button_label": "",
+        "button_link": "",
+        "button_style_secondary": false,
+        "column_alignment": "center",
+        "columns_desktop": 3,
+        "background_style": "primary",
+        "color_scheme": "accent-1",
+        "block_style": "grid__item",
+        "block_column_alignment": "left",
+        "icon_outer_size": "",
+        "icon_size": "",
+        "image_radius": "",
+        "block_color_scheme": "background-1",
+        "vertical_position": "veritcal_center",
+        "padding_top": 90,
+        "padding_bottom": 70,
+        "swiper_enable": false,
+        "desktop_column": 4,
+        "tablet_column": 3,
+        "mobile_column": 1,
+        "swiper_pagination": false,
+        "swiper_navigation": false,
+        "auto_play": 0,
+        "swipe_on_mobile": false,
+        "arrow_on_mobile": false,
+        "columns_mobile": "1",
+        "custom_class_name": "wdt-custom-support-block-home"
+      }
+    },
+    "image_banner_6wkTVL": {
+      "type": "image-banner",
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "image": "shopify:\/\/shop_images\/Unlocking_Real_Hydration_11.png",
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "adapt_height_first_image": true,
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "background-1",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": true,
+        "custom_class_name": ""
+      }
+    },
+    "image_banner_n8qXtF": {
+      "type": "image-banner",
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "image": "shopify:\/\/shop_images\/Unlocking_Real_Hydration_2_f09b1092-195d-485b-a53f-3e9014ba9fe6.png",
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "adapt_height_first_image": true,
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "background-1",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": true,
+        "custom_class_name": ""
+      }
+    },
+    "17485353492684401e": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_c1a6322_Lnig8p": {
+          "type": "ai_gen_block_c1a6322",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Unlocking_Real_Hydration_1_468c8571-3ced-4201-93b4-503bc53e8adb.png",
+            "aspect_ratio": "16\/9",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 30,
+            "heading": "",
+            "text": "",
+            "button_label": "",
+            "button_link": "",
+            "content_vertical_align": "center",
+            "content_horizontal_align": "center",
+            "text_align": "center",
+            "content_width": 500,
+            "content_background": false,
+            "content_background_color": "#ffffff",
+            "content_border_radius": 8,
+            "heading_size": 40,
+            "heading_color": "#ffffff",
+            "text_size": 18,
+            "text_color": "#ffffff",
+            "button_color": "#000f9f",
+            "button_hover_color": "#000000",
+            "button_text_color": "#ffffff",
+            "button_text_size": 16,
+            "button_border_radius": 4
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_c1a6322_Lnig8p"
+      ],
+      "settings": {}
+    },
+    "video_7WQykV": {
+      "type": "video",
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "title": "Welcome to your Next Level!",
+        "heading_size": "h0",
+        "sub_heading": "",
+        "description": "",
+        "button_label": "",
+        "button_link": "",
+        "button_style_secondary": false,
+        "content_style": "default",
+        "cover_image": "shopify:\/\/shop_images\/Instagram_Posts_024e4abc-e291-4b63-b5f5-89405f276075.png",
+        "video_url": "https:\/\/youtu.be\/yS0dK3A4L4A",
+        "alt_text": "",
+        "color_scheme": "background-1",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "172745770853633675": {
+      "type": "apps",
+      "blocks": {
+        "trustreviews_review_cards_tnDzEf": {
+          "type": "shopify:\/\/apps\/trustreviews\/blocks\/review-cards\/56d0fe1b-e701-4cff-8f84-466a26e09adb",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "trustreviews_review_cards_tnDzEf"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "116531d3-c058-42f2-83a3-a3bdf128324a": {
+      "type": "newsletter",
+      "blocks": {
+        "template--15737835585692__116531d3-c058-42f2-83a3-a3bdf128324a-16771489313c7a2ac6-0": {
+          "type": "heading",
+          "settings": {
+            "heading": "Sign up to our newsletter",
+            "heading_size": "h1"
+          }
+        },
+        "template--15737835585692__116531d3-c058-42f2-83a3-a3bdf128324a-16771489313c7a2ac6-1": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Get notification on latest update and offers<\/p>"
+          }
+        },
+        "template--15737835585692__116531d3-c058-42f2-83a3-a3bdf128324a-16771489313c7a2ac6-2": {
+          "type": "email_form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "template--15737835585692__116531d3-c058-42f2-83a3-a3bdf128324a-16771489313c7a2ac6-0",
+        "template--15737835585692__116531d3-c058-42f2-83a3-a3bdf128324a-16771489313c7a2ac6-1",
+        "template--15737835585692__116531d3-c058-42f2-83a3-a3bdf128324a-16771489313c7a2ac6-2"
+      ],
+      "custom_css": [
+        "#Subscribe {background: #91d8f1; color: #000;}"
+      ],
+      "settings": {
+        "color_scheme": "accent-2",
+        "full_width": true,
+        "padding_top": 62,
+        "padding_bottom": 62
+      }
+    },
+    "custom_liquid_iQmjHj": {
+      "type": "custom-liquid",
+      "custom_css": [
+        "a:hover {color: red;}"
+      ],
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "custom_liquid": "<style>\n.menu-drawer__menu-item.list-menu__item.link.link--text.focus-inset.menu-drawer__menu-item--active {\n  color: #ed2025;\n}\n#shopify-section-announcement-bar{\n  display: none;\n}\n.newsletter .newsletter__wrapper .newsletter__wrapper-left h2.h1{\ncolor: #f4f4f4;\n}\n\n.newsletter .newsletter__wrapper .newsletter__wrapper-left .newsletter__subheading.rte p,\n.newsletter .newsletter__wrapper .field .newsletter-form__button.field__button{\ncolor: #fff;\n}\n\n.newsletter .newsletter__wrapper .field .newsletter-form__button.field__button:hover{\ncolor: #000;\n}\n<\/style>",
+        "title": "",
+        "subtitle": "",
+        "text_style": "caption-with-letter-spacing",
+        "text_size": "medium",
+        "button_label": "",
+        "button_link": "",
+        "color_scheme": "background-1",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "blocks_883RKp",
+    "deal_banner_gjQcJX",
+    "1748528698b2b7cf09",
+    "featured_product_9i4Dym",
+    "1748542062f01ab678",
+    "image_banner_bHpbVz",
+    "image_banner_a6cwPF",
+    "43913838-6d85-4e95-bf8e-37c1bddffec2",
+    "image_banner_6wkTVL",
+    "image_banner_n8qXtF",
+    "17485353492684401e",
+    "video_7WQykV",
+    "172745770853633675",
+    "116531d3-c058-42f2-83a3-a3bdf128324a",
+    "custom_liquid_iQmjHj"
+  ]
+}

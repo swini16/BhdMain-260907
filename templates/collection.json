@@ -1,0 +1,81 @@
+{
+  "sections": {
+    "banner": {
+      "type": "main-collection-banner",
+      "name": "Products",
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "show_collection_description": true,
+        "show_collection_image": true,
+        "color_scheme": "background-1",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "product-grid": {
+      "type": "main-collection-product-grid",
+      "settings": {
+        "products_per_page": 16,
+        "columns_desktop": 3,
+        "collections_custom_cols": true,
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "image_ratio": "adapt",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_new_tag": true,
+        "show_rating": true,
+        "enable_filtering": true,
+        "filter_type": "vertical",
+        "enable_sorting": true,
+        "pagination": "numbers",
+        "columns_mobile": "1",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "sidebar_settings": "sidebar-left",
+        "enable_grid_list": true,
+        "show_menu": true,
+        "menu_title": "Custom Menu",
+        "linklist": "main-menu",
+        "show_carousel": true,
+        "carousel_title": "Best Seller",
+        "carousel": "frontpage",
+        "carousel_limit": 3,
+        "show_image": true,
+        "sidebar_title": "Best Sellers",
+        "sidebar_button": "Shop Now",
+        "sidebar_link": "shopify:\/\/collections\/3-layer-cherry-cakes",
+        "show_collection": true,
+        "collection_title": "Herbal soap",
+        "collection": "herbal-soap",
+        "collection_limit": 5
+      }
+    },
+    "custom_liquid_G6y9y7": {
+      "type": "custom-liquid",
+      "custom_css": [
+        ".breadcrumb .breadcrumb_title {font-size: 1.9em; color: #f2f2f2f2;}"
+      ],
+      "settings": {
+        "page_full_width": false,
+        "page_full_width_spacing": false,
+        "custom_liquid": "",
+        "title": "",
+        "subtitle": "",
+        "text_style": "caption-with-letter-spacing",
+        "text_size": "medium",
+        "button_label": "",
+        "button_link": "",
+        "color_scheme": "background-1",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "product-grid",
+    "custom_liquid_G6y9y7"
+  ]
+}
