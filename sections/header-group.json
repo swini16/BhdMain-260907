@@ -11,6 +11,10 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
+    "bhd_branding": {
+      "type": "bhd-branding-styles",
+      "settings": {}
+    },
     "header": {
       "type": "header",
       "custom_css": [
@@ -37,6 +41,7 @@
     }
   },
   "order": [
+    "bhd_branding",
     "header"
   ]
 }
