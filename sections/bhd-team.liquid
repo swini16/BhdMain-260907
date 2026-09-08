@@ -1,0 +1,220 @@
+<section id="BhdTeam-{{ section.id }}" class="bhd-team color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    <div class="bhd-team__intro">
+      {% if section.settings.heading != blank %}
+        <h2 class="title inline-richtext {{ section.settings.heading_size }}">{{ section.settings.heading }}</h2>
+      {% endif %}
+      {% if section.settings.text != blank %}
+        <div class="rte bhd-team__text">{{ section.settings.text }}</div>
+      {% endif %}
+    </div>
+
+    <div class="bhd-team__grid">
+      {% for block in section.blocks %}
+        <article class="bhd-team__card" {{ block.shopify_attributes }}>
+          <div class="bhd-team__image-wrap">
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '360, 540, 720, 900', sizes: '(min-width: 990px) 30vw, (min-width: 750px) 45vw, 100vw', class: 'bhd-team__image', alt: block.settings.name }}
+            {% else %}
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg bhd-team__image' }}
+            {% endif %}
+          </div>
+          <div class="bhd-team__body">
+            {% if block.settings.name != blank %}
+              <h3>{{ block.settings.name }}</h3>
+            {% endif %}
+            {% if block.settings.role != blank %}
+              <p class="bhd-team__role">{{ block.settings.role }}</p>
+            {% endif %}
+            {% if block.settings.bio != blank %}
+              <div class="rte bhd-team__bio">{{ block.settings.bio }}</div>
+            {% endif %}
+            {% if block.settings.link_label != blank and block.settings.link != blank %}
+              <a class="link underlined-link" href="{{ block.settings.link }}">{{ block.settings.link_label }}</a>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #BhdTeam-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__intro {
+    text-align: center;
+    max-width: 780px;
+    margin: 0 auto 3rem;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__intro .title {
+    margin-bottom: 1rem;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.4rem;
+    align-items: start;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__card {
+    overflow: hidden;
+    border: 1px solid rgba(var(--color-foreground), .12);
+    border-radius: 1.4rem;
+    background: rgb(var(--color-background));
+    box-shadow: 0 1rem 3.5rem rgba(13, 33, 78, .08);
+    height: 100%;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__image-wrap {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: rgba(var(--color-foreground), .05);
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__body {
+    padding: 2rem 2rem 2.2rem;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__body h3 {
+    margin: 0;
+    font-size: 2.4rem;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__role {
+    margin: .5rem 0 1.2rem;
+    font-weight: 600;
+    color: rgba(var(--color-foreground), .72);
+    line-height: 1.35;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__bio {
+    font-size: 1.45rem;
+    line-height: 1.58;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__bio p:first-child {
+    margin-top: 0;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__bio p:last-child {
+    margin-bottom: 0;
+  }
+  #BhdTeam-{{ section.id }} .bhd-team__body .link {
+    display: inline-block;
+    margin-top: 1.4rem;
+  }
+
+  @media screen and (max-width: 989px) {
+    #BhdTeam-{{ section.id }} .bhd-team__grid {
+      grid-template-columns: 1fr;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    #BhdTeam-{{ section.id }} .bhd-team__card {
+      display: grid;
+      grid-template-columns: minmax(220px, .8fr) 1.2fr;
+    }
+    #BhdTeam-{{ section.id }} .bhd-team__image-wrap {
+      aspect-ratio: auto;
+      min-height: 100%;
+    }
+  }
+
+  @media screen and (max-width: 649px) {
+    #BhdTeam-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top | times: 0.75 | round }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round }}px;
+    }
+    #BhdTeam-{{ section.id }} .bhd-team__card {
+      display: block;
+    }
+    #BhdTeam-{{ section.id }} .bhd-team__image-wrap {
+      aspect-ratio: 4 / 3;
+    }
+    #BhdTeam-{{ section.id }} .bhd-team__body {
+      padding: 1.8rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Meet us",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Meet Us"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {"value": "h2", "label": "Small"},
+        {"value": "h1", "label": "Medium"},
+        {"value": "h0", "label": "Large"}
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Intro",
+      "default": "<p>Best Hydrate brings together lived experience, health care, science and performance.</p>"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "profile",
+      "name": "Profile",
+      "settings": [
+        {"type": "image_picker", "id": "image", "label": "Photo"},
+        {"type": "text", "id": "name", "label": "Name", "default": "Name"},
+        {"type": "text", "id": "role", "label": "Role", "default": "Role"},
+        {"type": "richtext", "id": "bio", "label": "Bio", "default": "<p>Bio</p>"},
+        {"type": "text", "id": "link_label", "label": "Link label"},
+        {"type": "url", "id": "link", "label": "Link"}
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Meet us",
+      "blocks": [
+        {"type": "profile"},
+        {"type": "profile"},
+        {"type": "profile"}
+      ]
+    }
+  ]
+}
+{% endschema %}
