@@ -18,9 +18,14 @@
         "tagline": "The Science of Hydration",
         "color_scheme": "scheme-2"
       }
+    },
+    "menu_contrast": {
+      "type": "bhd-header-contrast",
+      "settings": {}
     }
   },
   "order": [
-    "header"
+    "header",
+    "menu_contrast"
   ]
 }
