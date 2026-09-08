@@ -1,0 +1,64 @@
+<style>
+  @media screen and (min-width: 990px) {
+    .bhd-header .bhd-header__main-item.is-open .bhd-header__split-button {
+      background: rgba(var(--color-button), .14);
+      border-color: rgba(var(--color-button), .42);
+      box-shadow: 0 .45rem 1.4rem rgba(13, 33, 78, .10);
+    }
+
+    .bhd-header .bhd-header__main-item.is-open .bhd-header__dropdown-menu {
+      top: calc(100% + 1.45rem);
+      background:
+        linear-gradient(rgba(var(--color-button), .045), rgba(var(--color-button), .045)),
+        rgb(var(--color-background));
+      border: 1px solid rgba(var(--color-button), .22);
+      border-top: 3px solid rgba(var(--color-button), .62);
+      box-shadow: 0 2.2rem 5rem rgba(13, 33, 78, .18);
+    }
+
+    .bhd-header .bhd-header__main-item.is-open .bhd-header__dropdown-menu::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      width: 18px;
+      height: 18px;
+      transform: translateX(-50%) rotate(45deg);
+      background: rgb(var(--color-background));
+      border-left: 1px solid rgba(var(--color-button), .22);
+      border-top: 1px solid rgba(var(--color-button), .22);
+    }
+
+    .bhd-header .bhd-header__main-item.is-open .bhd-header__dropdown-child {
+      background: rgba(var(--color-background), .72);
+      border: 1px solid rgba(var(--color-foreground), .055);
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    .bhd-header .bhd-header__mobile-main.is-open .bhd-header__mobile-main-row {
+      background: rgba(var(--color-button), .14);
+      border-color: rgba(var(--color-button), .40);
+    }
+
+    .bhd-header .bhd-header__mobile-main.is-open .bhd-header__mobile-level-one {
+      margin-top: .45rem;
+      padding: .75rem;
+      border: 1px solid rgba(var(--color-button), .18);
+      border-left: 3px solid rgba(var(--color-button), .55);
+      border-radius: 10px;
+      background:
+        linear-gradient(rgba(var(--color-button), .045), rgba(var(--color-button), .045)),
+        rgb(var(--color-background));
+      box-shadow: 0 .8rem 2rem rgba(13, 33, 78, .08);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Header menu contrast",
+  "enabled_on": {"groups": ["header"]},
+  "settings": []
+}
+{% endschema %}
