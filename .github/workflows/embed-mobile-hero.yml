@@ -1,0 +1,65 @@
+name: Embed mobile hero into Liquid
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/embed-mobile-hero.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  embed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build self-contained mobile hero snippets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          make_snippet() {
+            name="$1"
+            alt="$2"
+            data="$(base64 -w0 "assets/hero-mobile-${name}.webp")"
+            out="snippets/bhd-hero-mobile-${name}.liquid"
+            printf '<img class="bhd-hero__embedded-image" src="data:image/webp;base64,%s" alt="%s" width="720" height="1280" loading="eager" decoding="async">\n' "$data" "$alt" > "$out"
+            bytes=$(wc -c < "$out")
+            echo "$out = $bytes bytes"
+            test "$bytes" -lt 262144
+          }
+
+          make_snippet performance 'Best Hydrate performance hydration'
+          make_snippet daily 'Best Hydrate daily hydration'
+          make_snippet medical 'Best Hydrate medical hydration'
+          make_snippet humanitarian 'Best Hydrate humanitarian hydration'
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('sections/bhd-hero.liquid')
+          s = p.read_text()
+          replacements = {
+              'performance': "{% render 'bhd-hero-mobile-performance' %}",
+              'daily': "{% render 'bhd-hero-mobile-daily' %}",
+              'medical': "{% render 'bhd-hero-mobile-medical' %}",
+              'humanitarian': "{% render 'bhd-hero-mobile-humanitarian' %}",
+          }
+          for name, render in replacements.items():
+              pattern = r'<img[^>]*alt="Best Hydrate ' + name + r' hydration"[^>]*>'
+              s, count = re.subn(pattern, render, s, count=1)
+              if count != 1:
+                  raise SystemExit(f'Could not replace {name} mobile hero image, count={count}')
+          p.write_text(s)
+          PY
+
+          git config user.name 'Best Hydrate Theme Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add sections/bhd-hero.liquid snippets/bhd-hero-mobile-*.liquid
+          git commit -m 'Embed mobile hero images directly in Liquid'
+          git push origin HEAD:main
