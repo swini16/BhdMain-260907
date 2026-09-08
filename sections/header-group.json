@@ -22,10 +22,15 @@
     "menu_contrast": {
       "type": "bhd-header-contrast",
       "settings": {}
+    },
+    "blog_nav": {
+      "type": "bhd-header-blog",
+      "settings": {}
     }
   },
   "order": [
     "header",
-    "menu_contrast"
+    "menu_contrast",
+    "blog_nav"
   ]
 }
