@@ -19,9 +19,14 @@
         "menu": "new-menu",
         "color_scheme": "scheme-2"
       }
+    },
+    "scroll_behavior": {
+      "type": "bhd-header-scroll",
+      "settings": {}
     }
   },
   "order": [
-    "header"
+    "header",
+    "scroll_behavior"
   ]
 }
