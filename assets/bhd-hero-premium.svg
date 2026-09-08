@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-label="Abstract mountain lake and flowing hydration background">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eefaff"/>
+      <stop offset="0.5" stop-color="#cfefff"/>
+      <stop offset="1" stop-color="#a9dcf4"/>
+    </linearGradient>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6ec7e7"/>
+      <stop offset="1" stop-color="#0d6ba8"/>
+    </linearGradient>
+    <linearGradient id="redWave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e93f4f" stop-opacity="0"/>
+      <stop offset="0.58" stop-color="#e93f4f" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#cf2338" stop-opacity="0.38"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="74%" cy="38%" r="32%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="14"/></filter>
+  </defs>
+
+  <rect width="1600" height="800" fill="url(#sky)"/>
+  <circle cx="1190" cy="250" r="330" fill="url(#glow)"/>
+
+  <path d="M0 385 L170 230 L292 333 L410 188 L565 348 L710 252 L850 380 Z" fill="#5c88a6" opacity="0.32"/>
+  <path d="M240 382 L420 252 L545 338 L695 203 L885 365 L1040 260 L1215 390 Z" fill="#2b668e" opacity="0.22"/>
+  <path d="M720 385 L920 265 L1050 342 L1205 214 L1390 350 L1600 246 L1600 420 Z" fill="#154c78" opacity="0.18"/>
+
+  <path d="M0 402 C260 376 450 405 650 433 C850 463 1045 452 1228 414 C1398 378 1515 386 1600 408 L1600 800 L0 800 Z" fill="url(#lake)"/>
+
+  <path d="M0 533 C210 486 404 510 587 559 C773 609 960 610 1138 553 C1320 496 1470 503 1600 535" fill="none" stroke="#ffffff" stroke-width="12" opacity="0.42"/>
+  <path d="M0 624 C230 574 421 594 608 646 C792 696 983 698 1164 643 C1344 588 1492 594 1600 620" fill="none" stroke="#dff8ff" stroke-width="7" opacity="0.34"/>
+  <path d="M0 690 C255 651 449 670 635 710 C826 751 1016 752 1214 709 C1390 671 1510 674 1600 690" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.25"/>
+
+  <path d="M790 470 C992 410 1208 419 1400 476 C1480 500 1548 518 1600 514 L1600 692 C1462 672 1336 642 1210 605 C1055 560 913 542 790 563 Z" fill="url(#redWave)"/>
+
+  <g fill="#ffffff" opacity="0.5">
+    <circle cx="1050" cy="186" r="9"/>
+    <circle cx="1112" cy="145" r="5"/>
+    <circle cx="1250" cy="172" r="7"/>
+    <circle cx="1312" cy="218" r="4"/>
+    <circle cx="1376" cy="150" r="8"/>
+  </g>
+
+  <ellipse cx="1180" cy="594" rx="260" ry="62" fill="#053c67" opacity="0.16" filter="url(#soft)"/>
+</svg>
