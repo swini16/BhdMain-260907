@@ -10,56 +10,15 @@
 {
   "sections": {
     "hero": {
-      "type": "image-banner",
-      "custom_css": [
-        ".banner__heading {color:#fff !important; font-size:clamp(3rem,5vw,6rem); line-height:1.05; text-shadow:0 2px 10px rgba(0,0,0,.65);}",
-        ".banner__text {color:#fff !important; font-size:clamp(1.5rem,2vw,2.2rem); text-shadow:0 2px 8px rgba(0,0,0,.65);}",
-        ".banner__box {max-width:72rem;}"
-      ],
-      "blocks": {
-        "heading": {
-          "type": "heading",
-          "settings": {
-            "heading": "Hydrate for YOUR best day.",
-            "heading_size": "h1"
-          }
-        },
-        "text": {
-          "type": "text",
-          "settings": {
-            "text": "Five essential electrolytes. Built for better hydration.",
-            "text_style": "subtitle"
-          }
-        },
-        "buttons": {
-          "type": "buttons",
-          "settings": {
-            "button_label_1": "SHOP NOW",
-            "button_link_1": "shopify://products/lemonade-best-hydrate",
-            "button_style_secondary_1": false,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "heading",
-        "text",
-        "buttons"
-      ],
+      "type": "bhd-hero",
       "settings": {
-        "image": "shopify://shop_images/Unlocking_Real_Hydration_6_a488d5de-6a25-48f6-a614-ce0312ecaea8.png",
-        "image_overlay_opacity": 45,
-        "image_height": "adapt",
-        "image_behavior": "none",
-        "desktop_content_position": "middle-center",
-        "desktop_content_alignment": "center",
-        "show_text_box": false,
-        "color_scheme": "scheme-3",
-        "stack_images_on_mobile": true,
-        "mobile_content_alignment": "center",
-        "show_text_below": true
+        "heading": "Hydrate for YOUR best day.",
+        "subheading": "Five essential electrolytes. Built for better hydration.",
+        "button_label": "SHOP NOW",
+        "button_link": "shopify://products/lemonade-best-hydrate",
+        "overlay_opacity": 25,
+        "desktop_height": 620,
+        "mobile_height": 520
       }
     },
     "science_intro": {
