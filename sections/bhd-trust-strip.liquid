@@ -1,0 +1,22 @@
+<section id="BhdTrust-{{ section.id }}" class="bhd-trust color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width bhd-trust__grid">
+    <div><span>✦</span><strong>Proudly Canadian</strong></div>
+    <div><span>◌</span><strong>Science-informed</strong></div>
+    <div><span>✓</span><strong>Clear & transparent</strong></div>
+    <div><span>♡</span><strong>People first</strong></div>
+  </div>
+</section>
+<style>
+  #BhdTrust-{{ section.id }} { border-top:1px solid rgba(var(--color-foreground),.08); border-bottom:1px solid rgba(var(--color-foreground),.08); }
+  #BhdTrust-{{ section.id }} .bhd-trust__grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; padding-top:2.2rem; padding-bottom:2.2rem; }
+  #BhdTrust-{{ section.id }} .bhd-trust__grid div { display:flex; align-items:center; justify-content:center; gap:.8rem; text-align:center; }
+  #BhdTrust-{{ section.id }} .bhd-trust__grid span { font-size:2rem; }
+  #BhdTrust-{{ section.id }} .bhd-trust__grid strong { font-size:1.35rem; line-height:1.2; }
+  @media screen and (max-width:749px){
+    #BhdTrust-{{ section.id }} .bhd-trust__grid { grid-template-columns:repeat(2,minmax(0,1fr)); padding-top:1.6rem; padding-bottom:1.6rem; gap:1.3rem .8rem; }
+    #BhdTrust-{{ section.id }} .bhd-trust__grid strong { font-size:1.15rem; }
+  }
+</style>
+{% schema %}
+{"name":"Trust strip","settings":[{"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"}],"presets":[{"name":"Trust strip"}]}
+{% endschema %}
