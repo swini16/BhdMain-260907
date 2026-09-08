@@ -27,7 +27,9 @@
       <article class="bhd-markets__segment bhd-markets__segment--daily">
         <div class="bhd-markets__segment-head">
           <div class="bhd-markets__eyebrow">Everyday</div>
-          <h3>{{ section.settings.daily_label }}</h3>
+          {% assign daily_display = section.settings.daily_label %}
+          {% if daily_display == 'Daily Use' %}{% assign daily_display = 'Daily' %}{% endif %}
+          <h3>{{ daily_display }}</h3>
           <p>{{ section.settings.daily_intro }}</p>
         </div>
         <div class="bhd-markets__uses">
@@ -68,19 +70,14 @@
     max-width: 840px;
     margin: 0 auto 3.6rem;
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__intro .title {
-    margin-bottom: 1rem;
-  }
+  #BhdMarkets-{{ section.id }} .bhd-markets__intro .title { margin-bottom: 1rem; }
   #BhdMarkets-{{ section.id }} .bhd-markets__text {
     max-width: 740px;
     margin: 0 auto;
     font-size: 1.7rem;
     line-height: 1.55;
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__sections {
-    display: grid;
-    gap: 1.8rem;
-  }
+  #BhdMarkets-{{ section.id }} .bhd-markets__sections { display: grid; gap: 1.8rem; }
   #BhdMarkets-{{ section.id }} .bhd-markets__segment {
     display: grid;
     grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr);
@@ -149,10 +146,7 @@
   }
 
   @media screen and (max-width: 899px) {
-    #BhdMarkets-{{ section.id }} .bhd-markets__segment {
-      grid-template-columns: 1fr;
-      gap: 1.8rem;
-    }
+    #BhdMarkets-{{ section.id }} .bhd-markets__segment { grid-template-columns: 1fr; gap: 1.8rem; }
   }
 
   @media screen and (max-width: 749px) {
@@ -161,9 +155,11 @@
       padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round }}px;
     }
     #BhdMarkets-{{ section.id }} .bhd-markets__intro { margin-bottom: 2.6rem; }
-    #BhdMarkets-{{ section.id }} .bhd-markets__segment { padding: 2.3rem 2rem 2.3rem 2.4rem; }
-    #BhdMarkets-{{ section.id }} .bhd-markets__uses { grid-template-columns: 1fr; gap: .75rem; }
-    #BhdMarkets-{{ section.id }} .bhd-markets__uses span { min-height: 0; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__text { font-size: 1.55rem; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__sections { gap: 1.25rem; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__segment { padding: 2.2rem 1.8rem 2.2rem 2.2rem; gap: 1.35rem; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__uses { grid-template-columns: 1fr; gap: .7rem; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__uses span { min-height: 0; padding: 1rem 1.2rem; }
   }
 </style>
 
@@ -196,7 +192,7 @@
     },
     {"type": "text", "id": "athlete_label", "label": "Athlete label", "default": "Athletes"},
     {"type": "textarea", "id": "athlete_intro", "label": "Athlete overview", "default": "For training, competition and demanding physical performance where hydration and electrolyte replacement matter."},
-    {"type": "text", "id": "daily_label", "label": "Daily label", "default": "Daily Use"},
+    {"type": "text", "id": "daily_label", "label": "Daily label", "default": "Daily"},
     {"type": "textarea", "id": "daily_intro", "label": "Daily overview", "default": "For ordinary days that still demand a lot: work, heat, travel, focus and keeping hydration consistent."},
     {"type": "text", "id": "medical_label", "label": "Medical label", "default": "Medical"},
     {"type": "textarea", "id": "medical_intro", "label": "Medical overview", "default": "For recovery, active aging and situations where hydration needs may be more important or require professional guidance."},
