@@ -26,7 +26,7 @@
       "settings": {
         "heading": "Hydration across real life",
         "heading_size": "h1",
-        "text": "<p>Best Hydrate is designed around three major hydration contexts, with the most interesting needs often living where they overlap.</p>",
+        "text": "<p>Best Hydrate supports hydration across three broad real-life contexts.</p>",
         "athlete_label": "Athletes",
         "daily_label": "Daily Use",
         "medical_label": "Medical",
@@ -37,7 +37,7 @@
         "athlete_medical_title": "Rehab & return to performance",
         "athlete_medical_text": "Rehabilitation and medically managed training",
         "center_title": "Clinical",
-        "center_text": "Where sport, daily demands and medical hydration converge",
+        "center_text": "Clinical hydration can span all three contexts when professional guidance is appropriate.",
         "color_scheme": "scheme-1",
         "padding_top": 52,
         "padding_bottom": 52
@@ -60,10 +60,7 @@
           }
         }
       },
-      "block_order": [
-        "heading",
-        "text"
-      ],
+      "block_order": ["heading", "text"],
       "settings": {
         "desktop_content_position": "center",
         "content_alignment": "center",
@@ -165,14 +162,7 @@
           }
         }
       },
-      "block_order": [
-        "glucose",
-        "lemons",
-        "bicarbonate",
-        "potassium",
-        "salt",
-        "citric"
-      ],
+      "block_order": ["glucose", "lemons", "bicarbonate", "potassium", "salt", "citric"],
       "settings": {
         "title": "Ingredients",
         "heading_size": "h1",
@@ -188,57 +178,6 @@
         "swipe_on_mobile": true,
         "padding_top": 52,
         "padding_bottom": 52
-      }
-    },
-    "team": {
-      "type": "bhd-team",
-      "blocks": {
-        "spencer": {
-          "type": "profile",
-          "settings": {
-            "image": "shopify://shop_images/260202_Dr.-Spencer-Proctor.jpg",
-            "name": "Dr. Spencer Proctor",
-            "role": "Professor and Department Chair, University of Alberta",
-            "bio": "<p>Dr. Spencer Proctor brings expertise in nutritional sciences, biomedical research, sports nutrition and intestinal absorption pathways. He has a long track record in team sport, endurance and athletics, both as an athlete and coach.</p><p>His scientific experience and practical appreciation of electrolyte balance help provide scientific direction for Best Hydrate across healthy, performance and clinical contexts.</p>",
-            "link_label": "University of Alberta Profile",
-            "link": "https://mcvd.ualberta.ca/research/dr-spencer-proctor/"
-          }
-        },
-        "austin": {
-          "type": "profile",
-          "settings": {
-            "image": "shopify://shop_images/Austin_barefeet.png",
-            "name": "Austin",
-            "role": "Founder, Best Hydrate",
-            "bio": "<p>Born and raised around Edmonton, Alberta, Austin is the founder behind Best Hydrate. A boiler engineer by career and a lifelong builder and entrepreneur, his path has included aquaponics, technical projects and more than ten business ventures.</p><p>After a serious health experience changed how he thought about hydration, he began developing his own electrolyte formula in 2020. Best Hydrate was founded in 2021 around a simple idea: hydration sits at the intersection of water, nutrition, bio-electro-chemistry and medicine.</p>",
-            "link_label": "",
-            "link": ""
-          }
-        },
-        "simone": {
-          "type": "profile",
-          "settings": {
-            "image": "shopify://shop_images/simone_black.png",
-            "name": "Simone",
-            "role": "Co-Founder, Registered Nurse",
-            "bio": "<p>Born and raised in Northern Alberta, Simone is a Registered Nurse with a 16-year career in research and management. She co-founded Best Hydrate to help create practical, real-life options for everyday hydration challenges.</p><p>Her health care background brings a people-first perspective to Best Hydrate and its goal of helping people live their best lives.</p>",
-            "link_label": "",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "spencer",
-        "austin",
-        "simone"
-      ],
-      "settings": {
-        "heading": "Meet Us",
-        "heading_size": "h1",
-        "text": "<p>Best Hydrate brings together lived experience, health care, science and performance.</p>",
-        "color_scheme": "scheme-2",
-        "padding_top": 56,
-        "padding_bottom": 56
       }
     },
     "1788819350fcc020d5": {
@@ -264,19 +203,9 @@
           "blocks": {}
         }
       },
-      "block_order": [
-        "ai_gen_block_2a96a61_hJcgVT"
-      ],
+      "block_order": ["ai_gen_block_2a96a61_hJcgVT"],
       "settings": {}
     }
   },
-  "order": [
-    "hero",
-    "markets",
-    "science_intro",
-    "shop",
-    "ingredients",
-    "team",
-    "1788819350fcc020d5"
-  ]
+  "order": ["hero", "markets", "science_intro", "shop", "ingredients", "1788819350fcc020d5"]
 }
