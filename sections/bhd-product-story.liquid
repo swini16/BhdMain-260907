@@ -1,0 +1,60 @@
+<section id="BhdProductStory-{{ section.id }}" class="bhd-product-story color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width bhd-product-story__wrap">
+    <div class="bhd-product-story__products">
+      {% assign home_collection = collections[section.settings.collection] %}
+      {% if home_collection != blank %}
+        {% for product in home_collection.products limit: 2 %}
+          <a href="{{ product.url }}" class="bhd-product-story__product">
+            {% if product.featured_image != blank %}
+              {{ product.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '320,480,700', sizes: '(min-width: 750px) 24vw, 42vw', alt: product.title }}
+            {% endif %}
+          </a>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="bhd-product-story__copy">
+      <h2>{{ section.settings.heading }}</h2>
+      <div class="rte">{{ section.settings.text }}</div>
+      {% if section.settings.button_label != blank %}
+        <a class="button button--primary" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label }}</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #BhdProductStory-{{ section.id }} { padding:5.5rem 0; overflow:hidden; }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__wrap { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:4.5rem; align-items:center; }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__products { min-height:420px; display:flex; align-items:end; justify-content:center; gap:1.2rem; padding:3rem 2rem; border-radius:2rem; background:linear-gradient(135deg,#e9f7ff,#fff8de); position:relative; }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__products::after { content:''; position:absolute; left:-8%; right:-8%; bottom:7%; height:28%; background:radial-gradient(ellipse at center,rgba(63,165,213,.22),rgba(63,165,213,0) 68%); }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__product { width:min(44%,300px); position:relative; z-index:2; text-decoration:none; }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__product:nth-child(2) { transform:translateY(-1rem); }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__product img { width:100%; height:auto; display:block; border-radius:1.2rem; filter:drop-shadow(0 1.8rem 1.8rem rgba(13,33,78,.18)); }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__copy { max-width:620px; }
+  #BhdProductStory-{{ section.id }} h2 { margin:0 0 1.5rem; font-size:clamp(3.1rem,4.4vw,5rem); line-height:1.02; }
+  #BhdProductStory-{{ section.id }} .rte { font-size:1.7rem; line-height:1.55; }
+  #BhdProductStory-{{ section.id }} .button { margin-top:1.8rem; }
+  @media screen and (max-width:749px){
+    #BhdProductStory-{{ section.id }} { padding:3.5rem 0; }
+    #BhdProductStory-{{ section.id }} .bhd-product-story__wrap { grid-template-columns:1fr; gap:2.4rem; }
+    #BhdProductStory-{{ section.id }} .bhd-product-story__products { min-height:280px; padding:2rem 1rem; }
+    #BhdProductStory-{{ section.id }} .bhd-product-story__copy { text-align:center; }
+    #BhdProductStory-{{ section.id }} h2 { font-size:3.2rem; }
+    #BhdProductStory-{{ section.id }} .rte { font-size:1.5rem; }
+  }
+</style>
+
+{% schema %}
+{
+  "name":"Product story",
+  "settings":[
+    {"type":"collection","id":"collection","label":"Collection"},
+    {"type":"inline_richtext","id":"heading","label":"Heading","default":"Same trusted formula. Two great flavours."},
+    {"type":"richtext","id":"text","label":"Text","default":"<p>A clean, science-informed electrolyte mix with five essential electrolytes to help you hydrate, perform and recover wherever life takes you.</p>"},
+    {"type":"text","id":"button_label","label":"Button label","default":"Shop Best Hydrate"},
+    {"type":"url","id":"button_link","label":"Button link"},
+    {"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"}
+  ],
+  "presets":[{"name":"Product story"}]
+}
+{% endschema %}
