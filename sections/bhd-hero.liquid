@@ -6,8 +6,12 @@
         {% if section.settings.heading != blank %}
           <h1 class="bhd-hero__heading">{{ section.settings.heading }}</h1>
         {% endif %}
-        {% if section.settings.subheading != blank %}
-          <div class="bhd-hero__subheading">{{ section.settings.subheading }}</div>
+        {% assign hero_subheading = section.settings.subheading %}
+        {% if hero_subheading == 'Five essential electrolytes. Built for better hydration.' %}
+          {% assign hero_subheading = 'For training, work, recovery and everyday life.' %}
+        {% endif %}
+        {% if hero_subheading != blank %}
+          <div class="bhd-hero__subheading">{{ hero_subheading }}</div>
         {% endif %}
         {% if section.settings.button_label != blank %}
           <a class="button button--primary bhd-hero__button" {% if section.settings.button_link != blank %}href="{{ section.settings.button_link }}"{% else %}role="link" aria-disabled="true"{% endif %}>{{ section.settings.button_label }}</a>
@@ -58,9 +62,9 @@
     max-width: 690px;
     padding: 3.2rem 3.4rem;
     border-radius: 2rem;
-    background: rgba(255,255,255,.76);
+    background: rgba(255,255,255,.80);
     box-shadow: 0 2.2rem 6rem rgba(8,49,84,.14);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(9px);
   }
   #BhdHero-{{ section.id }} .bhd-hero__heading {
     margin: 0;
@@ -79,9 +83,7 @@
     line-height: 1.4;
     font-weight: 500;
   }
-  #BhdHero-{{ section.id }} .bhd-hero__button {
-    margin-top: 2.5rem;
-  }
+  #BhdHero-{{ section.id }} .bhd-hero__button { margin-top: 2.5rem; }
   #BhdHero-{{ section.id }} .bhd-hero__visual {
     position: relative;
     min-height: 500px;
@@ -93,7 +95,7 @@
     width: min(42vw, 530px);
     aspect-ratio: 1;
     border-radius: 50%;
-    background: rgba(255,255,255,.48);
+    background: rgba(255,255,255,.52);
     box-shadow: 0 2rem 7rem rgba(7,63,103,.16);
     backdrop-filter: blur(5px);
   }
@@ -111,40 +113,39 @@
   @media screen and (max-width: 989px) {
     #BhdHero-{{ section.id }} .bhd-hero__layout {
       grid-template-columns: 1fr;
-      gap: 1.5rem;
+      gap: .8rem;
       text-align: center;
-      padding: 3.5rem 0 2rem;
+      padding: 2.8rem 0 1.5rem;
     }
     #BhdHero-{{ section.id }} .bhd-hero__box {
       margin: 0 auto;
       max-width: 720px;
     }
     #BhdHero-{{ section.id }} .bhd-hero__subheading { margin-left: auto; margin-right: auto; }
-    #BhdHero-{{ section.id }} .bhd-hero__visual { min-height: 330px; }
-    #BhdHero-{{ section.id }} .bhd-hero__product-image { width: min(62vw, 380px); max-height: 360px; }
-    #BhdHero-{{ section.id }} .bhd-hero__halo { width: min(70vw, 390px); }
+    #BhdHero-{{ section.id }} .bhd-hero__visual { min-height: 300px; }
+    #BhdHero-{{ section.id }} .bhd-hero__product-image { width: min(58vw, 360px); max-height: 340px; }
+    #BhdHero-{{ section.id }} .bhd-hero__halo { width: min(66vw, 370px); }
   }
 
   @media screen and (max-width: 749px) {
-    #BhdHero-{{ section.id }} {
-      min-height: {{ section.settings.mobile_height }}px;
-    }
+    #BhdHero-{{ section.id }} { min-height: min({{ section.settings.mobile_height }}px, 700px); }
+    #BhdHero-{{ section.id }} .bhd-hero__media { object-position: 58% center; }
     #BhdHero-{{ section.id }} .bhd-hero__layout {
-      min-height: {{ section.settings.mobile_height }}px;
-      padding: 2rem 0 1.5rem;
+      min-height: min({{ section.settings.mobile_height }}px, 700px);
+      padding: 1.6rem 0 1.2rem;
+      gap: .2rem;
     }
     #BhdHero-{{ section.id }} .bhd-hero__box {
-      padding: 2.4rem 2rem;
-      border-radius: 1.4rem;
+      padding: 2rem 1.7rem;
+      border-radius: 1.35rem;
+      background: rgba(255,255,255,.86);
     }
-    #BhdHero-{{ section.id }} .bhd-hero__heading {
-      font-size: clamp(3.4rem, 11vw, 5rem);
-    }
-    #BhdHero-{{ section.id }} .bhd-hero__subheading {
-      font-size: 1.7rem;
-    }
-    #BhdHero-{{ section.id }} .bhd-hero__visual { min-height: 280px; }
-    #BhdHero-{{ section.id }} .bhd-hero__product-image { width: min(74vw, 330px); max-height: 300px; }
+    #BhdHero-{{ section.id }} .bhd-hero__heading { font-size: clamp(3.25rem, 10.5vw, 4.7rem); }
+    #BhdHero-{{ section.id }} .bhd-hero__subheading { font-size: 1.6rem; line-height: 1.35; }
+    #BhdHero-{{ section.id }} .bhd-hero__button { margin-top: 1.8rem; }
+    #BhdHero-{{ section.id }} .bhd-hero__visual { min-height: 250px; }
+    #BhdHero-{{ section.id }} .bhd-hero__product-image { width: min(70vw, 300px); max-height: 275px; }
+    #BhdHero-{{ section.id }} .bhd-hero__halo { width: min(76vw, 330px); }
   }
 </style>
 
@@ -162,7 +163,7 @@
       "type": "inline_richtext",
       "id": "subheading",
       "label": "Subheading",
-      "default": "Five essential electrolytes. Built for better hydration."
+      "default": "For training, work, recovery and everyday life."
     },
     {
       "type": "product",
@@ -198,7 +199,7 @@
       "max": 900,
       "step": 20,
       "unit": "px",
-      "default": 760
+      "default": 680
     }
   ],
   "presets": [
