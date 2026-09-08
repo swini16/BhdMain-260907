@@ -1,45 +1,51 @@
 <section id="BhdProductStory-{{ section.id }}" class="bhd-product-story color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width bhd-product-story__wrap">
-    <div class="bhd-product-story__products">
-      {% assign home_collection = collections[section.settings.collection] %}
-      {% if home_collection != blank %}
-        {% for product in home_collection.products limit: 2 %}
-          <a href="{{ product.url }}" class="bhd-product-story__product">
-            {% if product.featured_image != blank %}
-              {{ product.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '320,480,700', sizes: '(min-width: 750px) 24vw, 42vw', alt: product.title }}
-            {% endif %}
-          </a>
-        {% endfor %}
+    <div class="bhd-product-story__visual">
+      <div class="bhd-product-story__splash" aria-hidden="true"></div>
+      {% if section.settings.product != blank and section.settings.product.featured_image != blank %}
+        <a href="{{ section.settings.product.url }}" class="bhd-product-story__product">
+          {{ section.settings.product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '360,540,720,900', sizes: '(min-width: 750px) 42vw, 82vw', alt: section.settings.product.title }}
+        </a>
       {% endif %}
+      <div class="bhd-product-story__lemon" aria-hidden="true">🍋</div>
     </div>
+
     <div class="bhd-product-story__copy">
+      <p class="bhd-product-story__eyebrow">BEST HYDRATE</p>
       <h2>{{ section.settings.heading }}</h2>
       <div class="rte">{{ section.settings.text }}</div>
       {% if section.settings.button_label != blank %}
-        <a class="button button--primary" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label }}</a>
+        <a class="button button--primary" href="{% if section.settings.button_link != blank %}{{ section.settings.button_link }}{% elsif section.settings.product != blank %}{{ section.settings.product.url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}">{{ section.settings.button_label }}</a>
       {% endif %}
     </div>
   </div>
 </section>
 
 <style>
-  #BhdProductStory-{{ section.id }} { padding:5.5rem 0; overflow:hidden; }
-  #BhdProductStory-{{ section.id }} .bhd-product-story__wrap { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:4.5rem; align-items:center; }
-  #BhdProductStory-{{ section.id }} .bhd-product-story__products { min-height:420px; display:flex; align-items:end; justify-content:center; gap:1.2rem; padding:3rem 2rem; border-radius:2rem; background:linear-gradient(135deg,#e9f7ff,#fff8de); position:relative; }
-  #BhdProductStory-{{ section.id }} .bhd-product-story__products::after { content:''; position:absolute; left:-8%; right:-8%; bottom:7%; height:28%; background:radial-gradient(ellipse at center,rgba(63,165,213,.22),rgba(63,165,213,0) 68%); }
-  #BhdProductStory-{{ section.id }} .bhd-product-story__product { width:min(44%,300px); position:relative; z-index:2; text-decoration:none; }
-  #BhdProductStory-{{ section.id }} .bhd-product-story__product:nth-child(2) { transform:translateY(-1rem); }
-  #BhdProductStory-{{ section.id }} .bhd-product-story__product img { width:100%; height:auto; display:block; border-radius:1.2rem; filter:drop-shadow(0 1.8rem 1.8rem rgba(13,33,78,.18)); }
+  #BhdProductStory-{{ section.id }} { padding:6rem 0; overflow:hidden; background:#fff; }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__wrap { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:5rem; align-items:center; }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__visual { min-height:460px; display:grid; place-items:center; padding:3rem; border-radius:2.2rem; background:linear-gradient(135deg,#edf8ff 0%,#ffffff 52%,#fff9df 100%); position:relative; overflow:hidden; }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__visual::before { content:''; position:absolute; width:62%; aspect-ratio:1; border-radius:999px; left:-12%; bottom:-28%; background:rgba(52,161,213,.14); }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__visual::after { content:''; position:absolute; width:45%; aspect-ratio:1; border-radius:999px; right:-12%; top:-16%; background:rgba(255,213,66,.15); }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__splash { position:absolute; left:4%; right:4%; bottom:8%; height:31%; border-radius:50%; background:radial-gradient(ellipse at center,rgba(48,160,215,.24),rgba(48,160,215,0) 70%); }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__product { width:min(64%,390px); position:relative; z-index:2; text-decoration:none; }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__product img { width:100%; height:auto; display:block; border-radius:1.5rem; filter:drop-shadow(0 2rem 2rem rgba(13,33,78,.18)); }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__lemon { position:absolute; right:10%; bottom:11%; z-index:3; font-size:7rem; transform:rotate(-14deg); filter:drop-shadow(0 .8rem 1rem rgba(102,78,0,.14)); }
   #BhdProductStory-{{ section.id }} .bhd-product-story__copy { max-width:620px; }
-  #BhdProductStory-{{ section.id }} h2 { margin:0 0 1.5rem; font-size:clamp(3.1rem,4.4vw,5rem); line-height:1.02; }
-  #BhdProductStory-{{ section.id }} .rte { font-size:1.7rem; line-height:1.55; }
-  #BhdProductStory-{{ section.id }} .button { margin-top:1.8rem; }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__eyebrow { margin:0 0 .9rem; color:#3b7fc3; font-size:1.2rem; letter-spacing:.16em; font-weight:800; }
+  #BhdProductStory-{{ section.id }} h2 { margin:0 0 1.5rem; color:#102a61; font-size:clamp(3.4rem,4.6vw,5.4rem); line-height:1.01; letter-spacing:-.025em; }
+  #BhdProductStory-{{ section.id }} .rte { font-size:1.72rem; line-height:1.58; color:#465573; }
+  #BhdProductStory-{{ section.id }} .button { margin-top:2rem; min-width:190px; }
+
   @media screen and (max-width:749px){
-    #BhdProductStory-{{ section.id }} { padding:3.5rem 0; }
-    #BhdProductStory-{{ section.id }} .bhd-product-story__wrap { grid-template-columns:1fr; gap:2.4rem; }
-    #BhdProductStory-{{ section.id }} .bhd-product-story__products { min-height:280px; padding:2rem 1rem; }
+    #BhdProductStory-{{ section.id }} { padding:4rem 0; }
+    #BhdProductStory-{{ section.id }} .bhd-product-story__wrap { grid-template-columns:1fr; gap:2.6rem; }
+    #BhdProductStory-{{ section.id }} .bhd-product-story__visual { min-height:310px; padding:2rem 1.4rem; border-radius:1.6rem; }
+    #BhdProductStory-{{ section.id }} .bhd-product-story__product { width:min(72%,290px); }
+    #BhdProductStory-{{ section.id }} .bhd-product-story__lemon { font-size:5rem; right:8%; bottom:9%; }
     #BhdProductStory-{{ section.id }} .bhd-product-story__copy { text-align:center; }
-    #BhdProductStory-{{ section.id }} h2 { font-size:3.2rem; }
+    #BhdProductStory-{{ section.id }} .bhd-product-story__eyebrow { font-size:1.05rem; }
+    #BhdProductStory-{{ section.id }} h2 { font-size:3.4rem; }
     #BhdProductStory-{{ section.id }} .rte { font-size:1.5rem; }
   }
 </style>
@@ -48,9 +54,9 @@
 {
   "name":"Product story",
   "settings":[
-    {"type":"collection","id":"collection","label":"Collection"},
-    {"type":"inline_richtext","id":"heading","label":"Heading","default":"Same trusted formula. Two great flavours."},
-    {"type":"richtext","id":"text","label":"Text","default":"<p>A clean, science-informed electrolyte mix with five essential electrolytes to help you hydrate, perform and recover wherever life takes you.</p>"},
+    {"type":"product","id":"product","label":"Product"},
+    {"type":"inline_richtext","id":"heading","label":"Heading","default":"One trusted formula. One great flavour."},
+    {"type":"richtext","id":"text","label":"Text","default":"<p>A clean, science-informed electrolyte mix with five essential electrolytes, made for performance, everyday hydration and recovery.</p>"},
     {"type":"text","id":"button_label","label":"Button label","default":"Shop Best Hydrate"},
     {"type":"url","id":"button_link","label":"Button link"},
     {"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"}
