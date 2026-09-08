@@ -1,0 +1,153 @@
+<section id="BhdHero-{{ section.id }}" class="bhd-hero">
+  <img class="bhd-hero__media" src="{{ 'bhd-hero-clean.svg' | asset_url }}" alt="" width="1600" height="800" loading="eager">
+  <div class="bhd-hero__overlay"></div>
+  <div class="page-width bhd-hero__content">
+    <div class="bhd-hero__box">
+      {% if section.settings.heading != blank %}
+        <h1 class="bhd-hero__heading">{{ section.settings.heading }}</h1>
+      {% endif %}
+      {% if section.settings.subheading != blank %}
+        <div class="bhd-hero__subheading">{{ section.settings.subheading }}</div>
+      {% endif %}
+      {% if section.settings.button_label != blank %}
+        <a class="button button--primary bhd-hero__button" {% if section.settings.button_link != blank %}href="{{ section.settings.button_link }}"{% else %}role="link" aria-disabled="true"{% endif %}>{{ section.settings.button_label }}</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #BhdHero-{{ section.id }} {
+    position: relative;
+    min-height: {{ section.settings.desktop_height }}px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: #dff6ff;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 18, 58, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__box {
+    max-width: 820px;
+    padding: 5rem 2rem;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__heading {
+    margin: 0;
+    color: #fff;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: clamp(3.2rem, 5vw, 6.4rem);
+    line-height: 1.02;
+    text-shadow: 0 3px 18px rgba(0,0,0,.58);
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__subheading {
+    margin: 1.5rem auto 0;
+    color: #fff;
+    font-size: clamp(1.7rem, 2vw, 2.3rem);
+    line-height: 1.35;
+    font-weight: 500;
+    text-shadow: 0 2px 10px rgba(0,0,0,.58);
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__button {
+    margin-top: 2.4rem;
+  }
+  @media screen and (max-width: 749px) {
+    #BhdHero-{{ section.id }} {
+      min-height: {{ section.settings.mobile_height }}px;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero__box {
+      padding: 4rem 1.5rem;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero__heading {
+      font-size: clamp(3rem, 10vw, 4.6rem);
+    }
+    #BhdHero-{{ section.id }} .bhd-hero__subheading {
+      font-size: 1.8rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Best Hydrate hero",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Hydrate for YOUR best day."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Five essential electrolytes. Built for better hydration."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 70,
+      "step": 5,
+      "unit": "%",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "min": 420,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 620
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "min": 380,
+      "max": 700,
+      "step": 20,
+      "unit": "px",
+      "default": 520
+    }
+  ],
+  "presets": [
+    {
+      "name": "Best Hydrate hero"
+    }
+  ]
+}
+{% endschema %}
