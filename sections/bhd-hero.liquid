@@ -24,10 +24,10 @@
 
   <div class="bhd-hero__carousel bhd-hero__mobile" data-hero-carousel data-interval="4700" aria-label="Best Hydrate mobile hero slideshow">
     <div class="bhd-hero__track">
-      <div class="bhd-hero__slide is-active" data-hero-slide><img src="{{ 'hero-mobile-performance.webp' | asset_url }}" alt="Best Hydrate performance hydration" width="720" height="1280" loading="eager" fetchpriority="high"></div>
-      <div class="bhd-hero__slide" data-hero-slide><img src="{{ 'hero-mobile-daily.webp' | asset_url }}" alt="Best Hydrate daily hydration" width="720" height="1280" loading="lazy"></div>
-      <div class="bhd-hero__slide" data-hero-slide><img src="{{ 'hero-mobile-medical.webp' | asset_url }}" alt="Best Hydrate medical hydration" width="720" height="1280" loading="lazy"></div>
-      <div class="bhd-hero__slide" data-hero-slide><img src="{{ 'hero-mobile-humanitarian.webp' | asset_url }}" alt="Best Hydrate humanitarian hydration" width="720" height="1280" loading="lazy"></div>
+      <div class="bhd-hero__slide is-active" data-hero-slide><img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/main/assets/hero-mobile-performance.webp?v=78467ba2" alt="Best Hydrate performance hydration" width="720" height="1280" loading="eager" fetchpriority="high"></div>
+      <div class="bhd-hero__slide" data-hero-slide><img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/main/assets/hero-mobile-daily.webp?v=78467ba2" alt="Best Hydrate daily hydration" width="720" height="1280" loading="lazy"></div>
+      <div class="bhd-hero__slide" data-hero-slide><img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/main/assets/hero-mobile-medical.webp?v=78467ba2" alt="Best Hydrate medical hydration" width="720" height="1280" loading="lazy"></div>
+      <div class="bhd-hero__slide" data-hero-slide><img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/main/assets/hero-mobile-humanitarian.webp?v=78467ba2" alt="Best Hydrate humanitarian hydration" width="720" height="1280" loading="lazy"></div>
     </div>
     <button class="bhd-hero__arrow bhd-hero__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
     <button class="bhd-hero__arrow bhd-hero__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
@@ -68,6 +68,7 @@
     #BhdHero-{{ section.id }} .bhd-hero__mobile { display:block; }
     #BhdHero-{{ section.id }} .bhd-hero__mobile .bhd-hero__track { aspect-ratio:9/16; }
     #BhdHero-{{ section.id }} .bhd-hero__mobile .bhd-hero__slide { height:100%; }
+    #BhdHero-{{ section.id }} .bhd-hero__mobile .bhd-hero__slide img { width:100%; height:100%; object-fit:cover; object-position:center; }
     #BhdHero-{{ section.id }} .bhd-hero__arrow { width:3.7rem; height:3.7rem; margin-top:-1.85rem; font-size:2.8rem; }
     #BhdHero-{{ section.id }} .bhd-hero__arrow--prev { left:.8rem; }
     #BhdHero-{{ section.id }} .bhd-hero__arrow--next { right:.8rem; }
