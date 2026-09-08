@@ -7,7 +7,7 @@
           "type": "profile",
           "settings": {
             "image": "shopify://shop_images/260202_Dr.-Spencer-Proctor.jpg",
-            "image_position": "object-position: 50% 33%;",
+            "image_position": "object-position: 50% 24%;",
             "name": "Dr. Spencer Proctor",
             "role": "Professor & Department Chair, University of Alberta",
             "bio": "<p>Nutritional scientist, athlete and coach guiding Best Hydrate's scientific direction in performance and clinical hydration.</p>",
@@ -19,7 +19,7 @@
           "type": "profile",
           "settings": {
             "image": "shopify://shop_images/Austin_barefeet.png",
-            "image_position": "object-position: 55% 33%;",
+            "image_position": "object-position: 55% 28%;",
             "name": "Austin",
             "role": "Founder, CEO",
             "bio": "<p>Founder and Power Engineer who began developing Best Hydrate after a serious health experience reshaped how he viewed hydration.</p>",
@@ -31,7 +31,7 @@
           "type": "profile",
           "settings": {
             "image": "shopify://shop_images/simone_black.png",
-            "image_position": "object-position: 50% 33%;",
+            "image_position": "object-position: 50% 24%;",
             "name": "Simone",
             "role": "Co-Founder, Registered Nurse",
             "bio": "<p>Registered Nurse bringing 16 years of research and management experience to practical everyday hydration.</p>",
