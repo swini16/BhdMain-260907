@@ -1,4 +1,4 @@
-name: Embed mobile hero into Liquid
+name: Repair mobile hero assets
 
 on:
   push:
@@ -10,56 +10,74 @@ permissions:
   contents: write
 
 jobs:
-  embed:
+  repair:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Build self-contained mobile hero snippets
+      - name: Restore valid mobile hero binaries and wire Shopify CDN
         shell: bash
         run: |
           set -euo pipefail
 
-          make_snippet() {
+          download_webp() {
             name="$1"
-            alt="$2"
-            data="$(base64 -w0 "assets/hero-mobile-${name}.webp")"
-            out="snippets/bhd-hero-mobile-${name}.liquid"
-            printf '<img class="bhd-hero__embedded-image" src="data:image/webp;base64,%s" alt="%s" width="720" height="1280" loading="eager" decoding="async">\n' "$data" "$alt" > "$out"
-            bytes=$(wc -c < "$out")
-            echo "$out = $bytes bytes"
-            test "$bytes" -lt 262144
+            url="$2"
+            out="assets/hero-mobile-${name}.webp"
+            tmp="${out}.tmp"
+            curl -L --fail --retry 3 --retry-delay 2 \
+              -A 'Mozilla/5.0' \
+              "${url}?download=1" \
+              -o "$tmp"
+            mv "$tmp" "$out"
           }
 
-          make_snippet performance 'Best Hydrate performance hydration'
-          make_snippet daily 'Best Hydrate daily hydration'
-          make_snippet medical 'Best Hydrate medical hydration'
-          make_snippet humanitarian 'Best Hydrate humanitarian hydration'
+          download_webp performance 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQCp3cGuwlr_QqE9MiqH5A1DAaiRgoT_ercckP4M8rG_xPA'
+          download_webp daily 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDc6M37CnnsQqIeiyFUdl7OAdYSM98nkZA9k_6qAK_Uwrc'
+          download_webp medical 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDQvs83xowsSpnQZjrNDMj3AdLJZaQiL755zn8VKvUpniE'
+          download_webp humanitarian 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQActbAvkS56S4ybl5pTcZ68AViPW03z6S2bziLXldl0wO8'
 
           python3 - <<'PY'
           from pathlib import Path
-          import re
 
-          p = Path('sections/bhd-hero.liquid')
-          s = p.read_text()
+          names = ['performance','daily','medical','humanitarian']
+          for name in names:
+              p = Path(f'assets/hero-mobile-{name}.webp')
+              data = p.read_bytes()
+              if len(data) < 100_000:
+                  raise SystemExit(f'{p}: too small ({len(data)} bytes), refusing to deploy')
+              if data[:4] != b'RIFF' or data[8:12] != b'WEBP':
+                  raise SystemExit(f'{p}: not a valid WebP container')
+              print(f'VALID {p}: {len(data)} bytes, RIFF/WEBP confirmed')
+
+          hero = Path('sections/bhd-hero.liquid')
+          s = hero.read_text()
           replacements = {
-              'performance': "{% render 'bhd-hero-mobile-performance' %}",
-              'daily': "{% render 'bhd-hero-mobile-daily' %}",
-              'medical': "{% render 'bhd-hero-mobile-medical' %}",
-              'humanitarian': "{% render 'bhd-hero-mobile-humanitarian' %}",
+              "{% render 'bhd-hero-mobile-performance' %}": '<img src="{{ \'hero-mobile-performance.webp\' | asset_url }}" alt="Best Hydrate performance hydration" width="900" height="1599" loading="eager" fetchpriority="high" decoding="async">',
+              "{% render 'bhd-hero-mobile-daily' %}": '<img src="{{ \'hero-mobile-daily.webp\' | asset_url }}" alt="Best Hydrate daily hydration" width="900" height="1599" loading="lazy" decoding="async">',
+              "{% render 'bhd-hero-mobile-medical' %}": '<img src="{{ \'hero-mobile-medical.webp\' | asset_url }}" alt="Best Hydrate medical hydration" width="900" height="1599" loading="lazy" decoding="async">',
+              "{% render 'bhd-hero-mobile-humanitarian' %}": '<img src="{{ \'hero-mobile-humanitarian.webp\' | asset_url }}" alt="Best Hydrate humanitarian hydration" width="900" height="1599" loading="lazy" decoding="async">',
           }
-          for name, render in replacements.items():
-              pattern = r'<img[^>]*alt="Best Hydrate ' + name + r' hydration"[^>]*>'
-              s, count = re.subn(pattern, render, s, count=1)
-              if count != 1:
-                  raise SystemExit(f'Could not replace {name} mobile hero image, count={count}')
-          p.write_text(s)
+          for old, new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'Missing expected mobile hero render: {old}')
+              s = s.replace(old, new, 1)
+          hero.write_text(s)
           PY
+
+          rm -f snippets/bhd-hero-mobile-performance.liquid \
+                snippets/bhd-hero-mobile-daily.liquid \
+                snippets/bhd-hero-mobile-medical.liquid \
+                snippets/bhd-hero-mobile-humanitarian.liquid
+
+          # One-shot repair. Remove this workflow in the repair commit.
+          rm -f .github/workflows/embed-mobile-hero.yml
 
           git config user.name 'Best Hydrate Theme Bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add sections/bhd-hero.liquid snippets/bhd-hero-mobile-*.liquid
-          git commit -m 'Embed mobile hero images directly in Liquid'
+          git add -A
+          git status --short
+          git commit -m 'Restore valid mobile hero assets and use Shopify CDN'
           git push origin HEAD:main
