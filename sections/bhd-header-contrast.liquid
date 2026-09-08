@@ -1,18 +1,38 @@
 <style>
   @media screen and (min-width: 990px) {
-    .bhd-header .bhd-header__main-item.is-open .bhd-header__split-button {
-      background: rgba(var(--color-button), .14);
-      border-color: rgba(var(--color-button), .42);
-      box-shadow: 0 .45rem 1.4rem rgba(13, 33, 78, .10);
+    /* Static top-level controls should read as buttons even before opening. */
+    .bhd-header .bhd-header__split-button {
+      background: rgba(var(--color-foreground), .055);
+      border-color: rgba(var(--color-foreground), .14);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
     }
 
+    .bhd-header .bhd-header__main-toggle {
+      background: rgba(var(--color-button), .055);
+      border-left-color: rgba(var(--color-foreground), .16);
+    }
+
+    .bhd-header .bhd-header__main-item:hover .bhd-header__split-button {
+      background: rgba(var(--color-button), .075);
+      border-color: rgba(var(--color-button), .22);
+    }
+
+    .bhd-header .bhd-header__main-item.is-open .bhd-header__split-button {
+      background: rgba(var(--color-button), .17);
+      border-color: rgba(var(--color-button), .48);
+      box-shadow: 0 .45rem 1.4rem rgba(13, 33, 78, .11);
+    }
+
+    .bhd-header .bhd-header__main-item.is-open .bhd-header__main-toggle {
+      background: rgba(var(--color-button), .10);
+    }
+
+    /* Dropdown remains a clean light panel, clearly separate from the button above. */
     .bhd-header .bhd-header__main-item.is-open .bhd-header__dropdown-menu {
       top: calc(100% + 1.45rem);
-      background:
-        linear-gradient(rgba(var(--color-button), .045), rgba(var(--color-button), .045)),
-        rgb(var(--color-background));
-      border: 1px solid rgba(var(--color-button), .22);
-      border-top: 3px solid rgba(var(--color-button), .62);
+      background: rgb(var(--color-background));
+      border: 1px solid rgba(var(--color-foreground), .13);
+      border-top: 3px solid rgba(var(--color-button), .50);
       box-shadow: 0 2.2rem 5rem rgba(13, 33, 78, .18);
     }
 
@@ -25,31 +45,38 @@
       height: 18px;
       transform: translateX(-50%) rotate(45deg);
       background: rgb(var(--color-background));
-      border-left: 1px solid rgba(var(--color-button), .22);
-      border-top: 1px solid rgba(var(--color-button), .22);
+      border-left: 1px solid rgba(var(--color-foreground), .13);
+      border-top: 1px solid rgba(var(--color-foreground), .13);
     }
 
     .bhd-header .bhd-header__main-item.is-open .bhd-header__dropdown-child {
-      background: rgba(var(--color-background), .72);
+      background: rgba(var(--color-foreground), .018);
       border: 1px solid rgba(var(--color-foreground), .055);
     }
   }
 
   @media screen and (max-width: 989px) {
+    .bhd-header .bhd-header__mobile-main-row {
+      background: rgba(var(--color-foreground), .045);
+      border-color: rgba(var(--color-foreground), .14);
+    }
+
+    .bhd-header .bhd-header__mobile-toggle {
+      background: rgba(var(--color-button), .05);
+    }
+
     .bhd-header .bhd-header__mobile-main.is-open .bhd-header__mobile-main-row {
-      background: rgba(var(--color-button), .14);
-      border-color: rgba(var(--color-button), .40);
+      background: rgba(var(--color-button), .16);
+      border-color: rgba(var(--color-button), .44);
     }
 
     .bhd-header .bhd-header__mobile-main.is-open .bhd-header__mobile-level-one {
       margin-top: .45rem;
       padding: .75rem;
-      border: 1px solid rgba(var(--color-button), .18);
-      border-left: 3px solid rgba(var(--color-button), .55);
+      border: 1px solid rgba(var(--color-foreground), .12);
+      border-left: 3px solid rgba(var(--color-button), .50);
       border-radius: 10px;
-      background:
-        linear-gradient(rgba(var(--color-button), .045), rgba(var(--color-button), .045)),
-        rgb(var(--color-background));
+      background: rgb(var(--color-background));
       box-shadow: 0 .8rem 2rem rgba(13, 33, 78, .08);
     }
   }
