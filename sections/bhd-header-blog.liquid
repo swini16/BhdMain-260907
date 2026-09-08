@@ -1,79 +1,206 @@
 <style>
-  .bhd-header .bhd-header__blog-button svg {
-    width: 2.35rem;
-    height: 2.35rem;
+  .bhd-header .bhd-header__discuss-button {
+    width: 4.6rem;
+    height: 4.6rem;
+    margin-left: .15rem;
+    border: 1px solid rgba(var(--color-button), .16);
+    border-radius: 1.15rem;
+    overflow: hidden;
+    background: rgba(255,255,255,.82);
+    box-shadow: 0 .3rem 1rem rgba(13,33,78,.08);
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
   }
-  .bhd-header .bhd-header__blog-button {
-    border-radius: 999px;
-    transition: background .15s ease, transform .15s ease;
-  }
-  .bhd-header .bhd-header__blog-button:hover {
-    background: rgba(var(--color-button), .10);
+  .bhd-header .bhd-header__discuss-button:hover {
     transform: translateY(-1px);
+    border-color: rgba(var(--color-button), .34);
+    box-shadow: 0 .5rem 1.4rem rgba(13,33,78,.13);
+  }
+  .bhd-header .bhd-header__discuss-button img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .bhd-header .bhd-header__discuss-row {
+    grid-column: 1 / -1;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: .65rem;
+    min-height: 3.8rem;
+    margin-top: .2rem;
+    padding: .6rem .85rem !important;
+    border-top: 1px solid rgba(var(--color-foreground), .09);
+    border-radius: .9rem;
+    background: rgba(var(--color-button), .045);
+    color: rgb(var(--color-foreground)) !important;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .bhd-header .bhd-header__discuss-row:hover {
+    background: rgba(var(--color-button), .10);
+  }
+  .bhd-header .bhd-header__discuss-row img {
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: .65rem;
+    object-fit: cover;
+    box-shadow: 0 .15rem .5rem rgba(13,33,78,.10);
+  }
+  .bhd-header .bhd-header__discuss-row span:last-child {
+    opacity: .62;
+    font-weight: 600;
+  }
+
+  .bhd-header .bhd-header__mobile-discuss {
+    display: flex !important;
+    align-items: center;
+    gap: .7rem;
+    margin: .55rem 0 .05rem;
+    padding: .75rem .85rem !important;
+    border-top: 1px solid rgba(var(--color-foreground), .09);
+    border-radius: .85rem;
+    background: rgba(var(--color-button), .055);
+    color: rgb(var(--color-foreground)) !important;
+    font-size: 1.35rem !important;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .bhd-header .bhd-header__mobile-discuss img {
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: .65rem;
+    object-fit: cover;
+  }
+
+  @media screen and (max-width: 989px) {
+    .bhd-header .bhd-header__discuss-button {
+      width: 3.7rem;
+      height: 3.7rem;
+      border-radius: .9rem;
+      margin-left: 0;
+    }
   }
 </style>
 
 <script>
   (() => {
-    const initBlogNav = () => {
-      document.querySelectorAll('.bhd-header').forEach((header) => {
-        const actions = header.querySelector('.bhd-header__actions');
-        if (actions && !actions.querySelector('.bhd-header__blog-button')) {
-          const blog = document.createElement('a');
-          blog.href = '/blogs/news';
-          blog.className = 'bhd-header__icon-button bhd-header__blog-button';
-          blog.setAttribute('aria-label', 'Blog');
-          blog.setAttribute('title', 'Blog');
-          blog.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4.75h14a1.25 1.25 0 0 1 1.25 1.25v12A1.25 1.25 0 0 1 19 19.25H5A1.25 1.25 0 0 1 3.75 18V6A1.25 1.25 0 0 1 5 4.75Z" stroke="currentColor" stroke-width="1.6"/><path d="M7.25 8h5.5M7.25 11h9.5M7.25 14h9.5M7.25 17h6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
-          const search = actions.querySelector('a[aria-label="Search"]');
-          actions.insertBefore(blog, search || actions.firstChild);
-        }
+    const iconUrl = {{ 'bhd-discuss-icon.webp' | asset_url | json }};
+    const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim().toLowerCase();
 
-        header.querySelectorAll('[data-main-item]').forEach((main) => {
-          const mainLink = main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
-          if (!mainLink || mainLink.textContent.replace(/\s+/g,' ').trim().toLowerCase() !== 'connect with us') return;
-          const children = main.querySelectorAll('.bhd-header__dropdown-child');
-          children.forEach((item) => {
-            const tier2 = item.querySelector('.bhd-header__dropdown-parent');
-            if (!tier2 || tier2.textContent.replace(/\s+/g,' ').trim().toLowerCase() !== 'news & contact') return;
-            const panel = item.querySelector('.bhd-header__dropdown-grandchildren');
-            if (panel && !panel.querySelector('a[href="/blogs/news"][data-bhd-blog-link]')) {
-              const a = document.createElement('a');
-              a.href = '/blogs/news';
-              a.textContent = 'Blog';
-              a.setAttribute('data-bhd-blog-link','');
-              panel.insertBefore(a, panel.firstChild);
-            }
-          });
+    const renameMain = (main, mobile = false) => {
+      const link = mobile
+        ? main.querySelector(':scope > .bhd-header__mobile-main-row > a')
+        : main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
+      const toggle = mobile
+        ? main.querySelector(':scope > .bhd-header__mobile-main-row [data-menu-toggle]')
+        : main.querySelector(':scope > .bhd-header__split-button [data-menu-toggle]');
+      if (!link) return;
+
+      const current = normalize(link.textContent);
+      if (current === 'hydration solutions') {
+        link.textContent = 'Solutions';
+        if (toggle) toggle.setAttribute('aria-label', 'Open Solutions menu');
+      } else if (current === 'connect with us') {
+        link.textContent = 'Connect';
+        if (toggle) toggle.setAttribute('aria-label', 'Open Connect menu');
+      }
+    };
+
+    const addStandaloneDiscuss = (header) => {
+      const actions = header.querySelector('.bhd-header__actions');
+      if (!actions) return;
+      actions.querySelectorAll('.bhd-header__blog-button, .bhd-header__discuss-button').forEach((node) => node.remove());
+
+      const discuss = document.createElement('a');
+      discuss.href = '/blogs/news';
+      discuss.className = 'bhd-header__icon-button bhd-header__discuss-button';
+      discuss.setAttribute('aria-label', 'Discuss on the Best Hydrate blog');
+      discuss.setAttribute('title', 'Discuss');
+      discuss.innerHTML = `<img src="${iconUrl}" alt="" width="96" height="96" loading="eager">`;
+      actions.appendChild(discuss);
+    };
+
+    const addDesktopDiscussLinks = (header) => {
+      header.querySelectorAll('[data-main-item] > .bhd-header__dropdown-menu').forEach((menu) => {
+        if (menu.querySelector(':scope > .bhd-header__discuss-row')) return;
+        const link = document.createElement('a');
+        link.href = '/blogs/news';
+        link.className = 'bhd-header__discuss-row';
+        link.innerHTML = `<img src="${iconUrl}" alt="" width="96" height="96"><strong>Discuss</strong><span>Blog</span>`;
+        menu.appendChild(link);
+      });
+    };
+
+    const addMobileDiscussLinks = (header) => {
+      header.querySelectorAll('[data-mobile-main] > .bhd-header__mobile-level-one').forEach((level) => {
+        if (level.querySelector(':scope > .bhd-header__mobile-discuss')) return;
+        const link = document.createElement('a');
+        link.href = '/blogs/news';
+        link.className = 'bhd-header__mobile-discuss';
+        link.innerHTML = `<img src="${iconUrl}" alt="" width="96" height="96"><span>Discuss</span>`;
+        level.appendChild(link);
+      });
+    };
+
+    const ensureBlogLink = (header) => {
+      header.querySelectorAll('[data-main-item]').forEach((main) => {
+        const mainLink = main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
+        if (!mainLink || normalize(mainLink.textContent) !== 'connect') return;
+        main.querySelectorAll('.bhd-header__dropdown-child').forEach((item) => {
+          const tier2 = item.querySelector('.bhd-header__dropdown-parent');
+          if (!tier2 || normalize(tier2.textContent) !== 'news & contact') return;
+          const panel = item.querySelector('.bhd-header__dropdown-grandchildren');
+          if (panel && !panel.querySelector('a[data-bhd-blog-link]')) {
+            const a = document.createElement('a');
+            a.href = '/blogs/news';
+            a.textContent = 'Blog';
+            a.setAttribute('data-bhd-blog-link', '');
+            panel.insertBefore(a, panel.firstChild);
+          }
         });
+      });
 
-        header.querySelectorAll('[data-mobile-main]').forEach((main) => {
-          const mainLink = main.querySelector(':scope > .bhd-header__mobile-main-row > a');
-          if (!mainLink || mainLink.textContent.replace(/\s+/g,' ').trim().toLowerCase() !== 'connect with us') return;
-          main.querySelectorAll('.bhd-header__mobile-tier2').forEach((item) => {
-            const tier2 = item.querySelector('.bhd-header__mobile-tier2-link');
-            if (!tier2 || tier2.textContent.replace(/\s+/g,' ').trim().toLowerCase() !== 'news & contact') return;
-            const panel = item.querySelector('.bhd-header__mobile-submenu');
-            if (panel && !panel.querySelector('a[href="/blogs/news"][data-bhd-blog-link]')) {
-              const a = document.createElement('a');
-              a.href = '/blogs/news';
-              a.textContent = 'Blog';
-              a.setAttribute('data-bhd-blog-link','');
-              panel.insertBefore(a, panel.firstChild);
-            }
-          });
+      header.querySelectorAll('[data-mobile-main]').forEach((main) => {
+        const mainLink = main.querySelector(':scope > .bhd-header__mobile-main-row > a');
+        if (!mainLink || normalize(mainLink.textContent) !== 'connect') return;
+        main.querySelectorAll('.bhd-header__mobile-tier2').forEach((item) => {
+          const tier2 = item.querySelector('.bhd-header__mobile-tier2-link');
+          if (!tier2 || normalize(tier2.textContent) !== 'news & contact') return;
+          const panel = item.querySelector('.bhd-header__mobile-submenu');
+          if (panel && !panel.querySelector('a[data-bhd-blog-link]')) {
+            const a = document.createElement('a');
+            a.href = '/blogs/news';
+            a.textContent = 'Blog';
+            a.setAttribute('data-bhd-blog-link', '');
+            panel.insertBefore(a, panel.firstChild);
+          }
         });
       });
     };
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(initBlogNav, 0), { once:true });
-    else setTimeout(initBlogNav, 0);
+    const initDiscussNav = () => {
+      document.querySelectorAll('.bhd-header').forEach((header) => {
+        header.querySelectorAll('[data-main-item]').forEach((main) => renameMain(main, false));
+        header.querySelectorAll('[data-mobile-main]').forEach((main) => renameMain(main, true));
+        addStandaloneDiscuss(header);
+        addDesktopDiscussLinks(header);
+        addMobileDiscussLinks(header);
+        ensureBlogLink(header);
+      });
+    };
+
+    const start = () => setTimeout(initDiscussNav, 30);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+    else start();
   })();
 </script>
 
 {% schema %}
 {
-  "name": "Header blog link",
+  "name": "Header discuss link",
   "enabled_on": {"groups": ["header"]},
   "settings": []
 }
