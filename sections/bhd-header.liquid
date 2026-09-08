@@ -1,0 +1,251 @@
+<header id="BhdHeader-{{ section.id }}" class="bhd-header color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width bhd-header__inner">
+    <details class="bhd-header__mobile-menu">
+      <summary class="bhd-header__icon-button" aria-label="Menu">
+        <span aria-hidden="true">☰</span>
+      </summary>
+      <div class="bhd-header__mobile-panel">
+        {% for link in section.settings.menu.links %}
+          {% if link.links != blank %}
+            <details>
+              <summary>{{ link.title }}</summary>
+              <div class="bhd-header__mobile-submenu">
+                {% for childlink in link.links %}
+                  <a href="{{ childlink.url }}">{{ childlink.title }}</a>
+                {% endfor %}
+              </div>
+            </details>
+          {% else %}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </details>
+
+    <a href="{{ routes.root_url }}" class="bhd-header__brand link link--text focus-inset" aria-label="{{ shop.name | escape }}">
+      {% if settings.logo != blank %}
+        {{ settings.logo | image_url: width: 200 | image_tag: class: 'bhd-header__logo', widths: '80,120,160,200', loading: 'eager', alt: shop.name }}
+      {% endif %}
+      <span class="bhd-header__site-name">{{ section.settings.site_name | escape }}</span>
+    </a>
+
+    <nav class="bhd-header__nav" aria-label="Primary navigation">
+      {% for link in section.settings.menu.links %}
+        {% if link.links != blank %}
+          <details class="bhd-header__dropdown">
+            <summary>{{ link.title }}</summary>
+            <div class="bhd-header__dropdown-menu">
+              {% for childlink in link.links %}
+                <a href="{{ childlink.url }}">{{ childlink.title }}</a>
+              {% endfor %}
+            </div>
+          </details>
+        {% else %}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {% endif %}
+      {% endfor %}
+    </nav>
+
+    <div class="bhd-header__actions">
+      <a href="{{ routes.search_url }}" class="bhd-header__icon-button" aria-label="Search">
+        <span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span>
+      </a>
+      {% if shop.customer_accounts_enabled %}
+        <a href="{{ routes.account_url }}" class="bhd-header__icon-button" aria-label="Account">
+          <span class="svg-wrapper">{{ 'icon-account.svg' | inline_asset_content }}</span>
+        </a>
+      {% endif %}
+      <a href="{{ routes.cart_url }}" class="bhd-header__icon-button" aria-label="Cart">
+        <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
+        {% if cart.item_count > 0 %}<span class="bhd-header__cart-count">{{ cart.item_count }}</span>{% endif %}
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  #BhdHeader-{{ section.id }} {
+    position: relative;
+    z-index: 40;
+    border-bottom: 1px solid rgba(var(--color-foreground), .09);
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__inner {
+    min-height: 78px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 3rem;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .9rem;
+    text-decoration: none;
+    min-width: max-content;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__logo {
+    display: block;
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__site-name {
+    color: rgb(var(--color-foreground));
+    font-family: var(--font-heading-family);
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 2.8rem;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__nav > a,
+  #BhdHeader-{{ section.id }} .bhd-header__dropdown > summary {
+    color: rgb(var(--color-foreground));
+    text-decoration: none;
+    font-size: 1.6rem;
+    letter-spacing: .04em;
+    cursor: pointer;
+    list-style: none;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__dropdown {
+    position: relative;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__dropdown > summary::-webkit-details-marker { display: none; }
+  #BhdHeader-{{ section.id }} .bhd-header__dropdown > summary::after {
+    content: '⌄';
+    display: inline-block;
+    margin-left: .45rem;
+    font-size: 1.4rem;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__dropdown-menu {
+    position: absolute;
+    top: calc(100% + 1rem);
+    left: 0;
+    min-width: 190px;
+    padding: 1rem;
+    border-radius: 10px;
+    background: rgb(var(--color-background));
+    box-shadow: 0 10px 30px rgba(0,0,0,.13);
+    border: 1px solid rgba(var(--color-foreground), .08);
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__dropdown-menu a {
+    display: block;
+    padding: .8rem 1rem;
+    color: rgb(var(--color-foreground));
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__actions {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__icon-button {
+    width: 4rem;
+    height: 4rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(var(--color-foreground));
+    text-decoration: none;
+    position: relative;
+    cursor: pointer;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__icon-button svg { width: 2.1rem; height: 2.1rem; }
+  #BhdHeader-{{ section.id }} .bhd-header__cart-count {
+    position: absolute;
+    top: .2rem;
+    right: .1rem;
+    min-width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: rgb(var(--color-button));
+    color: rgb(var(--color-button-text));
+    font-size: 1rem;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__mobile-menu { display: none; }
+
+  @media screen and (max-width: 989px) {
+    #BhdHeader-{{ section.id }} .bhd-header__inner {
+      min-height: 68px;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+    }
+    #BhdHeader-{{ section.id }} .bhd-header__mobile-menu { display: block; position: relative; }
+    #BhdHeader-{{ section.id }} .bhd-header__nav { display: none; }
+    #BhdHeader-{{ section.id }} .bhd-header__brand { justify-self: center; }
+    #BhdHeader-{{ section.id }} .bhd-header__logo { width: 38px; height: 38px; }
+    #BhdHeader-{{ section.id }} .bhd-header__site-name { font-size: 2rem; }
+    #BhdHeader-{{ section.id }} .bhd-header__actions > a:first-child { display: none; }
+    #BhdHeader-{{ section.id }} .bhd-header__mobile-menu > summary { list-style: none; font-size: 2.3rem; }
+    #BhdHeader-{{ section.id }} .bhd-header__mobile-menu > summary::-webkit-details-marker { display:none; }
+    #BhdHeader-{{ section.id }} .bhd-header__mobile-panel {
+      position: absolute;
+      top: calc(100% + 1rem);
+      left: 0;
+      width: min(300px, 85vw);
+      padding: 1.2rem;
+      background: rgb(var(--color-background));
+      border: 1px solid rgba(var(--color-foreground), .08);
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.14);
+    }
+    #BhdHeader-{{ section.id }} .bhd-header__mobile-panel > a,
+    #BhdHeader-{{ section.id }} .bhd-header__mobile-panel summary,
+    #BhdHeader-{{ section.id }} .bhd-header__mobile-submenu a {
+      display: block;
+      padding: .9rem 1rem;
+      color: rgb(var(--color-foreground));
+      text-decoration: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+    }
+    #BhdHeader-{{ section.id }} .bhd-header__mobile-submenu { padding-left: 1.2rem; }
+  }
+
+  @media screen and (max-width: 480px) {
+    #BhdHeader-{{ section.id }} .bhd-header__site-name { font-size: 1.7rem; }
+    #BhdHeader-{{ section.id }} .bhd-header__logo { width: 34px; height: 34px; }
+    #BhdHeader-{{ section.id }} .bhd-header__actions { gap: 0; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Best Hydrate header",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "site_name",
+      "label": "Site name",
+      "default": "Best Hydrate"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Best Hydrate header"
+    }
+  ]
+}
+{% endschema %}
