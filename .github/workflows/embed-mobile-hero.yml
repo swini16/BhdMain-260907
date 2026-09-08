@@ -17,40 +17,32 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Restore valid mobile hero binaries and wire Shopify CDN
+      - name: Restore exact mobile hero binaries and wire Shopify CDN
         shell: bash
         run: |
           set -euo pipefail
 
-          download_webp() {
-            name="$1"
-            url="$2"
-            out="assets/hero-mobile-${name}.webp"
-            tmp="${out}.tmp"
-            curl -L --fail --retry 3 --retry-delay 2 \
-              -A 'Mozilla/5.0' \
-              "${url}?download=1" \
-              -o "$tmp"
-            mv "$tmp" "$out"
-          }
-
-          download_webp performance 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQCp3cGuwlr_QqE9MiqH5A1DAaiRgoT_ercckP4M8rG_xPA'
-          download_webp daily 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDc6M37CnnsQqIeiyFUdl7OAdYSM98nkZA9k_6qAK_Uwrc'
-          download_webp medical 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDQvs83xowsSpnQZjrNDMj3AdLJZaQiL755zn8VKvUpniE'
-          download_webp humanitarian 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQActbAvkS56S4ybl5pTcZ68AViPW03z6S2bziLXldl0wO8'
+          curl -L --fail --retry 3 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-023c-81fd-bd10-5b24521d519b/raw?se=2026-09-08T22%3A45%3A42Z&sp=r&sv=2026-02-06&sr=b&scid=31452152-128f-551b-aa6a-1e9d1127b3e9&skoid=c69179d1-5b5d-430f-afa3-b9bdcf9d6497&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-08T19%3A10%3A37Z&ske=2026-09-09T19%3A10%3A37Z&sks=b&skv=2026-02-06&sig=sRminQPQD%2BzF6NZk/Op4hbBkMcilOrHANjO/b9vQLC8%3D' -o assets/hero-mobile-performance.webp
+          curl -L --fail --retry 3 'https://sdmntprwestus.oaiusercontent.com/files/00000000-f3d4-8230-939a-31098f6a2750/raw?se=2026-09-08T22%3A45%3A51Z&sp=r&sv=2026-02-06&sr=b&scid=51d9ab56-4932-53b3-b6df-e1c27e2f64f3&skoid=c69179d1-5b5d-430f-afa3-b9bdcf9d6497&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-08T13%3A24%3A10Z&ske=2026-09-09T13%3A24%3A10Z&sks=b&skv=2026-02-06&sig=eMVyVBhBivxJAlkkOaachPwGtZYKNAa9zihTqR4ou7c%3D' -o assets/hero-mobile-daily.webp
+          curl -L --fail --retry 3 'https://sdmntprwestus.oaiusercontent.com/files/00000000-7f4c-8230-9cb8-844f4d29642f/raw?se=2026-09-08T22%3A45%3A59Z&sp=r&sv=2026-02-06&sr=b&scid=92c4c14e-f900-500e-94db-886dcef9bb2c&skoid=c69179d1-5b5d-430f-afa3-b9bdcf9d6497&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-08T10%3A41%3A58Z&ske=2026-09-09T10%3A41%3A58Z&sks=b&skv=2026-02-06&sig=G9EK3OuVEySk%2BTKvcBnzmKbhjezhIJk3JDOmpEwoIv0%3D' -o assets/hero-mobile-medical.webp
+          curl -L --fail --retry 3 'https://sdmntprwestus.oaiusercontent.com/files/00000000-1378-8230-a004-4a16a4231247/raw?se=2026-09-08T22%3A46%3A08Z&sp=r&sv=2026-02-06&sr=b&scid=d1f484c5-00cd-5808-bd94-2de50bdb1cc5&skoid=c69179d1-5b5d-430f-afa3-b9bdcf9d6497&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-08T19%3A25%3A34Z&ske=2026-09-09T19%3A25%3A34Z&sks=b&skv=2026-02-06&sig=5lkCb49%2B4vhpqBDSYvGjWh2nKMgKPKCqsFHvp2Cmg7U%3D' -o assets/hero-mobile-humanitarian.webp
 
           python3 - <<'PY'
           from pathlib import Path
-
-          names = ['performance','daily','medical','humanitarian']
-          for name in names:
+          expected = {
+              'performance': 250_000,
+              'daily': 250_000,
+              'medical': 230_000,
+              'humanitarian': 250_000,
+          }
+          for name, floor in expected.items():
               p = Path(f'assets/hero-mobile-{name}.webp')
               data = p.read_bytes()
-              if len(data) < 100_000:
-                  raise SystemExit(f'{p}: too small ({len(data)} bytes), refusing to deploy')
+              if len(data) < floor:
+                  raise SystemExit(f'{p}: only {len(data)} bytes, expected at least {floor}')
               if data[:4] != b'RIFF' or data[8:12] != b'WEBP':
-                  raise SystemExit(f'{p}: not a valid WebP container')
-              print(f'VALID {p}: {len(data)} bytes, RIFF/WEBP confirmed')
+                  raise SystemExit(f'{p}: invalid WebP header')
+              print(f'VALID {p}: {len(data)} bytes')
 
           hero = Path('sections/bhd-hero.liquid')
           s = hero.read_text()
@@ -62,22 +54,18 @@ jobs:
           }
           for old, new in replacements.items():
               if old not in s:
-                  raise SystemExit(f'Missing expected mobile hero render: {old}')
+                  raise SystemExit(f'Missing expected hero render: {old}')
               s = s.replace(old, new, 1)
           hero.write_text(s)
           PY
 
-          rm -f snippets/bhd-hero-mobile-performance.liquid \
-                snippets/bhd-hero-mobile-daily.liquid \
-                snippets/bhd-hero-mobile-medical.liquid \
-                snippets/bhd-hero-mobile-humanitarian.liquid
-
-          # One-shot repair. Remove this workflow in the repair commit.
+          rm -f snippets/bhd-hero-mobile-performance.liquid snippets/bhd-hero-mobile-daily.liquid snippets/bhd-hero-mobile-medical.liquid snippets/bhd-hero-mobile-humanitarian.liquid
+          rm -rf .hero-repair
           rm -f .github/workflows/embed-mobile-hero.yml
 
           git config user.name 'Best Hydrate Theme Bot'
           git config user.email 'actions@users.noreply.github.com'
           git add -A
           git status --short
-          git commit -m 'Restore valid mobile hero assets and use Shopify CDN'
+          git commit -m 'Restore exact mobile hero binaries and use Shopify CDN'
           git push origin HEAD:main
