@@ -1,25 +1,29 @@
 <style>
   .bhd-header .bhd-header__discuss-button {
-    width: 4.6rem;
-    height: 4.6rem;
-    margin-left: .15rem;
-    border: 1px solid rgba(var(--color-button), .16);
-    border-radius: 1.15rem;
+    width: 5.9rem !important;
+    height: 5.9rem !important;
+    flex: 0 0 5.9rem;
+    margin-left: .25rem;
+    padding: 0 !important;
     overflow: hidden;
-    background: rgba(255,255,255,.82);
-    box-shadow: 0 .3rem 1rem rgba(13,33,78,.08);
+    border: 1px solid rgba(var(--color-button), .22);
+    border-radius: 1.25rem;
+    background: #fff;
+    box-shadow: 0 .35rem 1.15rem rgba(13,33,78,.10);
     transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
   }
   .bhd-header .bhd-header__discuss-button:hover {
     transform: translateY(-1px);
-    border-color: rgba(var(--color-button), .34);
-    box-shadow: 0 .5rem 1.4rem rgba(13,33,78,.13);
+    border-color: rgba(var(--color-button), .42);
+    box-shadow: 0 .55rem 1.55rem rgba(13,33,78,.15);
   }
   .bhd-header .bhd-header__discuss-button img {
     width: 100%;
     height: 100%;
     display: block;
     object-fit: cover;
+    transform: scale(1.18);
+    transform-origin: center;
   }
 
   .bhd-header .bhd-header__discuss-row {
@@ -27,60 +31,65 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
-    gap: .65rem;
-    min-height: 3.8rem;
+    gap: .75rem;
+    min-height: 4.15rem;
     margin-top: .2rem;
-    padding: .6rem .85rem !important;
+    padding: .62rem .9rem !important;
     border-top: 1px solid rgba(var(--color-foreground), .09);
     border-radius: .9rem;
-    background: rgba(var(--color-button), .045);
+    background: rgba(var(--color-button), .06);
     color: rgb(var(--color-foreground)) !important;
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1.34rem;
+    font-weight: 750;
+    line-height: 1.2;
     text-decoration: none;
   }
-  .bhd-header .bhd-header__discuss-row:hover {
-    background: rgba(var(--color-button), .10);
-  }
+  .bhd-header .bhd-header__discuss-row:hover { background: rgba(var(--color-button), .12); }
   .bhd-header .bhd-header__discuss-row img {
-    width: 2.6rem;
-    height: 2.6rem;
-    border-radius: .65rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: .7rem;
     object-fit: cover;
     box-shadow: 0 .15rem .5rem rgba(13,33,78,.10);
-  }
-  .bhd-header .bhd-header__discuss-row span:last-child {
-    opacity: .62;
-    font-weight: 600;
   }
 
   .bhd-header .bhd-header__mobile-discuss {
     display: flex !important;
     align-items: center;
-    gap: .7rem;
+    gap: .75rem;
     margin: .55rem 0 .05rem;
-    padding: .75rem .85rem !important;
+    padding: .8rem .9rem !important;
     border-top: 1px solid rgba(var(--color-foreground), .09);
     border-radius: .85rem;
-    background: rgba(var(--color-button), .055);
+    background: rgba(var(--color-button), .06);
     color: rgb(var(--color-foreground)) !important;
-    font-size: 1.35rem !important;
-    font-weight: 700;
+    font-size: 1.38rem !important;
+    font-weight: 750;
+    line-height: 1.2;
     text-decoration: none;
   }
   .bhd-header .bhd-header__mobile-discuss img {
-    width: 2.8rem;
-    height: 2.8rem;
-    border-radius: .65rem;
+    width: 3.1rem;
+    height: 3.1rem;
+    border-radius: .7rem;
     object-fit: cover;
+  }
+
+  @media screen and (max-width: 1180px) and (min-width: 990px) {
+    .bhd-header .bhd-header__discuss-button {
+      width: 5.2rem !important;
+      height: 5.2rem !important;
+      flex-basis: 5.2rem;
+    }
   }
 
   @media screen and (max-width: 989px) {
     .bhd-header .bhd-header__discuss-button {
-      width: 3.7rem;
-      height: 3.7rem;
-      border-radius: .9rem;
+      width: 4.4rem !important;
+      height: 4.4rem !important;
+      flex-basis: 4.4rem;
       margin-left: 0;
+      border-radius: 1rem;
     }
   }
 </style>
@@ -90,111 +99,91 @@
     const iconUrl = {{ 'bhd-discuss-icon.webp' | asset_url | json }};
     const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim().toLowerCase();
 
-    const renameMain = (main, mobile = false) => {
-      const link = mobile
-        ? main.querySelector(':scope > .bhd-header__mobile-main-row > a')
-        : main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
-      const toggle = mobile
-        ? main.querySelector(':scope > .bhd-header__mobile-main-row [data-menu-toggle]')
-        : main.querySelector(':scope > .bhd-header__split-button [data-menu-toggle]');
-      if (!link) return;
-
-      const current = normalize(link.textContent);
-      if (current === 'hydration solutions') {
-        link.textContent = 'Solutions';
-        if (toggle) toggle.setAttribute('aria-label', 'Open Solutions menu');
-      } else if (current === 'connect with us') {
-        link.textContent = 'Connect';
-        if (toggle) toggle.setAttribute('aria-label', 'Open Connect menu');
-      }
+    const labelFor = (value) => {
+      const key = normalize(value);
+      if (key === 'science') return 'Discuss Science Blog';
+      if (key === 'solutions' || key === 'hydration solutions') return 'Discuss Solutions Blog';
+      if (key === 'connect' || key === 'connect with us') return 'Discuss & Connect With Us Blog';
+      return 'Discuss Blog';
     };
 
-    const addStandaloneDiscuss = (header) => {
+    const setDiscussContents = (link, label) => {
+      if (!link) return;
+      link.href = '/blogs/news';
+      link.replaceChildren();
+      const img = document.createElement('img');
+      img.src = iconUrl;
+      img.alt = '';
+      img.width = 96;
+      img.height = 96;
+      const text = document.createElement('strong');
+      text.textContent = label;
+      link.append(img, text);
+    };
+
+    const ensureStandaloneDiscuss = (header) => {
       const actions = header.querySelector('.bhd-header__actions');
       if (!actions) return;
-      actions.querySelectorAll('.bhd-header__blog-button, .bhd-header__discuss-button').forEach((node) => node.remove());
-
-      const discuss = document.createElement('a');
-      discuss.href = '/blogs/news';
-      discuss.className = 'bhd-header__icon-button bhd-header__discuss-button';
-      discuss.setAttribute('aria-label', 'Discuss on the Best Hydrate blog');
-      discuss.setAttribute('title', 'Discuss');
-      discuss.innerHTML = `<img src="${iconUrl}" alt="" width="96" height="96" loading="eager">`;
+      actions.querySelectorAll('.bhd-header__blog-button').forEach((node) => node.remove());
+      let discuss = actions.querySelector('.bhd-header__discuss-button');
+      if (!discuss) {
+        discuss = document.createElement('a');
+        discuss.href = '/blogs/news';
+        discuss.className = 'bhd-header__icon-button bhd-header__discuss-button';
+        discuss.setAttribute('aria-label', 'Discuss on the Best Hydrate blog');
+        discuss.setAttribute('title', 'Discuss');
+        discuss.innerHTML = `<img src="${iconUrl}" alt="" width="96" height="96" loading="eager">`;
+      }
       actions.appendChild(discuss);
     };
 
-    const addDesktopDiscussLinks = (header) => {
-      header.querySelectorAll('[data-main-item] > .bhd-header__dropdown-menu').forEach((menu) => {
-        if (menu.querySelector(':scope > .bhd-header__discuss-row')) return;
-        const link = document.createElement('a');
-        link.href = '/blogs/news';
-        link.className = 'bhd-header__discuss-row';
-        link.innerHTML = `<img src="${iconUrl}" alt="" width="96" height="96"><strong>Discuss</strong><span>Blog</span>`;
-        menu.appendChild(link);
-      });
-    };
-
-    const addMobileDiscussLinks = (header) => {
-      header.querySelectorAll('[data-mobile-main] > .bhd-header__mobile-level-one').forEach((level) => {
-        if (level.querySelector(':scope > .bhd-header__mobile-discuss')) return;
-        const link = document.createElement('a');
-        link.href = '/blogs/news';
-        link.className = 'bhd-header__mobile-discuss';
-        link.innerHTML = `<img src="${iconUrl}" alt="" width="96" height="96"><span>Discuss</span>`;
-        level.appendChild(link);
-      });
-    };
-
-    const ensureBlogLink = (header) => {
+    const contextualizeDesktop = (header) => {
       header.querySelectorAll('[data-main-item]').forEach((main) => {
         const mainLink = main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
-        if (!mainLink || normalize(mainLink.textContent) !== 'connect') return;
-        main.querySelectorAll('.bhd-header__dropdown-child').forEach((item) => {
-          const tier2 = item.querySelector('.bhd-header__dropdown-parent');
-          if (!tier2 || normalize(tier2.textContent) !== 'news & contact') return;
-          const panel = item.querySelector('.bhd-header__dropdown-grandchildren');
-          if (panel && !panel.querySelector('a[data-bhd-blog-link]')) {
-            const a = document.createElement('a');
-            a.href = '/blogs/news';
-            a.textContent = 'Blog';
-            a.setAttribute('data-bhd-blog-link', '');
-            panel.insertBefore(a, panel.firstChild);
-          }
-        });
+        const menu = main.querySelector(':scope > .bhd-header__dropdown-menu');
+        if (!mainLink || !menu) return;
+        let discuss = menu.querySelector(':scope > .bhd-header__discuss-row');
+        if (!discuss) {
+          discuss = document.createElement('a');
+          discuss.className = 'bhd-header__discuss-row';
+          menu.appendChild(discuss);
+        }
+        setDiscussContents(discuss, labelFor(mainLink.textContent));
       });
+    };
 
+    const contextualizeMobile = (header) => {
       header.querySelectorAll('[data-mobile-main]').forEach((main) => {
         const mainLink = main.querySelector(':scope > .bhd-header__mobile-main-row > a');
-        if (!mainLink || normalize(mainLink.textContent) !== 'connect') return;
-        main.querySelectorAll('.bhd-header__mobile-tier2').forEach((item) => {
-          const tier2 = item.querySelector('.bhd-header__mobile-tier2-link');
-          if (!tier2 || normalize(tier2.textContent) !== 'news & contact') return;
-          const panel = item.querySelector('.bhd-header__mobile-submenu');
-          if (panel && !panel.querySelector('a[data-bhd-blog-link]')) {
-            const a = document.createElement('a');
-            a.href = '/blogs/news';
-            a.textContent = 'Blog';
-            a.setAttribute('data-bhd-blog-link', '');
-            panel.insertBefore(a, panel.firstChild);
-          }
-        });
+        const level = main.querySelector(':scope > .bhd-header__mobile-level-one');
+        if (!mainLink || !level) return;
+        let discuss = level.querySelector(':scope > .bhd-header__mobile-discuss');
+        if (!discuss) {
+          discuss = document.createElement('a');
+          discuss.className = 'bhd-header__mobile-discuss';
+          level.appendChild(discuss);
+        }
+        setDiscussContents(discuss, labelFor(mainLink.textContent));
       });
     };
 
-    const initDiscussNav = () => {
+    const apply = () => {
       document.querySelectorAll('.bhd-header').forEach((header) => {
-        header.querySelectorAll('[data-main-item]').forEach((main) => renameMain(main, false));
-        header.querySelectorAll('[data-mobile-main]').forEach((main) => renameMain(main, true));
-        addStandaloneDiscuss(header);
-        addDesktopDiscussLinks(header);
-        addMobileDiscussLinks(header);
-        ensureBlogLink(header);
+        ensureStandaloneDiscuss(header);
+        contextualizeDesktop(header);
+        contextualizeMobile(header);
       });
     };
 
-    const start = () => setTimeout(initDiscussNav, 30);
+    const start = () => {
+      apply();
+      setTimeout(apply, 80);
+      setTimeout(apply, 250);
+    };
+
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
     else start();
+    window.addEventListener('load', apply, { once: true });
   })();
 </script>
 
