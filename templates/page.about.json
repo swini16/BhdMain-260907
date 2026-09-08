@@ -1,0 +1,52 @@
+{
+  "sections": {
+    "team": {
+      "type": "bhd-team",
+      "blocks": {
+        "spencer": {
+          "type": "profile",
+          "settings": {
+            "image": "shopify://shop_images/260202_Dr.-Spencer-Proctor.jpg",
+            "name": "Dr. Spencer Proctor",
+            "role": "Professor in & Chair of the Faculty of Ag., Life & Enviro. Sci. - Ag, Food & Nutri Sci Dept.",
+            "bio": "<p>Dr. Spencer Proctor is a Professor and Department Chair at the University of Alberta with expertise in Nutritional Sciences and Biomedical Research. Dr. Proctor has a long-standing track record in Team Sports, Individual Endurance, Athletics/Track and Sports Nutrition.</p><p>Spencer has spent much of his career as an active age group athlete and accumulated provincial and national accolades. Spencer is an accomplished coach in team sports and more recently achieved certifications in the National Coaching Certification Pathway.</p><p>With scientific experience in the testing of intestinal absorption pathways and a real-world appreciation of electrolyte balance and the importance of hydration systems in healthy and clinical situations, Dr. Proctor provides a wealth of knowledge for Best Hydrate. We appreciate having the leadership and scientific direction from Dr. Proctor and believe it can benefit not only the position of the Best Hydrate brand, but benefit all of our patrons and customers.</p>",
+            "link_label": "University of Alberta Profile",
+            "link": "https://mcvd.ualberta.ca/research/dr-spencer-proctor/"
+          }
+        },
+        "austin": {
+          "type": "profile",
+          "settings": {
+            "image": "shopify://shop_images/Austin_barefeet.png",
+            "name": "Austin",
+            "role": "Founder, Best Hydrate",
+            "bio": "<p>Born and raised around Edmonton, Alberta, Austin is the visionary founder behind Best Hydrate. A boiler engineer by career and a self-taught expert in various fields, Austin's entrepreneurial journey began at the age of 18 when he built a pilot-scale aquaponics system. Over the years, he worked on more than ten businesses, driven by a relentless pursuit to find a meaningful calling.</p><p>Austin's path took a life-threatening turn when he was hospitalized due to an autoimmune disease. This personal battle underscored the critical, yet often overlooked, role of hydration in health and longevity.</p><p>In 2020, inspired by his discoveries that he needed more electrolytes aka salts (not less!), and in spite of the current &quot;hydration&quot; options with their high sugar and low salt, he started to create his own formulation at home. As a result of his formula he had an amazing health transformation and so Best Hydrate was founded in 2021.</p><p>He's founded a team that is determined to transform health via innovative &amp; superior hydration. We do this by redefining hydration as not &quot;simple and just water&quot; but instead by focusing on the elegant interweaving and interplay of water, nutrition, bio-electro-chemistry, and medicine.</p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "simone": {
+          "type": "profile",
+          "settings": {
+            "image": "shopify://shop_images/simone_black.png",
+            "name": "Simone",
+            "role": "Co-Founder, Registered Nurse",
+            "bio": "<p>Also, born and raised in Northern Alberta, I am a Registered Nurse with a 16 year career in Research and Management.</p><p>I co-founded Best Hydrate, an electrolyte mix Company that creates real-life options for every day problems to help you become more effective to living your Best Life.</p><p>With Best Hydrate, I am following a life-long journey of being able to better the lives of people in a profound and meaningful way.</p>",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": ["spencer", "austin", "simone"],
+      "settings": {
+        "heading": "Meet Us",
+        "heading_size": "h1",
+        "text": "<p>Best Hydrate brings together lived experience, health care, science and performance.</p>",
+        "color_scheme": "scheme-2",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    }
+  },
+  "order": ["team"]
+}
