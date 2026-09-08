@@ -9,41 +9,44 @@
       {% endif %}
     </div>
 
-    <div class="bhd-markets__venn-wrap">
-      <div class="bhd-markets__venn" aria-label="Best Hydrate markets and their intersections">
-        <div class="bhd-markets__circle bhd-markets__circle--athlete">
-          <span>{{ section.settings.athlete_label }}</span>
-        </div>
-        <div class="bhd-markets__circle bhd-markets__circle--daily">
-          <span>{{ section.settings.daily_label }}</span>
-        </div>
-        <div class="bhd-markets__circle bhd-markets__circle--medical">
-          <span>{{ section.settings.medical_label }}</span>
-        </div>
+    <div class="bhd-markets__grid">
+      <article class="bhd-markets__card bhd-markets__card--athletes">
+        <div class="bhd-markets__eyebrow">Performance</div>
+        <h3>{{ section.settings.athlete_label }}</h3>
+        <ul>
+          <li>Training & competition</li>
+          <li>Endurance & recovery</li>
+          <li>{{ section.settings.athlete_daily_title }}</li>
+          <li>{{ section.settings.athlete_medical_title }}</li>
+        </ul>
+      </article>
 
-        <div class="bhd-markets__overlap bhd-markets__overlap--athlete-daily">
-          <strong>{{ section.settings.athlete_daily_title }}</strong>
-          <small>{{ section.settings.athlete_daily_text }}</small>
-        </div>
-        <div class="bhd-markets__overlap bhd-markets__overlap--daily-medical">
-          <strong>{{ section.settings.daily_medical_title }}</strong>
-          <small>{{ section.settings.daily_medical_text }}</small>
-        </div>
-        <div class="bhd-markets__overlap bhd-markets__overlap--athlete-medical">
-          <strong>{{ section.settings.athlete_medical_title }}</strong>
-          <small>{{ section.settings.athlete_medical_text }}</small>
-        </div>
-        <div class="bhd-markets__center">
-          <strong>{{ section.settings.center_title }}</strong>
-        </div>
-      </div>
+      <article class="bhd-markets__card bhd-markets__card--daily">
+        <div class="bhd-markets__eyebrow">Everyday</div>
+        <h3>{{ section.settings.daily_label }}</h3>
+        <ul>
+          <li>Everyday hydration</li>
+          <li>Hot labour & long shifts</li>
+          <li>Intensive brain work</li>
+          <li>Travel & daily routines</li>
+        </ul>
+      </article>
+
+      <article class="bhd-markets__card bhd-markets__card--medical">
+        <div class="bhd-markets__eyebrow">Health</div>
+        <h3>{{ section.settings.medical_label }}</h3>
+        <ul>
+          <li>Illness & recovery</li>
+          <li>Active aging</li>
+          <li>{{ section.settings.daily_medical_title }}</li>
+          <li>Rehabilitation & return to activity</li>
+        </ul>
+      </article>
     </div>
 
-    <div class="bhd-markets__mobile-overlaps">
-      <div><strong>{{ section.settings.athlete_daily_title }}</strong><span>{{ section.settings.athlete_daily_text }}</span></div>
-      <div><strong>{{ section.settings.daily_medical_title }}</strong><span>{{ section.settings.daily_medical_text }}</span></div>
-      <div><strong>{{ section.settings.athlete_medical_title }}</strong><span>{{ section.settings.athlete_medical_text }}</span></div>
-      <div><strong>{{ section.settings.center_title }}</strong><span>{{ section.settings.center_text }}</span></div>
+    <div class="bhd-markets__clinical">
+      <strong>{{ section.settings.center_title }}</strong>
+      <span>{{ section.settings.center_text }}</span>
     </div>
   </div>
 </section>
@@ -55,164 +58,100 @@
   #BhdMarkets-{{ section.id }} .bhd-markets__intro {
     text-align: center;
     max-width: 820px;
-    margin: 0 auto 2.4rem;
+    margin: 0 auto 3rem;
   }
   #BhdMarkets-{{ section.id }} .bhd-markets__intro .title {
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
   }
   #BhdMarkets-{{ section.id }} .bhd-markets__text {
     max-width: 720px;
     margin: 0 auto;
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__venn-wrap {
-    display: flex;
-    justify-content: center;
+  #BhdMarkets-{{ section.id }} .bhd-markets__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+  #BhdMarkets-{{ section.id }} .bhd-markets__card {
+    min-height: 310px;
+    padding: 2.8rem;
+    border-radius: 1.4rem;
+    border: 1px solid rgba(var(--color-foreground), .12);
+    background: rgb(var(--color-background));
+    box-shadow: 0 1.2rem 3.5rem rgba(13,33,78,.08);
+    position: relative;
     overflow: hidden;
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__venn {
-    position: relative;
-    width: 920px;
-    height: 520px;
-    max-width: 100%;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__circle {
+  #BhdMarkets-{{ section.id }} .bhd-markets__card::before {
+    content: '';
     position: absolute;
-    width: 370px;
-    height: 370px;
-    border-radius: 50%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 5.2rem;
-    border: 2px solid rgba(255,255,255,.72);
-    box-shadow: 0 1.5rem 4rem rgba(13,33,78,.10);
-    color: #fff;
-    text-align: center;
-    font-size: clamp(2rem, 2.4vw, 3rem);
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: .5rem;
+  }
+  #BhdMarkets-{{ section.id }} .bhd-markets__card--athletes::before { background: #d93445; }
+  #BhdMarkets-{{ section.id }} .bhd-markets__card--daily::before { background: #20a9cf; }
+  #BhdMarkets-{{ section.id }} .bhd-markets__card--medical::before { background: #355fa6; }
+  #BhdMarkets-{{ section.id }} .bhd-markets__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    font-size: 1.15rem;
     font-weight: 700;
-    letter-spacing: .01em;
+    opacity: .58;
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__circle--athlete {
-    left: 92px;
-    top: 36px;
-    background: rgba(225, 38, 48, .74);
+  #BhdMarkets-{{ section.id }} h3 {
+    margin: .8rem 0 1.6rem;
+    font-size: clamp(2.5rem, 2.8vw, 3.5rem);
+    line-height: 1.05;
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__circle--daily {
-    left: 275px;
-    top: 116px;
-    background: rgba(21, 157, 200, .72);
+  #BhdMarkets-{{ section.id }} ul {
+    margin: 0;
+    padding-left: 2rem;
+    line-height: 1.55;
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__circle--medical {
-    left: 458px;
-    top: 36px;
-    background: rgba(34, 77, 154, .74);
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__overlap,
-  #BhdMarkets-{{ section.id }} .bhd-markets__center {
-    position: absolute;
-    z-index: 4;
-    color: #fff;
+  #BhdMarkets-{{ section.id }} li + li { margin-top: .55rem; }
+  #BhdMarkets-{{ section.id }} .bhd-markets__clinical {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 1rem;
+    margin: 2.2rem auto 0;
+    padding: 1.3rem 1.8rem;
+    max-width: 820px;
     text-align: center;
-    text-shadow: 0 1px 4px rgba(0,0,0,.28);
-    line-height: 1.16;
-    pointer-events: none;
+    border-radius: 999px;
+    background: rgba(var(--color-foreground), .055);
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__overlap strong,
-  #BhdMarkets-{{ section.id }} .bhd-markets__center strong {
-    display: block;
-    font-size: 1.45rem;
+  #BhdMarkets-{{ section.id }} .bhd-markets__clinical strong {
+    white-space: nowrap;
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__overlap small {
-    display: block;
-    margin-top: .35rem;
-    font-size: 1.08rem;
-    line-height: 1.22;
+  #BhdMarkets-{{ section.id }} .bhd-markets__clinical span {
+    opacity: .72;
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__overlap--athlete-daily {
-    left: 294px;
-    top: 260px;
-    width: 150px;
+  @media screen and (max-width: 899px) {
+    #BhdMarkets-{{ section.id }} .bhd-markets__grid {
+      grid-template-columns: 1fr;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    #BhdMarkets-{{ section.id }} .bhd-markets__card {
+      min-height: 0;
+    }
   }
-  #BhdMarkets-{{ section.id }} .bhd-markets__overlap--daily-medical {
-    left: 478px;
-    top: 260px;
-    width: 150px;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__overlap--athlete-medical {
-    left: 384px;
-    top: 118px;
-    width: 154px;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__center {
-    left: 393px;
-    top: 222px;
-    width: 136px;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__center strong {
-    font-size: 1.7rem;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__mobile-overlaps {
-    display: none;
-  }
-
   @media screen and (max-width: 749px) {
     #BhdMarkets-{{ section.id }} {
       padding-top: {{ section.settings.padding_top | times: 0.75 | round }}px;
       padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round }}px;
     }
-    #BhdMarkets-{{ section.id }} .bhd-markets__venn {
-      width: 350px;
-      height: 330px;
-      transform: none;
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__circle {
-      width: 205px;
-      height: 205px;
-      padding-top: 3.2rem;
-      font-size: 1.6rem;
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__circle--athlete {
-      left: 0;
-      top: 8px;
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__circle--daily {
-      left: 72px;
-      top: 108px;
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__circle--medical {
-      left: 145px;
-      top: 8px;
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__overlap {
-      display: none;
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__center {
-      left: 123px;
-      top: 151px;
-      width: 104px;
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__center strong {
-      font-size: 1.35rem;
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__mobile-overlaps {
-      display: grid;
-      gap: 1rem;
-      margin-top: .8rem;
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__mobile-overlaps > div {
-      border: 1px solid rgba(var(--color-foreground), .14);
-      border-radius: 1rem;
-      padding: 1.2rem 1.4rem;
-      background: rgba(var(--color-background), .82);
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__mobile-overlaps strong,
-    #BhdMarkets-{{ section.id }} .bhd-markets__mobile-overlaps span {
+    #BhdMarkets-{{ section.id }} .bhd-markets__card { padding: 2.2rem; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__clinical {
       display: block;
+      border-radius: 1rem;
     }
-    #BhdMarkets-{{ section.id }} .bhd-markets__mobile-overlaps span {
-      margin-top: .25rem;
-      opacity: .75;
-    }
+    #BhdMarkets-{{ section.id }} .bhd-markets__clinical strong,
+    #BhdMarkets-{{ section.id }} .bhd-markets__clinical span { display: block; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__clinical span { margin-top: .35rem; }
   }
 </style>
 
@@ -241,7 +180,7 @@
       "type": "richtext",
       "id": "text",
       "label": "Intro",
-      "default": "<p>Best Hydrate is designed around three major hydration contexts, with the most interesting needs often living where they overlap.</p>"
+      "default": "<p>Best Hydrate supports hydration across three broad real-life contexts.</p>"
     },
     {"type": "text", "id": "athlete_label", "label": "Athlete label", "default": "Athletes"},
     {"type": "text", "id": "daily_label", "label": "Daily label", "default": "Daily Use"},
@@ -253,7 +192,7 @@
     {"type": "text", "id": "athlete_medical_title", "label": "Athlete + medical title", "default": "Rehab & return to performance"},
     {"type": "text", "id": "athlete_medical_text", "label": "Athlete + medical text", "default": "Rehabilitation and medically managed training"},
     {"type": "text", "id": "center_title", "label": "Center title", "default": "Clinical"},
-    {"type": "text", "id": "center_text", "label": "Center text", "default": "Where sport, daily demands and medical hydration converge"},
+    {"type": "text", "id": "center_text", "label": "Center text", "default": "Clinical hydration can span all three contexts when professional guidance is appropriate."},
     {
       "type": "color_scheme",
       "id": "color_scheme",
