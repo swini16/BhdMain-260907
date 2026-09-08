@@ -13,72 +13,49 @@
       "type": "bhd-hero",
       "settings": {
         "heading": "Hydrate for YOUR best day.",
-        "subheading": "For training, work, recovery and everyday life.",
+        "subheading": "Five essential electrolytes. Built for better hydration.",
         "product": "lemonade-best-hydrate",
         "button_label": "SHOP NOW",
         "button_link": "shopify://products/lemonade-best-hydrate",
         "desktop_height": 620,
-        "mobile_height": 480
+        "mobile_height": 620
       }
+    },
+    "benefits": {
+      "type": "bhd-benefits",
+      "settings": {"color_scheme": "scheme-1"}
     },
     "markets": {
       "type": "bhd-markets",
       "settings": {
-        "heading": "Hydration for real life",
+        "heading": "Hydration for real life.",
         "heading_size": "h1",
-        "text": "<p>Best Hydrate is built around three main hydration contexts: athletic performance, everyday life and medical or recovery-related needs.</p>",
+        "text": "<p>Best Hydrate is designed for people who want to feel and perform their best. Whether you're training, working, recovering or simply taking care of yourself, proper hydration makes a difference.</p>",
         "athlete_label": "Athletes",
-        "athlete_intro": "For training, competition and demanding physical performance where hydration and electrolyte replacement matter.",
-        "daily_label": "Daily",
-        "daily_intro": "For ordinary days that still demand a lot: work, heat, travel, focus and keeping hydration consistent.",
+        "athlete_intro": "Supports performance, endurance and recovery for athletes of all levels.",
+        "daily_label": "Daily Use",
+        "daily_intro": "Helps you stay hydrated, focused and productive through everyday life.",
         "medical_label": "Medical",
-        "medical_intro": "For recovery, active aging and situations where hydration needs may be more important or require professional guidance.",
+        "medical_intro": "Designed to support hydration needs during illness, recovery and special life stages.",
         "medical_note": "Medical hydration needs vary. Follow the product label and seek clinician guidance when appropriate.",
-        "color_scheme": "scheme-1",
-        "padding_top": 52,
-        "padding_bottom": 52
+        "color_scheme": "scheme-1"
       }
     },
-    "science_intro": {
-      "type": "rich-text",
-      "blocks": {
-        "heading": {"type": "heading", "settings": {"heading": "The Science of Hydration", "heading_size": "h1"}},
-        "text": {"type": "text", "settings": {"text": "<p>Try some of our Electrolyte Lemonade for YOUR Best Day!</p>"}}
-      },
-      "block_order": ["heading", "text"],
-      "settings": {"desktop_content_position": "center", "content_alignment": "center", "color_scheme": "scheme-1", "full_width": true, "padding_top": 40, "padding_bottom": 20}
-    },
-    "shop": {
-      "type": "featured-collection",
+    "product_story": {
+      "type": "bhd-product-story",
       "settings": {
-        "collection": "all", "products_to_show": 4, "title": "Shop Best Hydrate", "heading_size": "h1", "description": "", "show_description": false, "description_style": "body", "columns_desktop": 4, "enable_desktop_slider": false, "full_width": false, "show_view_all": true, "view_all_style": "solid", "color_scheme": "scheme-2", "image_ratio": "square", "image_shape": "default", "show_secondary_image": false, "show_vendor": false, "show_rating": false, "quick_add": "standard", "columns_mobile": "2", "swipe_on_mobile": true, "padding_top": 36, "padding_bottom": 52
+        "collection": "all",
+        "heading": "Same trusted formula. Two great flavours.",
+        "text": "<p>A clean, science-informed electrolyte mix with five essential electrolytes to help you hydrate, perform and recover wherever life takes you.</p>",
+        "button_label": "Shop Best Hydrate",
+        "button_link": "shopify://collections/all",
+        "color_scheme": "scheme-1"
       }
     },
-    "ingredients": {
-      "type": "multicolumn",
-      "blocks": {
-        "glucose": {"type": "column", "settings": {"image": "shopify://shop_images/Glucose.svg", "title": "Glucose", "text": "<p>Glucose is an energy source and also supports sodium-glucose linked transport, an important pathway for rapid intestinal absorption of sodium and water.</p>", "link_label": "", "link": ""}},
-        "lemons": {"type": "column", "settings": {"image": "shopify://shop_images/Dehydrated_Lemons.svg", "title": "Dehydrated Lemons", "text": "<p>A crystallized lemon flavouring made from real lemon juice and oils.</p>", "link_label": "", "link": ""}},
-        "bicarbonate": {"type": "column", "settings": {"image": "shopify://shop_images/baking_soda.svg", "title": "Baking Soda", "text": "<p>Sodium bicarbonate supplies sodium and bicarbonate, electrolytes involved in fluid balance and normal acid-base physiology.</p>", "link_label": "", "link": ""}},
-        "potassium": {"type": "column", "settings": {"image": "shopify://shop_images/Potassium.svg", "title": "Potassium", "text": "<p>Potassium is the predominant electrolyte inside cells and contributes to normal fluid and electrolyte balance.</p>", "link_label": "", "link": ""}},
-        "salt": {"type": "column", "settings": {"image": "shopify://shop_images/Salt.svg", "title": "Salt", "text": "<p>Sodium and chloride are major electrolytes in extracellular fluid and are replenished through food and drink.</p>", "link_label": "", "link": ""}},
-        "citric": {"type": "column", "settings": {"image": "shopify://shop_images/Citric_Acid.svg", "title": "Citric Acid", "text": "<p>Citric acid contributes tartness and flavour while helping support product stability.</p>", "link_label": "", "link": ""}}
-      },
-      "block_order": ["glucose", "lemons", "bicarbonate", "potassium", "salt", "citric"],
-      "settings": {"title": "Ingredients", "heading_size": "h1", "image_width": "half", "image_ratio": "adapt", "button_label": "", "button_link": "", "columns_desktop": 3, "column_alignment": "center", "background_style": "none", "color_scheme": "scheme-1", "columns_mobile": "1", "swipe_on_mobile": true, "padding_top": 52, "padding_bottom": 52}
-    },
-    "1788819350fcc020d5": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_2a96a61_hJcgVT": {
-          "type": "ai_gen_block_2a96a61",
-          "settings": {"credential_one_title": "Health Canada NPN Registered", "credential_one_detail": "NPN# 80118664", "credential_two_title": "FDA Registered", "credential_two_detail": "Quality you can trust", "credential_three_title": "Canadian Made", "credential_three_detail": "Proudly made in Canada", "desktop_width_percent": 100, "vertical_padding": 20, "background_color": "#E8EAF1", "text_color": "#0E1B4D", "detail_color": "#35416B", "icon_color": "#1E4FA3", "border_color": "#C8CCDA"},
-          "blocks": {}
-        }
-      },
-      "block_order": ["ai_gen_block_2a96a61_hJcgVT"],
-      "settings": {}
+    "trust": {
+      "type": "bhd-trust-strip",
+      "settings": {"color_scheme": "scheme-1"}
     }
   },
-  "order": ["hero", "markets", "science_intro", "shop", "ingredients", "1788819350fcc020d5"]
+  "order": ["hero", "benefits", "markets", "product_story", "trust"]
 }
