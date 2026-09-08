@@ -1,86 +1,316 @@
-{% assign header_menu = section.settings.menu %}
-{% if header_menu == blank or header_menu.links == blank %}
-  {% assign header_menu = linklists['new-menu'] %}
-{% endif %}
-{% if header_menu == blank or header_menu.links == blank %}
-  {% assign header_menu = linklists['main-menu'] %}
-{% endif %}
-
 <header id="BhdHeader-{{ section.id }}" class="bhd-header color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width bhd-header__inner">
     <details class="bhd-header__mobile-menu">
       <summary class="bhd-header__icon-button" aria-label="Menu"><span aria-hidden="true">☰</span></summary>
       <div class="bhd-header__mobile-panel">
-        {% for link in header_menu.links %}
-          {% assign normalized_title = link.title | downcase | strip %}
-          {% if normalized_title == 'shop' %}
-            <a href="{{ link.url }}" class="bhd-header__mobile-shop">{{ link.title }}</a>
-          {% elsif link.links != blank %}
-            <details class="bhd-header__mobile-group">
-              <summary>{{ link.title }}</summary>
-              <div class="bhd-header__mobile-submenu">
-                {% for childlink in link.links %}
-                  {% if childlink.links != blank %}
-                    <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
-                      <summary>{{ childlink.title }}</summary>
-                      <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
-                        {% for grandchildlink in childlink.links %}
-                          <a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a>
-                        {% endfor %}
-                      </div>
-                    </details>
-                  {% else %}
-                    <a href="{{ childlink.url }}">{{ childlink.title }}</a>
-                  {% endif %}
-                {% endfor %}
+        <details class="bhd-header__mobile-group">
+          <summary>Science</summary>
+          <div class="bhd-header__mobile-submenu">
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Hydration Science</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/how-hydration-works">How Hydration Works</a>
+                <a href="/pages/electrolytes">Electrolytes</a>
+                <a href="/pages/glucose-water-absorption">Glucose &amp; Water Absorption</a>
               </div>
             </details>
-          {% else %}
-            <a href="{{ link.url }}">{{ link.title }}</a>
-          {% endif %}
-        {% endfor %}
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Our Formula</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/five-essential-electrolytes">Five Essential Electrolytes</a>
+                <a href="/pages/ingredient-rationale">Ingredient Rationale</a>
+                <a href="/pages/why-bicarbonate">Why Bicarbonate</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Research &amp; Publications</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/publications">Peer-Reviewed Publications</a>
+                <a href="/pages/current-research">Current Research</a>
+                <a href="/pages/research-partners">Research Partners</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Clinical Development</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/clinical-program">Clinical Program</a>
+                <a href="/pages/pilot-studies">Pilot Studies</a>
+                <a href="/pages/healthcare-applications">Healthcare Applications</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Research Impact</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/performance-research">Performance</a>
+                <a href="/pages/population-health">Population Health</a>
+                <a href="/pages/humanitarian-hydration-research">Humanitarian Hydration</a>
+              </div>
+            </details>
+          </div>
+        </details>
+
+        <details class="bhd-header__mobile-group">
+          <summary>Hydration Solutions</summary>
+          <div class="bhd-header__mobile-submenu">
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Performance</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/endurance-hydration">Endurance</a>
+                <a href="/pages/heat-high-sweat">Heat &amp; High Sweat</a>
+                <a href="/pages/recovery-hydration">Recovery</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Everyday Wellness</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/work-long-shifts">Work &amp; Long Shifts</a>
+                <a href="/pages/travel-hydration">Travel</a>
+                <a href="/pages/active-living">Active Living</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Clinical</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/illness-dehydration">Illness &amp; Dehydration</a>
+                <a href="/pages/recovery-rehabilitation">Recovery &amp; Rehabilitation</a>
+                <a href="/pages/active-aging">Active Aging</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Eco-Humanitarian</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/emergency-hydration">Emergency Hydration</a>
+                <a href="/pages/resource-limited-settings">Resource-Limited Settings</a>
+                <a href="/pages/field-partnerships">Field Partnerships</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Products</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/products/lemonade-best-hydrate">Best Hydrate</a>
+                <a href="/pages/product-details">Product Details</a>
+                <a href="/pages/directions">Directions</a>
+              </div>
+            </details>
+          </div>
+        </details>
+
+        <details class="bhd-header__mobile-group">
+          <summary>Connect With Us</summary>
+          <div class="bhd-header__mobile-submenu">
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Our Story</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/why-best-hydrate">Why Best Hydrate</a>
+                <a href="/pages/mission-values">Mission &amp; Values</a>
+                <a href="/pages/about">Meet Us</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Leadership &amp; Scientific Advisors</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/about#leadership">Leadership</a>
+                <a href="/pages/about#scientific-advisors">Scientific Advisors</a>
+                <a href="/pages/about#clinical-collaborators">Clinical Collaborators</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Partnerships</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/research-partnerships">Research Partnerships</a>
+                <a href="/pages/retail-distribution">Retail &amp; Distribution</a>
+                <a href="/pages/humanitarian-partnerships">Humanitarian Partnerships</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Investor Relations</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/investor-relations">Investor Overview</a>
+                <a href="/pages/corporate-information">Corporate Information</a>
+                <a href="/pages/investor-contact">Investor Contact</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>News</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/blogs/news">Company News</a>
+                <a href="/pages/press">Press</a>
+                <a href="/pages/events">Events</a>
+              </div>
+            </details>
+            <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+              <summary>Contact</summary>
+              <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                <a href="/pages/contact">General</a>
+                <a href="/pages/contact?topic=clinical-research">Clinical &amp; Research</a>
+                <a href="/pages/contact?topic=wholesale-distribution">Wholesale &amp; Distribution</a>
+              </div>
+            </details>
+          </div>
+        </details>
+
+        <a class="bhd-header__mobile-shop" href="{{ routes.all_products_collection_url }}">Shop</a>
       </div>
     </details>
 
     <a href="{{ routes.root_url }}" class="bhd-header__brand link link--text focus-inset" aria-label="{{ shop.name | escape }}">
-      <span class="bhd-header__brand-main">
-        {% if settings.logo != blank %}
-          {{ settings.logo | image_url: width: 200 | image_tag: class: 'bhd-header__logo', widths: '80,120,160,200', loading: 'eager', alt: shop.name }}
-        {% endif %}
+      {% if settings.logo != blank %}
+        {{ settings.logo | image_url: width: 200 | image_tag: class: 'bhd-header__logo', widths: '80,120,160,200', loading: 'eager', alt: shop.name }}
+      {% endif %}
+      <span class="bhd-header__brand-copy">
         <span class="bhd-header__site-name">{{ section.settings.site_name | escape }}</span>
+        {% if section.settings.tagline != blank %}<span class="bhd-header__tagline">{{ section.settings.tagline | escape }}</span>{% endif %}
       </span>
-      {% if section.settings.tagline != blank %}<span class="bhd-header__tagline">{{ section.settings.tagline | escape }}</span>{% endif %}
     </a>
 
     <nav class="bhd-header__nav" aria-label="Primary navigation">
-      {% for link in header_menu.links %}
-        {% assign normalized_title = link.title | downcase | strip %}
-        {% if normalized_title == 'shop' %}
-          <a href="{{ link.url }}" class="bhd-header__shop-cta">{{ link.title }}</a>
-        {% elsif link.links != blank %}
-          <details class="bhd-header__dropdown">
-            <summary>{{ link.title }}</summary>
-            <div class="bhd-header__dropdown-menu">
-              {% for childlink in link.links %}
-                <div class="bhd-header__dropdown-child">
-                  {% if childlink.links != blank %}
-                    <a class="bhd-header__dropdown-parent" href="{{ childlink.url }}">{{ childlink.title }}</a>
-                    <div class="bhd-header__dropdown-grandchildren">
-                      {% for grandchildlink in childlink.links %}
-                        <a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a>
-                      {% endfor %}
-                    </div>
-                  {% else %}
-                    <a class="bhd-header__dropdown-parent bhd-header__dropdown-parent--solo" href="{{ childlink.url }}">{{ childlink.title }}</a>
-                  {% endif %}
-                </div>
-              {% endfor %}
+      <details class="bhd-header__dropdown">
+        <summary>Science</summary>
+        <div class="bhd-header__dropdown-menu">
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/hydration-science">Hydration Science</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/how-hydration-works">How Hydration Works</a>
+              <a href="/pages/electrolytes">Electrolytes</a>
+              <a href="/pages/glucose-water-absorption">Glucose &amp; Water Absorption</a>
             </div>
-          </details>
-        {% else %}
-          <a href="{{ link.url }}">{{ link.title }}</a>
-        {% endif %}
-      {% endfor %}
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/our-formula">Our Formula</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/five-essential-electrolytes">Five Essential Electrolytes</a>
+              <a href="/pages/ingredient-rationale">Ingredient Rationale</a>
+              <a href="/pages/why-bicarbonate">Why Bicarbonate</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/research-publications">Research &amp; Publications</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/publications">Peer-Reviewed Publications</a>
+              <a href="/pages/current-research">Current Research</a>
+              <a href="/pages/research-partners">Research Partners</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/clinical-development">Clinical Development</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/clinical-program">Clinical Program</a>
+              <a href="/pages/pilot-studies">Pilot Studies</a>
+              <a href="/pages/healthcare-applications">Healthcare Applications</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/research-impact">Research Impact</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/performance-research">Performance</a>
+              <a href="/pages/population-health">Population Health</a>
+              <a href="/pages/humanitarian-hydration-research">Humanitarian Hydration</a>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="bhd-header__dropdown">
+        <summary>Hydration Solutions</summary>
+        <div class="bhd-header__dropdown-menu">
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/performance-hydration">Performance</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/endurance-hydration">Endurance</a>
+              <a href="/pages/heat-high-sweat">Heat &amp; High Sweat</a>
+              <a href="/pages/recovery-hydration">Recovery</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/everyday-wellness">Everyday Wellness</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/work-long-shifts">Work &amp; Long Shifts</a>
+              <a href="/pages/travel-hydration">Travel</a>
+              <a href="/pages/active-living">Active Living</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/clinical-hydration">Clinical</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/illness-dehydration">Illness &amp; Dehydration</a>
+              <a href="/pages/recovery-rehabilitation">Recovery &amp; Rehabilitation</a>
+              <a href="/pages/active-aging">Active Aging</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/eco-humanitarian">Eco-Humanitarian</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/emergency-hydration">Emergency Hydration</a>
+              <a href="/pages/resource-limited-settings">Resource-Limited Settings</a>
+              <a href="/pages/field-partnerships">Field Partnerships</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="{{ routes.all_products_collection_url }}">Products</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/products/lemonade-best-hydrate">Best Hydrate</a>
+              <a href="/pages/product-details">Product Details</a>
+              <a href="/pages/directions">Directions</a>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="bhd-header__dropdown">
+        <summary>Connect With Us</summary>
+        <div class="bhd-header__dropdown-menu bhd-header__dropdown-menu--wide">
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/about">Our Story</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/why-best-hydrate">Why Best Hydrate</a>
+              <a href="/pages/mission-values">Mission &amp; Values</a>
+              <a href="/pages/about">Meet Us</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/about">Leadership &amp; Scientific Advisors</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/about#leadership">Leadership</a>
+              <a href="/pages/about#scientific-advisors">Scientific Advisors</a>
+              <a href="/pages/about#clinical-collaborators">Clinical Collaborators</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/partnerships">Partnerships</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/research-partnerships">Research Partnerships</a>
+              <a href="/pages/retail-distribution">Retail &amp; Distribution</a>
+              <a href="/pages/humanitarian-partnerships">Humanitarian Partnerships</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/investor-relations">Investor Relations</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/investor-relations">Investor Overview</a>
+              <a href="/pages/corporate-information">Corporate Information</a>
+              <a href="/pages/investor-contact">Investor Contact</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/blogs/news">News</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/blogs/news">Company News</a>
+              <a href="/pages/press">Press</a>
+              <a href="/pages/events">Events</a>
+            </div>
+          </div>
+          <div class="bhd-header__dropdown-child">
+            <a class="bhd-header__dropdown-parent" href="/pages/contact">Contact</a>
+            <div class="bhd-header__dropdown-grandchildren">
+              <a href="/pages/contact">General</a>
+              <a href="/pages/contact?topic=clinical-research">Clinical &amp; Research</a>
+              <a href="/pages/contact?topic=wholesale-distribution">Wholesale &amp; Distribution</a>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <a href="{{ routes.all_products_collection_url }}" class="bhd-header__shop-cta">Shop</a>
     </nav>
 
     <div class="bhd-header__actions">
@@ -99,11 +329,11 @@
 <style>
   .bhd-header { position:relative; z-index:40; border-bottom:1px solid rgba(var(--color-foreground),.09); background:rgb(var(--color-background)); }
   .bhd-header .bhd-header__inner { min-height:82px; display:grid; grid-template-columns:max-content minmax(0,1fr) max-content; align-items:center; gap:3rem; }
-  .bhd-header .bhd-header__brand { display:inline-flex; flex-direction:column; align-items:center; justify-self:start; gap:.3rem; text-decoration:none; min-width:max-content; }
-  .bhd-header .bhd-header__brand-main { display:inline-flex; align-items:center; gap:.8rem; }
+  .bhd-header .bhd-header__brand { display:inline-flex; align-items:center; justify-self:start; gap:.8rem; text-decoration:none; min-width:max-content; }
   .bhd-header .bhd-header__logo { display:block; width:46px; height:46px; object-fit:contain; flex:0 0 auto; }
-  .bhd-header .bhd-header__site-name { display:block; color:rgb(var(--color-foreground)); font-family:var(--font-heading-family); font-size:2.5rem; font-weight:700; line-height:.95; white-space:nowrap; }
-  .bhd-header .bhd-header__tagline { display:block; width:100%; text-align:center; color:rgba(var(--color-foreground),.72); font-family:var(--font-heading-family); font-size:1.1rem; font-weight:500; line-height:1.1; white-space:nowrap; }
+  .bhd-header .bhd-header__brand-copy { display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:.05rem; }
+  .bhd-header .bhd-header__site-name { display:block; color:rgb(var(--color-foreground)); font-family:var(--font-heading-family); font-size:2.5rem; font-weight:700; line-height:.92; white-space:nowrap; }
+  .bhd-header .bhd-header__tagline { display:block; margin-top:.08rem; color:rgba(var(--color-foreground),.72); font-family:var(--font-heading-family); font-size:1.05rem; font-weight:500; line-height:1; white-space:nowrap; }
   .bhd-header .bhd-header__nav { display:flex; align-items:center; justify-content:center; gap:2.4rem; }
   .bhd-header .bhd-header__nav > a,
   .bhd-header .bhd-header__dropdown > summary { color:rgb(var(--color-foreground)); text-decoration:none; font-size:1.55rem; letter-spacing:.035em; cursor:pointer; list-style:none; }
@@ -112,14 +342,14 @@
   .bhd-header .bhd-header__dropdown { position:relative; }
   .bhd-header .bhd-header__dropdown > summary::-webkit-details-marker { display:none; }
   .bhd-header .bhd-header__dropdown > summary::after { content:'⌄'; display:inline-block; margin-left:.45rem; font-size:1.35rem; }
-  .bhd-header .bhd-header__dropdown-menu { position:absolute; top:calc(100% + 1.2rem); left:50%; transform:translateX(-50%); width:min(880px,88vw); padding:1.6rem; border-radius:14px; background:rgb(var(--color-background)); box-shadow:0 18px 46px rgba(0,0,0,.14); border:1px solid rgba(var(--color-foreground),.08); display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:.8rem 1rem; }
+  .bhd-header .bhd-header__dropdown-menu { position:absolute; top:calc(100% + 1.2rem); left:50%; transform:translateX(-50%); width:min(920px,90vw); padding:1.6rem; border-radius:14px; background:rgb(var(--color-background)); box-shadow:0 18px 46px rgba(0,0,0,.14); border:1px solid rgba(var(--color-foreground),.08); display:grid; grid-template-columns:repeat(5,minmax(150px,1fr)); gap:.8rem 1rem; }
+  .bhd-header .bhd-header__dropdown-menu--wide { width:min(1040px,92vw); grid-template-columns:repeat(6,minmax(135px,1fr)); }
   .bhd-header .bhd-header__dropdown-child { min-width:0; padding:.45rem .5rem .6rem; border-radius:10px; }
   .bhd-header .bhd-header__dropdown-child:hover { background:rgba(var(--color-foreground),.025); }
   .bhd-header .bhd-header__dropdown-menu a { display:block; color:rgb(var(--color-foreground)); text-decoration:none; }
-  .bhd-header .bhd-header__dropdown-parent { font-weight:700; font-size:1.45rem; padding:.6rem .65rem; line-height:1.25; white-space:normal; }
-  .bhd-header .bhd-header__dropdown-parent--solo { font-weight:600; }
+  .bhd-header .bhd-header__dropdown-parent { font-weight:700; font-size:1.42rem; padding:.6rem .65rem; line-height:1.22; white-space:normal; }
   .bhd-header .bhd-header__dropdown-grandchildren { margin-top:.2rem; }
-  .bhd-header .bhd-header__dropdown-grandchildren a { font-size:1.3rem; opacity:.78; padding:.45rem .65rem; line-height:1.3; white-space:normal; }
+  .bhd-header .bhd-header__dropdown-grandchildren a { font-size:1.26rem; opacity:.78; padding:.44rem .65rem; line-height:1.28; white-space:normal; }
   .bhd-header .bhd-header__dropdown-grandchildren a:hover,.bhd-header .bhd-header__dropdown-parent:hover { opacity:1; text-decoration:underline; text-underline-offset:.25rem; }
   .bhd-header .bhd-header__actions { display:flex; align-items:center; justify-self:end; gap:.7rem; }
   .bhd-header .bhd-header__icon-button { width:4rem; height:4rem; display:inline-flex; align-items:center; justify-content:center; color:rgb(var(--color-foreground)); text-decoration:none; position:relative; cursor:pointer; }
@@ -135,36 +365,47 @@
     .bhd-header--floating.bhd-header--visible { transform:translateY(0); pointer-events:auto; }
   }
 
+  @media screen and (max-width:1180px) and (min-width:990px) {
+    .bhd-header .bhd-header__inner { gap:1.6rem; }
+    .bhd-header .bhd-header__nav { gap:1.55rem; }
+    .bhd-header .bhd-header__nav > a,
+    .bhd-header .bhd-header__dropdown > summary { font-size:1.35rem; }
+    .bhd-header .bhd-header__site-name { font-size:2.15rem; }
+    .bhd-header .bhd-header__tagline { font-size:.94rem; }
+    .bhd-header .bhd-header__logo { width:42px; height:42px; }
+  }
+
   @media screen and (max-width:989px) {
     .bhd-header .bhd-header__inner { min-height:84px; grid-template-columns:auto 1fr auto; gap:.65rem; padding-top:.6rem; padding-bottom:.6rem; }
     .bhd-header .bhd-header__mobile-menu { display:block; position:relative; }
     .bhd-header .bhd-header__nav { display:none; position:static; transform:none; }
-    .bhd-header .bhd-header__brand { justify-self:center; gap:.28rem; min-width:0; }
-    .bhd-header .bhd-header__brand-main { gap:.55rem; }
+    .bhd-header .bhd-header__brand { justify-self:center; gap:.5rem; min-width:0; }
     .bhd-header .bhd-header__logo { width:38px; height:38px; }
     .bhd-header .bhd-header__site-name { font-size:1.82rem; }
-    .bhd-header .bhd-header__tagline { font-size:.98rem; max-width:230px; white-space:normal; overflow:visible; text-overflow:clip; line-height:1.15; }
+    .bhd-header .bhd-header__tagline { font-size:.88rem; margin-top:.03rem; white-space:nowrap; }
     .bhd-header .bhd-header__actions { justify-self:end; }
     .bhd-header .bhd-header__actions > a:first-child { display:none; }
     .bhd-header .bhd-header__cart-button svg { width:2.35rem; height:2.35rem; }
     .bhd-header .bhd-header__mobile-menu > summary { list-style:none; font-size:2.3rem; }
     .bhd-header .bhd-header__mobile-menu > summary::-webkit-details-marker { display:none; }
-    .bhd-header .bhd-header__mobile-panel { position:absolute; top:calc(100% + 1rem); left:0; width:min(340px,90vw); max-height:78vh; overflow:auto; padding:1.2rem; background:rgb(var(--color-background)); border:1px solid rgba(var(--color-foreground),.08); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.14); }
+    .bhd-header .bhd-header__mobile-panel { position:absolute; top:calc(100% + 1rem); left:0; width:min(360px,92vw); max-height:80vh; overflow:auto; padding:1.2rem; background:rgb(var(--color-background)); border:1px solid rgba(var(--color-foreground),.08); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.14); }
     .bhd-header .bhd-header__mobile-panel > a,
     .bhd-header .bhd-header__mobile-panel summary,
-    .bhd-header .bhd-header__mobile-submenu a { display:block; padding:.9rem 1rem; color:rgb(var(--color-foreground)); text-decoration:none; font-size:1.6rem; cursor:pointer; list-style:none; }
+    .bhd-header .bhd-header__mobile-submenu a { display:block; padding:.9rem 1rem; color:rgb(var(--color-foreground)); text-decoration:none; font-size:1.55rem; cursor:pointer; list-style:none; }
     .bhd-header .bhd-header__mobile-panel summary::-webkit-details-marker { display:none; }
-    .bhd-header .bhd-header__mobile-submenu { padding-left:1rem; }
-    .bhd-header .bhd-header__mobile-group--nested summary { font-size:1.45rem; font-weight:600; }
-    .bhd-header .bhd-header__mobile-submenu--nested a { font-size:1.35rem; opacity:.82; }
-    .bhd-header .bhd-header__mobile-shop { margin:.6rem .7rem .2rem; text-align:center; border-radius:999px; background:rgb(var(--color-button)); color:rgb(var(--color-button-text)) !important; font-weight:700; }
+    .bhd-header .bhd-header__mobile-panel summary::after { content:'+'; float:right; opacity:.65; }
+    .bhd-header .bhd-header__mobile-panel details[open] > summary::after { content:'−'; }
+    .bhd-header .bhd-header__mobile-submenu { padding-left:.85rem; }
+    .bhd-header .bhd-header__mobile-group--nested summary { font-size:1.4rem; font-weight:600; }
+    .bhd-header .bhd-header__mobile-submenu--nested a { font-size:1.3rem; opacity:.82; }
+    .bhd-header .bhd-header__mobile-shop { margin:.7rem .7rem .2rem; text-align:center; border-radius:999px; background:rgb(var(--color-button)); color:rgb(var(--color-button-text)) !important; font-weight:700; }
   }
 
   @media screen and (max-width:480px) {
-    .bhd-header .bhd-header__inner { min-height:82px; }
+    .bhd-header .bhd-header__inner { min-height:80px; }
     .bhd-header .bhd-header__logo { width:36px; height:36px; }
-    .bhd-header .bhd-header__site-name { font-size:1.72rem; }
-    .bhd-header .bhd-header__tagline { font-size:.9rem; max-width:205px; }
+    .bhd-header .bhd-header__site-name { font-size:1.7rem; }
+    .bhd-header .bhd-header__tagline { font-size:.82rem; }
     .bhd-header .bhd-header__actions { gap:0; }
   }
 </style>
@@ -191,7 +432,6 @@
   "settings":[
     {"type":"text","id":"site_name","label":"Site name","default":"Best Hydrate"},
     {"type":"text","id":"tagline","label":"Tagline","default":"The Science of Hydration"},
-    {"type":"link_list","id":"menu","label":"Menu","default":"main-menu"},
     {"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-2"}
   ],
   "presets":[{"name":"Best Hydrate header"}]
