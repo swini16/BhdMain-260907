@@ -15,6 +15,7 @@
       "type": "bhd-header",
       "settings": {
         "site_name": "Best Hydrate",
+        "tagline": "Hydrate for YOUR best day.",
         "menu": "new-menu",
         "color_scheme": "scheme-2"
       }
