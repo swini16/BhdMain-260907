@@ -1,149 +1,81 @@
 <section id="BhdHero-{{ section.id }}" class="bhd-hero">
-  {% if section.settings.product != blank and section.settings.product.featured_image != blank %}
-    {{ section.settings.product.featured_image | image_url: width: 1800 | image_tag: loading: 'eager', widths: '750, 1100, 1500, 1800', sizes: '100vw', class: 'bhd-hero__media', alt: section.settings.product.title }}
-  {% else %}
-    <img class="bhd-hero__media" src="{{ 'bhd-hero-premium.svg' | asset_url }}" alt="" width="1600" height="800" loading="eager">
-  {% endif %}
-  <div class="bhd-hero__shade"></div>
-  <div class="page-width bhd-hero__content">
-    <div class="bhd-hero__box">
-      {% if section.settings.heading != blank %}
-        <h1 class="bhd-hero__heading">{{ section.settings.heading }}</h1>
-      {% endif %}
-      {% assign hero_subheading = section.settings.subheading %}
-      {% if hero_subheading == 'Five essential electrolytes. Built for better hydration.' %}
-        {% assign hero_subheading = 'For training, work, recovery and everyday life.' %}
-      {% endif %}
-      {% if hero_subheading != blank %}
-        <div class="bhd-hero__subheading">{{ hero_subheading }}</div>
-      {% endif %}
-      {% if section.settings.button_label != blank %}
-        <a class="button button--primary bhd-hero__button" {% if section.settings.button_link != blank %}href="{{ section.settings.button_link }}"{% else %}role="link" aria-disabled="true"{% endif %}>{{ section.settings.button_label }}</a>
+  <img class="bhd-hero__media" src="{{ 'bhd-hero-premium.svg' | asset_url }}" alt="" width="1600" height="800" loading="eager">
+  <div class="bhd-hero__wash"></div>
+  <div class="page-width bhd-hero__inner">
+    <div class="bhd-hero__copy">
+      {% if section.settings.heading != blank %}<h1>{{ section.settings.heading }}</h1>{% endif %}
+      {% if section.settings.subheading != blank %}<p>{{ section.settings.subheading }}</p>{% endif %}
+      {% if section.settings.button_label != blank %}<a class="button button--primary" {% if section.settings.button_link != blank %}href="{{ section.settings.button_link }}"{% else %}role="link" aria-disabled="true"{% endif %}>{{ section.settings.button_label }}</a>{% endif %}
+    </div>
+    <div class="bhd-hero__visual">
+      <div class="bhd-hero__bottle" aria-hidden="true"><span></span></div>
+      {% if section.settings.product != blank and section.settings.product.featured_image != blank %}
+        <div class="bhd-hero__product-card">
+          {{ section.settings.product.featured_image | image_url: width: 900 | image_tag: loading: 'eager', widths: '360,540,720,900', sizes: '(min-width: 990px) 36vw, 70vw', class: 'bhd-hero__product', alt: section.settings.product.title }}
+        </div>
       {% endif %}
     </div>
   </div>
 </section>
 
 <style>
-  #BhdHero-{{ section.id }} {
-    position: relative;
-    min-height: {{ section.settings.desktop_height }}px;
-    overflow: hidden;
-    display: grid;
-    align-items: center;
-    background: #0b2558;
-  }
-  #BhdHero-{{ section.id }} .bhd-hero__media {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 58% center;
-  }
-  #BhdHero-{{ section.id }} .bhd-hero__shade {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, rgba(3,20,55,.78) 0%, rgba(5,32,72,.53) 42%, rgba(7,39,82,.12) 72%, rgba(7,39,82,.02) 100%);
-  }
-  #BhdHero-{{ section.id }} .bhd-hero__content {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    min-height: {{ section.settings.desktop_height }}px;
-    padding: 4rem 0;
-  }
-  #BhdHero-{{ section.id }} .bhd-hero__box {
-    width: min(650px, 56vw);
-    padding: 3.2rem 3.5rem;
-    border-radius: 2rem;
-    background: rgba(6, 28, 67, .54);
-    border: 1px solid rgba(255,255,255,.20);
-    box-shadow: 0 2rem 6rem rgba(0,0,0,.18);
-    backdrop-filter: blur(8px);
-  }
-  #BhdHero-{{ section.id }} .bhd-hero__heading {
-    margin: 0;
-    color: #fff;
-    font-family: var(--font-heading-family);
-    font-weight: 750;
-    font-size: clamp(4rem, 5.1vw, 6.8rem);
-    line-height: 1.01;
-    letter-spacing: -.02em;
-    text-shadow: 0 2px 14px rgba(0,0,0,.2);
-  }
-  #BhdHero-{{ section.id }} .bhd-hero__subheading {
-    margin: 1.5rem 0 0;
-    max-width: 560px;
-    color: rgba(255,255,255,.94);
-    font-size: clamp(1.8rem, 2vw, 2.25rem);
-    line-height: 1.4;
-    font-weight: 500;
-  }
-  #BhdHero-{{ section.id }} .bhd-hero__button { margin-top: 2.4rem; }
+  #BhdHero-{{ section.id }} { position:relative; min-height:620px; overflow:hidden; background:#dff6ff; }
+  #BhdHero-{{ section.id }} .bhd-hero__media { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; }
+  #BhdHero-{{ section.id }} .bhd-hero__wash { position:absolute; inset:0; background:linear-gradient(90deg,rgba(255,255,255,.82) 0%,rgba(255,255,255,.60) 40%,rgba(255,255,255,.08) 74%,rgba(255,255,255,0) 100%); }
+  #BhdHero-{{ section.id }} .bhd-hero__inner { position:relative; z-index:2; min-height:620px; display:grid; grid-template-columns:minmax(0,.92fr) minmax(360px,.82fr); align-items:center; gap:4rem; }
+  #BhdHero-{{ section.id }} .bhd-hero__copy { max-width:680px; padding:4rem 0; }
+  #BhdHero-{{ section.id }} .bhd-hero__copy h1 { margin:0; color:#0d2a62; font-size:clamp(4.8rem,6vw,7.4rem); line-height:.98; letter-spacing:-.03em; }
+  #BhdHero-{{ section.id }} .bhd-hero__copy p { margin:1.8rem 0 0; color:#173765; font-size:clamp(1.9rem,2.2vw,2.4rem); line-height:1.38; max-width:620px; }
+  #BhdHero-{{ section.id }} .bhd-hero__copy .button { margin-top:2.5rem; min-width:170px; }
+  #BhdHero-{{ section.id }} .bhd-hero__visual { position:relative; min-height:520px; display:grid; place-items:center; }
+  #BhdHero-{{ section.id }} .bhd-hero__product-card { width:min(34vw,430px); position:relative; z-index:2; border-radius:2rem; overflow:hidden; box-shadow:0 2.6rem 5rem rgba(10,44,82,.22); transform:translateY(1rem); background:#fff; }
+  #BhdHero-{{ section.id }} .bhd-hero__product { display:block; width:100%; height:auto; }
+  #BhdHero-{{ section.id }} .bhd-hero__bottle { position:absolute; right:3%; top:3%; width:170px; height:430px; border:10px solid rgba(15,53,91,.28); border-radius:34px 34px 26px 26px; background:rgba(255,255,255,.23); backdrop-filter:blur(2px); transform:rotate(1deg); }
+  #BhdHero-{{ section.id }} .bhd-hero__bottle::before { content:''; position:absolute; left:24px; right:24px; top:-36px; height:45px; border-radius:12px 12px 6px 6px; background:#0d294f; }
+  #BhdHero-{{ section.id }} .bhd-hero__bottle::after { content:'Hydrate for YOUR best day.'; position:absolute; inset:auto 18px 120px; color:#173765; font-weight:700; font-size:1.8rem; line-height:1.05; text-align:center; }
+  #BhdHero-{{ section.id }} .bhd-hero__bottle span { position:absolute; left:18%; right:18%; bottom:28px; height:44%; border-radius:0 0 20px 20px; background:linear-gradient(#cdeeff,#79c5e7); opacity:.55; }
 
-  @media screen and (max-width: 989px) {
-    #BhdHero-{{ section.id }} .bhd-hero__shade {
-      background: linear-gradient(180deg, rgba(3,20,55,.60) 0%, rgba(3,20,55,.38) 48%, rgba(3,20,55,.56) 100%);
-    }
-    #BhdHero-{{ section.id }} .bhd-hero__content {
-      justify-content: center;
-      text-align: center;
-      padding: 2.4rem 0;
-    }
-    #BhdHero-{{ section.id }} .bhd-hero__box {
-      width: min(680px, 88vw);
-      margin: 0 auto;
-      background: rgba(7, 30, 70, .58);
-    }
-    #BhdHero-{{ section.id }} .bhd-hero__subheading { margin-left: auto; margin-right: auto; }
+  @media screen and (max-width:989px){
+    #BhdHero-{{ section.id }} { min-height:720px; }
+    #BhdHero-{{ section.id }} .bhd-hero__wash { background:linear-gradient(180deg,rgba(255,255,255,.92) 0%,rgba(255,255,255,.72) 42%,rgba(255,255,255,.06) 72%); }
+    #BhdHero-{{ section.id }} .bhd-hero__inner { min-height:720px; grid-template-columns:1fr; gap:0; text-align:center; padding-top:2.4rem; padding-bottom:1.8rem; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy { max-width:680px; margin:0 auto; padding:1.2rem 0 0; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy h1 { font-size:clamp(4rem,10vw,5.8rem); }
+    #BhdHero-{{ section.id }} .bhd-hero__copy p { margin-left:auto; margin-right:auto; font-size:1.8rem; }
+    #BhdHero-{{ section.id }} .bhd-hero__visual { min-height:340px; }
+    #BhdHero-{{ section.id }} .bhd-hero__product-card { width:min(58vw,340px); transform:none; }
+    #BhdHero-{{ section.id }} .bhd-hero__bottle { width:112px; height:290px; right:13%; top:16px; border-width:7px; opacity:.82; }
+    #BhdHero-{{ section.id }} .bhd-hero__bottle::before { left:16px; right:16px; top:-26px; height:32px; }
+    #BhdHero-{{ section.id }} .bhd-hero__bottle::after { inset:auto 10px 78px; font-size:1.15rem; }
   }
 
-  @media screen and (max-width: 749px) {
-    #BhdHero-{{ section.id }} { min-height: 470px; }
-    #BhdHero-{{ section.id }} .bhd-hero__media {
-      object-position: center 46%;
-      filter: saturate(1.04) contrast(1.03);
-    }
-    #BhdHero-{{ section.id }} .bhd-hero__content {
-      min-height: 470px;
-      align-items: end;
-      padding: 1.8rem 0 2.2rem;
-    }
-    #BhdHero-{{ section.id }} .bhd-hero__box {
-      width: calc(100% - 2.4rem);
-      padding: 1.9rem 1.6rem;
-      border-radius: 1.35rem;
-      background: rgba(5, 24, 60, .68);
-      backdrop-filter: blur(6px);
-    }
-    #BhdHero-{{ section.id }} .bhd-hero__heading {
-      font-size: clamp(3.15rem, 10.3vw, 4.5rem);
-      line-height: 1.02;
-    }
-    #BhdHero-{{ section.id }} .bhd-hero__subheading {
-      margin-top: 1rem;
-      font-size: 1.55rem;
-      line-height: 1.32;
-    }
-    #BhdHero-{{ section.id }} .bhd-hero__button { margin-top: 1.5rem; }
+  @media screen and (max-width:749px){
+    #BhdHero-{{ section.id }} { min-height:610px; }
+    #BhdHero-{{ section.id }} .bhd-hero__inner { min-height:610px; padding-top:1.5rem; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy { padding-top:.5rem; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy h1 { font-size:clamp(3.5rem,11vw,4.7rem); }
+    #BhdHero-{{ section.id }} .bhd-hero__copy p { margin-top:1rem; font-size:1.55rem; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy .button { margin-top:1.5rem; min-width:145px; }
+    #BhdHero-{{ section.id }} .bhd-hero__visual { min-height:280px; }
+    #BhdHero-{{ section.id }} .bhd-hero__product-card { width:min(62vw,280px); border-radius:1.2rem; }
+    #BhdHero-{{ section.id }} .bhd-hero__bottle { width:88px; height:226px; right:5%; top:34px; border-width:5px; }
+    #BhdHero-{{ section.id }} .bhd-hero__bottle::before { left:12px; right:12px; top:-20px; height:24px; }
+    #BhdHero-{{ section.id }} .bhd-hero__bottle::after { display:none; }
   }
 </style>
 
 {% schema %}
 {
-  "name": "Best Hydrate hero",
-  "settings": [
-    {"type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Hydrate for YOUR best day."},
-    {"type": "inline_richtext", "id": "subheading", "label": "Subheading", "default": "For training, work, recovery and everyday life."},
-    {"type": "product", "id": "product", "label": "Hero product"},
-    {"type": "text", "id": "button_label", "label": "Button label", "default": "SHOP NOW"},
-    {"type": "url", "id": "button_link", "label": "Button link"},
-    {"type": "range", "id": "desktop_height", "label": "Desktop height", "min": 500, "max": 820, "step": 20, "unit": "px", "default": 620},
-    {"type": "range", "id": "mobile_height", "label": "Mobile height", "min": 420, "max": 700, "step": 20, "unit": "px", "default": 480}
+  "name":"Best Hydrate hero",
+  "settings":[
+    {"type":"inline_richtext","id":"heading","label":"Heading","default":"Hydrate for YOUR best day."},
+    {"type":"inline_richtext","id":"subheading","label":"Subheading","default":"Five essential electrolytes. Built for better hydration."},
+    {"type":"product","id":"product","label":"Hero product"},
+    {"type":"text","id":"button_label","label":"Button label","default":"SHOP NOW"},
+    {"type":"url","id":"button_link","label":"Button link"},
+    {"type":"range","id":"desktop_height","label":"Desktop height","min":500,"max":820,"step":20,"unit":"px","default":620},
+    {"type":"range","id":"mobile_height","label":"Mobile height","min":520,"max":760,"step":20,"unit":"px","default":620}
   ],
-  "presets": [{"name": "Best Hydrate hero"}]
+  "presets":[{"name":"Best Hydrate hero"}]
 }
 {% endschema %}
