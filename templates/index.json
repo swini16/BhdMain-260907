@@ -14,30 +14,26 @@
       "settings": {
         "heading": "Hydrate for YOUR best day.",
         "subheading": "Five essential electrolytes. Built for better hydration.",
+        "product": "lemonade-best-hydrate",
         "button_label": "SHOP NOW",
         "button_link": "shopify://products/lemonade-best-hydrate",
-        "overlay_opacity": 25,
         "desktop_height": 620,
-        "mobile_height": 520
+        "mobile_height": 760
       }
     },
     "markets": {
       "type": "bhd-markets",
       "settings": {
-        "heading": "Hydration across real life",
+        "heading": "Hydration for real life",
         "heading_size": "h1",
-        "text": "<p>Best Hydrate supports hydration across three broad real-life contexts.</p>",
+        "text": "<p>Best Hydrate is built around three main hydration contexts: athletic performance, everyday life and medical or recovery-related needs.</p>",
         "athlete_label": "Athletes",
+        "athlete_intro": "For training, competition and demanding physical performance where hydration and electrolyte replacement matter.",
         "daily_label": "Daily Use",
+        "daily_intro": "For ordinary days that still demand a lot: work, heat, travel, focus and keeping hydration consistent.",
         "medical_label": "Medical",
-        "athlete_daily_title": "High-demand performance",
-        "athlete_daily_text": "Hot labour, long shifts, intensive cognitive work",
-        "daily_medical_title": "Recovery & resilience",
-        "daily_medical_text": "Illness recovery, active aging, vulnerable everyday hydration",
-        "athlete_medical_title": "Rehab & return to performance",
-        "athlete_medical_text": "Rehabilitation and medically managed training",
-        "center_title": "Clinical",
-        "center_text": "Clinical hydration can span all three contexts when professional guidance is appropriate.",
+        "medical_intro": "For recovery, active aging and situations where hydration needs may be more important or require professional guidance.",
+        "medical_note": "Medical hydration needs vary. Follow the product label and seek clinician guidance when appropriate.",
         "color_scheme": "scheme-1",
         "padding_top": 52,
         "padding_bottom": 52
