@@ -1,18 +1,14 @@
 <header id="BhdHeader-{{ section.id }}" class="bhd-header color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width bhd-header__inner">
     <details class="bhd-header__mobile-menu">
-      <summary class="bhd-header__icon-button" aria-label="Menu">
-        <span aria-hidden="true">☰</span>
-      </summary>
+      <summary class="bhd-header__icon-button" aria-label="Menu"><span aria-hidden="true">☰</span></summary>
       <div class="bhd-header__mobile-panel">
         {% for link in section.settings.menu.links %}
           {% if link.links != blank %}
             <details>
               <summary>{{ link.title }}</summary>
               <div class="bhd-header__mobile-submenu">
-                {% for childlink in link.links %}
-                  <a href="{{ childlink.url }}">{{ childlink.title }}</a>
-                {% endfor %}
+                {% for childlink in link.links %}<a href="{{ childlink.url }}">{{ childlink.title }}</a>{% endfor %}
               </div>
             </details>
           {% else %}
@@ -29,9 +25,7 @@
         {% endif %}
         <span class="bhd-header__site-name">{{ section.settings.site_name | escape }}</span>
       </span>
-      {% if section.settings.tagline != blank %}
-        <span class="bhd-header__tagline">{{ section.settings.tagline | escape }}</span>
-      {% endif %}
+      {% if section.settings.tagline != blank %}<span class="bhd-header__tagline">{{ section.settings.tagline | escape }}</span>{% endif %}
     </a>
 
     <nav class="bhd-header__nav" aria-label="Primary navigation">
@@ -40,9 +34,7 @@
           <details class="bhd-header__dropdown">
             <summary>{{ link.title }}</summary>
             <div class="bhd-header__dropdown-menu">
-              {% for childlink in link.links %}
-                <a href="{{ childlink.url }}">{{ childlink.title }}</a>
-              {% endfor %}
+              {% for childlink in link.links %}<a href="{{ childlink.url }}">{{ childlink.title }}</a>{% endfor %}
             </div>
           </details>
         {% else %}
@@ -52,13 +44,9 @@
     </nav>
 
     <div class="bhd-header__actions">
-      <a href="{{ routes.search_url }}" class="bhd-header__icon-button" aria-label="Search">
-        <span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span>
-      </a>
+      <a href="{{ routes.search_url }}" class="bhd-header__icon-button" aria-label="Search"><span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span></a>
       {% if shop.customer_accounts_enabled %}
-        <a href="{{ routes.account_url }}" class="bhd-header__icon-button" aria-label="Account">
-          <span class="svg-wrapper">{{ 'icon-account.svg' | inline_asset_content }}</span>
-        </a>
+        <a href="{{ routes.account_url }}" class="bhd-header__icon-button" aria-label="Account"><span class="svg-wrapper">{{ 'icon-account.svg' | inline_asset_content }}</span></a>
       {% endif %}
       <a href="{{ routes.cart_url }}" class="bhd-header__icon-button" aria-label="Cart">
         <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
@@ -69,284 +57,202 @@
 </header>
 
 <style>
-  #BhdHeader-{{ section.id }} {
+  .bhd-header {
     position: relative;
     z-index: 40;
     border-bottom: 1px solid rgba(var(--color-foreground), .09);
     background: rgb(var(--color-background));
   }
-  #BhdHeader-{{ section.id }} .bhd-header__inner {
+  .bhd-header .bhd-header__inner {
     min-height: 82px;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 3rem;
   }
-  #BhdHeader-{{ section.id }} .bhd-header__brand {
+  .bhd-header .bhd-header__brand {
     display: inline-flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: .28rem;
+    align-items: center;
+    gap: .26rem;
     text-decoration: none;
     min-width: max-content;
   }
-  #BhdHeader-{{ section.id }} .bhd-header__brand-main {
-    display: inline-flex;
-    align-items: center;
-    gap: .8rem;
+  .bhd-header .bhd-header__brand-main { display: inline-flex; align-items: center; gap: .8rem; }
+  .bhd-header .bhd-header__logo { display:block; width:46px; height:46px; object-fit:contain; flex:0 0 auto; }
+  .bhd-header .bhd-header__site-name {
+    display:block;
+    color:rgb(var(--color-foreground));
+    font-family:var(--font-heading-family);
+    font-size:2.5rem;
+    font-weight:700;
+    line-height:.95;
+    white-space:nowrap;
   }
-  #BhdHeader-{{ section.id }} .bhd-header__logo {
-    display: block;
-    width: 46px;
-    height: 46px;
-    object-fit: contain;
-    flex: 0 0 auto;
+  .bhd-header .bhd-header__tagline {
+    display:block;
+    width:100%;
+    text-align:center;
+    color:rgba(var(--color-foreground), .72);
+    font-family:var(--font-heading-family);
+    font-size:1.14rem;
+    font-weight:500;
+    line-height:1.1;
+    white-space:nowrap;
   }
-  #BhdHeader-{{ section.id }} .bhd-header__site-name {
-    display: block;
-    color: rgb(var(--color-foreground));
-    font-family: var(--font-heading-family);
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: .95;
-    white-space: nowrap;
+  .bhd-header .bhd-header__nav { display:flex; align-items:center; gap:2.8rem; }
+  .bhd-header .bhd-header__nav > a,
+  .bhd-header .bhd-header__dropdown > summary {
+    color:rgb(var(--color-foreground));
+    text-decoration:none;
+    font-size:1.6rem;
+    letter-spacing:.04em;
+    cursor:pointer;
+    list-style:none;
   }
-  #BhdHeader-{{ section.id }} .bhd-header__tagline {
-    display: block;
-    padding-left: 0;
-    color: rgba(var(--color-foreground), .72);
-    font-family: var(--font-heading-family);
-    font-size: 1.14rem;
-    font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: .01em;
-    white-space: nowrap;
+  .bhd-header .bhd-header__dropdown { position:relative; }
+  .bhd-header .bhd-header__dropdown > summary::-webkit-details-marker { display:none; }
+  .bhd-header .bhd-header__dropdown > summary::after { content:'⌄'; display:inline-block; margin-left:.45rem; font-size:1.4rem; }
+  .bhd-header .bhd-header__dropdown-menu {
+    position:absolute; top:calc(100% + 1rem); left:0; min-width:190px; padding:1rem;
+    border-radius:10px; background:rgb(var(--color-background));
+    box-shadow:0 10px 30px rgba(0,0,0,.13); border:1px solid rgba(var(--color-foreground), .08);
   }
-  #BhdHeader-{{ section.id }} .bhd-header__nav {
-    display: flex;
-    align-items: center;
-    gap: 2.8rem;
+  .bhd-header .bhd-header__dropdown-menu a { display:block; padding:.8rem 1rem; color:rgb(var(--color-foreground)); text-decoration:none; white-space:nowrap; }
+  .bhd-header .bhd-header__actions { display:flex; align-items:center; gap:.7rem; }
+  .bhd-header .bhd-header__icon-button {
+    width:4rem; height:4rem; display:inline-flex; align-items:center; justify-content:center;
+    color:rgb(var(--color-foreground)); text-decoration:none; position:relative; cursor:pointer;
   }
-  #BhdHeader-{{ section.id }} .bhd-header__nav > a,
-  #BhdHeader-{{ section.id }} .bhd-header__dropdown > summary {
-    color: rgb(var(--color-foreground));
-    text-decoration: none;
-    font-size: 1.6rem;
-    letter-spacing: .04em;
-    cursor: pointer;
-    list-style: none;
+  .bhd-header .bhd-header__icon-button svg { width:2.1rem; height:2.1rem; }
+  .bhd-header .bhd-header__cart-count {
+    position:absolute; top:.2rem; right:.1rem; min-width:1.7rem; height:1.7rem; border-radius:999px;
+    display:grid; place-items:center; background:rgb(var(--color-button)); color:rgb(var(--color-button-text)); font-size:1rem;
   }
-  #BhdHeader-{{ section.id }} .bhd-header__dropdown { position: relative; }
-  #BhdHeader-{{ section.id }} .bhd-header__dropdown > summary::-webkit-details-marker { display: none; }
-  #BhdHeader-{{ section.id }} .bhd-header__dropdown > summary::after {
-    content: '⌄';
-    display: inline-block;
-    margin-left: .45rem;
-    font-size: 1.4rem;
-  }
-  #BhdHeader-{{ section.id }} .bhd-header__dropdown-menu {
-    position: absolute;
-    top: calc(100% + 1rem);
-    left: 0;
-    min-width: 190px;
-    padding: 1rem;
-    border-radius: 10px;
-    background: rgb(var(--color-background));
-    box-shadow: 0 10px 30px rgba(0,0,0,.13);
-    border: 1px solid rgba(var(--color-foreground), .08);
-  }
-  #BhdHeader-{{ section.id }} .bhd-header__dropdown-menu a {
-    display: block;
-    padding: .8rem 1rem;
-    color: rgb(var(--color-foreground));
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  #BhdHeader-{{ section.id }} .bhd-header__actions {
-    display: flex;
-    align-items: center;
-    gap: .7rem;
-  }
-  #BhdHeader-{{ section.id }} .bhd-header__icon-button {
-    width: 4rem;
-    height: 4rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: rgb(var(--color-foreground));
-    text-decoration: none;
-    position: relative;
-    cursor: pointer;
-  }
-  #BhdHeader-{{ section.id }} .bhd-header__icon-button svg { width: 2.1rem; height: 2.1rem; }
-  #BhdHeader-{{ section.id }} .bhd-header__cart-count {
-    position: absolute;
-    top: .2rem;
-    right: .1rem;
-    min-width: 1.7rem;
-    height: 1.7rem;
-    border-radius: 999px;
-    display: grid;
-    place-items: center;
-    background: rgb(var(--color-button));
-    color: rgb(var(--color-button-text));
-    font-size: 1rem;
-  }
-  #BhdHeader-{{ section.id }} .bhd-header__mobile-menu { display: none; }
+  .bhd-header .bhd-header__mobile-menu { display:none; }
 
   @media screen and (min-width: 990px) {
-    #shopify-section-{{ section.id }} {
-      min-height: 82px;
+    .bhd-header--floating {
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      width:100%;
+      z-index:3000;
+      transform:translateY(calc(-100% - 4px));
+      transition:transform .18s ease, box-shadow .18s ease;
+      box-shadow:0 8px 24px rgba(0,0,0,.09);
+      pointer-events:none;
     }
-    #BhdHeader-{{ section.id }} {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      z-index: 1000;
-      transform: translateY(0);
-      transition: transform .22s ease, box-shadow .22s ease;
-      will-change: transform;
-    }
-    #BhdHeader-{{ section.id }}.bhd-header--hidden {
-      transform: translateY(calc(-100% - 2px));
-    }
-    #BhdHeader-{{ section.id }}.bhd-header--scrolled:not(.bhd-header--hidden) {
-      box-shadow: 0 8px 24px rgba(0,0,0,.09);
+    .bhd-header--floating.bhd-header--visible {
+      transform:translateY(0);
+      pointer-events:auto;
     }
   }
 
   @media screen and (max-width: 989px) {
-    #BhdHeader-{{ section.id }} .bhd-header__inner {
-      min-height: 70px;
-      grid-template-columns: auto 1fr auto;
-      gap: .75rem;
+    .bhd-header .bhd-header__inner { min-height:70px; grid-template-columns:auto 1fr auto; gap:.75rem; }
+    .bhd-header .bhd-header__mobile-menu { display:block; position:relative; }
+    .bhd-header .bhd-header__nav { display:none; }
+    .bhd-header .bhd-header__brand { justify-self:center; gap:.18rem; }
+    .bhd-header .bhd-header__brand-main { gap:.5rem; }
+    .bhd-header .bhd-header__logo { width:34px; height:34px; }
+    .bhd-header .bhd-header__site-name { font-size:1.65rem; }
+    .bhd-header .bhd-header__tagline { font-size:.78rem; max-width:190px; overflow:hidden; text-overflow:ellipsis; }
+    .bhd-header .bhd-header__actions > a:first-child { display:none; }
+    .bhd-header .bhd-header__mobile-menu > summary { list-style:none; font-size:2.3rem; }
+    .bhd-header .bhd-header__mobile-menu > summary::-webkit-details-marker { display:none; }
+    .bhd-header .bhd-header__mobile-panel {
+      position:absolute; top:calc(100% + 1rem); left:0; width:min(300px,85vw); padding:1.2rem;
+      background:rgb(var(--color-background)); border:1px solid rgba(var(--color-foreground),.08);
+      border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,.14);
     }
-    #BhdHeader-{{ section.id }} .bhd-header__mobile-menu { display: block; position: relative; }
-    #BhdHeader-{{ section.id }} .bhd-header__nav { display: none; }
-    #BhdHeader-{{ section.id }} .bhd-header__brand { justify-self: center; align-items: center; gap: .18rem; }
-    #BhdHeader-{{ section.id }} .bhd-header__brand-main { gap: .5rem; }
-    #BhdHeader-{{ section.id }} .bhd-header__logo { width: 34px; height: 34px; }
-    #BhdHeader-{{ section.id }} .bhd-header__site-name { font-size: 1.65rem; }
-    #BhdHeader-{{ section.id }} .bhd-header__tagline { font-size: .78rem; max-width: 190px; overflow: hidden; text-overflow: ellipsis; }
-    #BhdHeader-{{ section.id }} .bhd-header__actions > a:first-child { display: none; }
-    #BhdHeader-{{ section.id }} .bhd-header__mobile-menu > summary { list-style: none; font-size: 2.3rem; }
-    #BhdHeader-{{ section.id }} .bhd-header__mobile-menu > summary::-webkit-details-marker { display:none; }
-    #BhdHeader-{{ section.id }} .bhd-header__mobile-panel {
-      position: absolute;
-      top: calc(100% + 1rem);
-      left: 0;
-      width: min(300px, 85vw);
-      padding: 1.2rem;
-      background: rgb(var(--color-background));
-      border: 1px solid rgba(var(--color-foreground), .08);
-      border-radius: 10px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.14);
+    .bhd-header .bhd-header__mobile-panel > a,
+    .bhd-header .bhd-header__mobile-panel summary,
+    .bhd-header .bhd-header__mobile-submenu a {
+      display:block; padding:.9rem 1rem; color:rgb(var(--color-foreground)); text-decoration:none; font-size:1.6rem; cursor:pointer;
     }
-    #BhdHeader-{{ section.id }} .bhd-header__mobile-panel > a,
-    #BhdHeader-{{ section.id }} .bhd-header__mobile-panel summary,
-    #BhdHeader-{{ section.id }} .bhd-header__mobile-submenu a {
-      display: block;
-      padding: .9rem 1rem;
-      color: rgb(var(--color-foreground));
-      text-decoration: none;
-      font-size: 1.6rem;
-      cursor: pointer;
-    }
-    #BhdHeader-{{ section.id }} .bhd-header__mobile-submenu { padding-left: 1.2rem; }
+    .bhd-header .bhd-header__mobile-submenu { padding-left:1.2rem; }
   }
 
   @media screen and (max-width: 480px) {
-    #BhdHeader-{{ section.id }} .bhd-header__logo { width: 31px; height: 31px; }
-    #BhdHeader-{{ section.id }} .bhd-header__site-name { font-size: 1.5rem; }
-    #BhdHeader-{{ section.id }} .bhd-header__tagline { font-size: .7rem; max-width: 155px; }
-    #BhdHeader-{{ section.id }} .bhd-header__actions { gap: 0; }
+    .bhd-header .bhd-header__logo { width:31px; height:31px; }
+    .bhd-header .bhd-header__site-name { font-size:1.5rem; }
+    .bhd-header .bhd-header__tagline { font-size:.7rem; max-width:155px; }
+    .bhd-header .bhd-header__actions { gap:0; }
   }
 </style>
 
 <script>
   (() => {
-    const header = document.getElementById('BhdHeader-{{ section.id }}');
-    if (!header) return;
+    const original = document.getElementById('BhdHeader-{{ section.id }}');
+    if (!original) return;
 
+    let floating = null;
     let lastY = window.scrollY || 0;
-    let ticking = false;
 
-    const updateHeader = () => {
-      const y = Math.max(window.scrollY || 0, 0);
-      const desktop = window.matchMedia('(min-width: 990px)').matches;
+    const ensureFloating = () => {
+      if (floating || !window.matchMedia('(min-width: 990px)').matches) return;
+      floating = original.cloneNode(true);
+      floating.id = 'BhdHeaderFloating-{{ section.id }}';
+      floating.classList.add('bhd-header--floating');
+      floating.setAttribute('aria-hidden', 'false');
+      document.body.appendChild(floating);
+    };
 
-      if (!desktop) {
-        header.classList.remove('bhd-header--hidden', 'bhd-header--scrolled');
-        lastY = y;
-        ticking = false;
-        return;
-      }
+    const show = () => {
+      ensureFloating();
+      if (floating && window.scrollY > original.offsetHeight) floating.classList.add('bhd-header--visible');
+    };
 
-      header.classList.toggle('bhd-header--scrolled', y > 12);
-
-      if (y <= 12) {
-        header.classList.remove('bhd-header--hidden');
-      } else if (y < lastY) {
-        header.classList.remove('bhd-header--hidden');
-      } else if (y > lastY) {
-        header.classList.add('bhd-header--hidden');
-      }
-
-      lastY = y;
-      ticking = false;
+    const hide = () => {
+      if (floating) floating.classList.remove('bhd-header--visible');
     };
 
     const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(updateHeader);
-        ticking = true;
+      const y = Math.max(window.scrollY || 0, 0);
+      if (!window.matchMedia('(min-width: 990px)').matches) {
+        hide();
+        lastY = y;
+        return;
       }
+      if (y <= original.offsetHeight) {
+        hide();
+      } else if (y < lastY - 2) {
+        show();
+      } else if (y > lastY + 2) {
+        hide();
+      }
+      lastY = y;
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', updateHeader, { passive: true });
-    updateHeader();
+    window.addEventListener('wheel', (event) => {
+      if (!window.matchMedia('(min-width: 990px)').matches) return;
+      if (event.deltaY < -1) show();
+      if (event.deltaY > 1) hide();
+    }, { passive:true });
+
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', () => {
+      if (!window.matchMedia('(min-width: 990px)').matches) hide();
+      else ensureFloating();
+      lastY = window.scrollY || 0;
+    }, { passive:true });
+
+    ensureFloating();
   })();
 </script>
 
 {% schema %}
 {
   "name": "Best Hydrate header",
-  "enabled_on": {
-    "groups": ["header"]
-  },
+  "enabled_on": { "groups": ["header"] },
   "settings": [
-    {
-      "type": "text",
-      "id": "site_name",
-      "label": "Site name",
-      "default": "Best Hydrate"
-    },
-    {
-      "type": "text",
-      "id": "tagline",
-      "label": "Tagline",
-      "default": "Hydrate for YOUR best day."
-    },
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Menu",
-      "default": "main-menu"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "scheme-2"
-    }
+    { "type": "text", "id": "site_name", "label": "Site name", "default": "Best Hydrate" },
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Hydrate for YOUR best day." },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" }
   ],
-  "presets": [
-    {
-      "name": "Best Hydrate header"
-    }
-  ]
+  "presets": [{ "name": "Best Hydrate header" }]
 }
 {% endschema %}
