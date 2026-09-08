@@ -366,8 +366,54 @@
       });
     };
 
+    const configureProducts = () => {
+      const productLinks = [
+        ['Buy Now', '/products/lemonade-best-hydrate'],
+        ['Ingredients', '/pages/our-formula'],
+        ['Product Details', '/pages/product-details'],
+        ['Directions', '/pages/directions']
+      ];
+
+      document.querySelectorAll('.bhd-header [data-main-item]').forEach((main) => {
+        const mainLink = main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
+        if (!mainLink || normalize(mainLink.textContent) !== 'hydration solutions') return;
+        const menu = main.querySelector(':scope > .bhd-header__dropdown-menu');
+        if (!menu) return;
+        const products = Array.from(menu.querySelectorAll(':scope > .bhd-header__dropdown-child')).find((item) => {
+          const link = item.querySelector('.bhd-header__dropdown-parent');
+          return link && normalize(link.textContent) === 'products';
+        });
+        if (!products) return;
+        menu.insertBefore(products, menu.firstElementChild);
+        const panel = products.querySelector(':scope > .bhd-header__dropdown-grandchildren');
+        if (panel) {
+          panel.innerHTML = productLinks.map(([label, href]) => `<a href="${href}">${label}</a>`).join('');
+          panel.hidden = true;
+        }
+      });
+
+      document.querySelectorAll('.bhd-header [data-mobile-main]').forEach((main) => {
+        const mainLink = main.querySelector(':scope > .bhd-header__mobile-main-row > a');
+        if (!mainLink || normalize(mainLink.textContent) !== 'hydration solutions') return;
+        const level = main.querySelector(':scope > .bhd-header__mobile-level-one');
+        if (!level) return;
+        const products = Array.from(level.querySelectorAll(':scope > .bhd-header__mobile-tier2')).find((item) => {
+          const link = item.querySelector(':scope > .bhd-header__mobile-tier2-split .bhd-header__mobile-tier2-link');
+          return link && normalize(link.textContent) === 'products';
+        });
+        if (!products) return;
+        level.insertBefore(products, level.firstElementChild);
+        const panel = products.querySelector(':scope > .bhd-header__mobile-submenu');
+        if (panel) {
+          panel.innerHTML = productLinks.map(([label, href]) => `<a href="${href}">${label}</a>`).join('');
+          panel.hidden = true;
+        }
+      });
+    };
+
     const init = () => {
       enhanceTier2();
+      configureProducts();
 
       document.addEventListener('click', (event) => {
         const desktopToggle = event.target.closest('.bhd-header__tier2-toggle');
