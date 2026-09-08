@@ -26,7 +26,12 @@
       {% if settings.logo != blank %}
         {{ settings.logo | image_url: width: 200 | image_tag: class: 'bhd-header__logo', widths: '80,120,160,200', loading: 'eager', alt: shop.name }}
       {% endif %}
-      <span class="bhd-header__site-name">{{ section.settings.site_name | escape }}</span>
+      <span class="bhd-header__brand-copy">
+        <span class="bhd-header__site-name">{{ section.settings.site_name | escape }}</span>
+        {% if section.settings.tagline != blank %}
+          <span class="bhd-header__tagline">{{ section.settings.tagline | escape }}</span>
+        {% endif %}
+      </span>
     </a>
 
     <nav class="bhd-header__nav" aria-label="Primary navigation">
@@ -70,7 +75,7 @@
     border-bottom: 1px solid rgba(var(--color-foreground), .09);
   }
   #BhdHeader-{{ section.id }} .bhd-header__inner {
-    min-height: 78px;
+    min-height: 82px;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -85,16 +90,33 @@
   }
   #BhdHeader-{{ section.id }} .bhd-header__logo {
     display: block;
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     object-fit: contain;
+    flex: 0 0 auto;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__brand-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .35rem;
   }
   #BhdHeader-{{ section.id }} .bhd-header__site-name {
+    display: block;
     color: rgb(var(--color-foreground));
     font-family: var(--font-heading-family);
-    font-size: 2.6rem;
+    font-size: 2.5rem;
     font-weight: 700;
-    line-height: 1;
+    line-height: .95;
+    white-space: nowrap;
+  }
+  #BhdHeader-{{ section.id }} .bhd-header__tagline {
+    display: block;
+    color: rgba(var(--color-foreground), .68);
+    font-size: 1.08rem;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: .01em;
     white-space: nowrap;
   }
   #BhdHeader-{{ section.id }} .bhd-header__nav {
@@ -111,9 +133,7 @@
     cursor: pointer;
     list-style: none;
   }
-  #BhdHeader-{{ section.id }} .bhd-header__dropdown {
-    position: relative;
-  }
+  #BhdHeader-{{ section.id }} .bhd-header__dropdown { position: relative; }
   #BhdHeader-{{ section.id }} .bhd-header__dropdown > summary::-webkit-details-marker { display: none; }
   #BhdHeader-{{ section.id }} .bhd-header__dropdown > summary::after {
     content: '⌄';
@@ -173,15 +193,16 @@
 
   @media screen and (max-width: 989px) {
     #BhdHeader-{{ section.id }} .bhd-header__inner {
-      min-height: 68px;
+      min-height: 70px;
       grid-template-columns: auto 1fr auto;
-      gap: 1rem;
+      gap: .75rem;
     }
     #BhdHeader-{{ section.id }} .bhd-header__mobile-menu { display: block; position: relative; }
     #BhdHeader-{{ section.id }} .bhd-header__nav { display: none; }
-    #BhdHeader-{{ section.id }} .bhd-header__brand { justify-self: center; }
-    #BhdHeader-{{ section.id }} .bhd-header__logo { width: 38px; height: 38px; }
-    #BhdHeader-{{ section.id }} .bhd-header__site-name { font-size: 2rem; }
+    #BhdHeader-{{ section.id }} .bhd-header__brand { justify-self: center; gap: .55rem; }
+    #BhdHeader-{{ section.id }} .bhd-header__logo { width: 34px; height: 34px; }
+    #BhdHeader-{{ section.id }} .bhd-header__site-name { font-size: 1.65rem; }
+    #BhdHeader-{{ section.id }} .bhd-header__tagline { font-size: .82rem; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
     #BhdHeader-{{ section.id }} .bhd-header__actions > a:first-child { display: none; }
     #BhdHeader-{{ section.id }} .bhd-header__mobile-menu > summary { list-style: none; font-size: 2.3rem; }
     #BhdHeader-{{ section.id }} .bhd-header__mobile-menu > summary::-webkit-details-marker { display:none; }
@@ -210,8 +231,9 @@
   }
 
   @media screen and (max-width: 480px) {
-    #BhdHeader-{{ section.id }} .bhd-header__site-name { font-size: 1.7rem; }
-    #BhdHeader-{{ section.id }} .bhd-header__logo { width: 34px; height: 34px; }
+    #BhdHeader-{{ section.id }} .bhd-header__logo { width: 31px; height: 31px; }
+    #BhdHeader-{{ section.id }} .bhd-header__site-name { font-size: 1.5rem; }
+    #BhdHeader-{{ section.id }} .bhd-header__tagline { font-size: .72rem; max-width: 145px; }
     #BhdHeader-{{ section.id }} .bhd-header__actions { gap: 0; }
   }
 </style>
@@ -228,6 +250,12 @@
       "id": "site_name",
       "label": "Site name",
       "default": "Best Hydrate"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Hydrate for YOUR best day."
     },
     {
       "type": "link_list",
