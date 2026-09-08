@@ -75,7 +75,7 @@
     flex-direction: column;
     align-items: center;
     justify-self: start;
-    gap: .26rem;
+    gap: .3rem;
     text-decoration: none;
     min-width: max-content;
   }
@@ -96,7 +96,7 @@
     text-align:center;
     color:rgba(var(--color-foreground), .72);
     font-family:var(--font-heading-family);
-    font-size:1.14rem;
+    font-size:1.1rem;
     font-weight:500;
     line-height:1.1;
     white-space:nowrap;
@@ -144,9 +144,7 @@
   .bhd-header .bhd-header__mobile-menu { display:none; }
 
   @media screen and (min-width: 990px) {
-    .bhd-header .bhd-header__inner {
-      position: relative;
-    }
+    .bhd-header .bhd-header__inner { position: relative; }
     .bhd-header .bhd-header__nav {
       position: absolute;
       left: 50%;
@@ -173,14 +171,21 @@
   }
 
   @media screen and (max-width: 989px) {
-    .bhd-header .bhd-header__inner { min-height:70px; grid-template-columns:auto 1fr auto; gap:.75rem; }
+    .bhd-header .bhd-header__inner { min-height:76px; grid-template-columns:auto 1fr auto; gap:.7rem; }
     .bhd-header .bhd-header__mobile-menu { display:block; position:relative; }
     .bhd-header .bhd-header__nav { display:none; position:static; transform:none; }
-    .bhd-header .bhd-header__brand { justify-self:center; gap:.18rem; }
+    .bhd-header .bhd-header__brand { justify-self:center; gap:.22rem; min-width:0; }
     .bhd-header .bhd-header__brand-main { gap:.5rem; }
     .bhd-header .bhd-header__logo { width:34px; height:34px; }
     .bhd-header .bhd-header__site-name { font-size:1.65rem; }
-    .bhd-header .bhd-header__tagline { font-size:.78rem; max-width:190px; overflow:hidden; text-overflow:ellipsis; }
+    .bhd-header .bhd-header__tagline {
+      font-size:.86rem;
+      max-width:205px;
+      white-space:normal;
+      overflow:visible;
+      text-overflow:clip;
+      line-height:1.08;
+    }
     .bhd-header .bhd-header__actions { justify-self:end; }
     .bhd-header .bhd-header__actions > a:first-child { display:none; }
     .bhd-header .bhd-header__cart-button svg { width:2.25rem; height:2.25rem; }
@@ -200,9 +205,10 @@
   }
 
   @media screen and (max-width: 480px) {
+    .bhd-header .bhd-header__inner { min-height:74px; }
     .bhd-header .bhd-header__logo { width:31px; height:31px; }
     .bhd-header .bhd-header__site-name { font-size:1.5rem; }
-    .bhd-header .bhd-header__tagline { font-size:.7rem; max-width:155px; }
+    .bhd-header .bhd-header__tagline { font-size:.78rem; max-width:178px; }
     .bhd-header .bhd-header__actions { gap:0; }
   }
 </style>
@@ -273,7 +279,7 @@
   "enabled_on": { "groups": ["header"] },
   "settings": [
     { "type": "text", "id": "site_name", "label": "Site name", "default": "Best Hydrate" },
-    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Hydrate for YOUR best day." },
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Five essential electrolytes. Built for better hydration." },
     { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" }
   ],
