@@ -1,0 +1,28 @@
+<section id="BhdBenefits-{{ section.id }}" class="bhd-benefits color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width bhd-benefits__grid">
+    <div class="bhd-benefit"><span class="bhd-benefit__icon">◉</span><span>Science-informed formula</span></div>
+    <div class="bhd-benefit"><span class="bhd-benefit__icon">✦</span><span>Five essential electrolytes</span></div>
+    <div class="bhd-benefit"><span class="bhd-benefit__icon">⌁</span><span>Built for real life</span></div>
+    <div class="bhd-benefit"><span class="bhd-benefit__icon">♡</span><span>For every stage of life</span></div>
+  </div>
+</section>
+
+<style>
+  #BhdBenefits-{{ section.id }} { border-top:1px solid rgba(var(--color-foreground),.08); border-bottom:1px solid rgba(var(--color-foreground),.08); }
+  #BhdBenefits-{{ section.id }} .bhd-benefits__grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; padding-top:2rem; padding-bottom:2rem; }
+  #BhdBenefits-{{ section.id }} .bhd-benefit { display:flex; align-items:center; justify-content:center; gap:.9rem; font-weight:650; line-height:1.25; text-align:left; }
+  #BhdBenefits-{{ section.id }} .bhd-benefit__icon { width:3.2rem; height:3.2rem; display:grid; place-items:center; border-radius:999px; background:rgba(var(--color-foreground),.055); font-size:1.8rem; flex:0 0 auto; }
+  @media screen and (max-width:749px){
+    #BhdBenefits-{{ section.id }} .bhd-benefits__grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.1rem .8rem; padding-top:1.5rem; padding-bottom:1.5rem; }
+    #BhdBenefits-{{ section.id }} .bhd-benefit { justify-content:flex-start; font-size:1.2rem; }
+    #BhdBenefits-{{ section.id }} .bhd-benefit__icon { width:2.8rem; height:2.8rem; font-size:1.5rem; }
+  }
+</style>
+
+{% schema %}
+{
+  "name":"Homepage benefits",
+  "settings":[{"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"}],
+  "presets":[{"name":"Homepage benefits"}]
+}
+{% endschema %}
