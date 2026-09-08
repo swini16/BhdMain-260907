@@ -1,231 +1,106 @@
 <section id="BhdMarkets-{{ section.id }}" class="bhd-markets color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width">
     <div class="bhd-markets__intro">
-      {% if section.settings.heading != blank %}
-        <h2 class="title inline-richtext {{ section.settings.heading_size }}">{{ section.settings.heading }}</h2>
-      {% endif %}
-      {% if section.settings.text != blank %}
-        <div class="rte bhd-markets__text">{{ section.settings.text }}</div>
-      {% endif %}
+      <h2 class="title inline-richtext {{ section.settings.heading_size }}">{{ section.settings.heading }}</h2>
+      <div class="rte bhd-markets__text">{{ section.settings.text }}</div>
     </div>
 
-    <div class="bhd-markets__sections">
-      <article class="bhd-markets__segment bhd-markets__segment--athletes">
-        <div class="bhd-markets__segment-head">
-          <div class="bhd-markets__eyebrow">Performance</div>
+    <div class="bhd-markets__grid">
+      <article class="bhd-market-card bhd-market-card--athlete">
+        <img src="{{ 'bhd-audience-athletes.svg' | asset_url }}" alt="Athlete running outdoors" width="800" height="440" loading="lazy">
+        <div class="bhd-market-card__body">
+          <div class="bhd-market-card__icon">↗</div>
           <h3>{{ section.settings.athlete_label }}</h3>
+          <p class="bhd-market-card__tag">Train harder. Recover faster.</p>
           <p>{{ section.settings.athlete_intro }}</p>
-        </div>
-        <div class="bhd-markets__uses">
-          <span>Training & competition</span>
-          <span>Endurance</span>
-          <span>Recovery</span>
-          <span>Heat & high-sweat environments</span>
+          <ul><li>Training and competition</li><li>Endurance and high intensity</li><li>Recovery and repeated effort</li><li>Heat and high-sweat environments</li></ul>
         </div>
       </article>
 
-      <article class="bhd-markets__segment bhd-markets__segment--daily">
-        <div class="bhd-markets__segment-head">
-          <div class="bhd-markets__eyebrow">Everyday</div>
-          {% assign daily_display = section.settings.daily_label %}
-          {% if daily_display == 'Daily Use' %}{% assign daily_display = 'Daily' %}{% endif %}
-          <h3>{{ daily_display }}</h3>
+      <article class="bhd-market-card bhd-market-card--daily">
+        <img src="{{ 'bhd-audience-daily.svg' | asset_url }}" alt="Worker hydrating during a demanding day" width="800" height="440" loading="lazy">
+        <div class="bhd-market-card__body">
+          <div class="bhd-market-card__icon">⌁</div>
+          <h3>{{ section.settings.daily_label }}</h3>
+          <p class="bhd-market-card__tag">More energy for what you do.</p>
           <p>{{ section.settings.daily_intro }}</p>
-        </div>
-        <div class="bhd-markets__uses">
-          <span>Everyday hydration</span>
-          <span>Work & long shifts</span>
-          <span>Hot labour</span>
-          <span>Focus, travel & busy routines</span>
+          <ul><li>Work and physically demanding jobs</li><li>Focus and cognitive performance</li><li>Travel and on the go</li><li>Everyday hydration and wellness</li></ul>
         </div>
       </article>
 
-      <article class="bhd-markets__segment bhd-markets__segment--medical">
-        <div class="bhd-markets__segment-head">
-          <div class="bhd-markets__eyebrow">Health</div>
+      <article class="bhd-market-card bhd-market-card--medical">
+        <img src="{{ 'bhd-audience-medical.svg' | asset_url }}" alt="Supportive hydration for recovery and active aging" width="800" height="440" loading="lazy">
+        <div class="bhd-market-card__body">
+          <div class="bhd-market-card__icon">+</div>
           <h3>{{ section.settings.medical_label }}</h3>
+          <p class="bhd-market-card__tag">Support when it matters most.</p>
           <p>{{ section.settings.medical_intro }}</p>
-        </div>
-        <div class="bhd-markets__uses">
-          <span>Illness & recovery</span>
-          <span>Active aging</span>
-          <span>Rehabilitation</span>
-          <span>Clinician-guided hydration needs</span>
+          <ul><li>Illness and dehydration</li><li>Recovery and rehabilitation</li><li>Active aging and healthy longevity</li><li>Higher-risk and vulnerable populations</li></ul>
         </div>
       </article>
     </div>
 
-    {% if section.settings.medical_note != blank %}
-      <p class="bhd-markets__note">{{ section.settings.medical_note }}</p>
-    {% endif %}
+    {% if section.settings.medical_note != blank %}<p class="bhd-markets__note">{{ section.settings.medical_note }}</p>{% endif %}
   </div>
 </section>
 
 <style>
-  #BhdMarkets-{{ section.id }} {
-    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__intro {
-    text-align: center;
-    max-width: 840px;
-    margin: 0 auto 3.6rem;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__intro .title { margin-bottom: 1rem; }
-  #BhdMarkets-{{ section.id }} .bhd-markets__text {
-    max-width: 740px;
-    margin: 0 auto;
-    font-size: 1.7rem;
-    line-height: 1.55;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__sections { display: grid; gap: 1.8rem; }
-  #BhdMarkets-{{ section.id }} .bhd-markets__segment {
-    display: grid;
-    grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr);
-    gap: 3rem;
-    align-items: center;
-    padding: 3rem 3.2rem;
-    border-radius: 1.6rem;
-    border: 1px solid rgba(var(--color-foreground), .11);
-    background: rgb(var(--color-background));
-    box-shadow: 0 1.2rem 3.8rem rgba(13,33,78,.07);
-    position: relative;
-    overflow: hidden;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__segment::before {
-    content: '';
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: .65rem;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__segment--athletes::before { background: #d93445; }
-  #BhdMarkets-{{ section.id }} .bhd-markets__segment--daily::before { background: #20a9cf; }
-  #BhdMarkets-{{ section.id }} .bhd-markets__segment--medical::before { background: #355fa6; }
-  #BhdMarkets-{{ section.id }} .bhd-markets__eyebrow {
-    text-transform: uppercase;
-    letter-spacing: .13em;
-    font-size: 1.08rem;
-    font-weight: 700;
-    opacity: .58;
-  }
-  #BhdMarkets-{{ section.id }} h3 {
-    margin: .65rem 0 .8rem;
-    font-size: clamp(2.7rem, 3.2vw, 4rem);
-    line-height: 1.02;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__segment-head p {
-    margin: 0;
-    max-width: 510px;
-    line-height: 1.5;
-    opacity: .78;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__uses {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__uses span {
-    display: flex;
-    align-items: center;
-    min-height: 5.4rem;
-    padding: 1.2rem 1.5rem;
-    border-radius: 1rem;
-    background: rgba(var(--color-foreground), .045);
-    font-weight: 600;
-    line-height: 1.35;
-  }
-  #BhdMarkets-{{ section.id }} .bhd-markets__segment--athletes .bhd-markets__uses span { border-left: 3px solid rgba(217,52,69,.72); }
-  #BhdMarkets-{{ section.id }} .bhd-markets__segment--daily .bhd-markets__uses span { border-left: 3px solid rgba(32,169,207,.72); }
-  #BhdMarkets-{{ section.id }} .bhd-markets__segment--medical .bhd-markets__uses span { border-left: 3px solid rgba(53,95,166,.72); }
-  #BhdMarkets-{{ section.id }} .bhd-markets__note {
-    max-width: 860px;
-    margin: 2.2rem auto 0;
-    text-align: center;
-    font-size: 1.25rem;
-    line-height: 1.45;
-    opacity: .62;
-  }
+  #BhdMarkets-{{ section.id }} { padding:5.5rem 0 6rem; background:linear-gradient(180deg,#f8fbff 0%,#f1f6fd 100%); }
+  #BhdMarkets-{{ section.id }} .bhd-markets__intro { text-align:center; max-width:860px; margin:0 auto 3.6rem; }
+  #BhdMarkets-{{ section.id }} .bhd-markets__intro .title { margin-bottom:1rem; color:#0f2a61; }
+  #BhdMarkets-{{ section.id }} .bhd-markets__text { max-width:740px; margin:0 auto; font-size:1.7rem; line-height:1.52; color:#41506f; }
+  #BhdMarkets-{{ section.id }} .bhd-markets__grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:2rem; align-items:stretch; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card { overflow:hidden; border-radius:1.8rem; border:1px solid rgba(16,42,97,.10); box-shadow:0 1.6rem 4rem rgba(31,66,116,.09); background:#fff; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card--athlete { background:linear-gradient(180deg,#fff 0%,#fff0f3 100%); }
+  #BhdMarkets-{{ section.id }} .bhd-market-card--daily { background:linear-gradient(180deg,#fff 0%,#eef8ff 100%); }
+  #BhdMarkets-{{ section.id }} .bhd-market-card--medical { background:linear-gradient(180deg,#fff 0%,#eefaf7 100%); }
+  #BhdMarkets-{{ section.id }} .bhd-market-card > img { display:block; width:100%; aspect-ratio:16/9; object-fit:cover; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card__body { position:relative; padding:3.2rem 2.5rem 2.8rem; text-align:center; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card__icon { position:absolute; top:-2.2rem; left:50%; transform:translateX(-50%); width:4.8rem; height:4.8rem; border-radius:999px; display:grid; place-items:center; color:#fff; font-size:2.2rem; font-weight:800; border:4px solid #fff; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card--athlete .bhd-market-card__icon { background:#ec5b69; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card--daily .bhd-market-card__icon { background:#398ee1; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card--medical .bhd-market-card__icon { background:#48b49e; }
+  #BhdMarkets-{{ section.id }} h3 { margin:.3rem 0 .4rem; color:#102a61; font-size:3rem; line-height:1.05; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card__tag { margin:.2rem 0 1rem; font-size:1.6rem; font-weight:700; color:#18315f; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card__body > p:not(.bhd-market-card__tag) { margin:0 auto 1.6rem; line-height:1.48; color:#526078; }
+  #BhdMarkets-{{ section.id }} ul { list-style:none; padding:0; margin:0; display:grid; gap:.8rem; text-align:left; }
+  #BhdMarkets-{{ section.id }} li { position:relative; padding-left:2.4rem; color:#344461; line-height:1.35; }
+  #BhdMarkets-{{ section.id }} li::before { content:'✓'; position:absolute; left:0; top:.05rem; width:1.65rem; height:1.65rem; border-radius:999px; display:grid; place-items:center; color:#fff; font-size:1rem; font-weight:800; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card--athlete li::before { background:#ec5b69; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card--daily li::before { background:#398ee1; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card--medical li::before { background:#48b49e; }
+  #BhdMarkets-{{ section.id }} .bhd-markets__note { max-width:840px; margin:2.2rem auto 0; text-align:center; font-size:1.2rem; line-height:1.45; color:#6c7485; }
 
-  @media screen and (max-width: 899px) {
-    #BhdMarkets-{{ section.id }} .bhd-markets__segment { grid-template-columns: 1fr; gap: 1.8rem; }
-  }
-
-  @media screen and (max-width: 749px) {
-    #BhdMarkets-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top | times: 0.75 | round }}px;
-      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round }}px;
-    }
-    #BhdMarkets-{{ section.id }} .bhd-markets__intro { margin-bottom: 2.6rem; }
-    #BhdMarkets-{{ section.id }} .bhd-markets__text { font-size: 1.55rem; }
-    #BhdMarkets-{{ section.id }} .bhd-markets__sections { gap: 1.25rem; }
-    #BhdMarkets-{{ section.id }} .bhd-markets__segment { padding: 2.2rem 1.8rem 2.2rem 2.2rem; gap: 1.35rem; }
-    #BhdMarkets-{{ section.id }} .bhd-markets__uses { grid-template-columns: 1fr; gap: .7rem; }
-    #BhdMarkets-{{ section.id }} .bhd-markets__uses span { min-height: 0; padding: 1rem 1.2rem; }
+  @media screen and (max-width:989px){ #BhdMarkets-{{ section.id }} .bhd-markets__grid { grid-template-columns:1fr; max-width:680px; margin:0 auto; } }
+  @media screen and (max-width:749px){
+    #BhdMarkets-{{ section.id }} { padding:3.6rem 0 4rem; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__intro { margin-bottom:2.5rem; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__intro .title { font-size:3rem; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__text { font-size:1.45rem; }
+    #BhdMarkets-{{ section.id }} .bhd-markets__grid { gap:1.5rem; }
+    #BhdMarkets-{{ section.id }} .bhd-market-card__body { padding:3rem 1.8rem 2.2rem; }
+    #BhdMarkets-{{ section.id }} h3 { font-size:2.6rem; }
+    #BhdMarkets-{{ section.id }} .bhd-market-card__tag { font-size:1.45rem; }
+    #BhdMarkets-{{ section.id }} li { font-size:1.35rem; }
   }
 </style>
 
 {% schema %}
 {
-  "name": "Hydration markets",
-  "settings": [
-    {
-      "type": "inline_richtext",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Hydration for real life"
-    },
-    {
-      "type": "select",
-      "id": "heading_size",
-      "options": [
-        {"value": "h2", "label": "Small"},
-        {"value": "h1", "label": "Medium"},
-        {"value": "h0", "label": "Large"}
-      ],
-      "default": "h1",
-      "label": "Heading size"
-    },
-    {
-      "type": "richtext",
-      "id": "text",
-      "label": "Overview",
-      "default": "<p>Best Hydrate is built around three main hydration contexts: athletic performance, everyday life and medical or recovery-related needs.</p>"
-    },
-    {"type": "text", "id": "athlete_label", "label": "Athlete label", "default": "Athletes"},
-    {"type": "textarea", "id": "athlete_intro", "label": "Athlete overview", "default": "For training, competition and demanding physical performance where hydration and electrolyte replacement matter."},
-    {"type": "text", "id": "daily_label", "label": "Daily label", "default": "Daily"},
-    {"type": "textarea", "id": "daily_intro", "label": "Daily overview", "default": "For ordinary days that still demand a lot: work, heat, travel, focus and keeping hydration consistent."},
-    {"type": "text", "id": "medical_label", "label": "Medical label", "default": "Medical"},
-    {"type": "textarea", "id": "medical_intro", "label": "Medical overview", "default": "For recovery, active aging and situations where hydration needs may be more important or require professional guidance."},
-    {"type": "textarea", "id": "medical_note", "label": "Medical note", "default": "Medical hydration needs vary. Follow the product label and seek clinician guidance when appropriate."},
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "scheme-1"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Top padding",
-      "default": 52
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Bottom padding",
-      "default": 52
-    }
+  "name":"Hydration markets",
+  "settings":[
+    {"type":"inline_richtext","id":"heading","label":"Heading","default":"Hydration for real life."},
+    {"type":"select","id":"heading_size","options":[{"value":"h2","label":"Small"},{"value":"h1","label":"Medium"},{"value":"h0","label":"Large"}],"default":"h1","label":"Heading size"},
+    {"type":"richtext","id":"text","label":"Overview","default":"<p>Best Hydrate is designed for people who want to feel and perform their best. Whether you're training, working, recovering or simply taking care of yourself, proper hydration makes a difference.</p>"},
+    {"type":"text","id":"athlete_label","label":"Athlete label","default":"Athletes"},
+    {"type":"textarea","id":"athlete_intro","label":"Athlete overview","default":"Supports performance, endurance and recovery for athletes of all levels."},
+    {"type":"text","id":"daily_label","label":"Daily label","default":"Daily Use"},
+    {"type":"textarea","id":"daily_intro","label":"Daily overview","default":"Helps you stay hydrated, focused and productive through everyday life."},
+    {"type":"text","id":"medical_label","label":"Medical label","default":"Medical"},
+    {"type":"textarea","id":"medical_intro","label":"Medical overview","default":"Designed to support hydration needs during illness, recovery and special life stages."},
+    {"type":"textarea","id":"medical_note","label":"Medical note","default":"Medical hydration needs vary. Follow the product label and seek clinician guidance when appropriate."},
+    {"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"}
   ],
-  "presets": [
-    {"name": "Hydration markets"}
-  ]
+  "presets":[{"name":"Hydration markets"}]
 }
 {% endschema %}
