@@ -16,7 +16,7 @@
           "type": "heading",
           "settings": {
             "heading": "Hydrate for YOUR best day.",
-            "heading_size": "h0"
+            "heading_size": "h1"
           }
         },
         "text": {
@@ -45,13 +45,13 @@
       ],
       "settings": {
         "image": "shopify://shop_images/Unlocking_Real_Hydration_6_a488d5de-6a25-48f6-a614-ce0312ecaea8.png",
-        "image_overlay_opacity": 30,
+        "image_overlay_opacity": 45,
         "image_height": "adapt",
         "image_behavior": "none",
         "desktop_content_position": "middle-center",
         "desktop_content_alignment": "center",
         "show_text_box": false,
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-3",
         "stack_images_on_mobile": true,
         "mobile_content_alignment": "center",
         "show_text_below": true
