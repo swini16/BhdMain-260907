@@ -1,83 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-label="Best Hydrate audiences: athletes, everyday high-demand work, and medical hydration">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-label="Abstract red and blue hydration waves">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#071b4d"/>
-      <stop offset="0.48" stop-color="#0c5aa6"/>
-      <stop offset="1" stop-color="#10285f"/>
+      <stop offset="0" stop-color="#dff6ff"/>
+      <stop offset=".46" stop-color="#bfeaff"/>
+      <stop offset=".54" stop-color="#ffd7d7"/>
+      <stop offset="1" stop-color="#fff0ee"/>
     </linearGradient>
-    <radialGradient id="athleteGlow" cx="20%" cy="48%" r="55%">
-      <stop offset="0" stop-color="#ef3340" stop-opacity="0.95"/>
-      <stop offset="0.48" stop-color="#db2433" stop-opacity="0.54"/>
-      <stop offset="1" stop-color="#db2433" stop-opacity="0"/>
+    <radialGradient id="orb" cx="42%" cy="32%" r="70%">
+      <stop offset="0" stop-color="#ff6a6a"/>
+      <stop offset=".42" stop-color="#e51e2a"/>
+      <stop offset=".72" stop-color="#9f1020"/>
+      <stop offset="1" stop-color="#0b3f92"/>
     </radialGradient>
-    <radialGradient id="dailyGlow" cx="50%" cy="42%" r="48%">
-      <stop offset="0" stop-color="#28d7ef" stop-opacity="0.78"/>
-      <stop offset="0.48" stop-color="#18a4d6" stop-opacity="0.38"/>
-      <stop offset="1" stop-color="#18a4d6" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="medicalGlow" cx="82%" cy="46%" r="52%">
-      <stop offset="0" stop-color="#78c8ff" stop-opacity="0.74"/>
-      <stop offset="0.48" stop-color="#3e79d6" stop-opacity="0.34"/>
-      <stop offset="1" stop-color="#3e79d6" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="water" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#7ce8ff" stop-opacity="0.26"/>
-      <stop offset="0.52" stop-color="#d8f9ff" stop-opacity="0.34"/>
-      <stop offset="1" stop-color="#7ce8ff" stop-opacity="0.18"/>
+    <linearGradient id="blueWave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00d9ff"/>
+      <stop offset=".45" stop-color="#047fd3"/>
+      <stop offset="1" stop-color="#07337e"/>
     </linearGradient>
-    <filter id="blur"><feGaussianBlur stdDeviation="28"/></filter>
+    <linearGradient id="redWave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#991421"/>
+      <stop offset=".55" stop-color="#e6242f"/>
+      <stop offset="1" stop-color="#ff6a49"/>
+    </linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="16"/></filter>
   </defs>
-
   <rect width="1600" height="800" fill="url(#bg)"/>
-  <rect width="1600" height="800" fill="url(#athleteGlow)"/>
-  <rect width="1600" height="800" fill="url(#dailyGlow)"/>
-  <rect width="1600" height="800" fill="url(#medicalGlow)"/>
+  <ellipse cx="805" cy="408" rx="270" ry="270" fill="#5b1b36" opacity=".13" filter="url(#soft)"/>
+  <circle cx="810" cy="390" r="220" fill="url(#orb)"/>
+  <circle cx="760" cy="325" r="78" fill="#fff" opacity=".11" filter="url(#soft)"/>
 
-  <circle cx="345" cy="382" r="238" fill="#ff5a62" opacity="0.12"/>
-  <circle cx="800" cy="382" r="238" fill="#44d9ef" opacity="0.12"/>
-  <circle cx="1255" cy="382" r="238" fill="#91cfff" opacity="0.12"/>
-  <circle cx="575" cy="382" r="180" fill="#ffffff" opacity="0.025"/>
-  <circle cx="1025" cy="382" r="180" fill="#ffffff" opacity="0.025"/>
+  <path d="M0 545 C170 430 315 445 455 505 C590 563 665 650 820 628 C1000 603 1065 455 1260 442 C1400 432 1515 476 1600 523 L1600 800 L0 800 Z" fill="url(#blueWave)"/>
+  <path d="M0 610 C160 500 350 520 485 581 C620 642 702 715 862 685 C1010 656 1132 510 1294 515 C1438 520 1510 563 1600 620 L1600 800 L0 800 Z" fill="#0ce3ef" opacity=".46"/>
+  <path d="M0 657 C210 560 365 595 505 646 C665 704 768 764 930 725 C1095 684 1190 548 1360 570 C1460 583 1545 627 1600 662 L1600 800 L0 800 Z" fill="#071e60" opacity=".78"/>
 
-  <!-- Athlete, abstract runner -->
-  <g transform="translate(210 220)" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity="0.72">
-    <circle cx="142" cy="52" r="28" fill="#ffffff" stroke="none"/>
-    <path d="M132 94 L104 184 L168 214 L204 155"/>
-    <path d="M116 122 L55 172"/>
-    <path d="M161 121 L222 104"/>
-    <path d="M168 214 L118 305"/>
-    <path d="M168 214 L249 280"/>
-    <path d="M69 324 C138 346 229 349 308 320" stroke-width="8" opacity="0.45"/>
+  <path d="M620 630 C790 560 835 516 960 452 C1090 385 1218 364 1375 398 C1470 418 1537 449 1600 486 L1600 800 L740 800 C790 735 726 682 620 630 Z" fill="url(#redWave)" opacity=".96"/>
+  <path d="M790 680 C950 600 1040 510 1162 470 C1304 424 1455 454 1600 535 L1600 800 L900 800 C920 752 882 710 790 680 Z" fill="#ff3b31" opacity=".45"/>
+  <path d="M885 704 C1070 622 1190 530 1334 522 C1450 516 1537 565 1600 610 L1600 800 L980 800 Z" fill="#8e0d19" opacity=".56"/>
+
+  <path d="M34 515 C190 451 313 458 448 509" fill="none" stroke="#d5fbff" stroke-width="12" stroke-linecap="round" opacity=".66"/>
+  <path d="M1098 438 C1260 386 1432 420 1550 474" fill="none" stroke="#ffd9d6" stroke-width="10" stroke-linecap="round" opacity=".5"/>
+
+  <g fill="#fff" opacity=".64">
+    <circle cx="188" cy="468" r="8"/><circle cx="253" cy="436" r="5"/><circle cx="346" cy="471" r="7"/><circle cx="406" cy="442" r="4"/>
+    <circle cx="1210" cy="352" r="6"/><circle cx="1288" cy="332" r="4"/><circle cx="1360" cy="374" r="7"/><circle cx="1460" cy="350" r="5"/>
   </g>
-
-  <!-- Everyday high-demand work, hardhat + cognition -->
-  <g transform="translate(660 215)" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" opacity="0.72">
-    <path d="M52 166 C62 88 102 48 140 48 C178 48 218 88 228 166" stroke-width="16"/>
-    <path d="M38 168 H242" stroke-width="18"/>
-    <path d="M92 168 V226 H188 V168" stroke-width="14"/>
-    <path d="M112 48 V112 M168 48 V112" stroke-width="11" opacity="0.64"/>
-    <circle cx="140" cy="282" r="66" stroke-width="12" opacity="0.42"/>
-    <path d="M140 244 V320 M102 282 H178" stroke-width="10" opacity="0.42"/>
-    <path d="M52 359 C112 332 168 332 228 359" stroke-width="8" opacity="0.36"/>
+  <g fill="#d9232e">
+    <path d="M805 128 C824 94 843 66 854 44 C861 78 858 105 845 130 C834 151 813 149 805 128Z"/>
+    <path d="M932 168 C944 145 955 125 964 109 C969 133 966 151 958 169 C950 184 939 184 932 168Z" opacity=".9"/>
+    <path d="M1078 205 C1087 188 1097 171 1104 159 C1108 178 1106 192 1099 206 C1092 219 1084 219 1078 205Z" opacity=".75"/>
   </g>
-
-  <!-- Medical context, cross + drop -->
-  <g transform="translate(1120 208)" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" opacity="0.72">
-    <rect x="72" y="70" width="156" height="156" rx="38" stroke-width="14"/>
-    <path d="M150 102 V194 M104 148 H196" stroke-width="22"/>
-    <path d="M150 265 C150 265 86 338 86 388 C86 427 114 454 150 454 C186 454 214 427 214 388 C214 338 150 265 150 265Z" stroke-width="12" opacity="0.52"/>
-    <path d="M112 389 C119 409 132 418 150 418" stroke-width="8" opacity="0.45"/>
-  </g>
-
-  <!-- Water motion -->
-  <path d="M0 592 C180 540 330 548 492 604 C640 654 777 652 928 594 C1101 528 1261 531 1600 615 L1600 800 L0 800 Z" fill="url(#water)"/>
-  <path d="M0 672 C208 620 379 634 541 685 C708 738 877 735 1037 679 C1207 620 1380 622 1600 690" fill="none" stroke="#d9faff" stroke-width="10" opacity="0.20"/>
-
-  <g fill="#ffffff" opacity="0.32">
-    <circle cx="124" cy="552" r="7"/><circle cx="182" cy="519" r="4"/><circle cx="260" cy="547" r="6"/>
-    <circle cx="749" cy="555" r="5"/><circle cx="812" cy="525" r="8"/><circle cx="878" cy="553" r="4"/>
-    <circle cx="1331" cy="538" r="6"/><circle cx="1404" cy="512" r="4"/><circle cx="1480" cy="548" r="7"/>
-  </g>
-
-  <rect width="1600" height="800" fill="#04143b" opacity="0.12"/>
 </svg>
