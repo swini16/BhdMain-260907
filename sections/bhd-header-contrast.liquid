@@ -1,27 +1,26 @@
 <style>
   @media screen and (min-width: 990px) {
-    /* Tier 1 controls */
     .bhd-header .bhd-header__split-button {
-      background: rgba(var(--color-button), .10);
-      border-color: rgba(var(--color-button), .28);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.75), 0 .2rem .75rem rgba(13,33,78,.055);
+      background: rgba(var(--color-button), .11);
+      border-color: rgba(var(--color-button), .32);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.78), 0 .22rem .8rem rgba(13,33,78,.06);
     }
-    .bhd-header .bhd-header__main-link { font-weight: 600; }
+    .bhd-header .bhd-header__main-link { font-weight: 650; }
     .bhd-header .bhd-header__main-toggle {
-      background: rgba(var(--color-button), .16);
-      border-left-color: rgba(var(--color-button), .30);
+      background: rgba(var(--color-button), .18);
+      border-left-color: rgba(var(--color-button), .34);
     }
     .bhd-header .bhd-header__main-item:hover .bhd-header__split-button {
-      background: rgba(var(--color-button), .15);
-      border-color: rgba(var(--color-button), .38);
+      background: rgba(var(--color-button), .16);
+      border-color: rgba(var(--color-button), .42);
       box-shadow: 0 .35rem 1rem rgba(13,33,78,.08);
     }
     .bhd-header .bhd-header__main-item.is-open .bhd-header__split-button {
-      background: rgba(var(--color-button), .23);
-      border-color: rgba(var(--color-button), .58);
+      background: rgba(var(--color-button), .24);
+      border-color: rgba(var(--color-button), .60);
       box-shadow: 0 .45rem 1.4rem rgba(13,33,78,.13);
     }
-    .bhd-header .bhd-header__main-item.is-open .bhd-header__main-toggle { background: rgba(var(--color-button), .22); }
+    .bhd-header .bhd-header__main-item.is-open .bhd-header__main-toggle { background: rgba(var(--color-button), .25); }
 
     .bhd-header .bhd-header__main-toggle span {
       width: .82rem;
@@ -38,7 +37,6 @@
       transform: rotate(225deg) translate(-1px,-1px) !important;
     }
 
-    /* Compact four-column mega menus. Their center is shifted only when needed to stay on-screen. */
     .bhd-header .bhd-header__dropdown-menu,
     .bhd-header .bhd-header__dropdown-menu--wide {
       width: min(860px, calc(100vw - 32px)) !important;
@@ -65,29 +63,30 @@
       border-left: 1px solid rgba(var(--color-foreground), .13);
       border-top: 1px solid rgba(var(--color-foreground), .13);
     }
-    .bhd-header .bhd-header__main-item.is-open .bhd-header__dropdown-child {
-      background: transparent;
-      border: 0;
-      padding: .2rem;
+    .bhd-header .bhd-header__dropdown-child {
+      min-width: 0;
+      padding: .2rem !important;
+      background: transparent !important;
+      border: 0 !important;
     }
 
-    /* Tier 2 mirrors Tier 1, but stays compact. */
     .bhd-header .bhd-header__tier2-split {
       display: grid;
       grid-template-columns: minmax(0,1fr) 3.15rem;
       min-height: 4.35rem;
       overflow: hidden;
-      border: 1px solid rgba(var(--color-button), .25);
+      border: 1px solid rgba(var(--color-button), .27);
       border-radius: 10px;
-      background: rgba(var(--color-button), .08);
+      background: rgba(var(--color-button), .09);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
       transition: background .15s ease,border-color .15s ease,box-shadow .15s ease;
     }
-    .bhd-header .bhd-header__tier2-split .bhd-header__dropdown-parent {
-      display: flex;
+    .bhd-header .bhd-header__tier2-link {
+      display: flex !important;
       align-items: center;
       min-width: 0;
-      padding: .65rem .8rem;
+      padding: .65rem .8rem !important;
+      color: rgb(var(--color-foreground));
       font-size: 1.32rem;
       font-weight: 700;
       line-height: 1.16;
@@ -99,8 +98,8 @@
       width: 100%;
       padding: 0;
       border: 0;
-      border-left: 1px solid rgba(var(--color-button), .26);
-      background: rgba(var(--color-button), .15);
+      border-left: 1px solid rgba(var(--color-button), .28);
+      background: rgba(var(--color-button), .16);
       color: rgb(var(--color-foreground));
       cursor: pointer;
     }
@@ -115,20 +114,20 @@
       transition: transform .17s ease;
     }
     .bhd-header .bhd-header__dropdown-child:hover .bhd-header__tier2-split {
-      background: rgba(var(--color-button), .12);
-      border-color: rgba(var(--color-button), .36);
+      background: rgba(var(--color-button), .13);
+      border-color: rgba(var(--color-button), .38);
     }
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-split {
-      background: rgba(var(--color-button), .19);
-      border-color: rgba(var(--color-button), .48);
+      background: rgba(var(--color-button), .20);
+      border-color: rgba(var(--color-button), .50);
       box-shadow: 0 .3rem .9rem rgba(13,33,78,.08);
     }
-    .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-toggle { background: rgba(var(--color-button), .23); }
+    .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-toggle { background: rgba(var(--color-button), .24); }
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-toggle span {
       transform: rotate(225deg) translate(-1px,-1px);
     }
-    .bhd-header .bhd-header__dropdown-grandchildren[hidden] { display:none !important; }
-    .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__dropdown-grandchildren {
+    .bhd-header .bhd-header__tier3[hidden] { display: none !important; }
+    .bhd-header .bhd-header__tier3 {
       margin-top: .45rem;
       padding: .45rem;
       border: 1px solid rgba(var(--color-foreground), .09);
@@ -137,18 +136,77 @@
       background: rgba(var(--color-foreground), .018);
       box-shadow: 0 .4rem 1rem rgba(13,33,78,.045);
     }
-    .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__dropdown-grandchildren a { padding: .5rem .55rem; }
+    .bhd-header .bhd-header__tier3 a {
+      display: block;
+      padding: .5rem .55rem;
+      color: rgb(var(--color-foreground));
+      font-size: 1.24rem;
+      line-height: 1.25;
+      text-decoration: none;
+      opacity: .82;
+    }
+
+    .bhd-header .bhd-header__discuss-row {
+      grid-column: 1 / -1;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: .65rem;
+      min-height: 4rem;
+      margin-top: .15rem;
+      padding: .55rem .85rem !important;
+      border-top: 1px solid rgba(var(--color-foreground), .09);
+      border-radius: .9rem;
+      background: rgba(var(--color-button), .055);
+      color: rgb(var(--color-foreground)) !important;
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .bhd-header .bhd-header__discuss-row:hover { background: rgba(var(--color-button), .11); }
+    .bhd-header .bhd-header__discuss-row img {
+      width: 2.7rem;
+      height: 2.7rem;
+      border-radius: .65rem;
+      object-fit: cover;
+      box-shadow: 0 .15rem .5rem rgba(13,33,78,.10);
+    }
+    .bhd-header .bhd-header__discuss-row span { opacity: .62; font-weight: 600; }
+  }
+
+  .bhd-header .bhd-header__discuss-button {
+    width: 4.5rem;
+    height: 4.5rem;
+    margin-left: .15rem;
+    padding: 0 !important;
+    overflow: hidden;
+    border: 1px solid rgba(var(--color-button), .20);
+    border-radius: 1.1rem;
+    background: #fff;
+    box-shadow: 0 .3rem 1rem rgba(13,33,78,.09);
+    transition: transform .15s ease,box-shadow .15s ease,border-color .15s ease;
+  }
+  .bhd-header .bhd-header__discuss-button:hover {
+    transform: translateY(-1px);
+    border-color: rgba(var(--color-button), .40);
+    box-shadow: 0 .5rem 1.4rem rgba(13,33,78,.14);
+  }
+  .bhd-header .bhd-header__discuss-button img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
   }
 
   @media screen and (max-width: 989px) {
     .bhd-header .bhd-header__mobile-main-row {
-      background: rgba(var(--color-button), .085);
-      border-color: rgba(var(--color-button), .24);
+      background: rgba(var(--color-button), .09);
+      border-color: rgba(var(--color-button), .26);
     }
-    .bhd-header .bhd-header__mobile-main-row > a { font-weight: 600; }
+    .bhd-header .bhd-header__mobile-main-row > a { font-weight: 650; }
     .bhd-header .bhd-header__mobile-toggle {
-      background: rgba(var(--color-button), .15);
-      border-left-color: rgba(var(--color-button), .28);
+      background: rgba(var(--color-button), .16);
+      border-left-color: rgba(var(--color-button), .30);
     }
     .bhd-header .bhd-header__mobile-toggle span,
     .bhd-header .bhd-header__mobile-tier2-toggle span {
@@ -179,16 +237,14 @@
       background: rgb(var(--color-background));
       box-shadow: 0 .8rem 2rem rgba(13,33,78,.08);
     }
-
-    .bhd-header .bhd-header__mobile-tier2 > summary { display:none !important; }
     .bhd-header .bhd-header__mobile-tier2-split {
       display: grid;
       grid-template-columns: minmax(0,1fr) 4rem;
       margin: .35rem 0;
       overflow: hidden;
-      border: 1px solid rgba(var(--color-button), .20);
+      border: 1px solid rgba(var(--color-button), .22);
       border-radius: 9px;
-      background: rgba(var(--color-button), .07);
+      background: rgba(var(--color-button), .075);
     }
     .bhd-header .bhd-header__mobile-tier2-link {
       display: flex;
@@ -205,36 +261,71 @@
       place-items: center;
       padding: 0;
       border: 0;
-      border-left: 1px solid rgba(var(--color-button), .23);
-      background: rgba(var(--color-button), .13);
+      border-left: 1px solid rgba(var(--color-button), .25);
+      background: rgba(var(--color-button), .14);
       color: rgb(var(--color-foreground));
       cursor: pointer;
     }
     .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-split {
-      background: rgba(var(--color-button), .17);
-      border-color: rgba(var(--color-button), .42);
+      background: rgba(var(--color-button), .18);
+      border-color: rgba(var(--color-button), .44);
     }
-    .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-toggle { background: rgba(var(--color-button), .21); }
+    .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-toggle { background: rgba(var(--color-button), .22); }
     .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-toggle span {
       transform: rotate(225deg) translate(-1px,-1px) !important;
     }
-    .bhd-header .bhd-header__mobile-tier2 .bhd-header__mobile-submenu[hidden] { display:none !important; }
-    .bhd-header .bhd-header__mobile-tier2.is-tier2-open > .bhd-header__mobile-submenu {
+    .bhd-header .bhd-header__mobile-tier3[hidden] { display: none !important; }
+    .bhd-header .bhd-header__mobile-tier3 {
       margin: .2rem 0 .55rem .7rem;
       padding: .3rem .45rem;
       border-left: 3px solid rgba(var(--color-button), .40);
       background: rgba(var(--color-foreground), .015);
       border-radius: 0 8px 8px 0;
     }
+    .bhd-header .bhd-header__mobile-tier3 a {
+      display: block;
+      padding: .6rem .8rem;
+      color: rgb(var(--color-foreground));
+      text-decoration: none;
+      font-size: 1.3rem;
+      opacity: .82;
+    }
+    .bhd-header .bhd-header__mobile-discuss {
+      display: flex !important;
+      align-items: center;
+      gap: .7rem;
+      margin: .55rem 0 .05rem;
+      padding: .75rem .85rem !important;
+      border-top: 1px solid rgba(var(--color-foreground), .09);
+      border-radius: .85rem;
+      background: rgba(var(--color-button), .055);
+      color: rgb(var(--color-foreground)) !important;
+      font-size: 1.35rem !important;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .bhd-header .bhd-header__mobile-discuss img {
+      width: 2.8rem;
+      height: 2.8rem;
+      border-radius: .65rem;
+      object-fit: cover;
+    }
+    .bhd-header .bhd-header__discuss-button {
+      width: 3.7rem;
+      height: 3.7rem;
+      margin-left: 0;
+      border-radius: .9rem;
+    }
   }
 </style>
 
 <script>
   (() => {
-    const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    const iconUrl = {{ 'bhd-discuss-icon.webp' | asset_url | json }};
+    const normalize = (value) => (value || '').replace(/\s+/g,' ').trim().toLowerCase();
 
     const menuArchitecture = {
-      'science': [
+      science: [
         { label:'Hydration Science', href:'/pages/hydration-science', links:[
           ['How Hydration Works','/pages/how-hydration-works'],
           ['Electrolytes','/pages/electrolytes'],
@@ -257,7 +348,7 @@
           ['Healthcare Applications','/pages/healthcare-applications']
         ]}
       ],
-      'hydration solutions': [
+      solutions: [
         { label:'Products', href:'/products/lemonade-best-hydrate', links:[
           ['Buy Now','/products/lemonade-best-hydrate'],
           ['Ingredients','/pages/our-formula'],
@@ -281,7 +372,7 @@
           ['Humanitarian Hydration','/pages/eco-humanitarian']
         ]}
       ],
-      'connect with us': [
+      connect: [
         { label:'Company & People', href:'/pages/about', links:[
           ['Our Story','/pages/why-best-hydrate'],
           ['Mission & Values','/pages/mission-values'],
@@ -299,6 +390,7 @@
           ['Investor Contact','/pages/investor-contact']
         ]},
         { label:'News & Contact', href:'/pages/contact', links:[
+          ['Blog','/blogs/news'],
           ['Company News','/blogs/news'],
           ['Press','/pages/press'],
           ['Events','/pages/events'],
@@ -307,139 +399,131 @@
       ]
     };
 
+    const renameMainLabels = (header) => {
+      header.querySelectorAll('[data-main-item]').forEach((main) => {
+        const link = main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
+        const toggle = main.querySelector(':scope > .bhd-header__split-button [data-menu-toggle]');
+        if (!link) return;
+        const current = normalize(link.textContent);
+        if (current === 'hydration solutions') {
+          link.textContent = 'Solutions';
+          if (toggle) toggle.setAttribute('aria-label','Open Solutions menu');
+        } else if (current === 'connect with us') {
+          link.textContent = 'Connect';
+          if (toggle) toggle.setAttribute('aria-label','Open Connect menu');
+        }
+      });
+      header.querySelectorAll('[data-mobile-main]').forEach((main) => {
+        const link = main.querySelector(':scope > .bhd-header__mobile-main-row > a');
+        const toggle = main.querySelector(':scope > .bhd-header__mobile-main-row [data-menu-toggle]');
+        if (!link) return;
+        const current = normalize(link.textContent);
+        if (current === 'hydration solutions') {
+          link.textContent = 'Solutions';
+          if (toggle) toggle.setAttribute('aria-label','Open Solutions menu');
+        } else if (current === 'connect with us') {
+          link.textContent = 'Connect';
+          if (toggle) toggle.setAttribute('aria-label','Open Connect menu');
+        }
+      });
+    };
+
     const desktopItemMarkup = (item) => `
       <div class="bhd-header__dropdown-child">
-        <a class="bhd-header__dropdown-parent" href="${item.href}">${item.label}</a>
-        <div class="bhd-header__dropdown-grandchildren">${item.links.map(([label,href]) => `<a href="${href}">${label}</a>`).join('')}</div>
+        <div class="bhd-header__tier2-split">
+          <a class="bhd-header__tier2-link" href="${item.href}">${item.label}</a>
+          <button type="button" class="bhd-header__tier2-toggle" aria-expanded="false" aria-label="Open ${item.label} submenu"><span aria-hidden="true"></span></button>
+        </div>
+        <div class="bhd-header__tier3" hidden>${item.links.map(([label,href]) => `<a href="${href}">${label}</a>`).join('')}</div>
       </div>`;
 
     const mobileItemMarkup = (item) => `
-      <details class="bhd-header__mobile-group">
-        <summary>${item.label}</summary>
-        <div class="bhd-header__mobile-submenu">${item.links.map(([label,href]) => `<a href="${href}">${label}</a>`).join('')}</div>
-      </details>`;
+      <div class="bhd-header__mobile-tier2">
+        <div class="bhd-header__mobile-tier2-split">
+          <a class="bhd-header__mobile-tier2-link" href="${item.href}">${item.label}</a>
+          <button type="button" class="bhd-header__mobile-tier2-toggle" aria-expanded="false" aria-label="Open ${item.label} submenu"><span aria-hidden="true"></span></button>
+        </div>
+        <div class="bhd-header__mobile-tier3" hidden>${item.links.map(([label,href]) => `<a href="${href}">${label}</a>`).join('')}</div>
+      </div>`;
 
-    const consolidateMenus = () => {
-      document.querySelectorAll('.bhd-header [data-main-item]').forEach((main) => {
+    const discussDesktopMarkup = () => `<a class="bhd-header__discuss-row" href="/blogs/news"><img src="${iconUrl}" alt="" width="96" height="96"><strong>Discuss</strong><span>Blog</span></a>`;
+    const discussMobileMarkup = () => `<a class="bhd-header__mobile-discuss" href="/blogs/news"><img src="${iconUrl}" alt="" width="96" height="96"><span>Discuss</span></a>`;
+
+    const rebuildMenus = (header) => {
+      header.querySelectorAll('[data-main-item]').forEach((main) => {
         const link = main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
         const menu = main.querySelector(':scope > .bhd-header__dropdown-menu');
         if (!link || !menu) return;
         const config = menuArchitecture[normalize(link.textContent)];
         if (!config) return;
-        menu.innerHTML = config.map(desktopItemMarkup).join('');
+        menu.innerHTML = config.map(desktopItemMarkup).join('') + discussDesktopMarkup();
         menu.classList.remove('bhd-header__dropdown-menu--wide');
       });
 
-      document.querySelectorAll('.bhd-header [data-mobile-main]').forEach((main) => {
+      header.querySelectorAll('[data-mobile-main]').forEach((main) => {
         const link = main.querySelector(':scope > .bhd-header__mobile-main-row > a');
         const level = main.querySelector(':scope > .bhd-header__mobile-level-one');
         if (!link || !level) return;
         const config = menuArchitecture[normalize(link.textContent)];
         if (!config) return;
-        level.innerHTML = config.map(mobileItemMarkup).join('');
+        level.innerHTML = config.map(mobileItemMarkup).join('') + discussMobileMarkup();
       });
+    };
+
+    const installDiscussButton = (header) => {
+      const actions = header.querySelector('.bhd-header__actions');
+      if (!actions) return;
+      actions.querySelectorAll('.bhd-header__blog-button,.bhd-header__discuss-button').forEach((node) => node.remove());
+      const discuss = document.createElement('a');
+      discuss.href = '/blogs/news';
+      discuss.className = 'bhd-header__icon-button bhd-header__discuss-button';
+      discuss.setAttribute('aria-label','Discuss on the Best Hydrate blog');
+      discuss.setAttribute('title','Discuss');
+      discuss.innerHTML = `<img src="${iconUrl}" alt="" width="96" height="96" loading="eager">`;
+      actions.appendChild(discuss);
     };
 
     const closeDesktopTier2 = (item) => {
       if (!item) return;
       item.classList.remove('is-tier2-open');
       const toggle = item.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-toggle');
-      const panel = item.querySelector(':scope > .bhd-header__dropdown-grandchildren');
+      const panel = item.querySelector(':scope > .bhd-header__tier3');
       if (toggle) toggle.setAttribute('aria-expanded','false');
       if (panel) panel.hidden = true;
     };
-
     const openDesktopTier2 = (item) => {
-      if (!item) return;
-      const menu = item.closest('.bhd-header__dropdown-menu');
+      const menu = item && item.closest('.bhd-header__dropdown-menu');
       if (menu) menu.querySelectorAll('.bhd-header__dropdown-child.is-tier2-open').forEach((other) => { if (other !== item) closeDesktopTier2(other); });
+      if (!item) return;
       item.classList.add('is-tier2-open');
       const toggle = item.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-toggle');
-      const panel = item.querySelector(':scope > .bhd-header__dropdown-grandchildren');
+      const panel = item.querySelector(':scope > .bhd-header__tier3');
       if (toggle) toggle.setAttribute('aria-expanded','true');
       if (panel) panel.hidden = false;
     };
-
     const closeMobileTier2 = (item) => {
       if (!item) return;
       item.classList.remove('is-tier2-open');
       const toggle = item.querySelector(':scope > .bhd-header__mobile-tier2-split .bhd-header__mobile-tier2-toggle');
-      const panel = item.querySelector(':scope > .bhd-header__mobile-submenu');
+      const panel = item.querySelector(':scope > .bhd-header__mobile-tier3');
       if (toggle) toggle.setAttribute('aria-expanded','false');
       if (panel) panel.hidden = true;
     };
-
     const openMobileTier2 = (item) => {
-      if (!item) return;
-      const level = item.closest('.bhd-header__mobile-level-one');
+      const level = item && item.closest('.bhd-header__mobile-level-one');
       if (level) level.querySelectorAll('.bhd-header__mobile-tier2.is-tier2-open').forEach((other) => { if (other !== item) closeMobileTier2(other); });
+      if (!item) return;
       item.classList.add('is-tier2-open');
       const toggle = item.querySelector(':scope > .bhd-header__mobile-tier2-split .bhd-header__mobile-tier2-toggle');
-      const panel = item.querySelector(':scope > .bhd-header__mobile-submenu');
+      const panel = item.querySelector(':scope > .bhd-header__mobile-tier3');
       if (toggle) toggle.setAttribute('aria-expanded','true');
       if (panel) panel.hidden = false;
     };
 
-    const enhanceTier2 = () => {
-      const linkMap = new Map();
-
-      document.querySelectorAll('.bhd-header .bhd-header__dropdown-child').forEach((item) => {
-        if (item.classList.contains('bhd-tier2-ready')) return;
-        const link = item.querySelector(':scope > .bhd-header__dropdown-parent');
-        const panel = item.querySelector(':scope > .bhd-header__dropdown-grandchildren');
-        if (!link || !panel) return;
-        linkMap.set(normalize(link.textContent), link.getAttribute('href') || '#');
-
-        const split = document.createElement('div');
-        split.className = 'bhd-header__tier2-split';
-        const toggle = document.createElement('button');
-        toggle.type = 'button';
-        toggle.className = 'bhd-header__tier2-toggle';
-        toggle.setAttribute('aria-expanded','false');
-        toggle.setAttribute('aria-label',`Open ${link.textContent.trim()} submenu`);
-        toggle.innerHTML = '<span aria-hidden="true"></span>';
-
-        item.insertBefore(split,link);
-        split.appendChild(link);
-        split.appendChild(toggle);
-        panel.hidden = true;
-        item.classList.add('bhd-tier2-ready');
-      });
-
-      document.querySelectorAll('.bhd-header .bhd-header__mobile-level-one > .bhd-header__mobile-group').forEach((item) => {
-        if (item.classList.contains('bhd-mobile-tier2-ready')) return;
-        const summary = item.querySelector(':scope > summary');
-        const panel = item.querySelector(':scope > .bhd-header__mobile-submenu');
-        if (!summary || !panel) return;
-
-        const label = summary.textContent.replace(/\s+/g,' ').trim();
-        const href = linkMap.get(normalize(label)) || '#';
-        const split = document.createElement('div');
-        split.className = 'bhd-header__mobile-tier2-split';
-        const link = document.createElement('a');
-        link.className = 'bhd-header__mobile-tier2-link';
-        link.href = href;
-        link.textContent = label;
-        const toggle = document.createElement('button');
-        toggle.type = 'button';
-        toggle.className = 'bhd-header__mobile-tier2-toggle';
-        toggle.setAttribute('aria-expanded','false');
-        toggle.setAttribute('aria-label',`Open ${label} submenu`);
-        toggle.innerHTML = '<span aria-hidden="true"></span>';
-
-        summary.insertAdjacentElement('afterend',split);
-        split.appendChild(link);
-        split.appendChild(toggle);
-        panel.hidden = true;
-        item.removeAttribute('open');
-        item.classList.add('bhd-header__mobile-tier2','bhd-mobile-tier2-ready');
-      });
-    };
-
     const positionMegaMenu = (main) => {
-      if (!main || !main.classList.contains('is-open')) return;
+      if (!main || !main.classList.contains('is-open') || window.innerWidth < 990) return;
       const menu = main.querySelector(':scope > .bhd-header__dropdown-menu');
-      if (!menu || menu.hidden || window.innerWidth < 990) return;
+      if (!menu || menu.hidden) return;
       menu.style.setProperty('--menu-shift-x','0px');
       requestAnimationFrame(() => {
         const margin = 16;
@@ -450,14 +534,14 @@
         menu.style.setProperty('--menu-shift-x',`${shift}px`);
       });
     };
+    const positionOpenMegaMenus = () => document.querySelectorAll('.bhd-header [data-main-item].is-open').forEach(positionMegaMenu);
 
-    const positionOpenMegaMenus = () => {
-      document.querySelectorAll('.bhd-header [data-main-item].is-open').forEach(positionMegaMenu);
-    };
-
-    const init = () => {
-      consolidateMenus();
-      enhanceTier2();
+    const initHeaderEnhancements = () => {
+      document.querySelectorAll('.bhd-header').forEach((header) => {
+        renameMainLabels(header);
+        rebuildMenus(header);
+        installDiscussButton(header);
+      });
 
       document.addEventListener('click',(event) => {
         const desktopToggle = event.target.closest('.bhd-header__tier2-toggle');
@@ -465,33 +549,24 @@
           event.preventDefault();
           event.stopPropagation();
           const item = desktopToggle.closest('.bhd-header__dropdown-child');
-          if (!item) return;
-          item.classList.contains('is-tier2-open') ? closeDesktopTier2(item) : openDesktopTier2(item);
+          if (item) item.classList.contains('is-tier2-open') ? closeDesktopTier2(item) : openDesktopTier2(item);
           return;
         }
-
         const mobileToggle = event.target.closest('.bhd-header__mobile-tier2-toggle');
         if (mobileToggle) {
           event.preventDefault();
           event.stopPropagation();
           const item = mobileToggle.closest('.bhd-header__mobile-tier2');
-          if (!item) return;
-          item.classList.contains('is-tier2-open') ? closeMobileTier2(item) : openMobileTier2(item);
+          if (item) item.classList.contains('is-tier2-open') ? closeMobileTier2(item) : openMobileTier2(item);
           return;
         }
-
-        if (event.target.closest('.bhd-header [data-menu-toggle]')) {
-          document.querySelectorAll('.bhd-header .bhd-header__dropdown-child.is-tier2-open').forEach(closeDesktopTier2);
-          document.querySelectorAll('.bhd-header .bhd-header__mobile-tier2.is-tier2-open').forEach(closeMobileTier2);
-          requestAnimationFrame(positionOpenMegaMenus);
-        }
+        if (event.target.closest('.bhd-header [data-menu-toggle]')) requestAnimationFrame(positionOpenMegaMenus);
       });
-
       window.addEventListener('resize',positionOpenMegaMenus,{passive:true});
     };
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',init,{once:true});
-    else init();
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',initHeaderEnhancements,{once:true});
+    else initHeaderEnhancements();
   })();
 </script>
 
