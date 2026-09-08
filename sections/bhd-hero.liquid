@@ -1,60 +1,109 @@
 <section id="BhdHero-{{ section.id }}" class="bhd-hero">
-  <img class="bhd-hero__media" src="{{ 'bhd-hero-premium.svg' | asset_url }}" alt="" width="1600" height="800" loading="eager">
+  {% if section.settings.hero_image != blank %}
+    {{ section.settings.hero_image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '750,1100,1500,2000,2400', sizes: '100vw', class: 'bhd-hero__media', alt: '' }}
+  {% else %}
+    <img
+      class="bhd-hero__media"
+      src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2400&q=88"
+      srcset="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=86 900w, https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1500&q=88 1500w, https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2400&q=88 2400w"
+      sizes="100vw"
+      alt=""
+      width="2400"
+      height="1350"
+      loading="eager"
+      fetchpriority="high">
+  {% endif %}
+
   <div class="bhd-hero__wash"></div>
   <div class="page-width bhd-hero__inner">
     <div class="bhd-hero__copy">
       {% if section.settings.heading != blank %}<h1>{{ section.settings.heading }}</h1>{% endif %}
       {% if section.settings.subheading != blank %}<p>{{ section.settings.subheading }}</p>{% endif %}
-      {% if section.settings.button_label != blank %}<a class="button button--primary" {% if section.settings.button_link != blank %}href="{{ section.settings.button_link }}"{% else %}role="link" aria-disabled="true"{% endif %}>{{ section.settings.button_label }}</a>{% endif %}
-    </div>
-
-    <div class="bhd-hero__visual">
-      <div class="bhd-hero__halo" aria-hidden="true"></div>
-      {% if section.settings.product != blank and section.settings.product.featured_image != blank %}
-        <a href="{{ section.settings.product.url }}" class="bhd-hero__product-card" aria-label="{{ section.settings.product.title | escape }}">
-          {{ section.settings.product.featured_image | image_url: width: 900 | image_tag: loading: 'eager', widths: '360,540,720,900', sizes: '(min-width: 990px) 35vw, 74vw', class: 'bhd-hero__product', alt: section.settings.product.title }}
-        </a>
+      {% if section.settings.button_label != blank %}
+        <a class="button button--primary" {% if section.settings.button_link != blank %}href="{{ section.settings.button_link }}"{% else %}role="link" aria-disabled="true"{% endif %}>{{ section.settings.button_label }}</a>
       {% endif %}
     </div>
   </div>
 </section>
 
 <style>
-  #BhdHero-{{ section.id }} { position:relative; min-height:620px; overflow:hidden; background:#dff6ff; }
-  #BhdHero-{{ section.id }} .bhd-hero__media { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; }
-  #BhdHero-{{ section.id }} .bhd-hero__wash { position:absolute; inset:0; background:linear-gradient(90deg,rgba(255,255,255,.90) 0%,rgba(255,255,255,.72) 42%,rgba(255,255,255,.18) 70%,rgba(255,255,255,.02) 100%); }
-  #BhdHero-{{ section.id }} .bhd-hero__inner { position:relative; z-index:2; min-height:620px; display:grid; grid-template-columns:minmax(0,.95fr) minmax(340px,.8fr); align-items:center; gap:4rem; }
-  #BhdHero-{{ section.id }} .bhd-hero__copy { max-width:690px; padding:4rem 0; }
-  #BhdHero-{{ section.id }} .bhd-hero__copy h1 { margin:0; color:#0d2a62; font-size:clamp(4.8rem,6vw,7.3rem); line-height:.98; letter-spacing:-.035em; }
-  #BhdHero-{{ section.id }} .bhd-hero__copy p { margin:1.8rem 0 0; color:#173765; font-size:clamp(1.9rem,2.2vw,2.35rem); line-height:1.38; max-width:600px; }
-  #BhdHero-{{ section.id }} .bhd-hero__copy .button { margin-top:2.5rem; min-width:170px; }
-  #BhdHero-{{ section.id }} .bhd-hero__visual { position:relative; min-height:500px; display:grid; place-items:center; }
-  #BhdHero-{{ section.id }} .bhd-hero__halo { position:absolute; width:min(40vw,500px); aspect-ratio:1; border-radius:999px; background:rgba(255,255,255,.44); box-shadow:0 2rem 7rem rgba(23,70,111,.14); backdrop-filter:blur(4px); }
-  #BhdHero-{{ section.id }} .bhd-hero__product-card { width:min(34vw,420px); position:relative; z-index:2; border-radius:1.8rem; overflow:hidden; box-shadow:0 2.4rem 5rem rgba(10,44,82,.20); background:#fff; transform:translateY(.6rem); }
-  #BhdHero-{{ section.id }} .bhd-hero__product { display:block; width:100%; height:auto; }
-
-  @media screen and (max-width:989px){
-    #BhdHero-{{ section.id }} { min-height:690px; }
-    #BhdHero-{{ section.id }} .bhd-hero__wash { background:linear-gradient(180deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.78) 44%,rgba(255,255,255,.12) 78%); }
-    #BhdHero-{{ section.id }} .bhd-hero__inner { min-height:690px; grid-template-columns:1fr; gap:.2rem; text-align:center; padding:2rem 0 1.8rem; }
-    #BhdHero-{{ section.id }} .bhd-hero__copy { max-width:680px; margin:0 auto; padding:.8rem 0 0; }
-    #BhdHero-{{ section.id }} .bhd-hero__copy h1 { font-size:clamp(4rem,10vw,5.6rem); }
-    #BhdHero-{{ section.id }} .bhd-hero__copy p { margin-left:auto; margin-right:auto; font-size:1.8rem; }
-    #BhdHero-{{ section.id }} .bhd-hero__visual { min-height:320px; }
-    #BhdHero-{{ section.id }} .bhd-hero__product-card { width:min(58vw,330px); transform:none; }
-    #BhdHero-{{ section.id }} .bhd-hero__halo { width:min(70vw,370px); }
+  #BhdHero-{{ section.id }} {
+    position:relative;
+    min-height:620px;
+    overflow:hidden;
+    background:#dceefa;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__media {
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 52%;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__wash {
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(90deg,rgba(255,255,255,.97) 0%,rgba(255,255,255,.88) 25%,rgba(255,255,255,.52) 45%,rgba(255,255,255,.08) 67%,rgba(255,255,255,0) 100%),
+      linear-gradient(180deg,rgba(2,24,57,.04) 0%,rgba(2,24,57,.02) 55%,rgba(2,24,57,.12) 100%);
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__inner {
+    position:relative;
+    z-index:2;
+    min-height:620px;
+    display:flex;
+    align-items:center;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__copy {
+    width:min(700px,56vw);
+    padding:5rem 0;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__copy h1 {
+    margin:0;
+    color:#0d2a62;
+    font-size:clamp(5rem,6.2vw,7.6rem);
+    line-height:.96;
+    letter-spacing:-.04em;
+    max-width:690px;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__copy p {
+    margin:2rem 0 0;
+    color:#173765;
+    font-size:clamp(2rem,2.2vw,2.45rem);
+    line-height:1.36;
+    max-width:610px;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero__copy .button {
+    margin-top:2.7rem;
+    min-width:175px;
   }
 
-  @media screen and (max-width:749px){
-    #BhdHero-{{ section.id }} { min-height:560px; }
-    #BhdHero-{{ section.id }} .bhd-hero__inner { min-height:560px; padding:1.2rem 0 1.4rem; }
-    #BhdHero-{{ section.id }} .bhd-hero__copy { padding-top:.4rem; }
-    #BhdHero-{{ section.id }} .bhd-hero__copy h1 { font-size:clamp(3.45rem,10.8vw,4.55rem); }
-    #BhdHero-{{ section.id }} .bhd-hero__copy p { margin-top:.9rem; font-size:1.52rem; }
-    #BhdHero-{{ section.id }} .bhd-hero__copy .button { margin-top:1.4rem; min-width:145px; }
-    #BhdHero-{{ section.id }} .bhd-hero__visual { min-height:245px; }
-    #BhdHero-{{ section.id }} .bhd-hero__product-card { width:min(64vw,260px); border-radius:1.2rem; }
-    #BhdHero-{{ section.id }} .bhd-hero__halo { width:min(76vw,300px); }
+  @media screen and (max-width:989px) {
+    #BhdHero-{{ section.id }} { min-height:600px; }
+    #BhdHero-{{ section.id }} .bhd-hero__media { object-position:62% center; }
+    #BhdHero-{{ section.id }} .bhd-hero__wash {
+      background:
+        linear-gradient(90deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.84) 42%,rgba(255,255,255,.24) 72%,rgba(255,255,255,.06) 100%),
+        linear-gradient(180deg,rgba(255,255,255,.08),rgba(4,34,70,.10));
+    }
+    #BhdHero-{{ section.id }} .bhd-hero__inner { min-height:600px; align-items:center; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy { width:min(620px,74vw); padding:4rem 0; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy h1 { font-size:clamp(4.2rem,8.8vw,5.8rem); }
+    #BhdHero-{{ section.id }} .bhd-hero__copy p { font-size:1.8rem; }
+  }
+
+  @media screen and (max-width:749px) {
+    #BhdHero-{{ section.id }} { min-height:500px; }
+    #BhdHero-{{ section.id }} .bhd-hero__media { object-position:66% center; }
+    #BhdHero-{{ section.id }} .bhd-hero__wash {
+      background:linear-gradient(90deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.86) 58%,rgba(255,255,255,.36) 82%,rgba(255,255,255,.10) 100%);
+    }
+    #BhdHero-{{ section.id }} .bhd-hero__inner { min-height:500px; align-items:center; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy { width:82vw; padding:2.8rem 0; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy h1 { font-size:clamp(3.7rem,11.2vw,4.9rem); line-height:.98; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy p { margin-top:1.2rem; font-size:1.55rem; line-height:1.34; max-width:360px; }
+    #BhdHero-{{ section.id }} .bhd-hero__copy .button { margin-top:1.7rem; min-width:145px; }
   }
 </style>
 
@@ -62,13 +111,14 @@
 {
   "name":"Best Hydrate hero",
   "settings":[
+    {"type":"image_picker","id":"hero_image","label":"Hero background image"},
     {"type":"inline_richtext","id":"heading","label":"Heading","default":"Hydrate for YOUR best day."},
     {"type":"inline_richtext","id":"subheading","label":"Subheading","default":"Five essential electrolytes. Built for better hydration."},
-    {"type":"product","id":"product","label":"Hero product"},
+    {"type":"product","id":"product","label":"Legacy hero product (not displayed)"},
     {"type":"text","id":"button_label","label":"Button label","default":"SHOP NOW"},
     {"type":"url","id":"button_link","label":"Button link"},
     {"type":"range","id":"desktop_height","label":"Desktop height","min":500,"max":820,"step":20,"unit":"px","default":620},
-    {"type":"range","id":"mobile_height","label":"Mobile height","min":520,"max":760,"step":20,"unit":"px","default":560}
+    {"type":"range","id":"mobile_height","label":"Mobile height","min":440,"max":700,"step":20,"unit":"px","default":500}
   ],
   "presets":[{"name":"Best Hydrate hero"}]
 }
