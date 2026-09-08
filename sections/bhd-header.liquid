@@ -1,14 +1,35 @@
+{% assign header_menu = section.settings.menu %}
+{% if header_menu == blank or header_menu.links == blank %}
+  {% assign header_menu = linklists['new-menu'] %}
+{% endif %}
+{% if header_menu == blank or header_menu.links == blank %}
+  {% assign header_menu = linklists['main-menu'] %}
+{% endif %}
+
 <header id="BhdHeader-{{ section.id }}" class="bhd-header color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width bhd-header__inner">
     <details class="bhd-header__mobile-menu">
       <summary class="bhd-header__icon-button" aria-label="Menu"><span aria-hidden="true">☰</span></summary>
       <div class="bhd-header__mobile-panel">
-        {% for link in section.settings.menu.links %}
+        {% for link in header_menu.links %}
           {% if link.links != blank %}
-            <details>
+            <details class="bhd-header__mobile-group">
               <summary>{{ link.title }}</summary>
               <div class="bhd-header__mobile-submenu">
-                {% for childlink in link.links %}<a href="{{ childlink.url }}">{{ childlink.title }}</a>{% endfor %}
+                {% for childlink in link.links %}
+                  {% if childlink.links != blank %}
+                    <details class="bhd-header__mobile-group bhd-header__mobile-group--nested">
+                      <summary>{{ childlink.title }}</summary>
+                      <div class="bhd-header__mobile-submenu bhd-header__mobile-submenu--nested">
+                        {% for grandchildlink in childlink.links %}
+                          <a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a>
+                        {% endfor %}
+                      </div>
+                    </details>
+                  {% else %}
+                    <a href="{{ childlink.url }}">{{ childlink.title }}</a>
+                  {% endif %}
+                {% endfor %}
               </div>
             </details>
           {% else %}
@@ -29,12 +50,25 @@
     </a>
 
     <nav class="bhd-header__nav" aria-label="Primary navigation">
-      {% for link in section.settings.menu.links %}
+      {% for link in header_menu.links %}
         {% if link.links != blank %}
           <details class="bhd-header__dropdown">
             <summary>{{ link.title }}</summary>
             <div class="bhd-header__dropdown-menu">
-              {% for childlink in link.links %}<a href="{{ childlink.url }}">{{ childlink.title }}</a>{% endfor %}
+              {% for childlink in link.links %}
+                {% if childlink.links != blank %}
+                  <div class="bhd-header__dropdown-child">
+                    <a class="bhd-header__dropdown-parent" href="{{ childlink.url }}">{{ childlink.title }}</a>
+                    <div class="bhd-header__dropdown-grandchildren">
+                      {% for grandchildlink in childlink.links %}
+                        <a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% else %}
+                  <a href="{{ childlink.url }}">{{ childlink.title }}</a>
+                {% endif %}
+              {% endfor %}
             </div>
           </details>
         {% else %}
@@ -65,12 +99,17 @@
   .bhd-header .bhd-header__site-name { display:block; color:rgb(var(--color-foreground)); font-family:var(--font-heading-family); font-size:2.5rem; font-weight:700; line-height:.95; white-space:nowrap; }
   .bhd-header .bhd-header__tagline { display:block; width:100%; text-align:center; color:rgba(var(--color-foreground),.72); font-family:var(--font-heading-family); font-size:1.1rem; font-weight:500; line-height:1.1; white-space:nowrap; }
   .bhd-header .bhd-header__nav { display:flex; align-items:center; justify-content:center; gap:2.8rem; }
-  .bhd-header .bhd-header__nav > a,.bhd-header .bhd-header__dropdown > summary { color:rgb(var(--color-foreground)); text-decoration:none; font-size:1.6rem; letter-spacing:.04em; cursor:pointer; list-style:none; }
+  .bhd-header .bhd-header__nav > a,
+  .bhd-header .bhd-header__dropdown > summary { color:rgb(var(--color-foreground)); text-decoration:none; font-size:1.6rem; letter-spacing:.04em; cursor:pointer; list-style:none; }
   .bhd-header .bhd-header__dropdown { position:relative; }
   .bhd-header .bhd-header__dropdown > summary::-webkit-details-marker { display:none; }
   .bhd-header .bhd-header__dropdown > summary::after { content:'⌄'; display:inline-block; margin-left:.45rem; font-size:1.4rem; }
-  .bhd-header .bhd-header__dropdown-menu { position:absolute; top:calc(100% + 1rem); left:0; min-width:190px; padding:1rem; border-radius:10px; background:rgb(var(--color-background)); box-shadow:0 10px 30px rgba(0,0,0,.13); border:1px solid rgba(var(--color-foreground),.08); }
-  .bhd-header .bhd-header__dropdown-menu a { display:block; padding:.8rem 1rem; color:rgb(var(--color-foreground)); text-decoration:none; white-space:nowrap; }
+  .bhd-header .bhd-header__dropdown-menu { position:absolute; top:calc(100% + 1rem); left:0; min-width:230px; padding:1rem; border-radius:10px; background:rgb(var(--color-background)); box-shadow:0 10px 30px rgba(0,0,0,.13); border:1px solid rgba(var(--color-foreground),.08); }
+  .bhd-header .bhd-header__dropdown-menu a { display:block; padding:.75rem 1rem; color:rgb(var(--color-foreground)); text-decoration:none; white-space:nowrap; }
+  .bhd-header .bhd-header__dropdown-child + .bhd-header__dropdown-child { margin-top:.35rem; }
+  .bhd-header .bhd-header__dropdown-parent { font-weight:700; }
+  .bhd-header .bhd-header__dropdown-grandchildren { padding-left:1rem; border-left:2px solid rgba(var(--color-foreground),.09); margin:.1rem 0 .5rem 1rem; }
+  .bhd-header .bhd-header__dropdown-grandchildren a { font-size:1.35rem; opacity:.82; padding:.5rem .8rem; }
   .bhd-header .bhd-header__actions { display:flex; align-items:center; justify-self:end; gap:.7rem; }
   .bhd-header .bhd-header__icon-button { width:4rem; height:4rem; display:inline-flex; align-items:center; justify-content:center; color:rgb(var(--color-foreground)); text-decoration:none; position:relative; cursor:pointer; }
   .bhd-header .bhd-header__icon-button svg { width:2.1rem; height:2.1rem; }
@@ -99,9 +138,14 @@
     .bhd-header .bhd-header__cart-button svg { width:2.25rem; height:2.25rem; }
     .bhd-header .bhd-header__mobile-menu > summary { list-style:none; font-size:2.3rem; }
     .bhd-header .bhd-header__mobile-menu > summary::-webkit-details-marker { display:none; }
-    .bhd-header .bhd-header__mobile-panel { position:absolute; top:calc(100% + 1rem); left:0; width:min(300px,85vw); padding:1.2rem; background:rgb(var(--color-background)); border:1px solid rgba(var(--color-foreground),.08); border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,.14); }
-    .bhd-header .bhd-header__mobile-panel > a,.bhd-header .bhd-header__mobile-panel summary,.bhd-header .bhd-header__mobile-submenu a { display:block; padding:.9rem 1rem; color:rgb(var(--color-foreground)); text-decoration:none; font-size:1.6rem; cursor:pointer; }
-    .bhd-header .bhd-header__mobile-submenu { padding-left:1.2rem; }
+    .bhd-header .bhd-header__mobile-panel { position:absolute; top:calc(100% + 1rem); left:0; width:min(320px,88vw); max-height:75vh; overflow:auto; padding:1.2rem; background:rgb(var(--color-background)); border:1px solid rgba(var(--color-foreground),.08); border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,.14); }
+    .bhd-header .bhd-header__mobile-panel > a,
+    .bhd-header .bhd-header__mobile-panel summary,
+    .bhd-header .bhd-header__mobile-submenu a { display:block; padding:.9rem 1rem; color:rgb(var(--color-foreground)); text-decoration:none; font-size:1.6rem; cursor:pointer; list-style:none; }
+    .bhd-header .bhd-header__mobile-panel summary::-webkit-details-marker { display:none; }
+    .bhd-header .bhd-header__mobile-submenu { padding-left:1rem; }
+    .bhd-header .bhd-header__mobile-group--nested summary { font-size:1.45rem; font-weight:600; }
+    .bhd-header .bhd-header__mobile-submenu--nested a { font-size:1.35rem; opacity:.82; }
   }
 
   @media screen and (max-width:480px) {
@@ -140,4 +184,4 @@
   ],
   "presets":[{"name":"Best Hydrate header"}]
 }
-{% endschema %>
+{% endschema %}
