@@ -114,6 +114,57 @@
       });
     };
 
+    const breadcrumbNode=(tag,label,href=null,current=false)=>{
+      const node=document.createElement(tag);
+      node.textContent=label;
+      if(href)node.href=href;
+      if(current)node.setAttribute('aria-current','page');
+      return node;
+    };
+
+    const breadcrumbSeparator=()=>{
+      const node=document.createElement('span');
+      node.textContent='›';
+      node.setAttribute('aria-hidden','true');
+      return node;
+    };
+
+    const replaceBreadcrumb=(nav,trail)=>{
+      if(!nav)return;
+      const nodes=[];
+      trail.forEach((item,index)=>{
+        if(index)nodes.push(breadcrumbSeparator());
+        nodes.push(breadcrumbNode(item.href?'a':'span',item.label,item.href||null,Boolean(item.current)));
+      });
+      nav.replaceChildren(...nodes);
+    };
+
+    const normalizeEditorialBreadcrumbs=()=>{
+      const news=document.querySelector('.bhd-blog-intro__breadcrumbs');
+      if(news){
+        replaceBreadcrumb(news,[
+          {label:'Home',href:'/'},
+          {label:'Connect',href:'/pages/our-story'},
+          {label:'News & Contact',href:'/blogs/news'},
+          {label:'News & Insights',current:true}
+        ]);
+      }
+
+      if(/^\/blogs\/news\//.test(location.pathname)){
+        const articleNav=document.querySelector('.bhd-surface-context__crumbs');
+        if(articleNav){
+          const current=articleNav.querySelector('[aria-current="page"]')?.textContent?.trim()||document.querySelector('h1')?.textContent?.trim()||'Article';
+          replaceBreadcrumb(articleNav,[
+            {label:'Home',href:'/'},
+            {label:'Connect',href:'/pages/our-story'},
+            {label:'News & Contact',href:'/blogs/news'},
+            {label:'News & Insights',href:'/blogs/news'},
+            {label:current,current:true}
+          ]);
+        }
+      }
+    };
+
     const bindHeader=(header)=>{
       if(header.dataset.bhdSingleStateBound==='1')return;
       header.dataset.bhdSingleStateBound='1';
@@ -163,7 +214,10 @@
       observer.observe(header,{subtree:true,attributes:true,attributeFilter:['class']});
     };
 
-    const bind=()=>document.querySelectorAll('.bhd-header').forEach(bindHeader);
+    const bind=()=>{
+      document.querySelectorAll('.bhd-header').forEach(bindHeader);
+      normalizeEditorialBreadcrumbs();
+    };
 
     document.addEventListener('click',(event)=>{
       const tierToggle=event.target.closest('.bhd-header__tier2-toggle,.bhd-header__mobile-tier2-toggle');
@@ -188,10 +242,11 @@
 </script>
 
 {% comment %}
-The Science, Solutions and Connect hierarchy remains rendered by bhd-header.liquid. This presentation layer also normalizes the Company & People branch to Company, Meet Us and Jobs & Careers while the underlying legacy routes are consolidated.
+The Science, Solutions and Connect hierarchy remains rendered by bhd-header.liquid. This presentation layer normalizes the Company & People branch to Company, Meet Us and Jobs & Careers while the legacy routes are consolidated.
 Second-level toggles promote their top-level family to the pinned open state before the child opens, so the visual tree and toggle states stay consistent.
-Top-level mega-menu visibility is deliberately state-driven only: exactly one hover-open or one pinned-open menu can render at a time.
-Sync marker: nested-parent-propagation-company-20260909.
+Top-level mega-menu visibility is state-driven only: exactly one hover-open or one pinned-open menu can render at a time.
+Editorial blog breadcrumbs are normalized to the same Connect hierarchy used by Page breadcrumbs.
+Sync marker: nested-parent-company-breadcrumbs-20260909.
 {% endcomment %}
 
 {% schema %}
