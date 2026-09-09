@@ -53,7 +53,7 @@
 %}
 
 {% if directory_links != blank and directory_links.size > 0 %}
-  <section class="bhd-menu-directory" aria-labelledby="BhdMenuDirectory-{{ section.id }}">
+  <section class="bhd-menu-directory" data-bhd-directory-depth="{{ directory_depth }}" aria-labelledby="BhdMenuDirectory-{{ section.id }}">
     <p class="bhd-menu-directory__kicker">In this section</p>
     <h2 id="BhdMenuDirectory-{{ section.id }}">Explore {{ directory_title | escape }}</h2>
     <p class="bhd-menu-directory__intro">
@@ -134,5 +134,5 @@
 {% endif %}
 
 {% comment %}
-Parent directories use Shopify Admin MAIN, handle new-menu. Menu URLs are normalized before comparison so manual HTTP links and relative request paths resolve to the same node.
+Parent directories use Shopify Admin MAIN, handle new-menu. Menu URLs are normalized before comparison so relative and localized storefront request paths resolve to the same hierarchy node.
 {% endcomment %}
