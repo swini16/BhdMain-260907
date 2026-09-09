@@ -1,0 +1,119 @@
+<div class="bhd-hero-troubleshoot-hook" data-bhd-hero-troubleshoot-hook hidden></div>
+
+<style>
+  .bhd-hero-troubleshoot {
+    display:none;
+  }
+
+  @media screen and (max-width:749px) {
+    .bhd-hero-troubleshoot {
+      display:block;
+      position:absolute;
+      z-index:60;
+      top:.7rem;
+      left:.7rem;
+      right:.7rem;
+      max-height:48vh;
+      overflow:auto;
+      padding:.8rem .9rem;
+      border:3px solid #ff3158;
+      border-radius:.8rem;
+      background:rgba(255,255,255,.94);
+      color:#111;
+      box-shadow:0 .6rem 1.8rem rgba(0,0,0,.2);
+      font:700 12px/1.28 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      text-align:left;
+      word-break:break-word;
+    }
+    .bhd-hero-troubleshoot strong {
+      display:block;
+      margin-bottom:.35rem;
+      color:#b70022;
+      font-size:14px;
+      letter-spacing:.04em;
+    }
+    .bhd-hero-troubleshoot__row { margin:.2rem 0; }
+  }
+</style>
+
+<script>
+(() => {
+  const boot = () => {
+    const hero = document.querySelector('[data-bhd-hero]');
+    if (!hero || hero.querySelector('[data-bhd-hero-troubleshoot]')) return;
+
+    const mobile = hero.querySelector('.bhd-hero-v2__mobile');
+    const track = hero.querySelector('.bhd-hero-v2__mobile-track');
+    const slides = Array.from(hero.querySelectorAll('.bhd-hero-v2__mobile-slide'));
+    const imgs = slides.map((slide) => slide.querySelector('img')).filter(Boolean);
+
+    const box = document.createElement('div');
+    box.className = 'bhd-hero-troubleshoot';
+    box.setAttribute('data-bhd-hero-troubleshoot', '');
+    box.innerHTML = `
+      <strong>BHD HERO TROUBLESHOOT ON v20260908-2</strong>
+      <div class="bhd-hero-troubleshoot__row" data-debug-runtime></div>
+      <div class="bhd-hero-troubleshoot__row" data-debug-layout></div>
+      <div data-debug-images></div>
+    `;
+    hero.appendChild(box);
+
+    const runtime = box.querySelector('[data-debug-runtime]');
+    const layout = box.querySelector('[data-debug-layout]');
+    const images = box.querySelector('[data-debug-images]');
+
+    const shortSrc = (src) => {
+      if (!src) return '(none)';
+      try {
+        const u = new URL(src, location.href);
+        return `${u.hostname}${u.pathname}`.slice(0, 105);
+      } catch (_) {
+        return String(src).slice(0, 105);
+      }
+    };
+
+    const paint = () => {
+      runtime.textContent = `Viewport ${innerWidth}x${innerHeight}, DPR ${devicePixelRatio || 1}, media<=749 ${matchMedia('(max-width:749px)').matches}`;
+
+      const mobileStyle = mobile ? getComputedStyle(mobile) : null;
+      const trackRect = track ? track.getBoundingClientRect() : null;
+      layout.textContent = `mobile=${mobile ? mobileStyle.display : 'MISSING'}, slides=${slides.length}, track=${trackRect ? Math.round(trackRect.width) + 'x' + Math.round(trackRect.height) : 'MISSING'}`;
+
+      images.innerHTML = imgs.map((img, i) => {
+        const slide = slides[i];
+        const active = slide?.classList.contains('is-active') ? 'ACTIVE' : 'inactive';
+        const state = img.complete ? (img.naturalWidth > 0 ? 'LOAD OK' : 'LOAD ERROR') : 'PENDING';
+        return `<div class="bhd-hero-troubleshoot__row">${i + 1}. ${active}, ${state}, natural=${img.naturalWidth}x${img.naturalHeight}, src=${shortSrc(img.currentSrc || img.src)}</div>`;
+      }).join('');
+    };
+
+    imgs.forEach((img) => {
+      img.addEventListener('load', paint);
+      img.addEventListener('error', paint);
+    });
+    window.addEventListener('resize', paint);
+
+    paint();
+    let ticks = 0;
+    const timer = setInterval(() => {
+      paint();
+      ticks += 1;
+      if (ticks >= 30) clearInterval(timer);
+    }, 1000);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once:true });
+  } else {
+    boot();
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name":"Hero troubleshoot ON",
+  "settings":[],
+  "presets":[{"name":"Hero troubleshoot ON"}]
+}
+{% endschema %}
