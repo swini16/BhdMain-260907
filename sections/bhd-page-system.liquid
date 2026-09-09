@@ -1,0 +1,271 @@
+{% liquid
+  assign bhd_supported = false
+  assign bhd_family = ''
+  assign bhd_family_url = ''
+  assign bhd_parent = ''
+  assign bhd_parent_url = ''
+  assign bhd_eyebrow = ''
+  assign bhd_title = page.title
+  assign bhd_intro = ''
+  assign bhd_hero_image = ''
+  assign bhd_hero_alt = ''
+
+  case page.handle
+    when 'hydration-science'
+      assign bhd_supported = true
+      assign bhd_family = 'Science'
+      assign bhd_family_url = '/pages/hydration-science'
+      assign bhd_parent = ''
+      assign bhd_parent_url = ''
+      assign bhd_eyebrow = 'Hydration Science'
+      assign bhd_title = 'Hydration Science'
+      assign bhd_intro = 'Hydration is more than drinking water. It is the coordinated movement and retention of water and dissolved electrolytes across the body, shaped by intake, losses, activity, temperature, diet and physiology.'
+      assign bhd_hero_image = 'https://images.pexels.com/photos/9628840/pexels-photo-9628840.jpeg?auto=compress&cs=tinysrgb&w=1800'
+      assign bhd_hero_alt = 'Laboratory glassware used in scientific research'
+  endcase
+%}
+
+{% if bhd_supported %}
+  <section id="BhdPage-{{ section.id }}" class="bhd-page bhd-page--{{ page.handle }}">
+    <div class="bhd-page__inner page-width">
+      <nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
+        <a href="{{ routes.root_url }}">Home</a>
+        <span aria-hidden="true">›</span>
+        {% if bhd_family != blank and bhd_family_url != blank and bhd_family_url != page.url %}
+          <a href="{{ bhd_family_url }}">{{ bhd_family }}</a>
+          <span aria-hidden="true">›</span>
+        {% elsif bhd_family != blank %}
+          <span>{{ bhd_family }}</span>
+          <span aria-hidden="true">›</span>
+        {% endif %}
+        {% if bhd_parent != blank and bhd_parent_url != blank %}
+          <a href="{{ bhd_parent_url }}">{{ bhd_parent }}</a>
+          <span aria-hidden="true">›</span>
+        {% endif %}
+        <span aria-current="page">{{ bhd_title }}</span>
+      </nav>
+
+      <header class="bhd-page-hero">
+        <div class="bhd-page-hero__copy">
+          {% if bhd_eyebrow != blank %}<p class="bhd-page__eyebrow">{{ bhd_eyebrow }}</p>{% endif %}
+          <h1>{{ bhd_title }}</h1>
+          <p class="bhd-page-hero__lede">{{ bhd_intro }}</p>
+        </div>
+        {% if bhd_hero_image != blank %}
+          <div class="bhd-page-hero__media">
+            <img src="{{ bhd_hero_image }}" alt="{{ bhd_hero_alt | escape }}" width="1800" height="1200" loading="eager" fetchpriority="high" decoding="async">
+          </div>
+        {% endif %}
+      </header>
+
+      {% case page.handle %}
+        {% when 'hydration-science' %}
+          <div class="bhd-page__keypoints" aria-label="Hydration science at a glance">
+            <div><strong>Fluid balance</strong><span>Hydration reflects both water intake and the body’s ongoing regulation of water losses and distribution.</span></div>
+            <div><strong>Electrolytes</strong><span>Sodium, potassium, chloride and bicarbonate help maintain electrical, osmotic and acid-base functions.</span></div>
+            <div><strong>Absorption</strong><span>The small intestine moves water alongside absorbed solutes, including sodium and glucose.</span></div>
+          </div>
+
+          <div class="bhd-page__prose-grid">
+            <article class="bhd-page__prose">
+              <p class="bhd-page__kicker">Start with the basics</p>
+              <h2>What hydration actually means</h2>
+              <p>Water is distributed throughout the body rather than stored in one simple reservoir. Some is inside cells, while the rest is outside cells in blood plasma and the spaces around tissues. The body continuously adjusts this balance through thirst, kidney function, hormones, food and drink intake, and water lost through urine, breathing, skin and the gastrointestinal tract.</p>
+              <p>That is why hydration is better understood as a <strong>dynamic balance</strong> than as a target number of glasses. A person’s needs can change with body size, climate, activity, illness, food intake, medications and individual physiology.</p>
+            </article>
+            <aside class="bhd-page__callout">
+              <span class="bhd-page__callout-label">Practical idea</span>
+              <h3>Water is essential, but context determines what else matters.</h3>
+              <p>For many ordinary situations, water and normal meals are enough. When fluid and electrolyte losses are greater, replacing both water and relevant solutes can become more important.</p>
+            </aside>
+          </div>
+
+          <section class="bhd-page__split">
+            <div class="bhd-page__split-media">
+              <img src="https://images.pexels.com/photos/8910768/pexels-photo-8910768.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Runner drinking during an endurance event" width="1400" height="950" loading="lazy" decoding="async">
+            </div>
+            <div class="bhd-page__split-copy">
+              <p class="bhd-page__kicker">Electrolytes</p>
+              <h2>Why dissolved minerals matter</h2>
+              <p>Body water contains charged particles called electrolytes. Their distribution helps the body maintain fluid balance, electrical signalling and normal cellular function.</p>
+              <ul>
+                <li><strong>Sodium</strong> is the major cation in extracellular fluid and is closely tied to extracellular fluid volume.</li>
+                <li><strong>Potassium</strong> is the major cation inside cells and is important to normal nerve and muscle function.</li>
+                <li><strong>Chloride</strong> is a major extracellular anion and commonly accompanies sodium.</li>
+                <li><strong>Bicarbonate</strong> is part of the body’s acid-base buffering system.</li>
+              </ul>
+              <a class="bhd-page__text-link" href="/pages/electrolytes">Explore electrolytes <span aria-hidden="true">→</span></a>
+            </div>
+          </section>
+
+          <section class="bhd-page__feature">
+            <div>
+              <p class="bhd-page__kicker">Intestinal absorption</p>
+              <h2>Why glucose appears in oral hydration science</h2>
+              <p>One of the foundations of oral rehydration science is that glucose and sodium transport are coupled in the small intestine. The sodium-glucose cotransporter SGLT1 moves glucose and sodium from the intestinal lumen into absorptive cells, helping create conditions that favour water absorption.</p>
+              <p>This mechanism is central to the success of glucose-electrolyte oral rehydration solutions used in medicine. It does <strong>not</strong> mean that more sugar is always better. Formulation, concentration, osmolality, the reason for drinking, and the person using the solution all matter.</p>
+              <a class="bhd-page__button" href="/pages/glucose-water-absorption">How glucose &amp; water absorption works</a>
+            </div>
+          </section>
+
+          <section class="bhd-page__cards-section">
+            <p class="bhd-page__kicker">Hydration in context</p>
+            <h2>Needs change with the situation</h2>
+            <div class="bhd-page__cards bhd-page__cards--4">
+              <article><h3>Everyday life</h3><p>Normal meals and fluids provide most people with water and electrolytes across an ordinary day.</p><a href="/pages/everyday-wellness">Everyday wellness</a></article>
+              <article><h3>Exercise &amp; heat</h3><p>Sweat increases fluid and sodium losses, with large differences between people and environments.</p><a href="/pages/performance-hydration">Performance hydration</a></article>
+              <article><h3>Illness &amp; recovery</h3><p>Vomiting, diarrhoea, fever and reduced intake can change hydration needs and may require medical guidance.</p><a href="/pages/clinical-hydration">Clinical hydration</a></article>
+              <article><h3>Age &amp; circumstance</h3><p>Older age, travel, access to fluids and some health conditions can change both risk and practical hydration strategy.</p><a href="/pages/active-aging">Active aging</a></article>
+            </div>
+          </section>
+
+          <section class="bhd-page__brand-context">
+            <div>
+              <p class="bhd-page__kicker">Our approach</p>
+              <h2>Science translated into a practical formula</h2>
+              <p>Best Hydrate uses established oral hydration principles as a starting point: water is consumed alongside sodium, potassium, chloride, bicarbonate and glucose. The product is designed as a practical electrolyte powder for real-world hydration, while our research program continues to examine performance, clinical and humanitarian applications.</p>
+              <p>Best Hydrate is not presented as a substitute for individualized medical care or for WHO oral rehydration salts used to treat dehydration from acute diarrhoeal disease.</p>
+            </div>
+            <div class="bhd-page__brand-actions">
+              <a class="bhd-page__button" href="/pages/our-formula">Explore our formula</a>
+              <a class="bhd-page__button bhd-page__button--secondary" href="/products/lemonade-best-hydrate">Shop Best Hydrate</a>
+            </div>
+          </section>
+
+          <section class="bhd-page__related" aria-labelledby="RelatedPages-{{ section.id }}">
+            <p class="bhd-page__kicker">Continue learning</p>
+            <h2 id="RelatedPages-{{ section.id }}">Related science</h2>
+            <div class="bhd-page__related-grid">
+              <a href="/pages/how-hydration-works"><strong>How Hydration Works</strong><span>Follow water from intake through absorption, circulation, regulation and loss.</span></a>
+              <a href="/pages/electrolytes"><strong>Electrolytes</strong><span>Understand the major ions involved in fluid, nerve, muscle and acid-base physiology.</span></a>
+              <a href="/pages/glucose-water-absorption"><strong>Glucose &amp; Water Absorption</strong><span>See why sodium-glucose cotransport matters to oral rehydration science.</span></a>
+              <a href="/pages/our-formula"><strong>Our Formula</strong><span>Connect the science to the ingredients used in Best Hydrate.</span></a>
+            </div>
+          </section>
+
+          <section class="bhd-page__references" aria-labelledby="References-{{ section.id }}">
+            <h2 id="References-{{ section.id }}">Selected references &amp; further reading</h2>
+            <ol>
+              <li><a href="https://www.who.int/publications/i/item/WHO-FCH-CAH-06.1" target="_blank" rel="noopener">World Health Organization &amp; UNICEF. Oral Rehydration Salts: Production of the New ORS.</a></li>
+              <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3950600/" target="_blank" rel="noopener">Binder HJ, Brown I, Ramakrishna BS, Young GP. Oral Rehydration Therapy in the Second Decade of the Twenty-first Century.</a></li>
+              <li><a href="https://pubmed.ncbi.nlm.nih.gov/9694418/" target="_blank" rel="noopener">Leiper JB. Intestinal water absorption: implications for the formulation of rehydration solutions.</a></li>
+              <li><a href="https://pubmed.ncbi.nlm.nih.gov/9303999/" target="_blank" rel="noopener">American College of Sports Medicine. Exercise and fluid replacement.</a></li>
+            </ol>
+            <p class="bhd-page__reference-note">These references explain general hydration and oral rehydration physiology. They are not product-specific clinical evidence for Best Hydrate.</p>
+          </section>
+      {% endcase %}
+    </div>
+  </section>
+{% else %}
+  <section class="bhd-page-fallback page-width">
+    <nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span>
+    </nav>
+    <div class="bhd-page-fallback__content">
+      <h1>{{ page.title }}</h1>
+      <div class="rte">{{ page.content }}</div>
+    </div>
+  </section>
+{% endif %}
+
+<style>
+  #BhdPage-{{ section.id }}{--bhd-navy:#0b2d67;--bhd-blue:#078ee7;--bhd-ink:#1d3151;--bhd-muted:#5b6b82;--bhd-line:rgba(11,45,103,.12);--bhd-pale:#eef8fd;background:linear-gradient(180deg,#f9fcff 0%,#fff 24%,#f7fbff 100%);color:var(--bhd-ink);padding:2.4rem 0 6.5rem}
+  #BhdPage-{{ section.id }} *{box-sizing:border-box}
+  #BhdPage-{{ section.id }} .bhd-breadcrumbs,.bhd-page-fallback .bhd-breadcrumbs{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;margin:0 0 2rem;font-size:1.28rem;color:#66758a}
+  #BhdPage-{{ section.id }} .bhd-breadcrumbs a,.bhd-page-fallback .bhd-breadcrumbs a{color:var(--bhd-navy,#0b2d67);text-decoration:none}
+  #BhdPage-{{ section.id }} .bhd-breadcrumbs a:hover{text-decoration:underline}
+  #BhdPage-{{ section.id }} .bhd-page-hero{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(360px,.98fr);gap:clamp(2.6rem,5vw,7rem);align-items:center;margin-bottom:3.4rem;padding:clamp(2.2rem,4vw,4.5rem);border:1px solid var(--bhd-line);border-radius:2.4rem;background:#fff;box-shadow:0 2rem 5rem rgba(21,58,105,.08)}
+  #BhdPage-{{ section.id }} .bhd-page__eyebrow,#BhdPage-{{ section.id }} .bhd-page__kicker{margin:0 0 .7rem;color:var(--bhd-blue);font-size:1.25rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+  #BhdPage-{{ section.id }} h1{margin:0;color:var(--bhd-navy);font-size:clamp(4.3rem,6vw,7.2rem);line-height:.95;letter-spacing:-.045em}
+  #BhdPage-{{ section.id }} .bhd-page-hero__lede{max-width:72rem;margin:1.6rem 0 0;color:#42536f;font-size:clamp(1.7rem,2vw,2.15rem);line-height:1.5}
+  #BhdPage-{{ section.id }} .bhd-page-hero__media{overflow:hidden;border-radius:1.8rem;aspect-ratio:1.28/1;background:#dcecf5}
+  #BhdPage-{{ section.id }} .bhd-page-hero__media img{display:block;width:100%;height:100%;object-fit:cover}
+  #BhdPage-{{ section.id }} .bhd-page__keypoints{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem;margin:0 0 5.2rem}
+  #BhdPage-{{ section.id }} .bhd-page__keypoints>div{padding:1.8rem 1.9rem;border:1px solid var(--bhd-line);border-radius:1.4rem;background:#fff}
+  #BhdPage-{{ section.id }} .bhd-page__keypoints strong{display:block;margin-bottom:.5rem;color:var(--bhd-navy);font-size:1.65rem}
+  #BhdPage-{{ section.id }} .bhd-page__keypoints span{display:block;color:var(--bhd-muted);font-size:1.38rem;line-height:1.42}
+  #BhdPage-{{ section.id }} h2{margin:0 0 1.4rem;color:var(--bhd-navy);font-size:clamp(2.8rem,3.4vw,4.2rem);line-height:1.04;letter-spacing:-.025em}
+  #BhdPage-{{ section.id }} h3{color:var(--bhd-navy)}
+  #BhdPage-{{ section.id }} p,#BhdPage-{{ section.id }} li{font-size:1.6rem;line-height:1.6}
+  #BhdPage-{{ section.id }} .bhd-page__prose-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:3rem;align-items:start;margin:0 0 5.5rem}
+  #BhdPage-{{ section.id }} .bhd-page__prose{max-width:82rem}
+  #BhdPage-{{ section.id }} .bhd-page__prose p{color:#465774}
+  #BhdPage-{{ section.id }} .bhd-page__callout{padding:2.4rem;border-radius:1.8rem;background:linear-gradient(160deg,#0b2d67,#0f5092);color:#fff;box-shadow:0 1.5rem 4rem rgba(11,45,103,.16)}
+  #BhdPage-{{ section.id }} .bhd-page__callout-label{font-size:1.15rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+  #BhdPage-{{ section.id }} .bhd-page__callout h3{margin:.7rem 0 1rem;color:#fff;font-size:2.25rem;line-height:1.12}
+  #BhdPage-{{ section.id }} .bhd-page__callout p{margin:0;color:rgba(255,255,255,.87);font-size:1.42rem}
+  #BhdPage-{{ section.id }} .bhd-page__split{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(3rem,5vw,6rem);align-items:center;margin:0 0 6rem;padding:2.2rem;border-radius:2.2rem;background:var(--bhd-pale)}
+  #BhdPage-{{ section.id }} .bhd-page__split-media{overflow:hidden;border-radius:1.6rem;aspect-ratio:1.1/1}
+  #BhdPage-{{ section.id }} .bhd-page__split-media img{display:block;width:100%;height:100%;object-fit:cover}
+  #BhdPage-{{ section.id }} .bhd-page__split-copy{padding:1.5rem 2rem 1.5rem 0}
+  #BhdPage-{{ section.id }} .bhd-page__split-copy ul{margin:1.5rem 0 1.7rem;padding-left:2rem;color:#465774}
+  #BhdPage-{{ section.id }} .bhd-page__split-copy li+li{margin-top:.75rem}
+  #BhdPage-{{ section.id }} .bhd-page__text-link{display:inline-flex;gap:.6rem;color:var(--bhd-blue);font-size:1.5rem;font-weight:800;text-decoration:none}
+  #BhdPage-{{ section.id }} .bhd-page__feature{margin:0 0 6rem;padding:clamp(2.6rem,5vw,5rem);border-radius:2.2rem;background:linear-gradient(135deg,#f7fcff 0%,#e7f7fd 100%);border:1px solid rgba(7,142,231,.13)}
+  #BhdPage-{{ section.id }} .bhd-page__feature>div{max-width:92rem;margin:0 auto;text-align:center}
+  #BhdPage-{{ section.id }} .bhd-page__feature p{color:#465774}
+  #BhdPage-{{ section.id }} .bhd-page__button{display:inline-flex;align-items:center;justify-content:center;margin-top:1.2rem;padding:1.15rem 1.8rem;border-radius:999px;background:var(--bhd-navy);color:#fff;font-size:1.42rem;font-weight:800;text-decoration:none}
+  #BhdPage-{{ section.id }} .bhd-page__button--secondary{background:#fff;color:var(--bhd-navy);border:1px solid rgba(11,45,103,.18)}
+  #BhdPage-{{ section.id }} .bhd-page__cards-section{margin:0 0 6rem}
+  #BhdPage-{{ section.id }} .bhd-page__cards{display:grid;gap:1.35rem}
+  #BhdPage-{{ section.id }} .bhd-page__cards--4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #BhdPage-{{ section.id }} .bhd-page__cards article{padding:2rem;border:1px solid var(--bhd-line);border-radius:1.6rem;background:#fff}
+  #BhdPage-{{ section.id }} .bhd-page__cards h3{margin:0 0 .7rem;font-size:1.85rem}
+  #BhdPage-{{ section.id }} .bhd-page__cards p{margin:0 0 1rem;color:var(--bhd-muted);font-size:1.38rem;line-height:1.45}
+  #BhdPage-{{ section.id }} .bhd-page__cards a{color:var(--bhd-blue);font-size:1.35rem;font-weight:800;text-decoration:none}
+  #BhdPage-{{ section.id }} .bhd-page__brand-context{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3rem;align-items:center;margin:0 0 6rem;padding:clamp(2.5rem,4vw,4rem);border-radius:2rem;background:#0b2d67;color:#fff}
+  #BhdPage-{{ section.id }} .bhd-page__brand-context h2{color:#fff}
+  #BhdPage-{{ section.id }} .bhd-page__brand-context p{max-width:86rem;color:rgba(255,255,255,.83)}
+  #BhdPage-{{ section.id }} .bhd-page__brand-context .bhd-page__kicker{color:#75d5ff}
+  #BhdPage-{{ section.id }} .bhd-page__brand-actions{display:flex;flex-direction:column;min-width:20rem}
+  #BhdPage-{{ section.id }} .bhd-page__brand-context .bhd-page__button{background:#fff;color:var(--bhd-navy)}
+  #BhdPage-{{ section.id }} .bhd-page__brand-context .bhd-page__button--secondary{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
+  #BhdPage-{{ section.id }} .bhd-page__related{margin:0 0 5rem}
+  #BhdPage-{{ section.id }} .bhd-page__related-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.3rem}
+  #BhdPage-{{ section.id }} .bhd-page__related-grid a{display:block;padding:2rem;border:1px solid var(--bhd-line);border-radius:1.5rem;background:#fff;color:inherit;text-decoration:none;transition:transform .16s ease,box-shadow .16s ease}
+  #BhdPage-{{ section.id }} .bhd-page__related-grid a:hover{transform:translateY(-2px);box-shadow:0 1rem 2.5rem rgba(11,45,103,.08)}
+  #BhdPage-{{ section.id }} .bhd-page__related-grid strong{display:block;margin-bottom:.55rem;color:var(--bhd-navy);font-size:1.6rem}
+  #BhdPage-{{ section.id }} .bhd-page__related-grid span{display:block;color:var(--bhd-muted);font-size:1.3rem;line-height:1.42}
+  #BhdPage-{{ section.id }} .bhd-page__references{padding-top:2.7rem;border-top:1px solid var(--bhd-line)}
+  #BhdPage-{{ section.id }} .bhd-page__references h2{font-size:2.35rem}
+  #BhdPage-{{ section.id }} .bhd-page__references ol{padding-left:2.2rem}
+  #BhdPage-{{ section.id }} .bhd-page__references li{font-size:1.28rem;line-height:1.5;color:#56667d}
+  #BhdPage-{{ section.id }} .bhd-page__references li+li{margin-top:.65rem}
+  #BhdPage-{{ section.id }} .bhd-page__references a{color:#315b91}
+  #BhdPage-{{ section.id }} .bhd-page__reference-note{margin-top:1.2rem;color:#778397;font-size:1.18rem}
+  .bhd-page-fallback{padding-top:2.4rem;padding-bottom:5rem}.bhd-page-fallback__content{max-width:95rem;margin:0 auto}.bhd-page-fallback__content h1{color:#0b2d67}
+  @media screen and (max-width:989px){
+    #BhdPage-{{ section.id }} .bhd-page-hero{grid-template-columns:1fr;gap:2.2rem}
+    #BhdPage-{{ section.id }} .bhd-page-hero__media{aspect-ratio:1.8/1}
+    #BhdPage-{{ section.id }} .bhd-page__prose-grid{grid-template-columns:1fr}
+    #BhdPage-{{ section.id }} .bhd-page__split{grid-template-columns:1fr}
+    #BhdPage-{{ section.id }} .bhd-page__split-media{aspect-ratio:1.8/1}
+    #BhdPage-{{ section.id }} .bhd-page__split-copy{padding:1rem}
+    #BhdPage-{{ section.id }} .bhd-page__cards--4,#BhdPage-{{ section.id }} .bhd-page__related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    #BhdPage-{{ section.id }} .bhd-page__brand-context{grid-template-columns:1fr}
+    #BhdPage-{{ section.id }} .bhd-page__brand-actions{flex-direction:row;flex-wrap:wrap;min-width:0}
+  }
+  @media screen and (max-width:749px){
+    #BhdPage-{{ section.id }}{padding-top:1.4rem;padding-bottom:4.5rem}
+    #BhdPage-{{ section.id }} .bhd-breadcrumbs{margin-bottom:1.3rem;font-size:1.15rem}
+    #BhdPage-{{ section.id }} .bhd-page-hero{padding:1.5rem;border-radius:1.7rem;margin-bottom:2rem}
+    #BhdPage-{{ section.id }} h1{font-size:4rem}
+    #BhdPage-{{ section.id }} .bhd-page-hero__lede{font-size:1.55rem}
+    #BhdPage-{{ section.id }} .bhd-page-hero__media{aspect-ratio:1.45/1;border-radius:1.3rem}
+    #BhdPage-{{ section.id }} .bhd-page__keypoints{grid-template-columns:1fr;margin-bottom:4rem}
+    #BhdPage-{{ section.id }} .bhd-page__prose-grid,#BhdPage-{{ section.id }} .bhd-page__split,#BhdPage-{{ section.id }} .bhd-page__feature,#BhdPage-{{ section.id }} .bhd-page__cards-section,#BhdPage-{{ section.id }} .bhd-page__brand-context{margin-bottom:4.5rem}
+    #BhdPage-{{ section.id }} .bhd-page__split{padding:1.2rem}
+    #BhdPage-{{ section.id }} .bhd-page__split-media{aspect-ratio:1.4/1}
+    #BhdPage-{{ section.id }} .bhd-page__cards--4,#BhdPage-{{ section.id }} .bhd-page__related-grid{grid-template-columns:1fr}
+    #BhdPage-{{ section.id }} .bhd-page__brand-context{padding:2rem}
+    #BhdPage-{{ section.id }} .bhd-page__brand-actions{flex-direction:column}
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Best Hydrate page system",
+  "settings": [],
+  "presets": [{"name":"Best Hydrate page system"}]
+}
+{% endschema %}
