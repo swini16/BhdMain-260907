@@ -13,6 +13,8 @@
     {% render 'bhd-page-five-essential-electrolytes' %}
   {% when 'ingredient-rationale' %}
     {% render 'bhd-page-ingredient-rationale' %}
+  {% when 'why-bicarbonate' %}
+    {% render 'bhd-page-why-bicarbonate' %}
   {% else %}
     <nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
       <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span>
