@@ -1,0 +1,29 @@
+<nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
+  <a href="{{ routes.root_url }}">Home</a>
+  <span aria-hidden="true">›</span>
+  {% if family != blank and family_url != blank and family_url != page.url %}
+    <a href="{{ family_url }}">{{ family }}</a>
+    <span aria-hidden="true">›</span>
+  {% elsif family != blank %}
+    <span>{{ family }}</span>
+    <span aria-hidden="true">›</span>
+  {% endif %}
+  {% if parent != blank and parent_url != blank and parent_url != page.url %}
+    <a href="{{ parent_url }}">{{ parent }}</a>
+    <span aria-hidden="true">›</span>
+  {% endif %}
+  <span aria-current="page">{{ title }}</span>
+</nav>
+
+<header class="bhd-page-hero">
+  <div class="bhd-page-hero__copy">
+    {% if eyebrow != blank %}<p class="bhd-page__eyebrow">{{ eyebrow }}</p>{% endif %}
+    <h1>{{ title }}</h1>
+    {% if intro != blank %}<p class="bhd-page-hero__lede">{{ intro }}</p>{% endif %}
+  </div>
+  {% if hero_image != blank %}
+    <div class="bhd-page-hero__media">
+      <img src="{{ hero_image }}" alt="{{ hero_alt | escape }}" width="1800" height="1200" loading="eager" fetchpriority="high" decoding="async">
+    </div>
+  {% endif %}
+</header>
