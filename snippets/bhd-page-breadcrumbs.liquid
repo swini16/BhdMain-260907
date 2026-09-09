@@ -13,39 +13,41 @@
 
   if bhd_menu != blank
     for top_link in bhd_menu.links
-      if top_link.url == current_path and menu_depth < 1
-        assign menu_depth = 1
-        assign level_1_label = top_link.title
-        assign level_1_url = top_link.url
-        assign level_2_label = ''
-        assign level_2_url = ''
-        assign level_3_label = ''
-        assign level_3_url = ''
-      endif
-
-      for second_link in top_link.links
-        if second_link.url == current_path and menu_depth < 2
-          assign menu_depth = 2
+      if preferred_family == blank or top_link.title == preferred_family
+        if top_link.url == current_path and menu_depth < 1
+          assign menu_depth = 1
           assign level_1_label = top_link.title
           assign level_1_url = top_link.url
-          assign level_2_label = second_link.title
-          assign level_2_url = second_link.url
+          assign level_2_label = ''
+          assign level_2_url = ''
           assign level_3_label = ''
           assign level_3_url = ''
         endif
 
-        for third_link in second_link.links
-          if third_link.url == current_path and menu_depth < 3
-            assign menu_depth = 3
+        for second_link in top_link.links
+          if second_link.url == current_path and menu_depth < 2
+            assign menu_depth = 2
             assign level_1_label = top_link.title
             assign level_1_url = top_link.url
             assign level_2_label = second_link.title
             assign level_2_url = second_link.url
-            assign level_3_label = third_link.title
-            assign level_3_url = third_link.url
+            assign level_3_label = ''
+            assign level_3_url = ''
           endif
+
+          for third_link in second_link.links
+            if third_link.url == current_path and menu_depth < 3
+              assign menu_depth = 3
+              assign level_1_label = top_link.title
+              assign level_1_url = top_link.url
+              assign level_2_label = second_link.title
+              assign level_2_url = second_link.url
+              assign level_3_label = third_link.title
+              assign level_3_url = third_link.url
+            endif
+          endfor
         endfor
-      endfor
+      endif
     endfor
   endif
 
@@ -111,6 +113,6 @@
 </nav>
 
 {% comment %}
-Breadcrumbs use Shopify Admin MAIN navigation, handle new-menu, as the source of truth. When the same route appears at multiple menu levels, the deepest matching position wins so the full visible menu path is represented. Secondary pages that are intentionally not in MAIN use an explicit logical fallback.
-Sync marker: menu-derived-breadcrumbs-20260909.
+Breadcrumbs use Shopify Admin MAIN navigation, handle new-menu, as the source of truth and follow the page's declared Science, Solutions or Connect family. Within that family, the deepest matching menu position wins so aliases such as Products > Product Details and Company & People > Meet Us show their full path. Cross-family shortcut links do not override a page's canonical location. Secondary pages intentionally outside MAIN use an explicit logical fallback.
+Sync marker: family-aware-menu-breadcrumbs-20260909.
 {% endcomment %}
