@@ -1,3 +1,5 @@
+{% render 'bhd-header-menu-source' %}
+
 <style>
   @media screen and (min-width:990px){
     .bhd-header .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
@@ -303,11 +305,11 @@
 </script>
 
 {% comment %}
-The canonical menu hierarchy is rendered by bhd-header.liquid and mirrored in Shopify Admin MAIN navigation.
+Shopify Admin MAIN is injected as the live interactive menu source before interaction bindings run. Static bhd-header markup is retained only as a fallback.
 Desktop level-two items expand as hover previews. Leaving the menu context closes the deepest hover preview after 260 ms, then closes the unpinned top-level preview after 520 ms.
 Clicking a level-two toggle converts that preview into a persistent clicked state and pins its top-level parent. Clicked nested states are not removed by the hover timeout.
 Editorial blog breadcrumbs are normalized to the Connect hierarchy used by Page breadcrumbs.
-Sync marker: staged-nested-hover-persistent-click-20260909.
+Sync marker: shopify-main-live-source-20260909.
 {% endcomment %}
 
 {% schema %}
