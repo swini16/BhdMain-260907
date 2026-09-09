@@ -4,22 +4,58 @@ Date: 2026-09-09
 
 ## Why this audit exists
 
-Earlier breadcrumb checks were marked PASS even though storefront screenshots subsequently showed trails such as `Home › Recovery`. Those PASS statements were incorrect because they verified theme source and menu structure without proving that the runtime breadcrumb lookup resolved the current page to its menu ancestors.
+Earlier breadcrumb checks were marked PASS even though storefront screenshots subsequently showed trails such as `Home › Recovery`. Those PASS statements were incorrect because they verified menu data and breadcrumb helper files without proving that the active Shopify Page template actually invoked those helpers.
 
-This pass treats the screenshot as a confirmed rendering defect and removes the fragile lookup dependency from Shopify Page breadcrumbs.
+This audit traces the complete active render chain and records the actual root cause.
 
-## Confirmed failure mode
+## Actual root cause
 
-The prior breadcrumb component attempted to discover the current page by traversing `linklists['new-menu']` at render time and comparing menu URLs with the storefront request path.
+The decisive finding was in the active Shopify MAIN Page template.
 
-That design had several possible failure points:
+Live `templates/page.json` points to:
 
-- Shopify menu links had previously been stored as manual HTTP links.
-- Shopify can localize or normalize storefront paths independently of the Admin URL representation.
-- GitHub-to-Shopify synchronization had left some helper snippets on older live versions even after repository changes.
-- A failed traversal intentionally fell back to `Home › Current Page`, which exactly matches the screenshot showing `Home › Recovery`.
+`sections/bhd-page-system.liquid`
 
-The CSS was inspected separately. `sections/main-page.liquid` renders `.bhd-breadcrumbs` as a wrapping flex row and does not hide intermediate breadcrumb links at tablet or mobile breakpoints. The missing parents were therefore a data/rendering problem, not responsive CSS.
+The live copy of `bhd-page-system.liquid` was stale. It was a 22 KB inline renderer from an earlier build that only marked `hydration-science` as supported. Every other Page, including Recovery, fell into this hard-coded fallback:
+
+`Home › {{ page.title }}`
+
+That exactly explains the screenshot showing:
+
+`Home › Recovery`
+
+The newer dispatcher, shared page header and breadcrumb snippets were all present in MAIN, but the active Page template was bypassing them. This is why several previous fixes looked correct in source inspection yet had no effect on the rendered Recovery page.
+
+## Active renderer correction
+
+GitHub already contained the intended dispatcher-based `sections/bhd-page-system.liquid`.
+
+That section was materially changed and republished so Shopify would ingest it instead of retaining the stale copy.
+
+Direct Shopify MAIN verification now shows:
+
+- live `templates/page.json` still intentionally points to `bhd-page-system`
+- live `sections/bhd-page-system.liquid` updated at `2026-09-09T18:01:09Z`
+- current checksum: `2ed549b4c3204e8d3a05251298e07de0`
+- current size: `12091`
+- current markup contains `data-bhd-page-system="dispatcher-v2"`
+- current body directly renders `{% render 'bhd-page-dispatch' %}`
+- the obsolete `bhd_supported` one-page logic is gone
+- the obsolete built-in `Home › page title` fallback is gone
+
+The active Page render chain is therefore now:
+
+`templates/page.json`
+
+→ `sections/bhd-page-system.liquid`
+
+→ `snippets/bhd-page-dispatch.liquid`
+
+→ page-specific content snippet
+
+→ `snippets/bhd-page-header.liquid`
+
+→ `snippets/bhd-page-breadcrumbs.liquid`
 
 ## MAIN menu normalization
 
@@ -40,7 +76,7 @@ The Recovery menu node is directly verified as:
 
 ## Deterministic Page breadcrumb architecture
 
-`snippets/bhd-page-breadcrumbs.liquid` no longer discovers Shopify Page hierarchy by traversing the menu at runtime.
+`snippets/bhd-page-breadcrumbs.liquid` does not depend on runtime linklist traversal for Shopify Page hierarchy.
 
 Instead it:
 
@@ -56,7 +92,7 @@ This removes dependency on:
 - locale prefixes before `/pages/`
 - nested snippet visibility of menu data
 
-The output also exposes nonvisual QA attributes:
+The output exposes nonvisual QA attributes:
 
 - `data-bhd-breadcrumb-handle`
 - `data-bhd-breadcrumb-depth`
@@ -69,7 +105,7 @@ The deterministic map contains 57 Page handles:
 - Athletes & Ambassadors as a logical secondary page under Connect › Company & People
 - Dianna Proctor as a logical secondary page under Connect › Company & People
 
-Representative assertions:
+Representative expected trails:
 
 - `/pages/science-overview` → `Home › Science`
 - `/pages/hydration-science` → `Home › Science › Hydration Science`
@@ -82,16 +118,16 @@ Representative assertions:
 - `/pages/mission-values` → `Home › Connect › Company & People › About Best Hydrate`
 - `/pages/contact` → `Home › Connect › News & Contact › Contact Us`
 
-A local structural validation of the map confirmed:
+Structural validation of the map confirmed:
 
 - 57 unique mapped handles
 - 55 MAIN Page entries plus 2 secondary entries
-- every depth-2 and depth-3 entry has a valid parent route
+- every depth-2 and depth-3 entry has a defined parent route
 - Recovery resolves exactly to `Home › Solutions › Performance › Recovery`
 
 ## Exact Recovery render chain
 
-The current page render path is:
+Recovery now traverses the active dispatcher path:
 
 `page.handle = recovery-hydration`
 
@@ -103,15 +139,15 @@ The current page render path is:
 
 → `snippets/bhd-page-breadcrumbs.liquid`
 
-The shared page header now explicitly passes `page.handle` to the breadcrumb component. The breadcrumb component independently derives `recovery-hydration` from `request.path` as an additional safeguard.
+The shared page header explicitly passes `page.handle` to the breadcrumb component. The breadcrumb component independently derives `recovery-hydration` from `request.path` as an additional safeguard.
 
-The Recovery content itself carries `data-bhd-page="recovery-hydration"` as a nonvisual deployment marker.
+The Recovery content carries `data-bhd-page="recovery-hydration"` as a nonvisual deployment marker.
 
 ## Parent-page directories
 
-`snippets/bhd-menu-descendants.liquid` was also forcibly republished to Shopify MAIN after an older live copy was discovered.
+`snippets/bhd-menu-descendants.liquid` was also forcibly republished after an older live copy was discovered.
 
-Parent pages continue to derive their child and grandchild directory cards from Shopify Admin MAIN:
+Parent pages derive their child and grandchild directory cards from Shopify Admin MAIN:
 
 - level-1 pages show level-2 children and level-3 descendants
 - level-2 pages show their level-3 children
@@ -119,17 +155,24 @@ Parent pages continue to derive their child and grandchild directory cards from 
 
 The current file includes `data-bhd-directory-depth` as a nonvisual QA marker.
 
+## CSS check
+
+The active dispatcher-based page system renders `.bhd-breadcrumbs` as a wrapping flex row. Tablet and mobile rules reduce spacing and type size but do not hide intermediate breadcrumb nodes.
+
+Therefore the prior `Home › Recovery` screenshot was not caused by responsive CSS. It came from the stale active renderer's hard-coded fallback.
+
 ## Direct Shopify MAIN verification
 
-After the fixes, direct Shopify Theme file reads confirmed these current live files:
+Direct Shopify Theme file reads after the final active-renderer correction confirm:
 
-- `snippets/bhd-page-breadcrumbs.liquid`, updated 2026-09-09T17:53:50Z
-- `snippets/bhd-page-header.liquid`, updated 2026-09-09T17:50:59Z
-- `snippets/bhd-page-dispatch.liquid`, updated 2026-09-09T17:49:54Z
-- `snippets/bhd-page-recovery.liquid`, updated 2026-09-09T17:51:24Z
-- `snippets/bhd-menu-descendants.liquid`, updated 2026-09-09T17:51:51Z
+- `sections/bhd-page-system.liquid`, updated `2026-09-09T18:01:09Z`
+- `snippets/bhd-page-breadcrumbs.liquid`, updated `2026-09-09T17:53:50Z`
+- `snippets/bhd-page-header.liquid`, updated `2026-09-09T17:50:59Z`
+- `snippets/bhd-page-dispatch.liquid`, updated `2026-09-09T17:49:54Z`
+- `snippets/bhd-page-recovery.liquid`, updated `2026-09-09T17:51:24Z`
+- `snippets/bhd-menu-descendants.liquid`, updated `2026-09-09T17:51:51Z`
 
-The live breadcrumb body includes the explicit `recovery-hydration` depth-3 mapping. The live page header passes the Page handle directly. The live Recovery body includes its deployment marker.
+The live breadcrumb body contains the explicit `recovery-hydration` depth-3 mapping. The live Recovery body contains its deployment marker. The active page-system body now invokes the dispatcher rather than the old fallback.
 
 Shopify reports:
 
@@ -139,12 +182,14 @@ Shopify reports:
 
 ## Browser-fetch limitation
 
-The available external crawler can open the homepage but currently returns a cache miss when asked to fetch `/pages/recovery-hydration` directly. Therefore this audit does not claim an independent crawler screenshot of the corrected Recovery page.
+The external crawler currently returns a cache miss for `/pages/recovery-hydration`, so this audit does not claim an independent fresh crawler screenshot of the corrected rendered page.
 
-The evidence that is directly verified is the exact active MAIN theme source, current Shopify MAIN menu resource hierarchy, explicit Recovery route mapping, updated live timestamps, and absence of CSS that would hide intermediate breadcrumb nodes.
+The directly verified evidence is the actual active Shopify MAIN template entry point, the current live section body it invokes, the complete dispatcher chain, the deterministic Recovery mapping, and the absence of CSS that would hide breadcrumb parents.
 
 ## Result
 
-The previous runtime menu-discovery approach has been removed for Shopify Page breadcrumbs. Recovery no longer depends on menu traversal to determine its ancestry. Its canonical trail is explicitly and deterministically defined as:
+The actual active renderer that produced `Home › Recovery` has been replaced.
+
+The current MAIN Page render chain now reaches the deterministic breadcrumb map, where Recovery is explicitly defined as:
 
 `Home › Solutions › Performance › Recovery`
