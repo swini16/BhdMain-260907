@@ -1,5 +1,8 @@
 {% liquid
   assign canonical_handle = page_handle | default: page.handle
+  if request.path contains '/pages/'
+    assign canonical_handle = request.path | split: '/pages/' | last | split: '/' | first
+  endif
   assign canonical_trail = ''
   assign current_label = current_title | default: page.title
 
@@ -168,6 +171,6 @@
 </nav>
 
 {% comment %}
-Canonical Page breadcrumbs are deterministic by Shopify Page handle. They mirror the current MAIN information architecture and do not depend on runtime menu traversal, URL localization, or linklist cache state. Update this map whenever MAIN hierarchy changes.
-QA marker: deterministic-breadcrumb-map-20260909-1131.
+Canonical Page breadcrumbs are deterministic by storefront Page route. The handle is derived from request.path when possible, with the passed Page handle as fallback. This mirrors MAIN without depending on runtime menu traversal, localization prefixes, or linklist cache state.
+QA marker: deterministic-route-breadcrumb-map-20260909-1153.
 {% endcomment %}
