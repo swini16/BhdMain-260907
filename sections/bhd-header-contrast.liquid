@@ -8,7 +8,6 @@
     .bhd-header .bhd-header__main-item.bhd-hover-open::after,
     .bhd-header .bhd-header__main-item.is-open::after{display:block}
 
-    /* Top-level mega-menu visibility is state-driven only. Base :hover/:focus rules cannot show a menu. */
     .bhd-header .bhd-header__main-item .bhd-header__dropdown-menu,
     .bhd-header .bhd-header__main-item:hover .bhd-header__dropdown-menu,
     .bhd-header .bhd-header__main-item:focus-within .bhd-header__dropdown-menu{
@@ -71,9 +70,54 @@
 
     const pinned=(header)=>header&&header.querySelector('[data-main-item].is-open');
 
+    const closeMainState=(item)=>{
+      item.classList.remove('is-open');
+      const topToggle=item.querySelector(':scope > .bhd-header__split-button [data-menu-toggle], :scope > .bhd-header__mobile-main-row [data-menu-toggle]');
+      if(topToggle)topToggle.setAttribute('aria-expanded','false');
+      item.querySelectorAll('.is-tier2-open').forEach(child=>{
+        child.classList.remove('is-tier2-open');
+        const childToggle=child.querySelector('.bhd-header__tier2-toggle,.bhd-header__mobile-tier2-toggle');
+        if(childToggle)childToggle.setAttribute('aria-expanded','false');
+      });
+    };
+
+    const pinParentForTier2=(tierToggle)=>{
+      const main=tierToggle.closest('[data-main-item],[data-mobile-main]');
+      if(!main||main.classList.contains('is-open'))return;
+      const header=main.closest('.bhd-header');
+      clearHover(header);
+      const selector=main.matches('[data-main-item]')?'[data-main-item].is-open':'[data-mobile-main].is-open';
+      header.querySelectorAll(selector).forEach(other=>{if(other!==main)closeMainState(other)});
+      main.classList.add('is-open');
+      const topToggle=main.querySelector(':scope > .bhd-header__split-button [data-menu-toggle], :scope > .bhd-header__mobile-main-row [data-menu-toggle]');
+      if(topToggle)topToggle.setAttribute('aria-expanded','true');
+    };
+
+    const replaceTier3Links=(item,links)=>{
+      const tier3=item.querySelector(':scope > .bhd-header__tier3, :scope > .bhd-header__mobile-tier3');
+      if(!tier3)return;
+      const nodes=links.map(([label,href])=>{const a=document.createElement('a');a.href=href;a.textContent=label;return a});
+      tier3.replaceChildren(...nodes);
+    };
+
+    const normalizeCompanyPeople=(header)=>{
+      header.querySelectorAll('.bhd-header__tier2-link,.bhd-header__mobile-tier2-link').forEach(link=>{
+        if((link.textContent||'').replace(/\s+/g,' ').trim().toLowerCase()!=='company & people')return;
+        link.href='/pages/mission-values';
+        const item=link.closest('.bhd-header__dropdown-child,.bhd-header__mobile-tier2');
+        if(!item)return;
+        replaceTier3Links(item,[
+          ['Company','/pages/mission-values'],
+          ['Meet Us','/pages/our-story'],
+          ['Jobs & Careers','/pages/jobs-careers']
+        ]);
+      });
+    };
+
     const bindHeader=(header)=>{
       if(header.dataset.bhdSingleStateBound==='1')return;
       header.dataset.bhdSingleStateBound='1';
+      normalizeCompanyPeople(header);
 
       header.querySelectorAll('[data-main-item]').forEach(item=>{
         let closeTimer=null;
@@ -121,8 +165,10 @@
 
     const bind=()=>document.querySelectorAll('.bhd-header').forEach(bindHeader);
 
-    /* Clear transient hover state before the core click handler toggles a pinned menu. */
     document.addEventListener('click',(event)=>{
+      const tierToggle=event.target.closest('.bhd-header__tier2-toggle,.bhd-header__mobile-tier2-toggle');
+      if(tierToggle)pinParentForTier2(tierToggle);
+
       const toggle=event.target.closest('.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]');
       if(!toggle)return;
       const header=toggle.closest('.bhd-header');
@@ -142,9 +188,10 @@
 </script>
 
 {% comment %}
-The canonical Science, Solutions and Connect hierarchy is rendered directly by bhd-header.liquid.
+The Science, Solutions and Connect hierarchy remains rendered by bhd-header.liquid. This presentation layer also normalizes the Company & People branch to Company, Meet Us and Jobs & Careers while the underlying legacy routes are consolidated.
+Second-level toggles promote their top-level family to the pinned open state before the child opens, so the visual tree and toggle states stay consistent.
 Top-level mega-menu visibility is deliberately state-driven only: exactly one hover-open or one pinned-open menu can render at a time.
-Sync marker: strict-single-megamenu-state-20260909.
+Sync marker: nested-parent-propagation-company-20260909.
 {% endcomment %}
 
 {% schema %}
