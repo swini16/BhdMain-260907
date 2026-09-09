@@ -1,102 +1,217 @@
-<section id="BhdHero-{{ section.id }}" class="bhd-hero bhd-hero--visual" data-bhd-hero>
+{% assign hero_product = all_products['lemonade-best-hydrate'] %}
+{% assign hero_product_image = hero_product.featured_image %}
+
+<section id="BhdHero-{{ section.id }}" class="bhd-hero-v2" data-bhd-hero>
   <h1 class="visually-hidden">The Science of Hydration. Hydrate for YOUR Best Day!</h1>
 
-  <div class="bhd-hero__desktop" aria-label="Best Hydrate hydration solutions">
+  <div class="bhd-hero-v2__desktop" aria-label="Best Hydrate hydration solutions">
     <img
-      src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDEKOsS3UWcT6AHuyTQefjFAZcdh9TPeZTYaosU9mjYZcM?download=1"
+      src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDH94WQynO-SY0f-DScEkVfAcjzjTtpIt757vzEnCibR9w?download=1"
       alt="Best Hydrate, The Science of Hydration, across performance, daily, medical and humanitarian hydration"
       width="1600"
       height="900"
       loading="eager"
-      fetchpriority="high">
+      fetchpriority="high"
+      decoding="async">
   </div>
 
-  <div class="bhd-hero__carousel bhd-hero__tablet" data-hero-carousel data-interval="5200" aria-label="Best Hydrate tablet hero slideshow">
-    <div class="bhd-hero__track">
-      <div class="bhd-hero__slide is-active" data-hero-slide><img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQBmYewRGkL3T5x3MzOu4gVXASQwmgRhEoUOXyVWTAHkKJ4?download=1" alt="Best Hydrate hydration science and performance" width="1200" height="900" loading="eager"></div>
-      <div class="bhd-hero__slide" data-hero-slide><img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQBUUS4mGYRDQYKnO_O6lDDuAU0vovCepcbSk-GojAMqSmc?download=1" alt="Best Hydrate daily and medical hydration" width="1200" height="900" loading="lazy"></div>
-      <div class="bhd-hero__slide" data-hero-slide><img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQCwXrKh-XcDQ4Bu_TYHe_pTAa--fCPy1sMJ50biE1gVvyM?download=1" alt="Best Hydrate humanitarian hydration and hydration science" width="1200" height="900" loading="lazy"></div>
+  <div class="bhd-hero-v2__tablet" data-hero-carousel data-interval="5600" aria-label="Best Hydrate tablet hydration solutions">
+    <div class="bhd-hero-v2__tablet-shell">
+      <div class="bhd-hero-v2__shared-head">
+        <div class="bhd-hero-v2__eyebrow">BEST HYDRATE</div>
+        <div class="bhd-hero-v2__headline"><span>THE SCIENCE OF</span> HYDRATION.</div>
+        <div class="bhd-hero-v2__tagline">Hydrate For <em>YOUR</em> Best Day!</div>
+      </div>
+
+      <div class="bhd-hero-v2__tablet-track">
+        <div class="bhd-hero-v2__tablet-slide is-active" data-hero-slide>
+          <article class="bhd-hero-v2__segment-card">
+            <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQAw2nS-N6UaS6qw21HvBAMLAaRMFz5atE3PcfQAKxBRisI?download=1" alt="Performance hydration" width="700" height="500" loading="eager" decoding="async">
+            <div class="bhd-hero-v2__segment-copy">
+              <strong>Performance</strong>
+              <span>Fuels Higher Performance.</span>
+            </div>
+          </article>
+          <article class="bhd-hero-v2__segment-card">
+            <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQBB1GtZJ3e5Tq5bQeXKnFOtAfxDPApSvR53BzqkP-AHMI4?download=1" alt="Daily hydration" width="700" height="500" loading="eager" decoding="async">
+            <div class="bhd-hero-v2__segment-copy">
+              <strong>Daily</strong>
+              <span>Supports Healthier Everyday Living.</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="bhd-hero-v2__tablet-slide" data-hero-slide>
+          <article class="bhd-hero-v2__segment-card">
+            <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQAfdRPvWw9YRYNwoTqMLaLwAQ49LTkN45sBVbboNwA5XoI?download=1" alt="Medical hydration" width="700" height="500" loading="lazy" decoding="async">
+            <div class="bhd-hero-v2__segment-copy">
+              <strong>Medical</strong>
+              <span>Leaders in Clinical Oral Hydration.</span>
+            </div>
+          </article>
+          <article class="bhd-hero-v2__segment-card">
+            <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQBeJ0LyvlOfTIN2ERpEN-bhAR7thysCV91p0xeC2qhjdg4?download=1" alt="Humanitarian hydration" width="700" height="500" loading="lazy" decoding="async">
+            <div class="bhd-hero-v2__segment-copy">
+              <strong>Humanitarian</strong>
+              <span>ORS for a Brighter Tomorrow.</span>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      {% if hero_product_image %}
+        <a class="bhd-hero-v2__product" href="{{ hero_product.url }}" aria-label="Shop Best Hydrate">
+          <img src="{{ hero_product_image | image_url: width: 620 }}" alt="{{ hero_product.title | escape }}" width="620" height="620" loading="eager" decoding="async">
+        </a>
+      {% endif %}
+
+      <button class="bhd-hero-v2__arrow bhd-hero-v2__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
+      <button class="bhd-hero-v2__arrow bhd-hero-v2__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
+      <div class="bhd-hero-v2__dots" data-hero-dots aria-label="Hero slides"></div>
+
+      <div class="bhd-hero-v2__benefits" aria-label="Best Hydrate benefits">
+        <div class="bhd-hero-v2__benefit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2S5.5 9.2 5.5 14.2A6.5 6.5 0 0 0 18.5 14C18.5 9.2 12 2 12 2Z"/></svg>
+          <span>Essential<br>Electrolytes</span>
+        </div>
+        <div class="bhd-hero-v2__benefit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6M10 2v5l-5 9a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-5-9V2M8 15h8"/></svg>
+          <span>Advanced<br>Hydration Science</span>
+        </div>
+        <div class="bhd-hero-v2__benefit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9M12 3c-3 3-4 6-4 9s1 6 4 9"/></svg>
+          <span>Real World<br>Impact</span>
+        </div>
+        <div class="bhd-hero-v2__benefit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15h16M6 15a6 6 0 0 1 12 0M12 3v3M4.9 7.9l2.1 2.1M19.1 7.9 17 10"/></svg>
+          <span>A Brighter<br>Tomorrow</span>
+        </div>
+      </div>
     </div>
-    <button class="bhd-hero__arrow bhd-hero__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
-    <button class="bhd-hero__arrow bhd-hero__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
-    <div class="bhd-hero__dots" data-hero-dots aria-label="Hero slides"></div>
   </div>
 
-  <div class="bhd-hero__carousel bhd-hero__mobile" data-hero-carousel data-interval="4700" aria-label="Best Hydrate mobile hero slideshow">
-    <div class="bhd-hero__debug" data-hero-debug>
-      <strong>BHD HERO DEBUG v20260908-RAW-PINNED</strong>
-      <div data-debug-runtime>JS: waiting</div>
-      <div data-debug-viewport>Viewport: waiting</div>
-      <div data-debug-item="performance">Performance: waiting</div>
-      <div data-debug-item="daily">Daily: waiting</div>
-      <div data-debug-item="medical">Medical: waiting</div>
-      <div data-debug-item="humanitarian">Humanitarian: waiting</div>
-    </div>
-
-    <div class="bhd-hero__track">
-      <div class="bhd-hero__slide is-active" data-hero-slide>
-        <img data-hero-debug-name="performance" src="https://raw.githubusercontent.com/swini16/BhdMain-260907/bc2acdf7c97bc5a2bbf9ed73976d7d73951a5e6e/assets/hero-mobile-performance.webp" alt="Best Hydrate performance hydration" width="720" height="1280" loading="eager" fetchpriority="high" decoding="async">
+  <div class="bhd-hero-v2__mobile" data-hero-carousel data-interval="5000" aria-label="Best Hydrate mobile hero slideshow">
+    <div class="bhd-hero-v2__mobile-track">
+      <div class="bhd-hero-v2__mobile-slide is-active" data-hero-slide>
+        <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQAaXWoj4WNlSr4uO-sZFZT6AW-8kC8jLfa-ODWypToNWoU?download=1" alt="Best Hydrate performance hydration" width="720" height="1280" loading="eager" fetchpriority="high" decoding="async">
       </div>
-      <div class="bhd-hero__slide" data-hero-slide>
-        <img data-hero-debug-name="daily" src="https://raw.githubusercontent.com/swini16/BhdMain-260907/bc2acdf7c97bc5a2bbf9ed73976d7d73951a5e6e/assets/hero-mobile-daily.webp" alt="Best Hydrate daily hydration" width="720" height="1280" loading="eager" decoding="async">
+      <div class="bhd-hero-v2__mobile-slide" data-hero-slide>
+        <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDMon8F6lciR5yY4fzdZrCTAbQxTMkYTuQ19dG4roGmiB0?download=1" alt="Best Hydrate daily hydration" width="720" height="1280" loading="eager" decoding="async">
       </div>
-      <div class="bhd-hero__slide" data-hero-slide>
-        <img data-hero-debug-name="medical" src="https://raw.githubusercontent.com/swini16/BhdMain-260907/bc2acdf7c97bc5a2bbf9ed73976d7d73951a5e6e/assets/hero-mobile-medical.webp" alt="Best Hydrate medical hydration" width="720" height="1280" loading="eager" decoding="async">
+      <div class="bhd-hero-v2__mobile-slide" data-hero-slide>
+        <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDp4wn607vHSamxyjzGndomAX3Exn5lhFa5ZG17Z7xE1-s?download=1" alt="Best Hydrate medical hydration" width="720" height="1280" loading="eager" decoding="async">
       </div>
-      <div class="bhd-hero__slide" data-hero-slide>
-        <img data-hero-debug-name="humanitarian" src="https://raw.githubusercontent.com/swini16/BhdMain-260907/bc2acdf7c97bc5a2bbf9ed73976d7d73951a5e6e/assets/hero-mobile-humanitarian.webp" alt="Best Hydrate humanitarian hydration" width="720" height="1280" loading="eager" decoding="async">
+      <div class="bhd-hero-v2__mobile-slide" data-hero-slide>
+        <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQBoQ0Rm9kf7Q55fOY6J5nAxAReJZ5uHLU1drEg45m_cZM8?download=1" alt="Best Hydrate humanitarian hydration" width="720" height="1280" loading="eager" decoding="async">
       </div>
     </div>
-    <button class="bhd-hero__arrow bhd-hero__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
-    <button class="bhd-hero__arrow bhd-hero__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
-    <div class="bhd-hero__dots" data-hero-dots aria-label="Hero slides"></div>
+    <button class="bhd-hero-v2__arrow bhd-hero-v2__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
+    <button class="bhd-hero-v2__arrow bhd-hero-v2__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
+    <div class="bhd-hero-v2__dots" data-hero-dots aria-label="Hero slides"></div>
   </div>
 </section>
 
 <style>
-  #BhdHero-{{ section.id }} { position:relative; width:100%; overflow:hidden; background:#dff4ff; }
-  #BhdHero-{{ section.id }} img { display:block; width:100%; height:auto; }
-  #BhdHero-{{ section.id }} .bhd-hero__desktop { display:block; width:100%; }
-  #BhdHero-{{ section.id }} .bhd-hero__desktop img { width:100%; aspect-ratio:1600/900; object-fit:cover; }
-  #BhdHero-{{ section.id }} .bhd-hero__tablet,
-  #BhdHero-{{ section.id }} .bhd-hero__mobile { display:none; }
+  #BhdHero-{{ section.id }} {
+    --hero-navy:#072b68;
+    --hero-blue:#078ee7;
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    background:#eef8fd;
+  }
+  #BhdHero-{{ section.id }} img { display:block; max-width:100%; }
+  #BhdHero-{{ section.id }} .bhd-hero-v2__desktop { display:block; }
+  #BhdHero-{{ section.id }} .bhd-hero-v2__desktop img { width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; }
+  #BhdHero-{{ section.id }} .bhd-hero-v2__tablet,
+  #BhdHero-{{ section.id }} .bhd-hero-v2__mobile { display:none; }
 
-  #BhdHero-{{ section.id }} .bhd-hero__carousel { position:relative; width:100%; overflow:hidden; background:#dff4ff; }
-  #BhdHero-{{ section.id }} .bhd-hero__track { position:relative; width:100%; }
-  #BhdHero-{{ section.id }} .bhd-hero__slide { position:absolute; inset:0; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .5s ease; }
-  #BhdHero-{{ section.id }} .bhd-hero__slide.is-active { position:relative; opacity:1; visibility:visible; pointer-events:auto; }
-  #BhdHero-{{ section.id }} .bhd-hero__slide img { width:100%; height:100%; object-fit:cover; }
-
-  #BhdHero-{{ section.id }} .bhd-hero__arrow { position:absolute; top:50%; z-index:3; width:4.4rem; height:4.4rem; margin-top:-2.2rem; border:1px solid rgba(255,255,255,.72); border-radius:999px; background:rgba(5,35,85,.58); color:#fff; display:grid; place-items:center; padding:0 0 .25rem; font-size:3.3rem; line-height:1; cursor:pointer; backdrop-filter:blur(7px); box-shadow:0 .5rem 1.8rem rgba(0,25,70,.16); }
-  #BhdHero-{{ section.id }} .bhd-hero__arrow--prev { left:1.4rem; }
-  #BhdHero-{{ section.id }} .bhd-hero__arrow--next { right:1.4rem; }
-  #BhdHero-{{ section.id }} .bhd-hero__dots { position:absolute; z-index:3; left:50%; bottom:1.25rem; transform:translateX(-50%); display:flex; gap:.65rem; padding:.55rem .8rem; border-radius:999px; background:rgba(4,28,67,.34); backdrop-filter:blur(6px); }
-  #BhdHero-{{ section.id }} .bhd-hero__dot { width:.8rem; height:.8rem; padding:0; border:1px solid rgba(255,255,255,.85); border-radius:999px; background:transparent; cursor:pointer; }
-  #BhdHero-{{ section.id }} .bhd-hero__dot.is-active { background:#fff; transform:scale(1.18); }
-
-  #BhdHero-{{ section.id }} .bhd-hero__debug { display:none !important; }
+  #BhdHero-{{ section.id }} .bhd-hero-v2__arrow {
+    position:absolute; top:50%; z-index:7; transform:translateY(-50%);
+    width:4.2rem; height:4.2rem; border:1px solid rgba(255,255,255,.75); border-radius:999px;
+    background:rgba(6,43,104,.62); color:#fff; display:grid; place-items:center; padding:0 0 .25rem;
+    font-size:3rem; line-height:1; cursor:pointer; backdrop-filter:blur(7px); box-shadow:0 .5rem 1.5rem rgba(0,30,75,.18);
+  }
+  #BhdHero-{{ section.id }} .bhd-hero-v2__arrow--prev { left:1rem; }
+  #BhdHero-{{ section.id }} .bhd-hero-v2__arrow--next { right:1rem; }
+  #BhdHero-{{ section.id }} .bhd-hero-v2__dots {
+    position:absolute; z-index:8; left:50%; transform:translateX(-50%); display:flex; gap:.55rem;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero-v2__dot {
+    width:.75rem; height:.75rem; padding:0; border:1px solid rgba(7,43,104,.65); border-radius:50%; background:#fff; cursor:pointer;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero-v2__dot.is-active { background:var(--hero-navy); transform:scale(1.15); }
 
   @media screen and (max-width:1199px) and (min-width:750px) {
-    #BhdHero-{{ section.id }} .bhd-hero__desktop { display:none; }
-    #BhdHero-{{ section.id }} .bhd-hero__tablet { display:block; }
-    #BhdHero-{{ section.id }} .bhd-hero__tablet .bhd-hero__track { aspect-ratio:4/3; }
-    #BhdHero-{{ section.id }} .bhd-hero__tablet .bhd-hero__slide { height:100%; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__desktop { display:none; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet { display:block; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet-shell {
+      position:relative; width:100%; aspect-ratio:4/3; overflow:hidden;
+      background:linear-gradient(180deg,#fafdff 0%,#edf8fd 69%,#d8eef9 100%);
+      color:var(--hero-navy);
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__shared-head {
+      position:absolute; z-index:6; top:2.1%; left:15%; right:15%; text-align:center;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__eyebrow { font-size:clamp(.72rem,1.25vw,1rem); letter-spacing:.42em; font-weight:700; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__headline { font-size:clamp(2rem,5.1vw,4rem); line-height:.88; font-weight:900; color:var(--hero-blue); text-transform:uppercase; letter-spacing:-.035em; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__headline span { display:block; color:var(--hero-navy); font-size:.5em; letter-spacing:.02em; margin-bottom:.05em; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__tagline { margin-top:.25rem; font-size:clamp(1rem,2vw,1.65rem); font-weight:700; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__tagline em { font-style:italic; border-bottom:.18em solid #16bce7; padding:0 .08em; }
+
+    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet-track { position:absolute; inset:21% 3% 20%; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet-slide {
+      position:absolute; inset:0; display:grid; grid-template-columns:1fr 1fr; gap:1.1rem;
+      opacity:0; visibility:hidden; pointer-events:none; transition:opacity .45s ease;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet-slide.is-active { opacity:1; visibility:visible; pointer-events:auto; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-card {
+      position:relative; overflow:hidden; border-radius:1.2rem; background:#d8ecf6;
+      box-shadow:0 .6rem 1.7rem rgba(13,68,115,.14); border:1px solid rgba(255,255,255,.9);
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-card img { width:100%; height:100%; object-fit:cover; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-card::after {
+      content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(3,32,72,.7) 0%,rgba(3,32,72,.05) 35%,rgba(3,32,72,0) 58%);
+      pointer-events:none;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-copy { position:absolute; z-index:2; left:1.2rem; top:1rem; right:1rem; color:#fff; text-shadow:0 2px 8px rgba(0,20,55,.3); }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-copy strong { display:block; font-size:clamp(1.5rem,3.2vw,2.6rem); line-height:1; text-transform:uppercase; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-copy span { display:block; margin-top:.28rem; max-width:75%; font-size:clamp(.82rem,1.55vw,1.2rem); line-height:1.08; font-weight:700; }
+
+    #BhdHero-{{ section.id }} .bhd-hero-v2__product {
+      position:absolute; z-index:5; left:50%; bottom:11.8%; transform:translateX(-50%); width:clamp(14rem,24vw,22rem); text-decoration:none;
+      filter:drop-shadow(0 .75rem 1rem rgba(0,25,70,.24));
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__product img { width:100%; height:auto; object-fit:contain; }
+
+    #BhdHero-{{ section.id }} .bhd-hero-v2__benefits {
+      position:absolute; z-index:4; left:0; right:0; bottom:0; height:17.5%; padding:1.1% 5% 1.4%;
+      display:grid; grid-template-columns:repeat(4,1fr); align-items:center;
+      background:rgba(250,253,255,.95); border-top:1px solid rgba(7,43,104,.1);
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__benefit { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.3rem; text-align:center; font-size:clamp(.62rem,1.08vw,.92rem); line-height:1.05; font-weight:800; text-transform:uppercase; color:var(--hero-navy); }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__benefit + .bhd-hero-v2__benefit { border-left:1px solid rgba(7,43,104,.28); }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__benefit svg { width:clamp(1.8rem,3.2vw,2.7rem); height:clamp(1.8rem,3.2vw,2.7rem); fill:none; stroke:var(--hero-blue); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__dots { bottom:18.2%; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__arrow { top:50%; }
   }
 
   @media screen and (max-width:749px) {
-    #BhdHero-{{ section.id }} .bhd-hero__desktop { display:none; }
-    #BhdHero-{{ section.id }} .bhd-hero__mobile { display:block; }
-    #BhdHero-{{ section.id }} .bhd-hero__mobile .bhd-hero__track { aspect-ratio:9/16; }
-    #BhdHero-{{ section.id }} .bhd-hero__mobile .bhd-hero__slide { height:100%; }
-    #BhdHero-{{ section.id }} .bhd-hero__mobile .bhd-hero__slide img { width:100%; height:100%; object-fit:cover; object-position:center; }
-    #BhdHero-{{ section.id }} .bhd-hero__arrow { width:3.7rem; height:3.7rem; margin-top:-1.85rem; font-size:2.8rem; }
-    #BhdHero-{{ section.id }} .bhd-hero__arrow--prev { left:.8rem; }
-    #BhdHero-{{ section.id }} .bhd-hero__arrow--next { right:.8rem; }
-    #BhdHero-{{ section.id }} .bhd-hero__dots { bottom:.85rem; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__desktop,
+    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet { display:none; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__mobile { display:block; position:relative; width:100%; overflow:hidden; background:#eef8fd; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__mobile-track { position:relative; width:100%; aspect-ratio:9/16; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__mobile-slide { position:absolute; inset:0; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .45s ease; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__mobile-slide.is-active { opacity:1; visibility:visible; pointer-events:auto; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__mobile-slide img { width:100%; height:100%; object-fit:cover; object-position:center; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__arrow { width:3.65rem; height:3.65rem; font-size:2.8rem; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__arrow--prev { left:.7rem; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__arrow--next { right:.7rem; }
+    #BhdHero-{{ section.id }} .bhd-hero-v2__dots { bottom:.8rem; padding:.42rem .58rem; border-radius:999px; background:rgba(255,255,255,.78); backdrop-filter:blur(5px); }
   }
 
   @media (prefers-reduced-motion:reduce) {
-    #BhdHero-{{ section.id }} .bhd-hero__slide { transition:none; }
+    #BhdHero-{{ section.id }} [data-hero-slide] { transition:none !important; }
   }
 </style>
 
@@ -104,35 +219,6 @@
   (() => {
     const root = document.getElementById('BhdHero-{{ section.id }}');
     if (!root) return;
-
-    const debug = root.querySelector('[data-hero-debug]');
-    if (debug) {
-      const runtime = debug.querySelector('[data-debug-runtime]');
-      const viewport = debug.querySelector('[data-debug-viewport]');
-      runtime.textContent = 'JS: running, section={{ section.id }}';
-      viewport.textContent = `Viewport: ${window.innerWidth}x${window.innerHeight}, DPR ${window.devicePixelRatio || 1}`;
-
-      root.querySelectorAll('[data-hero-debug-name]').forEach((img) => {
-        const key = img.dataset.heroDebugName;
-        const row = debug.querySelector(`[data-debug-item="${key}"]`);
-        if (!row) return;
-
-        const paint = (state) => {
-          const src = img.currentSrc || img.src || '(no src)';
-          const srcLabel = src.length > 115 ? src.slice(0, 112) + '...' : src;
-          row.textContent = `${key}: ${state}, natural=${img.naturalWidth}x${img.naturalHeight}, src=${srcLabel}`;
-        };
-
-        img.addEventListener('load', () => paint('LOAD OK'));
-        img.addEventListener('error', () => paint('LOAD ERROR'));
-
-        if (img.complete) {
-          paint(img.naturalWidth > 0 ? 'ALREADY OK' : 'ALREADY ERROR');
-        } else {
-          paint('PENDING');
-        }
-      });
-    }
 
     root.querySelectorAll('[data-hero-carousel]').forEach((carousel) => {
       const slides = Array.from(carousel.querySelectorAll('[data-hero-slide]'));
@@ -143,12 +229,13 @@
 
       let index = 0;
       let timer;
-      const interval = Number(carousel.dataset.interval || 5000);
+      const interval = Number(carousel.dataset.interval || 5200);
 
+      dotsWrap.innerHTML = '';
       const dots = slides.map((_, i) => {
         const dot = document.createElement('button');
         dot.type = 'button';
-        dot.className = 'bhd-hero__dot' + (i === 0 ? ' is-active' : '');
+        dot.className = 'bhd-hero-v2__dot' + (i === 0 ? ' is-active' : '');
         dot.setAttribute('aria-label', `Show hero ${i + 1}`);
         dot.addEventListener('click', () => { show(i); restart(); });
         dotsWrap.appendChild(dot);
@@ -174,6 +261,8 @@
       carousel.addEventListener('mouseleave', start);
       carousel.addEventListener('focusin', stop);
       carousel.addEventListener('focusout', start);
+      carousel.addEventListener('touchstart', stop, { passive:true });
+      carousel.addEventListener('touchend', start, { passive:true });
       start();
     });
   })();
