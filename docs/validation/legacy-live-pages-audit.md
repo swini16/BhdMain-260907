@@ -54,9 +54,9 @@ Three useful pages were retained as first-class secondary surfaces rather than r
 
 `/pages/our-story` uses the custom Meet Us template and did not visually depend on its old Shopify body, but that body contained older phrases including 'optimally balanced' and 'spikes and drops'. The body was replaced with a concise current company summary so internal search or metadata extraction does not preserve obsolete claim language.
 
-## App-managed utility pages
+## AVADA HTML sitemap cleanup
 
-Published AVADA-generated HTML sitemap pages remain in Shopify:
+PASS. Six AVADA-generated HTML sitemap pages were reviewed and removed from Shopify:
 
 - `/pages/avada-sitemap`
 - `/pages/avada-sitemap-pages`
@@ -65,7 +65,7 @@ Published AVADA-generated HTML sitemap pages remain in Shopify:
 - `/pages/avada-sitemap-blogs`
 - `/pages/avada-sitemap-articles`
 
-Their stored HTML is stale and includes old `myshopify.com` links and retired page references. These appear externally managed by the AVADA SEO app and were **not manually deleted or overwritten** in this pass. They require AVADA regeneration/settings review or a deliberate decision to unpublish the app-generated HTML sitemap family.
+The current Refresh/GitHub theme contains no AVADA references. Shopify already generates and maintains its native XML sitemap, so these old HTML sitemap pages were redundant. Their stored HTML also contained stale `myshopify.com` links and retired page references. All six Page objects were permanently deleted through Shopify Admin with zero mutation errors.
 
 The Rewind menu backup page is unpublished and explicitly marked by Rewind as a backup resource. It was left untouched.
 
@@ -73,6 +73,6 @@ Shopify's privacy opt-out page was also left untouched.
 
 ## Result
 
-**LEGACY CONTENT DISPOSITION: PASS FOR FIRST-PARTY CONTENT.**
+**LEGACY CONTENT DISPOSITION: PASS.**
 
-All first-party legacy pages are now either canonical, safely redirected, or deliberately retained and rebuilt. App-managed AVADA sitemap pages are the remaining external content dependency.
+All first-party legacy pages are now either canonical, safely redirected, or deliberately retained and rebuilt. The redundant AVADA HTML sitemap family has been removed.
