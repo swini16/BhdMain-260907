@@ -6,23 +6,20 @@
     .bhd-header .bhd-header__main-item:hover .bhd-header__split-button,.bhd-header .bhd-header__main-item:focus-within .bhd-header__split-button{background:rgba(var(--color-button),.16);border-color:rgba(var(--color-button),.42);box-shadow:0 .35rem 1rem rgba(13,33,78,.08)}
     .bhd-header .bhd-header__main-item.is-open .bhd-header__split-button{background:rgba(var(--color-button),.24);border-color:rgba(var(--color-button),.6);box-shadow:0 .45rem 1.4rem rgba(13,33,78,.13)}
 
-    /* Keep hover active while the pointer crosses the visual gap into a mega-menu. */
     .bhd-header .bhd-header__main-item::after{content:"";position:absolute;z-index:2;top:100%;left:-1.2rem;right:-1.2rem;height:1.15rem;display:none}
     .bhd-header .bhd-header__main-item:hover::after,.bhd-header .bhd-header__main-item.is-open::after{display:block}
     .bhd-header .bhd-header__dropdown-menu{z-index:3;border-top:3px solid rgba(var(--color-button),.5);box-shadow:0 2.2rem 5rem rgba(13,33,78,.18)}
 
-    /* A click-toggled top-level menu owns the menu state until it is closed. */
     .bhd-header:has(.bhd-header__main-item.is-open) .bhd-header__main-item:not(.is-open):hover .bhd-header__dropdown-menu{display:none!important}
     .bhd-header:has(.bhd-header__main-item.is-open) .bhd-header__main-item:not(.is-open):hover .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
 
-    /* Manual collapse wins over hover until the pointer actually leaves that top node. */
     .bhd-header .bhd-header__main-item.bhd-hover-suppressed:hover .bhd-header__dropdown-menu,
     .bhd-header .bhd-header__main-item.bhd-hover-suppressed:focus-within .bhd-header__dropdown-menu{display:none!important}
-    .bhd-header .bhd-header__main-item.bhd-hover-suppressed:hover .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
+    .bhd-header .bhd-header__main-item.bhd-hover-suppressed:hover .bhd-header__split-button,
+    .bhd-header .bhd-header__main-item.bhd-hover-suppressed:focus-within .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
 
     .bhd-header .bhd-header__dropdown-child:hover .bhd-header__tier2-split{background:rgba(var(--color-button),.13);border-color:rgba(var(--color-button),.38)}
 
-    /* Calm sage-teal state makes the expanded tree node unmistakable without becoming loud. */
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-split{background:rgba(72,132,120,.15);border-color:rgba(72,132,120,.48);box-shadow:0 .3rem .9rem rgba(44,92,82,.10)}
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-link{color:#245f55}
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-toggle{background:rgba(72,132,120,.26);color:#245f55;border-left-color:rgba(72,132,120,.46)}
@@ -45,29 +42,27 @@
 
 <script>
   (()=>{
-    const selector='.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]';
+    const bind=()=>{
+      document.querySelectorAll('.bhd-header [data-main-item]').forEach(item=>{
+        if(item.dataset.bhdCollapseBound==='1')return;
+        item.dataset.bhdCollapseBound='1';
+        item.addEventListener('mouseleave',()=>item.classList.remove('bhd-hover-suppressed'));
+      });
+    };
+
     document.addEventListener('click',(event)=>{
-      const toggle=event.target.closest(selector);
+      const toggle=event.target.closest('.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]');
       if(!toggle)return;
       const item=toggle.closest('[data-main-item]');
       if(!item)return;
       requestAnimationFrame(()=>{
-        if(item.classList.contains('is-open')){
-          item.classList.remove('bhd-hover-suppressed');
-        }else{
-          item.classList.add('bhd-hover-suppressed');
-        }
+        if(item.classList.contains('is-open'))item.classList.remove('bhd-hover-suppressed');
+        else item.classList.add('bhd-hover-suppressed');
       });
     });
-    document.addEventListener('pointerleave',(event)=>{
-      const item=event.target.closest?.('[data-main-item].bhd-hover-suppressed');
-      if(item)item.classList.remove('bhd-hover-suppressed');
-    },true);
-    document.addEventListener('pointerenter',(event)=>{
-      const item=event.target.closest?.('[data-main-item]');
-      if(!item)return;
-      if(event.target===item && !item.matches(':hover'))item.classList.remove('bhd-hover-suppressed');
-    },true);
+
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
+    else bind();
   })();
 </script>
 
