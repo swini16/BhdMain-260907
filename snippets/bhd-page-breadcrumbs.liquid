@@ -1,171 +1,173 @@
 {% liquid
-  assign bhd_menu = linklists['new-menu']
-  assign current_path = request.path | split: '?' | first | split: '#' | first
+  assign canonical_handle = page_handle | default: page.handle
+  assign canonical_trail = ''
   assign current_label = current_title | default: page.title
+
+  case canonical_handle
+    when 'science-overview'
+      assign canonical_trail = '1::Science::/pages/science-overview::_::_::Science'
+    when 'hydration-science'
+      assign canonical_trail = '2::Science::/pages/science-overview::Hydration Science::/pages/hydration-science::Hydration Science'
+    when 'how-hydration-works'
+      assign canonical_trail = '3::Science::/pages/science-overview::Hydration Science::/pages/hydration-science::How Hydration Works'
+    when 'electrolytes'
+      assign canonical_trail = '3::Science::/pages/science-overview::Hydration Science::/pages/hydration-science::Electrolytes'
+    when 'glucose-water-absorption'
+      assign canonical_trail = '3::Science::/pages/science-overview::Hydration Science::/pages/hydration-science::Glucose & Water Absorption'
+    when 'our-formula'
+      assign canonical_trail = '2::Science::/pages/science-overview::Our Formula::/pages/our-formula::Our Formula'
+    when 'five-essential-electrolytes'
+      assign canonical_trail = '3::Science::/pages/science-overview::Our Formula::/pages/our-formula::Five Essential Electrolytes'
+    when 'ingredient-rationale'
+      assign canonical_trail = '3::Science::/pages/science-overview::Our Formula::/pages/our-formula::Ingredient Rationale'
+    when 'why-bicarbonate'
+      assign canonical_trail = '3::Science::/pages/science-overview::Our Formula::/pages/our-formula::Why Bicarbonate'
+    when 'research-publications'
+      assign canonical_trail = '2::Science::/pages/science-overview::Research & Impact::/pages/research-publications::Research & Impact'
+    when 'publications'
+      assign canonical_trail = '3::Science::/pages/science-overview::Research & Impact::/pages/research-publications::Peer-Reviewed Publications'
+    when 'current-research'
+      assign canonical_trail = '3::Science::/pages/science-overview::Research & Impact::/pages/research-publications::Current Research'
+    when 'research-partners'
+      assign canonical_trail = '3::Science::/pages/science-overview::Research & Impact::/pages/research-publications::Research Partners'
+    when 'research-impact'
+      assign canonical_trail = '3::Science::/pages/science-overview::Research & Impact::/pages/research-publications::Research Impact'
+    when 'clinical-development'
+      assign canonical_trail = '2::Science::/pages/science-overview::Clinical Development::/pages/clinical-development::Clinical Development'
+    when 'clinical-program'
+      assign canonical_trail = '3::Science::/pages/science-overview::Clinical Development::/pages/clinical-development::Clinical Program'
+    when 'pilot-studies'
+      assign canonical_trail = '3::Science::/pages/science-overview::Clinical Development::/pages/clinical-development::Pilot Studies'
+    when 'healthcare-applications'
+      assign canonical_trail = '3::Science::/pages/science-overview::Clinical Development::/pages/clinical-development::Healthcare Applications'
+    when 'solutions-overview'
+      assign canonical_trail = '1::Solutions::/pages/solutions-overview::_::_::Solutions'
+    when 'products-overview'
+      assign canonical_trail = '2::Solutions::/pages/solutions-overview::Products::/pages/products-overview::Products'
+    when 'ingredients-formula'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Products::/pages/products-overview::Ingredients & Formula'
+    when 'product-details'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Products::/pages/products-overview::Product Details'
+    when 'directions'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Products::/pages/products-overview::Directions'
+    when 'q-a'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Products::/pages/products-overview::FAQ'
+    when 'performance-hydration'
+      assign canonical_trail = '2::Solutions::/pages/solutions-overview::Performance::/pages/performance-hydration::Performance'
+    when 'endurance-hydration'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Performance::/pages/performance-hydration::Endurance'
+    when 'heat-high-sweat'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Performance::/pages/performance-hydration::Heat & High Sweat'
+    when 'recovery-hydration'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Performance::/pages/performance-hydration::Recovery'
+    when 'everyday-wellness'
+      assign canonical_trail = '2::Solutions::/pages/solutions-overview::Everyday Wellness::/pages/everyday-wellness::Everyday Wellness'
+    when 'work-long-shifts'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Everyday Wellness::/pages/everyday-wellness::Work & Long Shifts'
+    when 'travel-hydration'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Everyday Wellness::/pages/everyday-wellness::Travel'
+    when 'active-living'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Everyday Wellness::/pages/everyday-wellness::Active Living'
+    when 'clinical-humanitarian'
+      assign canonical_trail = '2::Solutions::/pages/solutions-overview::Clinical & Humanitarian::/pages/clinical-humanitarian::Clinical & Humanitarian'
+    when 'clinical-hydration'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Clinical & Humanitarian::/pages/clinical-humanitarian::Clinical Hydration'
+    when 'recovery-rehabilitation'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Clinical & Humanitarian::/pages/clinical-humanitarian::Recovery & Rehabilitation'
+    when 'active-aging'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Clinical & Humanitarian::/pages/clinical-humanitarian::Active Aging'
+    when 'eco-humanitarian'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Clinical & Humanitarian::/pages/clinical-humanitarian::Humanitarian Hydration'
+    when 'connect-overview'
+      assign canonical_trail = '1::Connect::/pages/connect-overview::_::_::Connect'
+    when 'company-people'
+      assign canonical_trail = '2::Connect::/pages/connect-overview::Company & People::/pages/company-people::Company & People'
+    when 'our-story'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Company & People::/pages/company-people::Meet Us'
+    when 'mission-values'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Company & People::/pages/company-people::About Best Hydrate'
+    when 'jobs-careers'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Company & People::/pages/company-people::Jobs & Careers'
+    when 'partnerships'
+      assign canonical_trail = '2::Connect::/pages/connect-overview::Partnerships::/pages/partnerships::Partnerships'
+    when 'research-partnerships'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Partnerships::/pages/partnerships::Research Partnerships'
+    when 'retail-distribution'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Partnerships::/pages/partnerships::Retail & Distribution'
+    when 'humanitarian-partnerships'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Partnerships::/pages/partnerships::Humanitarian Partnerships'
+    when 'investor-relations'
+      assign canonical_trail = '2::Connect::/pages/connect-overview::Investor Relations::/pages/investor-relations::Investor Relations'
+    when 'investor-overview'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Investor Relations::/pages/investor-relations::Investor Overview'
+    when 'corporate-information'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Investor Relations::/pages/investor-relations::Corporate Information'
+    when 'investor-contact'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Investor Relations::/pages/investor-relations::Investor Contact'
+    when 'news-contact'
+      assign canonical_trail = '2::Connect::/pages/connect-overview::News & Contact::/pages/news-contact::News & Contact'
+    when 'press'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::News & Contact::/pages/news-contact::Press & Media'
+    when 'events'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::News & Contact::/pages/news-contact::Events'
+    when 'contact'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::News & Contact::/pages/news-contact::Contact Us'
+    when 'shop-overview'
+      assign canonical_trail = '1::Shop::/pages/shop-overview::_::_::Shop'
+    when 'athletes-ambassadors'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Company & People::/pages/company-people::Athletes & Ambassadors'
+    when 'dianna-proctor'
+      assign canonical_trail = '3::Connect::/pages/connect-overview::Company & People::/pages/company-people::Dianna Proctor'
+  endcase
 
   assign menu_depth = 0
   assign level_1_label = ''
   assign level_1_url = ''
   assign level_2_label = ''
   assign level_2_url = ''
-  assign level_3_label = ''
-  assign level_3_url = ''
 
-  if bhd_menu != blank
-    for top_link in bhd_menu.links
-      assign top_path = top_link.url | split: '?' | first | split: '#' | first
-      if shop.url != blank
-        assign top_path = top_path | remove: shop.url
-      endif
-      if top_path contains '://'
-        assign top_path = top_path | remove: 'https://' | remove: 'http://'
-        if shop.domain != blank
-          assign top_path = top_path | remove: shop.domain
-        endif
-        if shop.permanent_domain != blank
-          assign top_path = top_path | remove: shop.permanent_domain
-        endif
-      endif
-
-      if preferred_family == blank or top_link.title == preferred_family
-        if top_path != blank
-          if current_path == top_path or current_path contains top_path
-            if menu_depth < 1
-              assign menu_depth = 1
-              assign level_1_label = top_link.title
-              assign level_1_url = top_link.url
-              assign level_2_label = ''
-              assign level_2_url = ''
-              assign level_3_label = ''
-              assign level_3_url = ''
-            endif
-          endif
-        endif
-
-        for second_link in top_link.links
-          assign second_path = second_link.url | split: '?' | first | split: '#' | first
-          if shop.url != blank
-            assign second_path = second_path | remove: shop.url
-          endif
-          if second_path contains '://'
-            assign second_path = second_path | remove: 'https://' | remove: 'http://'
-            if shop.domain != blank
-              assign second_path = second_path | remove: shop.domain
-            endif
-            if shop.permanent_domain != blank
-              assign second_path = second_path | remove: shop.permanent_domain
-            endif
-          endif
-
-          if second_path != blank
-            if current_path == second_path or current_path contains second_path
-              if menu_depth < 2
-                assign menu_depth = 2
-                assign level_1_label = top_link.title
-                assign level_1_url = top_link.url
-                assign level_2_label = second_link.title
-                assign level_2_url = second_link.url
-                assign level_3_label = ''
-                assign level_3_url = ''
-              endif
-            endif
-          endif
-
-          for third_link in second_link.links
-            assign third_path = third_link.url | split: '?' | first | split: '#' | first
-            if shop.url != blank
-              assign third_path = third_path | remove: shop.url
-            endif
-            if third_path contains '://'
-              assign third_path = third_path | remove: 'https://' | remove: 'http://'
-              if shop.domain != blank
-                assign third_path = third_path | remove: shop.domain
-              endif
-              if shop.permanent_domain != blank
-                assign third_path = third_path | remove: shop.permanent_domain
-              endif
-            endif
-
-            if third_path != blank
-              if current_path == third_path or current_path contains third_path
-                if menu_depth < 3
-                  assign menu_depth = 3
-                  assign level_1_label = top_link.title
-                  assign level_1_url = top_link.url
-                  assign level_2_label = second_link.title
-                  assign level_2_url = second_link.url
-                  assign level_3_label = third_link.title
-                  assign level_3_url = third_link.url
-                endif
-              endif
-            endif
-          endfor
-        endfor
-      endif
-    endfor
-  endif
-
-  assign fallback_1_label = ''
-  assign fallback_1_url = ''
-  assign fallback_2_label = ''
-  assign fallback_2_url = ''
-
-  if menu_depth == 0
-    case page.handle
-      when 'athletes-ambassadors'
-        assign fallback_1_label = 'Connect'
-        assign fallback_1_url = '/pages/connect-overview'
-        assign fallback_2_label = 'Company & People'
-        assign fallback_2_url = '/pages/company-people'
-        assign current_label = 'Athletes & Ambassadors'
-      when 'dianna-proctor'
-        assign fallback_1_label = 'Connect'
-        assign fallback_1_url = '/pages/connect-overview'
-        assign fallback_2_label = 'Company & People'
-        assign fallback_2_url = '/pages/company-people'
-        assign current_label = 'Dianna Proctor'
-    endcase
+  if canonical_trail != blank
+    assign trail_parts = canonical_trail | split: '::'
+    assign menu_depth = trail_parts[0] | plus: 0
+    assign level_1_label = trail_parts[1]
+    assign level_1_url = trail_parts[2]
+    assign level_2_label = trail_parts[3]
+    assign level_2_url = trail_parts[4]
+    assign current_label = trail_parts[5]
   endif
 %}
 
-<nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
+<nav class="bhd-breadcrumbs" aria-label="Breadcrumb" data-bhd-breadcrumb-handle="{{ canonical_handle | escape }}" data-bhd-breadcrumb-depth="{{ menu_depth }}">
   <a href="{{ routes.root_url }}">Home</a>
 
-  {% if menu_depth > 0 %}
+  {% if menu_depth >= 1 %}
     <span aria-hidden="true">›</span>
     {% if menu_depth == 1 %}
-      <span aria-current="page">{{ level_1_label | escape }}</span>
+      <span aria-current="page">{{ current_label | escape }}</span>
     {% else %}
       <a href="{{ level_1_url }}">{{ level_1_label | escape }}</a>
     {% endif %}
+  {% endif %}
 
-    {% if menu_depth >= 2 %}
-      <span aria-hidden="true">›</span>
-      {% if menu_depth == 2 %}
-        <span aria-current="page">{{ level_2_label | escape }}</span>
-      {% else %}
-        <a href="{{ level_2_url }}">{{ level_2_label | escape }}</a>
-      {% endif %}
+  {% if menu_depth >= 2 %}
+    <span aria-hidden="true">›</span>
+    {% if menu_depth == 2 %}
+      <span aria-current="page">{{ current_label | escape }}</span>
+    {% else %}
+      <a href="{{ level_2_url }}">{{ level_2_label | escape }}</a>
     {% endif %}
+  {% endif %}
 
-    {% if menu_depth >= 3 %}
-      <span aria-hidden="true">›</span>
-      <span aria-current="page">{{ level_3_label | escape }}</span>
-    {% endif %}
-  {% else %}
-    {% if fallback_1_label != blank %}
-      <span aria-hidden="true">›</span>
-      <a href="{{ fallback_1_url }}">{{ fallback_1_label | escape }}</a>
-    {% endif %}
-    {% if fallback_2_label != blank %}
-      <span aria-hidden="true">›</span>
-      <a href="{{ fallback_2_url }}">{{ fallback_2_label | escape }}</a>
-    {% endif %}
+  {% if menu_depth >= 3 %}
+    <span aria-hidden="true">›</span>
+    <span aria-current="page">{{ current_label | escape }}</span>
+  {% elsif menu_depth == 0 %}
     <span aria-hidden="true">›</span>
     <span aria-current="page">{{ current_label | escape }}</span>
   {% endif %}
 </nav>
 
 {% comment %}
-Breadcrumbs use Shopify Admin MAIN, handle new-menu, as the source of truth. Menu URLs are normalized before comparison, and localized storefront request prefixes are tolerated by matching the normalized menu path within request.path. The deepest matching node in the declared family wins.
+Canonical Page breadcrumbs are deterministic by Shopify Page handle. They mirror the current MAIN information architecture and do not depend on runtime menu traversal, URL localization, or linklist cache state. Update this map whenever MAIN hierarchy changes.
+QA marker: deterministic-breadcrumb-map-20260909-1131.
 {% endcomment %}
