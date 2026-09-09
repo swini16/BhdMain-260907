@@ -1,0 +1,56 @@
+name: Sync hero v2 assets
+
+on:
+  push:
+    paths:
+      - '.github/workflows/sync-hero-v2-assets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download hero v2 assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets
+          curl -fL --retry 3 --retry-delay 2 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDH94WQynO-SY0f-DScEkVfAcjzjTtpIt757vzEnCibR9w?download=1' -o assets/hero-v2-desktop.webp
+          curl -fL --retry 3 --retry-delay 2 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQAaXWoj4WNlSr4uO-sZFZT6AW-8kC8jLfa-ODWypToNWoU?download=1' -o assets/hero-v2-mobile-performance.webp
+          curl -fL --retry 3 --retry-delay 2 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDMon8F6lciR5yY4fzdZrCTAbQxTMkYTuQ19dG4roGmiB0?download=1' -o assets/hero-v2-mobile-daily.webp
+          curl -fL --retry 3 --retry-delay 2 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDp4wn607vHSamxyjzGndomAX3Exn5lhFa5ZG17Z7xE1-s?download=1' -o assets/hero-v2-mobile-medical.webp
+          curl -fL --retry 3 --retry-delay 2 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQBoQ0Rm9kf7Q55fOY6J5nAxAReJZ5uHLU1drEg45m_cZM8?download=1' -o assets/hero-v2-mobile-humanitarian.webp
+          curl -fL --retry 3 --retry-delay 2 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQAw2nS-N6UaS6qw21HvBAMLAaRMFz5atE3PcfQAKxBRisI?download=1' -o assets/hero-v2-tile-performance.webp
+          curl -fL --retry 3 --retry-delay 2 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQBB1GtZJ3e5Tq5bQeXKnFOtAfxDPApSvR53BzqkP-AHMI4?download=1' -o assets/hero-v2-tile-daily.webp
+          curl -fL --retry 3 --retry-delay 2 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQAfdRPvWw9YRYNwoTqMLaLwAQ49LTkN45sBVbboNwA5XoI?download=1' -o assets/hero-v2-tile-medical.webp
+          curl -fL --retry 3 --retry-delay 2 'https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQBeJ0LyvlOfTIN2ERpEN-bhAR7thysCV91p0xeC2qhjdg4?download=1' -o assets/hero-v2-tile-humanitarian.webp
+
+      - name: Validate downloads
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in assets/hero-v2-*.webp; do
+            echo "$f $(stat -c%s "$f") bytes"
+            test "$(stat -c%s "$f")" -gt 10000
+            file "$f" | grep -qi 'Web/P\|WebP'
+          done
+
+      - name: Commit assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/hero-v2-*.webp
+          if git diff --cached --quiet; then
+            echo 'No asset changes'
+            exit 0
+          fi
+          git commit -m 'Import hero v2 image assets'
+          git push origin HEAD:main
