@@ -111,7 +111,7 @@
     overflow:hidden;
     background:#eef8fd;
     box-sizing:border-box;
-    padding:20px;
+    padding:clamp(36px,3.4vw,56px);
   }
   #BhdHero-{{ section.id }} * { box-sizing:border-box; }
   #BhdHero-{{ section.id }} img { display:block; width:100%; max-width:100%; }
@@ -120,10 +120,20 @@
     border-radius:18px;
     box-shadow:0 .6rem 1.6rem rgba(7,43,104,.08);
   }
-  #BhdHero-{{ section.id }} .bhd-hero-v3__desktop { display:block; }
+  #BhdHero-{{ section.id }} .bhd-hero-v3__desktop {
+    display:block;
+    width:100%;
+    max-width:1600px;
+    margin:0 auto;
+    background:#eef8fd;
+  }
   #BhdHero-{{ section.id }} .bhd-hero-v3__desktop img {
-    aspect-ratio:16/9;
-    object-fit:cover;
+    width:100%;
+    height:auto;
+    aspect-ratio:auto;
+    object-fit:contain;
+    object-position:center center;
+    margin:0 auto;
   }
   #BhdHero-{{ section.id }} .bhd-hero-v3__tablet,
   #BhdHero-{{ section.id }} .bhd-hero-v3__mobile { display:none; }
