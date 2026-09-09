@@ -1,0 +1,235 @@
+name: Refine tablet and desktop hero
+
+on:
+  push:
+    paths:
+      - '.github/workflows/refine-tablet-desktop-hero.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Refine desktop padding and rebuild tablet composition
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('sections/bhd-hero.liquid')
+          s = p.read_text()
+
+          if not s.startswith("{% assign hero_product"):
+              s = "{% assign hero_product = all_products['lemonade-best-hydrate'] %}\n{% assign hero_product_image = hero_product.featured_image %}\n\n" + s
+
+          old = '''        <button class="bhd-hero-v3__arrow bhd-hero-v3__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>'''
+          product = '''        {% if hero_product_image %}\n          <a class="bhd-hero-v3__tablet-product" href="{{ hero_product.url }}" aria-label="Shop Best Hydrate">\n            <img src="{{ hero_product_image | image_url: width: 700 }}" alt="{{ hero_product.title | escape }}" width="700" height="700" loading="eager" decoding="async">\n          </a>\n        {% endif %}\n\n        <button class="bhd-hero-v3__arrow bhd-hero-v3__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>'''
+          if 'bhd-hero-v3__tablet-product' not in s:
+              s = s.replace(old, product, 1)
+
+          # Double desktop side padding only, preserve current vertical breathing room.
+          desktop_rule = '''\n  @media screen and (min-width:1200px) {\n    #BhdHero-{{ section.id }} {\n      padding-top:clamp(36px,3.4vw,56px);\n      padding-bottom:clamp(36px,3.4vw,56px);\n      padding-left:clamp(72px,6.8vw,112px);\n      padding-right:clamp(72px,6.8vw,112px);\n    }\n  }\n'''
+          if '@media screen and (min-width:1200px)' not in s:
+              s = s.replace('  @media screen and (max-width:1199px) and (min-width:750px) {', desktop_rule + '\n  @media screen and (max-width:1199px) and (min-width:750px) {', 1)
+
+          start = s.index('  @media screen and (max-width:1199px) and (min-width:750px) {')
+          end = s.index('\n  @media screen and (max-width:749px) {', start)
+          tablet_css = r'''  @media screen and (max-width:1199px) and (min-width:750px) {
+    #BhdHero-{{ section.id }} { padding:24px 30px; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__desktop { display:none; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet { display:block; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-shell {
+      background:linear-gradient(180deg,#fbfdff 0%,#edf8fd 72%,#e3f3fb 100%);
+      color:var(--hero-navy);
+      padding:1.25rem 1.35rem 1rem;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__shared-head {
+      position:relative;
+      z-index:8;
+      text-align:center;
+      padding:.15rem 1rem .9rem;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__eyebrow {
+      font-size:.76rem;
+      letter-spacing:.34em;
+      font-weight:700;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__headline {
+      margin-top:.18rem;
+      font-size:clamp(2.15rem,5vw,4rem);
+      line-height:.9;
+      font-weight:900;
+      color:var(--hero-blue);
+      text-transform:uppercase;
+      letter-spacing:-.035em;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__headline span {
+      display:block;
+      color:var(--hero-navy);
+      font-size:.48em;
+      letter-spacing:.01em;
+      margin-bottom:.05em;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tagline {
+      margin-top:.3rem;
+      font-size:clamp(1rem,2vw,1.45rem);
+      font-weight:700;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tagline em {
+      font-style:italic;
+      border-bottom:.16em solid #16bce7;
+      padding:0 .08em;
+    }
+
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-stage {
+      position:relative;
+      min-height:clamp(360px,48vw,520px);
+      overflow:hidden;
+      border-radius:18px;
+      background:#dfeff7;
+      isolation:isolate;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-slide {
+      position:absolute;
+      inset:0;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:clamp(90px,13vw,160px);
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transition:opacity .42s ease;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-slide.is-active {
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-card {
+      position:relative;
+      overflow:hidden;
+      min-width:0;
+      background:#d8eaf3;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-card:first-child {
+      border-radius:18px 7px 7px 18px;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-card:last-child {
+      border-radius:7px 18px 18px 7px;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-card img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transform:scale(1.22);
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-slide:nth-child(1) .bhd-hero-v3__segment-card:nth-child(1) img { object-position:34% 46%; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-slide:nth-child(1) .bhd-hero-v3__segment-card:nth-child(2) img { object-position:68% 44%; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-slide:nth-child(2) .bhd-hero-v3__segment-card:nth-child(1) img { object-position:28% 44%; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-slide:nth-child(2) .bhd-hero-v3__segment-card:nth-child(2) img { object-position:72% 46%; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-card::after {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg,rgba(3,31,70,.1) 0%,rgba(3,31,70,0) 54%,rgba(3,31,70,.62) 100%);
+      pointer-events:none;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-copy {
+      position:absolute;
+      z-index:4;
+      left:1rem;
+      right:1rem;
+      bottom:1rem;
+      color:#fff;
+      text-shadow:0 2px 10px rgba(0,20,55,.55);
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-card:last-child .bhd-hero-v3__segment-copy {
+      text-align:right;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-copy strong {
+      display:block;
+      font-size:clamp(1.2rem,2.5vw,2rem);
+      line-height:1;
+      text-transform:uppercase;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-copy span {
+      display:block;
+      margin-top:.25rem;
+      font-size:clamp(.76rem,1.3vw,.98rem);
+      line-height:1.15;
+      font-weight:700;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-product {
+      position:absolute;
+      z-index:6;
+      left:50%;
+      bottom:2.2%;
+      transform:translateX(-50%);
+      width:clamp(210px,30vw,355px);
+      aspect-ratio:1;
+      display:block;
+      filter:drop-shadow(0 18px 22px rgba(4,39,77,.25));
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-product::before {
+      content:"";
+      position:absolute;
+      z-index:-1;
+      inset:12% 4% 3%;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.96) 0%,rgba(217,242,252,.72) 48%,rgba(217,242,252,0) 74%);
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-product img {
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__arrow { z-index:9; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__dots { margin:.75rem 0 .3rem; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__benefits {
+      margin-top:.45rem;
+      padding:.9rem .25rem .15rem;
+      border-top:1px solid rgba(7,43,104,.12);
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:.65rem;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__benefit {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:.45rem;
+      min-width:0;
+      text-align:left;
+      color:var(--hero-navy);
+      font-weight:800;
+      font-size:clamp(.66rem,1.16vw,.86rem);
+      line-height:1.05;
+      text-transform:uppercase;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__benefit svg {
+      width:1.9rem;
+      min-width:1.9rem;
+      height:1.9rem;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.7;
+    }
+  }
+'''
+          s = s[:start] + tablet_css + s[end:]
+          p.write_text(s)
+          PY
+
+          git config user.name 'swini16'
+          git config user.email '59820522+swini16@users.noreply.github.com'
+          git add sections/bhd-hero.liquid
+          git commit -m 'Refine desktop padding and tablet hero composition'
+          git push origin HEAD:main
