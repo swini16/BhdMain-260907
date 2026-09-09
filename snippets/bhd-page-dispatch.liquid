@@ -23,6 +23,8 @@
     {% render 'bhd-page-current-research' %}
   {% when 'research-partners' %}
     {% render 'bhd-page-research-partners' %}
+  {% when 'research-impact' %}
+    {% render 'bhd-page-research-impact' %}
   {% else %}
     <nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
       <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span>
