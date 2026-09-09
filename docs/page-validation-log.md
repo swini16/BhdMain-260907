@@ -38,6 +38,10 @@ Status legend:
 | 025 | Work & Long Shifts | `/pages/work-long-shifts` | PASS | PARTIAL | `validation/025-work-long-shifts.md` |
 | 026 | Travel | `/pages/travel` | PASS | PARTIAL | `validation/026-travel.md` |
 | 027 | Active Living | `/pages/active-living` | PASS | PARTIAL | `validation/027-active-living.md` |
+| 028 | Clinical Hydration | `/pages/clinical-hydration` | PASS | PARTIAL | `validation/028-clinical-hydration.md` |
+| 029 | Recovery & Rehabilitation | `/pages/recovery-rehabilitation` | PASS | PARTIAL | `validation/029-recovery-rehabilitation.md` |
+| 030 | Active Aging | `/pages/active-aging` | PASS | PARTIAL | `validation/030-active-aging.md` |
+| 031 | Eco-Humanitarian | `/pages/eco-humanitarian` | PASS | PARTIAL | `validation/031-eco-humanitarian.md` |
 
 ### Science family milestone
 
@@ -45,11 +49,11 @@ All 17 canonical pages currently defined under the runtime **Science** navigatio
 
 The remaining common validation limitation is Shopify Admin: GitHub theme access does not prove that each `/pages/...` Page object exists. Those checks remain PARTIAL until the Shopify store connection or direct public-route verification is available.
 
-### Solutions wave progress
+### Solutions implementation complete
 
-The product route has been audited and enhanced. Product Details and Directions are complete theme-side. Performance Hydration, Endurance, Heat & High Sweat and Recovery are complete. The Everyday Wellness cluster is now also implemented: Everyday Wellness, Work & Long Shifts, Travel and Active Living.
+All 14 planned Solutions content pages are now implemented theme-side: Product Details, Directions, four Performance pages, four Everyday Wellness pages, three Clinical Hydration pages and Eco-Humanitarian. The live product template also has a dedicated Solutions/Science guide section.
 
-Next sequence: Clinical Hydration, Recovery & Rehabilitation, Active Aging and Eco-Humanitarian. After that, run a complete Solutions-family audit before entering Connect.
+Next action: run the complete Solutions-family route, cross-link, claim and responsive audit. After the audit, proceed into Connect.
 
 ## 001 - Hydration Science
 

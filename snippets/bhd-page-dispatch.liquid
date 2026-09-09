@@ -26,6 +26,10 @@
   {% when 'work-long-shifts' %}{% render 'bhd-page-work-long-shifts' %}
   {% when 'travel' %}{% render 'bhd-page-travel' %}
   {% when 'active-living' %}{% render 'bhd-page-active-living' %}
+  {% when 'clinical-hydration' %}{% render 'bhd-page-clinical-hydration' %}
+  {% when 'recovery-rehabilitation' %}{% render 'bhd-page-recovery-rehabilitation' %}
+  {% when 'active-aging' %}{% render 'bhd-page-active-aging' %}
+  {% when 'eco-humanitarian' %}{% render 'bhd-page-eco-humanitarian' %}
   {% else %}
     <nav class="bhd-breadcrumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span></nav>
     <div class="bhd-page-fallback__content"><h1>{{ page.title }}</h1><div class="rte">{{ page.content }}</div></div>
