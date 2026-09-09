@@ -1,6 +1,6 @@
 {% render 'bhd-page-breadcrumbs', page_handle: page.handle, current_title: title, preferred_family: family %}
 
-<header class="bhd-page-hero">
+<header class="bhd-page-hero" data-bhd-page-handle="{{ page.handle | escape }}">
   <div class="bhd-page-hero__copy">
     {% if eyebrow != blank %}<p class="bhd-page__eyebrow">{{ eyebrow }}</p>{% endif %}
     <h1>{{ title }}</h1>
@@ -14,4 +14,4 @@
 </header>
 
 {% render 'bhd-menu-descendants' %}
-{% comment %}QA sync marker: deterministic-breadcrumb-header-20260909-1131.{% endcomment %}
+{% comment %}Canonical page header passes the Shopify Page handle directly into the deterministic breadcrumb map.{% endcomment %}
