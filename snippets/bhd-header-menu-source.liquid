@@ -1,5 +1,44 @@
 {% assign bhd_navigation = linklists['new-menu'] %}
 {% if bhd_navigation != blank and bhd_navigation.links.size > 0 %}
+  {% liquid
+    assign bhd_current_path = request.path
+    assign bhd_context_depth = 0
+    assign bhd_context_1_label = ''
+    assign bhd_context_1_url = ''
+    assign bhd_context_2_label = ''
+    assign bhd_context_2_url = ''
+    assign bhd_context_3_label = ''
+    assign bhd_context_3_url = ''
+
+    for top_link in bhd_navigation.links
+      if top_link.url == bhd_current_path and bhd_context_depth < 1
+        assign bhd_context_depth = 1
+        assign bhd_context_1_label = top_link.title
+        assign bhd_context_1_url = top_link.url
+      endif
+      for second_link in top_link.links
+        if second_link.url == bhd_current_path and bhd_context_depth < 2
+          assign bhd_context_depth = 2
+          assign bhd_context_1_label = top_link.title
+          assign bhd_context_1_url = top_link.url
+          assign bhd_context_2_label = second_link.title
+          assign bhd_context_2_url = second_link.url
+        endif
+        for third_link in second_link.links
+          if third_link.url == bhd_current_path and bhd_context_depth < 3
+            assign bhd_context_depth = 3
+            assign bhd_context_1_label = top_link.title
+            assign bhd_context_1_url = top_link.url
+            assign bhd_context_2_label = second_link.title
+            assign bhd_context_2_url = second_link.url
+            assign bhd_context_3_label = third_link.title
+            assign bhd_context_3_url = third_link.url
+          endif
+        endfor
+      endfor
+    endfor
+  %}
+
   <template id="BhdAdminMobileMenu">
     {% for top_link in bhd_navigation.links %}
       {% if top_link.title == 'Shop' %}
@@ -48,19 +87,67 @@
     {% endfor %}
   </template>
 
+  {% if request.page_type != 'page' and bhd_context_depth > 0 %}
+    <template id="BhdMenuContextBreadcrumb">
+      <nav class="bhd-menu-context-breadcrumb" aria-label="Breadcrumb">
+        <a href="{{ routes.root_url }}">Home</a>
+        <span aria-hidden="true">›</span>
+        {% if bhd_context_depth == 1 %}
+          <span aria-current="page">{{ bhd_context_1_label | escape }}</span>
+        {% else %}
+          <a href="{{ bhd_context_1_url }}">{{ bhd_context_1_label | escape }}</a>
+        {% endif %}
+        {% if bhd_context_depth >= 2 %}
+          <span aria-hidden="true">›</span>
+          {% if bhd_context_depth == 2 %}
+            <span aria-current="page">{{ bhd_context_2_label | escape }}</span>
+          {% else %}
+            <a href="{{ bhd_context_2_url }}">{{ bhd_context_2_label | escape }}</a>
+          {% endif %}
+        {% endif %}
+        {% if bhd_context_depth >= 3 %}
+          <span aria-hidden="true">›</span>
+          <span aria-current="page">{{ bhd_context_3_label | escape }}</span>
+        {% endif %}
+      </nav>
+    </template>
+  {% endif %}
+
+  <style>
+    .bhd-menu-context-breadcrumb{box-sizing:border-box;display:flex;align-items:center;flex-wrap:wrap;gap:.65rem;max-width:var(--page-width,120rem);margin:0 auto;padding:2rem 5rem 1.4rem;color:#61718a;font-size:1.4rem;line-height:1.4}
+    .bhd-menu-context-breadcrumb a{color:#0b2d67;text-decoration:none}
+    .bhd-menu-context-breadcrumb a:hover{text-decoration:underline}
+    @media screen and (max-width:749px){.bhd-menu-context-breadcrumb{padding:1.5rem 2rem 1rem;font-size:1.25rem}}
+  </style>
+
   <script>
     (()=>{
-      const header=document.querySelector('.bhd-header');
-      const mobileTemplate=document.getElementById('BhdAdminMobileMenu');
-      const desktopTemplate=document.getElementById('BhdAdminDesktopMenu');
-      if(!header||!mobileTemplate||!desktopTemplate)return;
-      const mobilePanel=header.querySelector('.bhd-header__mobile-panel');
-      const desktopNav=header.querySelector('.bhd-header__nav');
-      if(mobilePanel)mobilePanel.replaceChildren(mobileTemplate.content.cloneNode(true));
-      if(desktopNav)desktopNav.replaceChildren(desktopTemplate.content.cloneNode(true));
-      header.dataset.bhdMenuSource='shopify-main';
+      const hydrateHeader=()=>{
+        const header=document.querySelector('.bhd-header');
+        const mobileTemplate=document.getElementById('BhdAdminMobileMenu');
+        const desktopTemplate=document.getElementById('BhdAdminDesktopMenu');
+        if(header&&mobileTemplate&&desktopTemplate){
+          const mobilePanel=header.querySelector('.bhd-header__mobile-panel');
+          const desktopNav=header.querySelector('.bhd-header__nav');
+          if(mobilePanel)mobilePanel.replaceChildren(mobileTemplate.content.cloneNode(true));
+          if(desktopNav)desktopNav.replaceChildren(desktopTemplate.content.cloneNode(true));
+          header.dataset.bhdMenuSource='shopify-main';
+        }
+      };
+
+      const hydrateContextBreadcrumb=()=>{
+        const template=document.getElementById('BhdMenuContextBreadcrumb');
+        const main=document.getElementById('MainContent');
+        if(!template||!main)return;
+        if(main.querySelector('.bhd-breadcrumbs,.bhd-menu-context-breadcrumb'))return;
+        main.prepend(template.content.cloneNode(true));
+      };
+
+      hydrateHeader();
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hydrateContextBreadcrumb,{once:true});
+      else hydrateContextBreadcrumb();
     })();
   </script>
 {% endif %}
 
-{% comment %}Shopify Admin MAIN, handle new-menu, is the live interactive header source. Static header markup remains the fallback if the menu object is unavailable.{% endcomment %}
+{% comment %}Shopify Admin MAIN, handle new-menu, is the live interactive header and hierarchy source. Static header markup remains the fallback if the menu object is unavailable. Non-page menu destinations also receive breadcrumbs from the same hierarchy.{% endcomment %}
