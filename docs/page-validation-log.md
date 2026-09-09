@@ -30,6 +30,10 @@ Status legend:
 | 017 | Healthcare Applications | `/pages/healthcare-applications` | PASS | PARTIAL | `validation/017-healthcare-applications.md` |
 | 018 | Product Details | `/pages/product-details` | PASS | PARTIAL | `validation/018-product-details.md` |
 | 019 | Directions | `/pages/directions` | PASS | PARTIAL | `validation/019-directions.md` |
+| 020 | Performance Hydration | `/pages/performance-hydration` | PASS | PARTIAL | `validation/020-performance-hydration.md` |
+| 021 | Endurance | `/pages/endurance` | PASS | PARTIAL | `validation/021-endurance.md` |
+| 022 | Heat & High Sweat | `/pages/heat-high-sweat` | PASS | PARTIAL | `validation/022-heat-high-sweat.md` |
+| 023 | Recovery | `/pages/recovery` | PASS | PARTIAL | `validation/023-recovery.md` |
 
 ### Science family milestone
 
@@ -37,9 +41,11 @@ All 17 canonical pages currently defined under the runtime **Science** navigatio
 
 The remaining common validation limitation is Shopify Admin: GitHub theme access does not prove that each `/pages/...` Page object exists. Those checks remain PARTIAL until the Shopify store connection or direct public-route verification is available.
 
-### Solutions wave started
+### Solutions wave progress
 
-The product route has now been audited and enhanced with a dedicated bridge into the Solutions and Science information architecture. Product Details and Directions are implemented, dispatched and individually validated. The next build sequence is Performance Hydration, Endurance, Heat & High Sweat and Recovery.
+The product route has been audited and enhanced. Product Details and Directions are complete theme-side. The Performance cluster is now also implemented: Performance Hydration, Endurance, Heat & High Sweat and Recovery. Each page uses situation-led imagery, contextual science, conservative claim boundaries and cross-links into the Science family.
+
+Next sequence: Everyday Wellness, Work & Long Shifts, Travel and Active Living, followed by Clinical Hydration, Recovery & Rehabilitation, Active Aging and Eco-Humanitarian.
 
 ## 001 - Hydration Science
 
