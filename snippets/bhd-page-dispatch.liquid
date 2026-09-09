@@ -3,6 +3,8 @@
     {% render 'bhd-page-hydration-science' %}
   {% when 'how-hydration-works' %}
     {% render 'bhd-page-how-hydration-works' %}
+  {% when 'electrolytes' %}
+    {% render 'bhd-page-electrolytes' %}
   {% else %}
     <nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
       <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span>
