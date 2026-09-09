@@ -5,6 +5,7 @@
   assign og_type = 'website'
   assign og_description = page_description | default: shop.description | default: seo_default_description
   assign social_image = page_image
+  assign seo_noindex = false
 
   if request.page_type == 'index' and page_description == blank
     assign og_description = seo_default_description
@@ -23,13 +24,21 @@
   elsif request.page_type == 'password'
     assign og_url = request.origin
   endif
+
+  if request.page_type == 'search' or request.page_type == 'cart' or request.page_type == '404'
+    assign seo_noindex = true
+  elsif request.page_type contains 'customers/'
+    assign seo_noindex = true
+  elsif request.page_type == 'collection' and collection.handle == 'all'
+    assign seo_noindex = true
+  endif
 -%}
 
 {%- if page_description == blank and request.page_type == 'index' -%}
   <meta name="description" content="{{ seo_default_description | escape }}">
 {%- endif -%}
 
-{%- if request.page_type == 'search' or request.page_type == 'cart' or request.page_type == '404' or request.page_type contains 'customers/' -%}
+{%- if seo_noindex -%}
   <meta name="robots" content="noindex,follow">
 {%- endif -%}
 
