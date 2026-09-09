@@ -26,7 +26,7 @@ Meet Us points to `/pages/our-story`.
 About Best Hydrate points to `/pages/mission-values`.
 Jobs & Careers points to `/pages/jobs-careers`.
 
-The Shopify Admin MAIN menu and the server-rendered storefront header now carry the same order and destinations.
+The Shopify Admin MAIN menu and the server-rendered storefront header carry the same order and destinations.
 
 ## About Best Hydrate consolidation
 
@@ -63,25 +63,54 @@ The live theme renders a dedicated Jobs & Careers page with:
 - guidance for speculative introductions
 - links to About Best Hydrate, Meet Us, Contact, News, Current Research and Partnerships
 
+## Menu route uniqueness
+
+PASS.
+
+The earlier breadcrumb defect was caused by different menu levels sharing the same destination URL. A breadcrumb could determine the deepest matching destination, but it could not determine which menu node the visitor had actually clicked.
+
+Distinct menu positions now have distinct routes. New published hierarchy pages were created for:
+
+- `/pages/science-overview`
+- `/pages/solutions-overview`
+- `/pages/products-overview`
+- `/pages/clinical-humanitarian`
+- `/pages/connect-overview`
+- `/pages/company-people`
+- `/pages/investor-overview`
+- `/pages/news-contact`
+- `/pages/ingredients-formula`
+- `/pages/shop-overview`
+
+This separates, for example, top-level Science from level-two Hydration Science, top-level Solutions from level-two Products and level-three Product Details, and top-level Connect from Company & People and Meet Us.
+
+The new pages are published and contain concise startup-appropriate introductory copy rather than empty placeholders.
+
 ## Breadcrumbs
 
 PASS.
 
-Page-system breadcrumbs now derive their hierarchy from the Shopify Admin MAIN menu, handle `new-menu`, instead of maintaining a separate hardcoded copy of the menu tree.
+Page-system breadcrumbs derive their hierarchy from Shopify Admin MAIN, handle `new-menu`, rather than maintaining a second hardcoded tree.
 
-Each page also passes its declared family, Science, Solutions or Connect, into the breadcrumb renderer. This prevents a cross-family shortcut from taking over the canonical breadcrumb. For example, Our Formula is linked from Solutions as a product shortcut, but its canonical page trail remains under Science.
+Each specialized page can also declare its canonical Science, Solutions or Connect family. Cross-family shortcuts therefore do not take over the canonical trail.
 
-Within the canonical family, the deepest matching menu position wins. This preserves the complete visible navigation route when the same destination is used at multiple levels.
+Because menu nodes at different levels now use distinct routes, the breadcrumb depth corresponds directly to the menu node that was clicked.
 
 Examples:
 
-`Home › Science › Our Formula`
+`Home › Science`
+
+`Home › Science › Hydration Science`
 
 `Home › Science › Our Formula › Five Essential Electrolytes`
+
+`Home › Solutions › Products`
 
 `Home › Solutions › Products › Product Details`
 
 `Home › Solutions › Clinical & Humanitarian › Clinical Hydration`
+
+`Home › Connect › Company & People`
 
 `Home › Connect › Company & People › Meet Us`
 
@@ -89,36 +118,51 @@ Examples:
 
 `Home › Connect › Investor Relations › Investor Overview`
 
-`Home › Connect › Company & People › Jobs & Careers`
+`Home › Connect › News & Contact › News & Insights`
+
+The product menu destination is also read from MAIN, so Buy Best Hydrate receives:
+
+`Home › Solutions › Products › Buy Best Hydrate`
 
 Secondary pages intentionally outside MAIN, including Athletes & Ambassadors and Dianna Proctor, retain explicit logical fallbacks under `Connect › Company & People`.
 
-News and article breadcrumbs remain normalized to the Connect hierarchy:
+## Parent-page directories
 
-`Home › Connect › News & Contact › News & Insights`
+PASS.
 
-Article pages continue one level deeper to the current article title.
+Parent menu pages now expose their descendants directly on the page using Shopify Admin MAIN as the source of truth.
 
-Product and utility surfaces retain their existing contextual breadcrumb treatments.
+Top-level parent pages list:
+
+- every level-two child
+- each child's level-three descendants as clickable links
+
+Level-two parent pages list:
+
+- every direct level-three child as a clickable link
+
+Leaf pages do not render an empty directory.
+
+On specialized content pages, the directory is placed directly below the page hero so it remains easy to discover. On newly created hierarchy hubs, it appears directly below the introductory content.
+
+The directory includes relevant section iconography and responsive cards but does not duplicate or overwrite existing page content.
 
 ## Live deployment verification
 
 Direct Shopify MAIN theme inspection confirmed current deployed versions of:
 
-- `sections/bhd-header.liquid`
-- `sections/bhd-header-contrast.liquid`
+- `snippets/bhd-header-menu-source.liquid`
+- `snippets/bhd-menu-descendants.liquid`
 - `snippets/bhd-page-breadcrumbs.liquid`
 - `snippets/bhd-page-header.liquid`
 - `snippets/bhd-page-dispatch.liquid`
-- `snippets/bhd-page-mission-values.liquid`
-- `snippets/bhd-page-jobs-careers.liquid`
 
-The live breadcrumb snippet contains the family-aware Shopify MAIN traversal, and the live page-header snippet passes the page family into it. Shopify reports no theme processing failure.
+The MAIN theme reports `processing: false` and `processingFailed: false`.
 
-The consolidated About Best Hydrate snippet required an explicit sync-marker commit because Shopify initially retained an older live checksum. It was rechecked through the Shopify Theme file API and the renamed live content is current.
+A direct Shopify Admin query also confirmed the updated MAIN menu hierarchy and all ten new hierarchy Page objects as published.
 
 ## Result
 
 PASS.
 
-The nested menu interaction, Company & People information architecture, About Best Hydrate consolidation, Jobs & Careers page and menu-derived breadcrumb hierarchy are aligned in Shopify Admin and the live Shopify MAIN theme.
+The Shopify Admin menu now has unique routes for distinct hierarchy positions, breadcrumbs follow the clicked menu depth, and parent pages expose their children and grandchildren through clickable on-page navigation derived from the same MAIN source.
