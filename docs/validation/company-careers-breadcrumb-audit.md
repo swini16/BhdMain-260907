@@ -67,21 +67,33 @@ The live theme renders a dedicated Jobs & Careers page with:
 
 PASS.
 
-All tracked Shopify Page routes use the canonical breadcrumb mapping rather than a generic `Home › Current Page` treatment.
+Page-system breadcrumbs now derive their hierarchy from the Shopify Admin MAIN menu, handle `new-menu`, instead of maintaining a separate hardcoded copy of the menu tree.
 
-Example corrected trail:
+Each page also passes its declared family, Science, Solutions or Connect, into the breadcrumb renderer. This prevents a cross-family shortcut from taking over the canonical breadcrumb. For example, Our Formula is linked from Solutions as a product shortcut, but its canonical page trail remains under Science.
+
+Within the canonical family, the deepest matching menu position wins. This preserves the complete visible navigation route when the same destination is used at multiple levels.
+
+Examples:
+
+`Home › Science › Our Formula`
 
 `Home › Science › Our Formula › Five Essential Electrolytes`
 
-Company & People examples include:
+`Home › Solutions › Products › Product Details`
+
+`Home › Solutions › Clinical & Humanitarian › Clinical Hydration`
 
 `Home › Connect › Company & People › Meet Us`
 
 `Home › Connect › Company & People › About Best Hydrate`
 
+`Home › Connect › Investor Relations › Investor Overview`
+
 `Home › Connect › Company & People › Jobs & Careers`
 
-News and article breadcrumbs are normalized to the Connect hierarchy:
+Secondary pages intentionally outside MAIN, including Athletes & Ambassadors and Dianna Proctor, retain explicit logical fallbacks under `Connect › Company & People`.
+
+News and article breadcrumbs remain normalized to the Connect hierarchy:
 
 `Home › Connect › News & Contact › News & Insights`
 
@@ -101,10 +113,12 @@ Direct Shopify MAIN theme inspection confirmed current deployed versions of:
 - `snippets/bhd-page-mission-values.liquid`
 - `snippets/bhd-page-jobs-careers.liquid`
 
+The live breadcrumb snippet contains the family-aware Shopify MAIN traversal, and the live page-header snippet passes the page family into it. Shopify reports no theme processing failure.
+
 The consolidated About Best Hydrate snippet required an explicit sync-marker commit because Shopify initially retained an older live checksum. It was rechecked through the Shopify Theme file API and the renamed live content is current.
 
 ## Result
 
 PASS.
 
-The nested menu interaction, Company & People information architecture, About Best Hydrate consolidation, Jobs & Careers page and tracked breadcrumb hierarchy are aligned in Shopify Admin and the live Shopify MAIN theme.
+The nested menu interaction, Company & People information architecture, About Best Hydrate consolidation, Jobs & Careers page and menu-derived breadcrumb hierarchy are aligned in Shopify Admin and the live Shopify MAIN theme.
