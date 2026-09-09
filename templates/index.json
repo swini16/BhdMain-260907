@@ -10,7 +10,7 @@
 {
   "sections": {
     "hero": {
-      "type": "bhd-hero",
+      "type": "bhd-hero-v4",
       "settings": {
         "heading": "Hydrate for YOUR best day.",
         "subheading": "Five essential electrolytes. Built for better hydration.",
