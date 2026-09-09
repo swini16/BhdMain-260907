@@ -11,6 +11,8 @@
     {% render 'bhd-page-our-formula' %}
   {% when 'five-essential-electrolytes' %}
     {% render 'bhd-page-five-essential-electrolytes' %}
+  {% when 'ingredient-rationale' %}
+    {% render 'bhd-page-ingredient-rationale' %}
   {% else %}
     <nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
       <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span>
