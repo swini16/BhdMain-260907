@@ -1,0 +1,66 @@
+<section id="BhdFooterNav-{{ section.id }}" class="bhd-footer-nav color-{{ section.settings.color_scheme }} gradient" aria-label="Best Hydrate site links">
+  <div class="page-width bhd-footer-nav__inner">
+    <div class="bhd-footer-nav__brand">
+      <a href="{{ routes.root_url }}" class="bhd-footer-nav__brand-link">
+        {% if settings.logo != blank %}{{ settings.logo | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,120,180', class: 'bhd-footer-nav__logo', alt: shop.name }}{% endif %}
+        <span><strong>Best Hydrate</strong><small>The Science of Hydration</small></span>
+      </a>
+      <p>Science-first oral hydration for performance, everyday life, clinical development and humanitarian access.</p>
+      <a class="bhd-footer-nav__shop" href="/products/lemonade-best-hydrate">Shop Best Hydrate</a>
+    </div>
+
+    <nav class="bhd-footer-nav__group" aria-labelledby="FooterScience-{{ section.id }}">
+      <h2 id="FooterScience-{{ section.id }}">Science</h2>
+      <a href="/pages/hydration-science">Hydration Science</a>
+      <a href="/pages/our-formula">Our Formula</a>
+      <a href="/pages/research-publications">Research &amp; Impact</a>
+      <a href="/pages/clinical-development">Clinical Development</a>
+      <a href="/pages/publications">Publications</a>
+    </nav>
+
+    <nav class="bhd-footer-nav__group" aria-labelledby="FooterSolutions-{{ section.id }}">
+      <h2 id="FooterSolutions-{{ section.id }}">Solutions</h2>
+      <a href="/pages/product-details">Product Details</a>
+      <a href="/pages/performance-hydration">Performance</a>
+      <a href="/pages/everyday-wellness">Everyday Wellness</a>
+      <a href="/pages/clinical-hydration">Clinical Hydration</a>
+      <a href="/pages/eco-humanitarian">Humanitarian Hydration</a>
+    </nav>
+
+    <nav class="bhd-footer-nav__group" aria-labelledby="FooterConnect-{{ section.id }}">
+      <h2 id="FooterConnect-{{ section.id }}">Connect</h2>
+      <a href="/pages/our-story">Meet Us</a>
+      <a href="/pages/partnerships">Partnerships</a>
+      <a href="/pages/investor-relations">Investor Relations</a>
+      <a href="/blogs/news">News &amp; Insights</a>
+      <a href="/pages/contact">Contact Us</a>
+    </nav>
+  </div>
+</section>
+
+<style>
+  #BhdFooterNav-{{ section.id }}{border-top:1px solid rgba(var(--color-foreground),.09);border-bottom:1px solid rgba(var(--color-foreground),.09)}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__inner{display:grid;grid-template-columns:minmax(250px,1.35fr) repeat(3,minmax(150px,.75fr));gap:clamp(2.4rem,4vw,5rem);padding-top:4.8rem;padding-bottom:4.5rem}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand-link{display:inline-flex;align-items:center;gap:1rem;color:rgb(var(--color-foreground));text-decoration:none}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__logo{width:5rem;height:5rem;object-fit:contain}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand-link span{display:flex;flex-direction:column}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand-link strong{font-family:var(--font-heading-family);font-size:2.3rem;line-height:1}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand-link small{margin-top:.35rem;font-size:1.1rem;opacity:.7}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand p{max-width:36rem;margin:1.5rem 0;color:rgba(var(--color-foreground),.74);font-size:1.35rem;line-height:1.55}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__shop{display:inline-flex;padding:.9rem 1.4rem;border-radius:999px;background:rgb(var(--color-button));color:rgb(var(--color-button-text));font-size:1.3rem;font-weight:750;text-decoration:none}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__group{display:flex;flex-direction:column;align-items:flex-start;gap:.78rem}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__group h2{margin:0 0 .45rem;font-size:1.6rem;line-height:1.2;color:rgb(var(--color-foreground))}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__group a{color:rgba(var(--color-foreground),.78);font-size:1.3rem;line-height:1.35;text-decoration:none}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__group a:hover{text-decoration:underline;color:rgb(var(--color-foreground))}
+  @media screen and (max-width:989px){#BhdFooterNav-{{ section.id }} .bhd-footer-nav__inner{grid-template-columns:1.3fr repeat(3,1fr);gap:2rem;padding-top:3.5rem;padding-bottom:3.5rem}#BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand-link strong{font-size:2rem}}
+  @media screen and (max-width:749px){#BhdFooterNav-{{ section.id }} .bhd-footer-nav__inner{grid-template-columns:repeat(2,minmax(0,1fr));gap:2.6rem 1.8rem}#BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand{grid-column:1/-1}#BhdFooterNav-{{ section.id }} .bhd-footer-nav__group:last-child{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem 1rem}#BhdFooterNav-{{ section.id }} .bhd-footer-nav__group:last-child h2{grid-column:1/-1}}
+</style>
+
+{% schema %}
+{
+  "name":"Best Hydrate footer nav",
+  "enabled_on":{"groups":["footer"]},
+  "settings":[{"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-2"}],
+  "presets":[{"name":"Best Hydrate footer nav"}]
+}
+{% endschema %}
