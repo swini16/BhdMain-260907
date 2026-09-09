@@ -1,20 +1,48 @@
 {% liquid
   assign bhd_menu = linklists['new-menu']
-  assign current_path = page.url | default: request.path
+  assign current_path = request.path | split: '?' | first | split: '#' | first
   assign directory_title = ''
   assign directory_depth = 0
   assign directory_links = blank
 
   if bhd_menu != blank
     for top_link in bhd_menu.links
-      if top_link.url == current_path and top_link.links.size > 0
+      assign top_path = top_link.url | split: '?' | first | split: '#' | first
+      if shop.url != blank
+        assign top_path = top_path | remove: shop.url
+      endif
+      if top_path contains '://'
+        assign top_path = top_path | remove: 'https://' | remove: 'http://'
+        if shop.domain != blank
+          assign top_path = top_path | remove: shop.domain
+        endif
+        if shop.permanent_domain != blank
+          assign top_path = top_path | remove: shop.permanent_domain
+        endif
+      endif
+
+      if top_path == current_path and top_link.links.size > 0
         assign directory_title = top_link.title
         assign directory_depth = 1
         assign directory_links = top_link.links
       endif
 
       for second_link in top_link.links
-        if second_link.url == current_path and second_link.links.size > 0
+        assign second_path = second_link.url | split: '?' | first | split: '#' | first
+        if shop.url != blank
+          assign second_path = second_path | remove: shop.url
+        endif
+        if second_path contains '://'
+          assign second_path = second_path | remove: 'https://' | remove: 'http://'
+          if shop.domain != blank
+            assign second_path = second_path | remove: shop.domain
+          endif
+          if shop.permanent_domain != blank
+            assign second_path = second_path | remove: shop.permanent_domain
+          endif
+        endif
+
+        if second_path == current_path and second_link.links.size > 0
           assign directory_title = second_link.title
           assign directory_depth = 2
           assign directory_links = second_link.links
@@ -106,5 +134,5 @@
 {% endif %}
 
 {% comment %}
-Parent page navigation is derived directly from Shopify Admin MAIN, handle new-menu. Top-level pages show children and grandchildren. Level-two parent pages show their direct children. Leaf pages render no directory.
+Parent directories use Shopify Admin MAIN, handle new-menu. Menu URLs are normalized before comparison so manual HTTP links and relative request paths resolve to the same node.
 {% endcomment %}
