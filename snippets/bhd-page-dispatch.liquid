@@ -40,6 +40,9 @@
   {% when 'investor-relations' %}{% render 'bhd-page-investor-relations' %}
   {% when 'corporate-information' %}{% render 'bhd-page-corporate-information' %}
   {% when 'investor-contact' %}{% render 'bhd-page-investor-contact' %}
+  {% when 'press' %}{% render 'bhd-page-press' %}
+  {% when 'events' %}{% render 'bhd-page-events' %}
+  {% when 'contact' %}{% render 'bhd-page-contact' %}
   {% else %}
     <nav class="bhd-breadcrumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span></nav>
     <div class="bhd-page-fallback__content"><h1>{{ page.title }}</h1><div class="rte">{{ page.content }}</div></div>

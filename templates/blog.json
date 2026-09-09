@@ -1,5 +1,9 @@
 {
   "sections": {
+    "bhd_intro": {
+      "type": "bhd-blog-intro",
+      "settings": {}
+    },
     "main": {
       "type": "main-blog",
       "settings": {
@@ -8,12 +12,10 @@
         "image_height": "medium",
         "show_date": true,
         "show_author": false,
-        "padding_top": 60,
+        "padding_top": 36,
         "padding_bottom": 60
       }
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["bhd_intro", "main"]
 }
