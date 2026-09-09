@@ -33,6 +33,10 @@
   {% when 'our-story' %}{% render 'bhd-page-about' %}
   {% when 'why-best-hydrate' %}{% render 'bhd-page-why-best-hydrate' %}
   {% when 'mission-values' %}{% render 'bhd-page-mission-values' %}
+  {% when 'partnerships' %}{% render 'bhd-page-partnerships' %}
+  {% when 'research-partnerships' %}{% render 'bhd-page-research-partnerships' %}
+  {% when 'retail-distribution' %}{% render 'bhd-page-retail-distribution' %}
+  {% when 'humanitarian-partnerships' %}{% render 'bhd-page-humanitarian-partnerships' %}
   {% else %}
     <nav class="bhd-breadcrumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span></nav>
     <div class="bhd-page-fallback__content"><h1>{{ page.title }}</h1><div class="rte">{{ page.content }}</div></div>
