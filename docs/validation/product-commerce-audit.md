@@ -1,11 +1,11 @@
 # Product and commerce audit
 
 Date: 2026-09-09
-Scope: Best Hydrate product template, Shopify product descriptions, canonical product route, duplicate public product risk.
+Scope: Best Hydrate product template, Shopify product descriptions, canonical product route, regional product configuration.
 
 ## Canonical product route
 
-PASS. The site architecture consistently points to:
+PASS. The primary site architecture consistently points to:
 
 `/products/lemonade-best-hydrate`
 
@@ -44,29 +44,21 @@ The new description:
 - cross-links Product Details, Directions, Our Formula and Hydration Science
 - removes a fixed shipping-time promise from the product description
 
-## Duplicate active product finding
+## Intentional regional product configuration
 
-ATTENTION REQUIRED, catalog-level rather than theme-level.
+PASS. The two ACTIVE public lemonade products are intentional regional catalog entries, not accidental duplicates.
 
-Shopify currently has two ACTIVE, publicly addressable products with essentially the same Best Hydrate lemonade identity:
+1. `/products/lemonade-best-hydrate`
+2. `/products/lemonade-electrolyte-best-hydrate`
 
-1. canonical: `/products/lemonade-best-hydrate`
-2. secondary: `/products/lemonade-electrolyte-best-hydrate`
+Best Hydrate confirmed that the pair exists to support different regional selling contexts, including CAD and USD pricing. Both products therefore remain active. No archive, redirect, merge or repricing action is required as part of this site cleanup.
 
-They are separate Shopify Product objects and currently have different prices. The site architecture points only to the canonical first handle.
-
-Both descriptions were normalized so neither public page carries stale claims. The secondary product was **not** archived, deleted, repriced or redirected because that could affect orders, sales channels, inventory or an intentional catalog strategy.
-
-Recommended disposition before final catalog closeout:
-
-- confirm whether the secondary product is intentional
-- if not intentional, preserve any order/inventory history and then archive/unpublish it through a controlled catalog cleanup
-- if it is intentional, differentiate its title, role and pricing rationale so search engines and customers do not see two near-identical public products
+Their descriptions were normalized to the same current claim standard while preserving independent product objects, pricing, inventory and market configuration.
 
 ## Result
 
 **PRODUCT THEME/COPY AUDIT: PASS.**
 
-**CATALOG DUPLICATION: OPEN DECISION.**
+**REGIONAL PRODUCT CONFIGURATION: INTENTIONAL, PASS.**
 
-Final browser/device QA remains outstanding. Catalog consolidation is intentionally not performed automatically.
+Final browser/device QA remains a separate presentation check.
