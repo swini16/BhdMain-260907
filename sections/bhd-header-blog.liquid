@@ -35,10 +35,21 @@
   .bhd-utility-context__crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;margin-bottom:1.3rem;color:#68778b;font-size:1.2rem}.bhd-utility-context__crumbs a{color:#0b2d67;text-decoration:none}.bhd-utility-context__crumbs a:hover{text-decoration:underline}
   .bhd-utility-context__strip{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2rem;align-items:center;padding:1.6rem 1.8rem;border:1px solid rgba(11,45,103,.1);border-radius:1.4rem;background:#fff}.bhd-utility-context__strip strong{display:block;margin-bottom:.35rem;color:#0b2d67;font-size:1.45rem}.bhd-utility-context__strip span{display:block;max-width:78rem;color:#5b6b82;font-size:1.28rem;line-height:1.45}.bhd-utility-context__actions{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:flex-end}.bhd-utility-context__actions a{padding:.75rem 1.1rem;border:1px solid rgba(11,45,103,.15);border-radius:999px;color:#0b2d67;background:#f5fbff;font-size:1.2rem;font-weight:750;text-decoration:none}
   .bhd-utility-context__recovery{max-width:105rem;margin:1rem auto 2rem;padding:clamp(2.4rem,5vw,5rem);border-radius:2rem;background:linear-gradient(135deg,#eef9ff,#fff);border:1px solid rgba(7,142,231,.14);text-align:center}.bhd-utility-context__eyebrow{margin:0 0 .7rem;color:#078ee7;font-size:1.2rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.bhd-utility-context__recovery h2{margin:0 auto 1rem;max-width:75rem;color:#0b2d67;font-size:clamp(2.8rem,4vw,4.5rem);line-height:1.05}.bhd-utility-context__recovery>p:not(.bhd-utility-context__eyebrow){color:#5b6b82;font-size:1.5rem}.bhd-utility-context__recovery-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin:2.4rem 0}.bhd-utility-context__recovery-grid a{padding:1.7rem;border:1px solid rgba(11,45,103,.1);border-radius:1.3rem;background:#fff;color:inherit;text-align:left;text-decoration:none}.bhd-utility-context__recovery-grid strong{display:block;color:#0b2d67;font-size:1.55rem}.bhd-utility-context__recovery-grid span{display:block;margin-top:.45rem;color:#64748a;font-size:1.2rem;line-height:1.4}.bhd-utility-context__search{max-width:62rem;margin:2.5rem auto 0;text-align:left}.bhd-utility-context__search label{display:block;margin-bottom:.55rem;color:#0b2d67;font-size:1.25rem;font-weight:750}.bhd-utility-context__search>div{display:grid;grid-template-columns:1fr auto;gap:.7rem}.bhd-utility-context__search input{min-width:0;padding:1rem 1.2rem;border:1px solid rgba(11,45,103,.2);border-radius:.9rem;font:inherit}.bhd-utility-context__search button{padding:1rem 1.5rem;border:0;border-radius:.9rem;background:#0b2d67;color:#fff;font-weight:750;cursor:pointer}
+
+  .bhd-sticky-header-shell{position:sticky!important;top:0!important;z-index:70!important;transition:transform .22s ease,box-shadow .22s ease;will-change:transform}
+  html.bhd-scroll-nav-hidden .bhd-sticky-header-shell{transform:translateY(calc(-100% - 2px));box-shadow:none}
+  html.bhd-scroll-nav-visible .bhd-sticky-header-shell,html.bhd-scroll-nav-top .bhd-sticky-header-shell{transform:translateY(0)}
+  html.bhd-scroll-nav-visible:not(.bhd-scroll-nav-top) .bhd-sticky-header-shell{box-shadow:0 .65rem 1.7rem rgba(13,33,78,.12)}
+  .bhd-scroll-breadcrumb{position:fixed;top:var(--bhd-scroll-header-height,82px);left:0;right:0;z-index:64;margin:0;background:rgba(255,255,255,.97);border-bottom:1px solid rgba(11,45,103,.10);box-shadow:0 .55rem 1.4rem rgba(13,33,78,.08);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-.8rem);transition:opacity .16s ease,transform .2s ease,visibility .2s ease;backdrop-filter:blur(10px)}
+  .bhd-scroll-breadcrumb.is-visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+  .bhd-scroll-breadcrumb__inner{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;min-height:4.2rem;padding-top:.72rem;padding-bottom:.72rem;color:#66758a;font-size:1.22rem;line-height:1.35}
+  .bhd-scroll-breadcrumb__inner a{color:#0b2d67;text-decoration:none}.bhd-scroll-breadcrumb__inner a:hover{text-decoration:underline}
+
   @media screen and (max-width:1180px) and (min-width:990px){.bhd-header .bhd-header__discuss-button{width:5.2rem!important;height:5.2rem!important;flex-basis:5.2rem}}
-  @media screen and (max-width:989px){.bhd-header .bhd-header__discuss-button{width:4.4rem!important;height:4.4rem!important;flex-basis:4.4rem;margin-left:0;border-radius:1rem}}
+  @media screen and (max-width:989px){.bhd-header .bhd-header__discuss-button{width:4.4rem!important;height:4.4rem!important;flex-basis:4.4rem;margin-left:0;border-radius:1rem}.bhd-scroll-breadcrumb__inner{min-height:3.9rem;font-size:1.12rem;padding-top:.62rem;padding-bottom:.62rem}}
   @media screen and (max-width:749px){.bhd-utility-context__strip{grid-template-columns:1fr}.bhd-utility-context__actions{justify-content:flex-start}.bhd-utility-context__recovery-grid{grid-template-columns:1fr 1fr}}
   @media screen and (max-width:480px){.bhd-utility-context__recovery-grid{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){.bhd-sticky-header-shell,.bhd-scroll-breadcrumb{transition:none!important}}
 </style>
 
 <script>
@@ -54,6 +65,129 @@
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();window.addEventListener('load',apply,{once:true});
   })();
 </script>
+
+<script>
+  (()=>{
+    const root=document.documentElement;
+    const BREADCRUMB_SELECTOR='#MainContent .bhd-breadcrumbs,#MainContent .bhd-utility-context__crumbs,#MainContent .bhd-blog-intro__breadcrumbs,#MainContent .bhd-surface-context__crumbs,#MainContent .bhd-menu-context-breadcrumb';
+    const DIRECTION_DELTA=6;
+    const HIDE_AFTER=120;
+    let header=null;
+    let shell=null;
+    let source=null;
+    let sourceSignature='';
+    let floating=null;
+    let lastY=Math.max(window.scrollY||window.pageYOffset||0,0);
+    let headerVisible=true;
+    let raf=0;
+
+    const schedule=()=>{if(!raf)raf=requestAnimationFrame(update)};
+    const headerBusy=()=>Boolean(header&&(header.matches(':focus-within')||header.querySelector('.is-open,.bhd-hover-open,details[open]')));
+    const measureHeader=()=>{if(!header)return 82;const height=Math.max(1,Math.ceil(header.getBoundingClientRect().height));root.style.setProperty('--bhd-scroll-header-height',`${height}px`);return height};
+    const breadcrumbSource=()=>document.querySelector(BREADCRUMB_SELECTOR);
+
+    const syncBreadcrumb=()=>{
+      const next=breadcrumbSource();
+      const signature=next?next.innerHTML:'';
+      if(next===source&&signature===sourceSignature&&floating)return;
+      source=next;
+      sourceSignature=signature;
+      if(floating)floating.remove();
+      floating=null;
+      if(!source)return;
+      const nav=document.createElement('nav');
+      nav.className='bhd-scroll-breadcrumb';
+      nav.setAttribute('aria-label','Breadcrumb');
+      nav.setAttribute('aria-hidden','true');
+      nav.inert=true;
+      const inner=document.createElement('div');
+      inner.className='bhd-scroll-breadcrumb__inner page-width';
+      Array.from(source.childNodes).forEach(node=>inner.appendChild(node.cloneNode(true)));
+      nav.appendChild(inner);
+      document.body.appendChild(nav);
+      floating=nav;
+    };
+
+    const setHeaderVisible=(visible)=>{
+      headerVisible=visible;
+      root.classList.toggle('bhd-scroll-nav-visible',visible);
+      root.classList.toggle('bhd-scroll-nav-hidden',!visible);
+    };
+
+    const setFloatingVisible=(visible)=>{
+      if(!floating)return;
+      floating.classList.toggle('is-visible',visible);
+      floating.setAttribute('aria-hidden',visible?'false':'true');
+      floating.inert=!visible;
+    };
+
+    function update(){
+      raf=0;
+      if(!header)return;
+      const headerHeight=measureHeader();
+      if(!source||!document.contains(source))syncBreadcrumb();
+      const y=Math.max(window.scrollY||window.pageYOffset||0,0);
+      const atTop=y<12;
+      const busy=headerBusy();
+      const delta=y-lastY;
+
+      if(atTop||busy){
+        setHeaderVisible(true);
+        lastY=y;
+      }else if(delta>DIRECTION_DELTA){
+        if(y>HIDE_AFTER)setHeaderVisible(false);
+        lastY=y;
+      }else if(delta<-DIRECTION_DELTA){
+        setHeaderVisible(true);
+        lastY=y;
+      }
+
+      root.classList.toggle('bhd-scroll-nav-top',atTop);
+      const sourcePassed=Boolean(source&&source.getBoundingClientRect().bottom<=headerHeight+2);
+      setFloatingVisible(Boolean(headerVisible&&!atTop&&sourcePassed));
+    }
+
+    const init=()=>{
+      header=document.querySelector('.bhd-header');
+      if(!header)return;
+      shell=header.closest('.shopify-section')||header;
+      shell.classList.add('bhd-sticky-header-shell');
+      shell.dataset.bhdScrollStack='up-menu-breadcrumb';
+      syncBreadcrumb();
+      measureHeader();
+      setHeaderVisible(true);
+      root.classList.toggle('bhd-scroll-nav-top',lastY<12);
+      update();
+
+      window.addEventListener('scroll',schedule,{passive:true});
+      window.addEventListener('resize',schedule,{passive:true});
+      window.addEventListener('load',()=>{syncBreadcrumb();schedule()},{once:true});
+      header.addEventListener('focusin',schedule);
+      header.addEventListener('focusout',schedule);
+      header.addEventListener('toggle',schedule,true);
+
+      const headerObserver=new MutationObserver(schedule);
+      headerObserver.observe(header,{subtree:true,attributes:true,attributeFilter:['class','open']});
+
+      const main=document.getElementById('MainContent');
+      if(main){
+        const mainObserver=new MutationObserver(()=>{syncBreadcrumb();schedule()});
+        mainObserver.observe(main,{subtree:true,childList:true});
+      }
+
+      if('ResizeObserver'in window){
+        const resizeObserver=new ResizeObserver(schedule);
+        resizeObserver.observe(header);
+      }
+    };
+
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  })();
+</script>
+
+{% comment %}
+Scroll-up navigation stack: the global header shell is sticky, hides after purposeful downward scrolling, and returns on upward scrolling. When the page's original breadcrumb has scrolled above the header, a synchronized breadcrumb clone appears directly below the revealed header. Menus, focus states and the top of page force the header visible.
+{% endcomment %}
 
 {% schema %}
 {"name":"Header discuss link","enabled_on":{"groups":["header"]},"settings":[]}
