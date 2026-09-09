@@ -56,14 +56,17 @@ Status legend:
 | 043 | Press & Media | `/pages/press` | PASS | PASS | `validation/043-press-media.md` |
 | 044 | Events | `/pages/events` | PASS | PASS | `validation/044-events.md` |
 | 045 | Contact Us | `/pages/contact` | PASS | PASS | `validation/045-contact-us.md` |
+| 046 | FAQ | `/pages/q-a` | PASS | PASS | `validation/046-faq.md` |
+| 047 | Athletes & Ambassadors | `/pages/athletes-ambassadors` | PASS | PASS | `validation/047-athletes-ambassadors.md` |
+| 048 | Dianna Proctor | `/pages/dianna-proctor` | PASS | PASS | `validation/048-dianna-proctor.md` |
 
 ### Canonical Shopify object milestone
 
-All 45 canonical records now have a verified published Shopify content object. The complete store-side audit is recorded in `validation/shopify-page-object-audit.md`.
+All 45 canonical records have verified published Shopify content objects. The complete store-side audit is recorded in `validation/shopify-page-object-audit.md`.
 
-The 42 formerly missing canonical Page objects were created directly in Shopify using the default page template: 17 Science, 14 Solutions and 11 Connect pages. Meet Us, Contact and the News blog already existed. A post-creation two-page Shopify Admin inventory confirmed the canonical handles are published.
+The 42 formerly missing canonical Page objects were created directly in Shopify: 17 Science, 14 Solutions and 11 Connect pages. Meet Us, Contact and the News blog already existed. A post-creation Shopify Admin inventory confirmed the canonical handles are published.
 
-This closes the former blanket Shopify Page-object dependency. Final browser/device rendering remains a separate whole-site QA item.
+Three distinct secondary pages were also retained, rebuilt and verified: FAQ, Athletes & Ambassadors and Dianna Proctor. They are tracked as records 046-048.
 
 ### Science family milestone
 
@@ -73,21 +76,33 @@ The shared breadcrumb system renders primary family names as semantic labels rat
 
 ### Solutions family milestone
 
-All 14 canonical Solutions content pages are implemented theme-side and exist as published Shopify Page objects, plus the primary product route bridge. The complete family audit is recorded in `validation/solutions-family-audit.md`.
+All 14 canonical Solutions content pages are implemented and published, plus the primary product route bridge. The complete family audit is recorded in `validation/solutions-family-audit.md`.
 
-The audit corrected three shorthand routes to the canonical inventory paths: `/pages/endurance-hydration`, `/pages/recovery-hydration` and `/pages/travel-hydration`. Cross-links and Shopify handles now match those routes consistently.
+The audit corrected shorthand routes to `/pages/endurance-hydration`, `/pages/recovery-hydration` and `/pages/travel-hydration`. Cross-links and Shopify handles now match those routes consistently.
 
-Claim boundaries, breadcrumbs, image differentiation, responsive structure and internal links passed the theme-side audit. The former forward dependency on `/pages/humanitarian-partnerships` is now implemented and published.
+Claim boundaries, breadcrumbs, image differentiation, responsive structure and internal links passed the theme audit. The former forward dependency on `/pages/humanitarian-partnerships` is implemented and published.
 
 ### Connect family milestone
 
 All 14 canonical Connect pages and surfaces are implemented and have verified Shopify objects. The complete family audit is recorded in `validation/connect-family-audit.md`.
 
-Live verification corrected a planning error: Meet Us is `/pages/our-story`, while `/pages/about` is an older Ingredients page that belongs in legacy-route disposition. The live News blog and Contact page/form are also verified.
+Meet Us is `/pages/our-story`; the older `/pages/about` Ingredients route was retired and redirected to `/pages/our-formula`. News and Contact are also verified.
 
-The Connect audit normalized research, retail, humanitarian, investor, press, events and contact boundaries. Older dated blog content remains archived, while the rebuilt Science and Product pages control current scientific and product positioning.
+### Global architecture milestone
 
-Next sequence: complete global site cleanup. Header normalization is complete. Footer normalization is implemented. Remaining work is legacy-route/redirect disposition, article template, product/global surface audit, search, collection/list-collections, cart, 404, announcement/newsletter review and final live browser/device QA.
+PASS.
+
+- server-rendered desktop and mobile header uses the canonical Science, Solutions and Connect architecture
+- canonical footer is repo-controlled
+- live MAIN theme is `BhdMain-260907/main`
+- default page path is Shopify `templates/page.json` -> upgraded `sections/main-page.liquid` -> `snippets/bhd-page-dispatch.liquid`
+- article, search, cart, collection, list-collections and 404 context is supplied through the globally rendered header-group layer
+- legacy first-party routes are either redirected, retained intentionally or rebuilt
+- six redundant AVADA HTML sitemap Page objects were permanently deleted after confirming the Refresh repo does not reference AVADA and Shopify provides its own native sitemap
+- the unused `sections/bhd-surface-context.liquid` experiment was deleted from `main`
+- the two active lemonade products are intentional regional catalog entries supporting CAD/USD selling contexts, not accidental duplicates
+
+Structural site cleanup is complete. Final browser/device QA is the remaining presentation-level validation stage.
 
 ## 001 - Hydration Science
 
