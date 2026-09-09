@@ -24,6 +24,11 @@
     {% if blog.all_tags.size > 0 %}
       <div class="bhd-blog-intro__tags" aria-label="News topics"><span>Browse topics</span><a href="{{ blog.url }}">All</a>{% for tag in blog.all_tags limit: 10 %}<a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% endfor %}</div>
     {% endif %}
+
+    <aside class="bhd-blog-intro__startup" aria-label="About our newsroom">
+      <span class="bhd-blog-intro__startup-icon" aria-hidden="true">📰</span>
+      <p><strong>Our newsroom is growing with us.</strong> Best Hydrate is still a startup, so the archive will expand as research, partnerships, product milestones and community work become ready to share. Thank you for being patient as we build the story in public rather than filling the page with noise.</p>
+    </aside>
   </div>
 </section>
 
@@ -49,8 +54,12 @@
   #BhdBlogIntro-{{ section.id }} .bhd-blog-intro__tags{display:flex;flex-wrap:wrap;gap:.7rem;align-items:center;padding:2rem 0 .5rem}
   #BhdBlogIntro-{{ section.id }} .bhd-blog-intro__tags>span{margin-right:.35rem;color:#0b2d67;font-size:1.25rem;font-weight:800}
   #BhdBlogIntro-{{ section.id }} .bhd-blog-intro__tags a{padding:.65rem 1rem;border:1px solid rgba(11,45,103,.12);border-radius:999px;background:#fff;color:#315b91;font-size:1.2rem;text-decoration:none}
+  #BhdBlogIntro-{{ section.id }} .bhd-blog-intro__startup{display:grid;grid-template-columns:4.8rem minmax(0,1fr);gap:1.2rem;align-items:center;margin:2rem 0 1rem;padding:1.45rem 1.6rem;border:1px solid rgba(11,45,103,.12);border-radius:1.4rem;background:rgba(11,45,103,.035)}
+  #BhdBlogIntro-{{ section.id }} .bhd-blog-intro__startup-icon{width:4.8rem;height:4.8rem;display:grid;place-items:center;border-radius:1.2rem;background:#fff;border:1px solid rgba(11,45,103,.12);font-size:2.2rem}
+  #BhdBlogIntro-{{ section.id }} .bhd-blog-intro__startup p{margin:0;color:#42536f;font-size:1.4rem;line-height:1.55}
+  #BhdBlogIntro-{{ section.id }} .bhd-blog-intro__startup strong{color:#0b2d67}
   @media screen and (max-width:989px){#BhdBlogIntro-{{ section.id }} .bhd-blog-intro__hero{grid-template-columns:1fr}#BhdBlogIntro-{{ section.id }} .bhd-blog-intro__featured{min-height:30rem}}
-  @media screen and (max-width:749px){#BhdBlogIntro-{{ section.id }}{padding-top:1.4rem}#BhdBlogIntro-{{ section.id }} .bhd-blog-intro__hero{padding:2rem;border-radius:1.7rem}#BhdBlogIntro-{{ section.id }} h1{font-size:4.2rem}#BhdBlogIntro-{{ section.id }} .bhd-blog-intro__copy>p:not(.bhd-blog-intro__eyebrow){font-size:1.55rem}#BhdBlogIntro-{{ section.id }} .bhd-blog-intro__featured{min-height:25rem}}
+  @media screen and (max-width:749px){#BhdBlogIntro-{{ section.id }}{padding-top:1.4rem}#BhdBlogIntro-{{ section.id }} .bhd-blog-intro__hero{padding:2rem;border-radius:1.7rem}#BhdBlogIntro-{{ section.id }} h1{font-size:4.2rem}#BhdBlogIntro-{{ section.id }} .bhd-blog-intro__copy>p:not(.bhd-blog-intro__eyebrow){font-size:1.55rem}#BhdBlogIntro-{{ section.id }} .bhd-blog-intro__featured{min-height:25rem}#BhdBlogIntro-{{ section.id }} .bhd-blog-intro__startup{grid-template-columns:1fr;align-items:start}#BhdBlogIntro-{{ section.id }} .bhd-blog-intro__startup-icon{width:4.2rem;height:4.2rem;font-size:1.9rem}}
 </style>
 {% endif %}
 
