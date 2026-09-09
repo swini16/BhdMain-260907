@@ -1,0 +1,182 @@
+{% assign hero_product = section.settings.product %}
+{% if hero_product == blank %}{% assign hero_product = all_products['lemonade-best-hydrate'] %}{% endif %}
+{% assign hero_product_image = hero_product.featured_image %}
+
+<section id="BhdHeroV4-{{ section.id }}" class="bhd-hero-v4" data-bhd-hero-v4>
+  <h1 class="visually-hidden">The Science of Hydration. Hydrate for YOUR Best Day!</h1>
+
+  <div class="bhd-hero-v4__desktop bhd-hero-v4__frame" aria-label="Best Hydrate hydration solutions">
+    <img
+      src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDH94WQynO-SY0f-DScEkVfAcjzjTtpIt757vzEnCibR9w?download=1"
+      alt="Best Hydrate, The Science of Hydration, across performance, daily, medical and humanitarian hydration"
+      width="1600" height="900" loading="eager" fetchpriority="high" decoding="async">
+  </div>
+
+  <div class="bhd-hero-v4__tablet bhd-hero-v4__frame" data-v4-carousel data-interval="5600" aria-label="Best Hydrate tablet hero">
+    <div class="bhd-hero-v4__tablet-shell">
+      <header class="bhd-hero-v4__tablet-head">
+        <div class="bhd-hero-v4__eyebrow">BEST HYDRATE</div>
+        <div class="bhd-hero-v4__headline"><span>THE SCIENCE OF</span> HYDRATION.</div>
+        <div class="bhd-hero-v4__tagline">Hydrate For <em>YOUR</em> Best Day!</div>
+      </header>
+
+      <div class="bhd-hero-v4__tablet-stage">
+        <div class="bhd-hero-v4__slide is-active" data-v4-slide>
+          <article class="bhd-hero-v4__audience bhd-hero-v4__audience--left">
+            <img src="https://images.pexels.com/photos/8910768/pexels-photo-8910768.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Athlete hydrating during performance" width="1200" height="900" loading="eager" decoding="async">
+            <div class="bhd-hero-v4__audience-copy"><strong>Performance</strong><span>Fuels Higher Performance.</span></div>
+          </article>
+          <article class="bhd-hero-v4__audience bhd-hero-v4__audience--right">
+            <img src="https://images.pexels.com/photos/11158906/pexels-photo-11158906.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Everyday hydration during a demanding day" width="1200" height="900" loading="eager" decoding="async">
+            <div class="bhd-hero-v4__audience-copy"><strong>Daily</strong><span>Supports Healthier Everyday Living.</span></div>
+          </article>
+        </div>
+
+        <div class="bhd-hero-v4__slide" data-v4-slide>
+          <article class="bhd-hero-v4__audience bhd-hero-v4__audience--left">
+            <img src="https://images.pexels.com/photos/8413217/pexels-photo-8413217.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Medical professional supporting a patient" width="1200" height="900" loading="lazy" decoding="async">
+            <div class="bhd-hero-v4__audience-copy"><strong>Medical</strong><span>Leaders in Clinical Oral Hydration.</span></div>
+          </article>
+          <article class="bhd-hero-v4__audience bhd-hero-v4__audience--right">
+            <img src="https://images.pexels.com/photos/1446504/pexels-photo-1446504.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Child drinking water from a faucet" width="1200" height="900" loading="lazy" decoding="async">
+            <div class="bhd-hero-v4__audience-copy"><strong>Humanitarian</strong><span>ORS for a Brighter Tomorrow.</span></div>
+          </article>
+        </div>
+
+        <div class="bhd-hero-v4__formula-card">
+          <div class="bhd-hero-v4__formula-kicker">ONE TRUSTED FORMULA</div>
+          {% if hero_product_image %}
+            <a class="bhd-hero-v4__product" href="{{ hero_product.url }}" aria-label="Shop Best Hydrate">
+              <img src="{{ hero_product_image | image_url: width: 760 }}" alt="{{ hero_product.title | escape }}" width="760" height="760" loading="eager" decoding="async">
+            </a>
+          {% endif %}
+          <div class="bhd-hero-v4__nutrients" aria-label="Formula components">
+            <span>Na<sup>+</sup></span><span>K<sup>+</sup></span><span>Cl<sup>−</sup></span><span>HCO<sub>3</sub><sup>−</sup></span><span class="is-wide">Glucose</span>
+          </div>
+        </div>
+
+        <button class="bhd-hero-v4__arrow bhd-hero-v4__arrow--prev" type="button" data-v4-prev aria-label="Previous hero">‹</button>
+        <button class="bhd-hero-v4__arrow bhd-hero-v4__arrow--next" type="button" data-v4-next aria-label="Next hero">›</button>
+      </div>
+
+      <div class="bhd-hero-v4__dots" data-v4-dots aria-label="Hero slides"></div>
+
+      <div class="bhd-hero-v4__benefits" aria-label="Best Hydrate benefits">
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2S5.5 9.2 5.5 14.2A6.5 6.5 0 0 0 18.5 14C18.5 9.2 12 2 12 2Z"/></svg><span>Essential<br>Electrolytes</span></div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6M10 2v5l-5 9a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-5-9V2M8 15h8"/></svg><span>Advanced<br>Hydration Science</span></div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9M12 3c-3 3-4 6-4 9s1 6 4 9"/></svg><span>Real World<br>Impact</span></div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15h16M6 15a6 6 0 0 1 12 0M12 3v3M4.9 7.9l2.1 2.1M19.1 7.9 17 10"/></svg><span>A Brighter<br>Tomorrow</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bhd-hero-v4__mobile bhd-hero-v4__frame" data-v4-carousel data-interval="5000" aria-label="Best Hydrate mobile hero slideshow">
+    <div class="bhd-hero-v4__mobile-stage">
+      <div class="bhd-hero-v4__mobile-slide is-active" data-v4-slide><img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/a2007747405e9aaf5328daf59b1eef5fd8c1bfc6/assets/hero-v2-mobile-performance.webp" alt="Best Hydrate performance hydration" width="941" height="1672" loading="eager" fetchpriority="high" decoding="async"></div>
+      <div class="bhd-hero-v4__mobile-slide" data-v4-slide><img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/a2007747405e9aaf5328daf59b1eef5fd8c1bfc6/assets/hero-v2-mobile-daily.webp" alt="Best Hydrate daily hydration" width="941" height="1672" loading="eager" decoding="async"></div>
+      <div class="bhd-hero-v4__mobile-slide" data-v4-slide><img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/a2007747405e9aaf5328daf59b1eef5fd8c1bfc6/assets/hero-v2-mobile-medical.webp" alt="Best Hydrate medical hydration" width="941" height="1672" loading="eager" decoding="async"></div>
+      <div class="bhd-hero-v4__mobile-slide" data-v4-slide><img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/a2007747405e9aaf5328daf59b1eef5fd8c1bfc6/assets/hero-v2-mobile-humanitarian.webp" alt="Best Hydrate humanitarian hydration" width="941" height="1672" loading="eager" decoding="async"></div>
+      <button class="bhd-hero-v4__arrow bhd-hero-v4__arrow--prev" type="button" data-v4-prev aria-label="Previous hero">‹</button>
+      <button class="bhd-hero-v4__arrow bhd-hero-v4__arrow--next" type="button" data-v4-next aria-label="Next hero">›</button>
+      <div class="bhd-hero-v4__dots bhd-hero-v4__dots--mobile" data-v4-dots aria-label="Hero slides"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #BhdHeroV4-{{ section.id }}{--navy:#072b68;--blue:#078ee7;width:100%;overflow:hidden;background:#eef8fd;box-sizing:border-box;padding:clamp(36px,3.4vw,56px)}
+  #BhdHeroV4-{{ section.id }} *{box-sizing:border-box}
+  #BhdHeroV4-{{ section.id }} img{display:block;width:100%;max-width:100%}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__frame{overflow:hidden;border-radius:18px;box-shadow:0 .6rem 1.6rem rgba(7,43,104,.08)}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__desktop{display:block;width:100%;max-width:1600px;margin:0 auto;background:#eef8fd}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__desktop img{width:100%;height:auto;object-fit:contain;margin:0 auto}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tablet,#BhdHeroV4-{{ section.id }} .bhd-hero-v4__mobile{display:none}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__arrow{position:absolute;top:50%;z-index:12;transform:translateY(-50%);width:3.45rem;height:3.45rem;border:1px solid rgba(255,255,255,.85);border-radius:999px;background:rgba(6,43,104,.76);color:#fff;display:grid;place-items:center;padding:0 0 .2rem;font-size:2.45rem;line-height:1;cursor:pointer;backdrop-filter:blur(7px);box-shadow:0 .45rem 1.2rem rgba(0,30,75,.18)}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__arrow--prev{left:.72rem}#BhdHeroV4-{{ section.id }} .bhd-hero-v4__arrow--next{right:.72rem}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__dots{display:flex;justify-content:center;align-items:center;gap:.55rem;min-height:1.5rem}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__dot{width:.72rem;height:.72rem;padding:0;border:1px solid rgba(7,43,104,.55);border-radius:50%;background:#fff;cursor:pointer}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__dot.is-active{background:var(--navy);transform:scale(1.12)}
+
+  @media screen and (min-width:1200px){#BhdHeroV4-{{ section.id }}{padding-top:clamp(36px,3.4vw,56px);padding-bottom:clamp(36px,3.4vw,56px);padding-left:clamp(72px,6.8vw,112px);padding-right:clamp(72px,6.8vw,112px)}}
+
+  @media screen and (max-width:1199px) and (min-width:750px){
+    #BhdHeroV4-{{ section.id }}{padding:28px 34px}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__desktop{display:none}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tablet{display:block}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tablet-shell{padding:1.25rem 1.25rem 1rem;background:linear-gradient(180deg,#fff 0%,#f4faff 60%,#eaf6fb 100%);color:var(--navy)}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tablet-head{text-align:center;padding:.05rem 1rem 1rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__eyebrow{font-size:.7rem;letter-spacing:.34em;font-weight:800}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__headline{margin-top:.18rem;font-size:clamp(2.3rem,5vw,4rem);line-height:.9;font-weight:900;color:var(--blue);text-transform:uppercase;letter-spacing:-.035em}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__headline span{display:block;color:var(--navy);font-size:.46em;letter-spacing:.015em;margin-bottom:.07em}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline{margin-top:.32rem;font-size:clamp(1rem,2vw,1.42rem);font-weight:750}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline em{font-style:italic;border-bottom:.15em solid #16bce7;padding:0 .08em}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tablet-stage{position:relative;min-height:clamp(430px,50vw,560px);overflow:hidden;border-radius:22px;background:#e7f3f9;border:1px solid rgba(7,43,104,.08);isolation:isolate}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__slide{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(230px,28vw,315px) minmax(0,1fr);gap:clamp(14px,2vw,22px);padding:clamp(14px,1.8vw,22px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .38s ease}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__slide.is-active{opacity:1;visibility:visible;pointer-events:auto}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__audience{position:relative;min-width:0;overflow:hidden;border-radius:20px;background:#d7e9f3;border:1px solid rgba(255,255,255,.9);box-shadow:0 12px 30px rgba(6,43,104,.12)}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__audience--left{grid-column:1}#BhdHeroV4-{{ section.id }} .bhd-hero-v4__audience--right{grid-column:3}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__audience img{height:100%;object-fit:cover;filter:saturate(.92) contrast(.98)}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__slide:first-child .bhd-hero-v4__audience--left img{object-position:52% 44%}#BhdHeroV4-{{ section.id }} .bhd-hero-v4__slide:first-child .bhd-hero-v4__audience--right img{object-position:52% 48%}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__slide:nth-child(2) .bhd-hero-v4__audience--left img{object-position:48% 42%}#BhdHeroV4-{{ section.id }} .bhd-hero-v4__slide:nth-child(2) .bhd-hero-v4__audience--right img{object-position:50% 44%}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__audience::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,30,64,0) 42%,rgba(4,30,64,.78) 100%);pointer-events:none}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__audience-copy{position:absolute;z-index:3;left:1rem;right:1rem;bottom:1rem;color:#fff;text-shadow:0 2px 10px rgba(0,20,55,.5)}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__audience--right .bhd-hero-v4__audience-copy{text-align:right}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__audience-copy strong{display:block;font-size:clamp(1.1rem,2.1vw,1.75rem);line-height:1;text-transform:uppercase;letter-spacing:.01em}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__audience-copy span{display:block;margin-top:.3rem;font-size:clamp(.7rem,1.15vw,.92rem);line-height:1.18;font-weight:700}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__formula-card{position:absolute;z-index:7;top:clamp(14px,1.8vw,22px);bottom:clamp(14px,1.8vw,22px);left:50%;transform:translateX(-50%);width:clamp(230px,28vw,315px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(.8rem,1.5vw,1.15rem);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.99),rgba(245,251,254,.97));border:1px solid rgba(7,43,104,.1);box-shadow:0 18px 42px rgba(6,43,104,.16)}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__formula-kicker{font-size:clamp(.55rem,.88vw,.7rem);letter-spacing:.18em;font-weight:850;text-align:center;margin-bottom:.25rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{display:block;width:min(100%,clamp(190px,24vw,278px));aspect-ratio:1;filter:drop-shadow(0 16px 18px rgba(4,39,77,.2))}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product img{height:100%;object-fit:contain}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__nutrients{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.38rem;margin-top:.2rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__nutrients span{min-height:2rem;display:flex;align-items:center;justify-content:center;padding:.25rem .25rem;border-radius:999px;background:#edf7fc;border:1px solid rgba(7,43,104,.11);font-size:clamp(.62rem,1vw,.82rem);line-height:1;font-weight:850}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__nutrients .is-wide{grid-column:2 / 4}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__dots{margin:.72rem 0 .25rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__benefits{margin-top:.28rem;padding:.8rem .2rem .12rem;border-top:1px solid rgba(7,43,104,.12);display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__benefits>div{display:flex;align-items:center;justify-content:center;gap:.42rem;min-width:0;text-align:left;color:var(--navy);font-weight:800;font-size:clamp(.62rem,1.05vw,.8rem);line-height:1.05;text-transform:uppercase}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__benefits svg{width:1.8rem;min-width:1.8rem;height:1.8rem;fill:none;stroke:currentColor;stroke-width:1.7}
+  }
+
+  @media screen and (max-width:749px){
+    #BhdHeroV4-{{ section.id }}{padding:12px}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__desktop,#BhdHeroV4-{{ section.id }} .bhd-hero-v4__tablet{display:none}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__mobile{display:block}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__mobile-stage{position:relative;background:#dff2fb}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__mobile-slide{display:none}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__mobile-slide.is-active{display:block}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__mobile-slide img{aspect-ratio:941/1672;height:auto;object-fit:cover}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__arrow{width:3.35rem;height:3.35rem;font-size:2.35rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__dots--mobile{position:absolute;left:50%;bottom:.65rem;transform:translateX(-50%);z-index:8;padding:.35rem .55rem;border-radius:999px;background:rgba(255,255,255,.72);backdrop-filter:blur(5px)}
+  }
+</style>
+
+<script>
+(() => {
+  const root=document.getElementById('BhdHeroV4-{{ section.id }}'); if(!root)return;
+  const init=(carousel)=>{
+    const slides=[...carousel.querySelectorAll('[data-v4-slide]')]; if(slides.length<2)return;
+    const prev=carousel.querySelector('[data-v4-prev]'),next=carousel.querySelector('[data-v4-next]'),dotsWrap=carousel.querySelector('[data-v4-dots]');
+    const intervalMs=Number(carousel.dataset.interval||5000); let index=Math.max(0,slides.findIndex(s=>s.classList.contains('is-active'))),timer;
+    const dots=slides.map((_,i)=>{const d=document.createElement('button');d.type='button';d.className='bhd-hero-v4__dot';d.setAttribute('aria-label',`Show hero ${i+1}`);d.addEventListener('click',()=>{go(i);start()});dotsWrap?.appendChild(d);return d});
+    const go=(n)=>{index=(n+slides.length)%slides.length;slides.forEach((s,i)=>s.classList.toggle('is-active',i===index));dots.forEach((d,i)=>d.classList.toggle('is-active',i===index))};
+    const stop=()=>{if(timer)clearInterval(timer)};const start=()=>{stop();timer=setInterval(()=>go(index+1),intervalMs)};
+    prev?.addEventListener('click',()=>{go(index-1);start()});next?.addEventListener('click',()=>{go(index+1);start()});carousel.addEventListener('mouseenter',stop);carousel.addEventListener('mouseleave',start);carousel.addEventListener('touchstart',stop,{passive:true});carousel.addEventListener('touchend',start,{passive:true});go(index);start();
+  };
+  root.querySelectorAll('[data-v4-carousel]').forEach(init);
+})();
+</script>
+
+{% schema %}
+{
+  "name":"Best Hydrate hero v4",
+  "settings":[
+    {"type":"text","id":"heading","label":"Heading","default":"Hydrate for YOUR best day."},
+    {"type":"text","id":"subheading","label":"Subheading","default":"Five essential electrolytes. Built for better hydration."},
+    {"type":"product","id":"product","label":"Product"},
+    {"type":"text","id":"button_label","label":"Button label","default":"SHOP NOW"},
+    {"type":"url","id":"button_link","label":"Button link"},
+    {"type":"range","id":"desktop_height","label":"Desktop height","min":400,"max":900,"step":20,"default":620},
+    {"type":"range","id":"mobile_height","label":"Mobile height","min":400,"max":900,"step":20,"default":560}
+  ],
+  "presets":[{"name":"Best Hydrate hero v4"}]
+}
+{% endschema %}
