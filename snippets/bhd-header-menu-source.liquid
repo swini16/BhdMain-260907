@@ -1,0 +1,66 @@
+{% assign bhd_navigation = linklists['new-menu'] %}
+{% if bhd_navigation != blank and bhd_navigation.links.size > 0 %}
+  <template id="BhdAdminMobileMenu">
+    {% for top_link in bhd_navigation.links %}
+      {% if top_link.title == 'Shop' %}
+        <a class="bhd-header__mobile-shop" href="{{ top_link.url }}">{{ top_link.title | escape }}</a>
+      {% else %}
+        <div class="bhd-header__mobile-main" data-mobile-main>
+          <div class="bhd-header__mobile-main-row">
+            <a href="{{ top_link.url }}">{{ top_link.title | escape }}</a>
+            <button type="button" class="bhd-header__mobile-toggle" data-menu-toggle aria-expanded="false" aria-label="Open {{ top_link.title | escape }} menu"><span aria-hidden="true">⌄</span></button>
+          </div>
+          <div class="bhd-header__mobile-level-one" data-menu-panel>
+            {% for second_link in top_link.links %}
+              <div class="bhd-header__mobile-tier2">
+                <div class="bhd-header__mobile-tier2-split">
+                  <a class="bhd-header__mobile-tier2-link" href="{{ second_link.url }}">{{ second_link.title | escape }}</a>
+                  {% if second_link.links.size > 0 %}<button type="button" class="bhd-header__mobile-tier2-toggle" aria-expanded="false" aria-label="Open {{ second_link.title | escape }} submenu"><span aria-hidden="true"></span></button>{% endif %}
+                </div>
+                {% if second_link.links.size > 0 %}<div class="bhd-header__mobile-tier3">{% for third_link in second_link.links %}<a href="{{ third_link.url }}">{{ third_link.title | escape }}</a>{% endfor %}</div>{% endif %}
+              </div>
+            {% endfor %}
+            <a class="bhd-header__mobile-discuss" href="/blogs/news"><img src="{{ 'bhd-discuss-icon.webp' | asset_url }}" alt="" width="96" height="96"><strong>{% case top_link.title %}{% when 'Science' %}Discuss Science Blog{% when 'Solutions' %}Discuss Solutions Blog{% else %}Discuss &amp; Connect{% endcase %}</strong></a>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </template>
+
+  <template id="BhdAdminDesktopMenu">
+    {% for top_link in bhd_navigation.links %}
+      {% if top_link.title == 'Shop' %}
+        <a href="{{ top_link.url }}" class="bhd-header__shop-cta">{{ top_link.title | escape }}</a>
+      {% else %}
+        <div class="bhd-header__main-item" data-main-item>
+          <div class="bhd-header__split-button"><a class="bhd-header__main-link" href="{{ top_link.url }}">{{ top_link.title | escape }}</a><button type="button" class="bhd-header__main-toggle" data-menu-toggle aria-expanded="false" aria-label="Open {{ top_link.title | escape }} menu"><span aria-hidden="true">⌄</span></button></div>
+          <div class="bhd-header__dropdown-menu" data-menu-panel>
+            {% for second_link in top_link.links %}
+              <div class="bhd-header__dropdown-child">
+                <div class="bhd-header__tier2-split"><a class="bhd-header__tier2-link" href="{{ second_link.url }}">{{ second_link.title | escape }}</a>{% if second_link.links.size > 0 %}<button type="button" class="bhd-header__tier2-toggle" aria-expanded="false" aria-label="Open {{ second_link.title | escape }} submenu"><span aria-hidden="true"></span></button>{% endif %}</div>
+                {% if second_link.links.size > 0 %}<div class="bhd-header__tier3">{% for third_link in second_link.links %}<a href="{{ third_link.url }}">{{ third_link.title | escape }}</a>{% endfor %}</div>{% endif %}
+              </div>
+            {% endfor %}
+            <a class="bhd-header__discuss-row" href="/blogs/news"><img src="{{ 'bhd-discuss-icon.webp' | asset_url }}" alt="" width="96" height="96"><strong>{% case top_link.title %}{% when 'Science' %}Discuss Science Blog{% when 'Solutions' %}Discuss Solutions Blog{% else %}Discuss &amp; Connect{% endcase %}</strong></a>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </template>
+
+  <script>
+    (()=>{
+      const header=document.querySelector('.bhd-header');
+      const mobileTemplate=document.getElementById('BhdAdminMobileMenu');
+      const desktopTemplate=document.getElementById('BhdAdminDesktopMenu');
+      if(!header||!mobileTemplate||!desktopTemplate)return;
+      const mobilePanel=header.querySelector('.bhd-header__mobile-panel');
+      const desktopNav=header.querySelector('.bhd-header__nav');
+      if(mobilePanel)mobilePanel.replaceChildren(mobileTemplate.content.cloneNode(true));
+      if(desktopNav)desktopNav.replaceChildren(desktopTemplate.content.cloneNode(true));
+      header.dataset.bhdMenuSource='shopify-main';
+    })();
+  </script>
+{% endif %}
+
+{% comment %}Shopify Admin MAIN, handle new-menu, is the live interactive header source. Static header markup remains the fallback if the menu object is unavailable.{% endcomment %}
