@@ -1,5 +1,6 @@
 {
   "sections": {
+    "context": {"type":"bhd-surface-context","settings":{}},
     "main": {
       "type": "main-search",
       "settings": {
@@ -15,12 +16,10 @@
         "article_show_date": true,
         "article_show_author": false,
         "columns_mobile": "2",
-        "padding_top": 60,
+        "padding_top": 36,
         "padding_bottom": 60
       }
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["context","main"]
 }
