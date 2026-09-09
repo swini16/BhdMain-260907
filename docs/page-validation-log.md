@@ -28,12 +28,18 @@ Status legend:
 | 015 | Clinical Program | `/pages/clinical-program` | PASS | PARTIAL | `validation/015-clinical-program.md` |
 | 016 | Pilot Studies | `/pages/pilot-studies` | PASS | PARTIAL | `validation/016-pilot-studies.md` |
 | 017 | Healthcare Applications | `/pages/healthcare-applications` | PASS | PARTIAL | `validation/017-healthcare-applications.md` |
+| 018 | Product Details | `/pages/product-details` | PASS | PARTIAL | `validation/018-product-details.md` |
+| 019 | Directions | `/pages/directions` | PASS | PARTIAL | `validation/019-directions.md` |
 
 ### Science family milestone
 
 All 17 canonical pages currently defined under the runtime **Science** navigation now have dedicated Best Hydrate theme content and a dispatcher route. Every page has breadcrumbs, one visible H1, contextual stock visuals, unique copy, internal cross-links, responsive presentation and claim-sensitive reference material where appropriate.
 
 The remaining common validation limitation is Shopify Admin: GitHub theme access does not prove that each `/pages/...` Page object exists. Those checks remain PARTIAL until the Shopify store connection or direct public-route verification is available.
+
+### Solutions wave started
+
+The product route has now been audited and enhanced with a dedicated bridge into the Solutions and Science information architecture. Product Details and Directions are implemented, dispatched and individually validated. The next build sequence is Performance Hydration, Endurance, Heat & High Sweat and Recovery.
 
 ## 001 - Hydration Science
 
