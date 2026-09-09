@@ -1,6 +1,6 @@
 {% liquid
   assign bhd_menu = linklists['new-menu']
-  assign current_path = page.url | default: request.path
+  assign current_path = request.path | split: '?' | first | split: '#' | first
   assign current_label = current_title | default: page.title
 
   assign menu_depth = 0
@@ -13,8 +13,22 @@
 
   if bhd_menu != blank
     for top_link in bhd_menu.links
+      assign top_path = top_link.url | split: '?' | first | split: '#' | first
+      if shop.url != blank
+        assign top_path = top_path | remove: shop.url
+      endif
+      if top_path contains '://'
+        assign top_path = top_path | remove: 'https://' | remove: 'http://'
+        if shop.domain != blank
+          assign top_path = top_path | remove: shop.domain
+        endif
+        if shop.permanent_domain != blank
+          assign top_path = top_path | remove: shop.permanent_domain
+        endif
+      endif
+
       if preferred_family == blank or top_link.title == preferred_family
-        if top_link.url == current_path and menu_depth < 1
+        if top_path == current_path and menu_depth < 1
           assign menu_depth = 1
           assign level_1_label = top_link.title
           assign level_1_url = top_link.url
@@ -25,7 +39,21 @@
         endif
 
         for second_link in top_link.links
-          if second_link.url == current_path and menu_depth < 2
+          assign second_path = second_link.url | split: '?' | first | split: '#' | first
+          if shop.url != blank
+            assign second_path = second_path | remove: shop.url
+          endif
+          if second_path contains '://'
+            assign second_path = second_path | remove: 'https://' | remove: 'http://'
+            if shop.domain != blank
+              assign second_path = second_path | remove: shop.domain
+            endif
+            if shop.permanent_domain != blank
+              assign second_path = second_path | remove: shop.permanent_domain
+            endif
+          endif
+
+          if second_path == current_path and menu_depth < 2
             assign menu_depth = 2
             assign level_1_label = top_link.title
             assign level_1_url = top_link.url
@@ -36,7 +64,21 @@
           endif
 
           for third_link in second_link.links
-            if third_link.url == current_path and menu_depth < 3
+            assign third_path = third_link.url | split: '?' | first | split: '#' | first
+            if shop.url != blank
+              assign third_path = third_path | remove: shop.url
+            endif
+            if third_path contains '://'
+              assign third_path = third_path | remove: 'https://' | remove: 'http://'
+              if shop.domain != blank
+                assign third_path = third_path | remove: shop.domain
+              endif
+              if shop.permanent_domain != blank
+                assign third_path = third_path | remove: shop.permanent_domain
+              endif
+            endif
+
+            if third_path == current_path and menu_depth < 3
               assign menu_depth = 3
               assign level_1_label = top_link.title
               assign level_1_url = top_link.url
@@ -113,5 +155,5 @@
 </nav>
 
 {% comment %}
-Breadcrumbs use Shopify Admin MAIN navigation, handle new-menu, as the source of truth and follow the page's declared Science, Solutions or Connect family. Within that family, the deepest matching menu position wins. Every distinct menu level now uses a distinct route, so the visible path exactly corresponds to the clicked menu node. Secondary pages intentionally outside MAIN use an explicit logical fallback.
+Breadcrumbs use Shopify Admin MAIN, handle new-menu, as the source of truth. Menu URLs are normalized to request paths before comparison because Shopify manual HTTP menu items can be exposed to Liquid as absolute URLs while request.path is relative. The deepest matching node in the declared family wins.
 {% endcomment %}
