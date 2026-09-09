@@ -21,10 +21,6 @@
         "mobile_height": 560
       }
     },
-    "hero_debug": {
-      "type": "bhd-hero-debug",
-      "settings": {}
-    },
     "benefits": {
       "type": "bhd-benefits",
       "settings": {"color_scheme": "scheme-1"}
@@ -61,5 +57,5 @@
       "settings": {"color_scheme": "scheme-1"}
     }
   },
-  "order": ["hero", "hero_debug", "benefits", "markets", "product_story", "trust"]
+  "order": ["hero", "benefits", "markets", "product_story", "trust"]
 }
