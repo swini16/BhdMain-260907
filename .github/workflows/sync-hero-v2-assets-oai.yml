@@ -33,10 +33,10 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           expected = {
-              'hero-v2-mobile-performance.webp': 144498,
-              'hero-v2-mobile-daily.webp': 118780,
-              'hero-v2-mobile-medical.webp': 101690,
-              'hero-v2-mobile-humanitarian.webp': 131712,
+              'hero-v2-mobile-performance.webp': 271740,
+              'hero-v2-mobile-daily.webp': 223386,
+              'hero-v2-mobile-medical.webp': 192332,
+              'hero-v2-mobile-humanitarian.webp': 242332,
           }
           for name, expected_size in expected.items():
               p = Path('assets') / name
