@@ -15,14 +15,23 @@
     .bhd-header:has(.bhd-header__main-item.is-open) .bhd-header__main-item:not(.is-open):hover .bhd-header__dropdown-menu{display:none!important}
     .bhd-header:has(.bhd-header__main-item.is-open) .bhd-header__main-item:not(.is-open):hover .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
 
+    /* Manual collapse wins over hover until the pointer actually leaves that top node. */
+    .bhd-header .bhd-header__main-item.bhd-hover-suppressed:hover .bhd-header__dropdown-menu,
+    .bhd-header .bhd-header__main-item.bhd-hover-suppressed:focus-within .bhd-header__dropdown-menu{display:none!important}
+    .bhd-header .bhd-header__main-item.bhd-hover-suppressed:hover .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
+
     .bhd-header .bhd-header__dropdown-child:hover .bhd-header__tier2-split{background:rgba(var(--color-button),.13);border-color:rgba(var(--color-button),.38)}
-    .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-split{background:rgba(var(--color-button),.2);border-color:rgba(var(--color-button),.5);box-shadow:0 .3rem .9rem rgba(13,33,78,.08)}
-    .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-toggle{background:rgba(var(--color-button),.24)}
+
+    /* Calm sage-teal state makes the expanded tree node unmistakable without becoming loud. */
+    .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-split{background:rgba(72,132,120,.15);border-color:rgba(72,132,120,.48);box-shadow:0 .3rem .9rem rgba(44,92,82,.10)}
+    .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-link{color:#245f55}
+    .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-toggle{background:rgba(72,132,120,.26);color:#245f55;border-left-color:rgba(72,132,120,.46)}
   }
   @media screen and (max-width:989px){
     .bhd-header .bhd-header__mobile-main.is-open .bhd-header__mobile-main-row{background:rgba(var(--color-button),.2);border-color:rgba(var(--color-button),.5)}
-    .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-split{background:rgba(var(--color-button),.18);border-color:rgba(var(--color-button),.44)}
-    .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-toggle{background:rgba(var(--color-button),.22)}
+    .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-split{background:rgba(72,132,120,.15);border-color:rgba(72,132,120,.48);box-shadow:0 .25rem .75rem rgba(44,92,82,.08)}
+    .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-link{color:#245f55}
+    .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-toggle{background:rgba(72,132,120,.26);color:#245f55;border-left-color:rgba(72,132,120,.46)}
   }
   @media screen and (max-width:360px){
     .bhd-header .bhd-header__inner{gap:.35rem}
@@ -34,10 +43,37 @@
   }
 </style>
 
+<script>
+  (()=>{
+    const selector='.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]';
+    document.addEventListener('click',(event)=>{
+      const toggle=event.target.closest(selector);
+      if(!toggle)return;
+      const item=toggle.closest('[data-main-item]');
+      if(!item)return;
+      requestAnimationFrame(()=>{
+        if(item.classList.contains('is-open')){
+          item.classList.remove('bhd-hover-suppressed');
+        }else{
+          item.classList.add('bhd-hover-suppressed');
+        }
+      });
+    });
+    document.addEventListener('pointerleave',(event)=>{
+      const item=event.target.closest?.('[data-main-item].bhd-hover-suppressed');
+      if(item)item.classList.remove('bhd-hover-suppressed');
+    },true);
+    document.addEventListener('pointerenter',(event)=>{
+      const item=event.target.closest?.('[data-main-item]');
+      if(!item)return;
+      if(event.target===item && !item.matches(':hover'))item.classList.remove('bhd-hover-suppressed');
+    },true);
+  })();
+</script>
+
 {% comment %}
 The canonical Science, Solutions and Connect hierarchy is rendered directly by bhd-header.liquid.
-This section deliberately contains presentation only. It must not rename links, rebuild menus or create alternate routes in JavaScript.
-The desktop hover bridge makes the mega-menu easier to enter, while an explicitly toggled top-level menu suppresses hover activation of its siblings.
+This layer adds interaction polish only: a forgiving hover bridge, click-lock behavior, reliable manual collapse, and calm active-node emphasis.
 {% endcomment %}
 
 {% schema %}
