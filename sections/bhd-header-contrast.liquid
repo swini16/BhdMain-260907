@@ -5,7 +5,16 @@
     .bhd-header .bhd-header__main-toggle{background:rgba(var(--color-button),.18);border-left-color:rgba(var(--color-button),.34)}
     .bhd-header .bhd-header__main-item:hover .bhd-header__split-button,.bhd-header .bhd-header__main-item:focus-within .bhd-header__split-button{background:rgba(var(--color-button),.16);border-color:rgba(var(--color-button),.42);box-shadow:0 .35rem 1rem rgba(13,33,78,.08)}
     .bhd-header .bhd-header__main-item.is-open .bhd-header__split-button{background:rgba(var(--color-button),.24);border-color:rgba(var(--color-button),.6);box-shadow:0 .45rem 1.4rem rgba(13,33,78,.13)}
-    .bhd-header .bhd-header__dropdown-menu{border-top:3px solid rgba(var(--color-button),.5);box-shadow:0 2.2rem 5rem rgba(13,33,78,.18)}
+
+    /* Keep hover active while the pointer crosses the visual gap into a mega-menu. */
+    .bhd-header .bhd-header__main-item::after{content:"";position:absolute;z-index:2;top:100%;left:-1.2rem;right:-1.2rem;height:1.15rem;display:none}
+    .bhd-header .bhd-header__main-item:hover::after,.bhd-header .bhd-header__main-item.is-open::after{display:block}
+    .bhd-header .bhd-header__dropdown-menu{z-index:3;border-top:3px solid rgba(var(--color-button),.5);box-shadow:0 2.2rem 5rem rgba(13,33,78,.18)}
+
+    /* A click-toggled top-level menu owns the menu state until it is closed. */
+    .bhd-header:has(.bhd-header__main-item.is-open) .bhd-header__main-item:not(.is-open):hover .bhd-header__dropdown-menu{display:none!important}
+    .bhd-header:has(.bhd-header__main-item.is-open) .bhd-header__main-item:not(.is-open):hover .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
+
     .bhd-header .bhd-header__dropdown-child:hover .bhd-header__tier2-split{background:rgba(var(--color-button),.13);border-color:rgba(var(--color-button),.38)}
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-split{background:rgba(var(--color-button),.2);border-color:rgba(var(--color-button),.5);box-shadow:0 .3rem .9rem rgba(13,33,78,.08)}
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-toggle{background:rgba(var(--color-button),.24)}
@@ -28,7 +37,7 @@
 {% comment %}
 The canonical Science, Solutions and Connect hierarchy is rendered directly by bhd-header.liquid.
 This section deliberately contains presentation only. It must not rename links, rebuild menus or create alternate routes in JavaScript.
-Final responsive QA sync marker: 2026-09-09.
+The desktop hover bridge makes the mega-menu easier to enter, while an explicitly toggled top-level menu suppresses hover activation of its siblings.
 {% endcomment %}
 
 {% schema %}
