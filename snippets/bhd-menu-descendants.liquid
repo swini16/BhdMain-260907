@@ -1,0 +1,110 @@
+{% liquid
+  assign bhd_menu = linklists['new-menu']
+  assign current_path = page.url | default: request.path
+  assign directory_title = ''
+  assign directory_depth = 0
+  assign directory_links = blank
+
+  if bhd_menu != blank
+    for top_link in bhd_menu.links
+      if top_link.url == current_path and top_link.links.size > 0
+        assign directory_title = top_link.title
+        assign directory_depth = 1
+        assign directory_links = top_link.links
+      endif
+
+      for second_link in top_link.links
+        if second_link.url == current_path and second_link.links.size > 0
+          assign directory_title = second_link.title
+          assign directory_depth = 2
+          assign directory_links = second_link.links
+        endif
+      endfor
+    endfor
+  endif
+%}
+
+{% if directory_links != blank and directory_links.size > 0 %}
+  <section class="bhd-menu-directory" aria-labelledby="BhdMenuDirectory-{{ section.id }}">
+    <p class="bhd-menu-directory__kicker">In this section</p>
+    <h2 id="BhdMenuDirectory-{{ section.id }}">Explore {{ directory_title | escape }}</h2>
+    <p class="bhd-menu-directory__intro">
+      {% if directory_depth == 1 %}
+        Choose a section below, then continue into its linked subtopics.
+      {% else %}
+        Continue into the pages grouped under {{ directory_title | escape }}.
+      {% endif %}
+    </p>
+
+    <div class="bhd-menu-directory__grid">
+      {% for child_link in directory_links %}
+        {% liquid
+          assign child_icon = '↳'
+          case child_link.title
+            when 'Hydration Science'
+              assign child_icon = '💧'
+            when 'Our Formula'
+              assign child_icon = '⚗️'
+            when 'Research & Impact'
+              assign child_icon = '🔬'
+            when 'Clinical Development'
+              assign child_icon = '🧬'
+            when 'Products'
+              assign child_icon = '🥤'
+            when 'Performance'
+              assign child_icon = '🏃'
+            when 'Everyday Wellness'
+              assign child_icon = '🌤️'
+            when 'Clinical & Humanitarian'
+              assign child_icon = '🩺'
+            when 'Company & People'
+              assign child_icon = '👥'
+            when 'Partnerships'
+              assign child_icon = '🤝'
+            when 'Investor Relations'
+              assign child_icon = '📈'
+            when 'News & Contact'
+              assign child_icon = '📰'
+          endcase
+        %}
+        <article class="bhd-menu-directory__card">
+          <div class="bhd-menu-directory__title-row">
+            <span class="bhd-menu-directory__icon" aria-hidden="true">{{ child_icon }}</span>
+            <h3><a href="{{ child_link.url }}">{{ child_link.title | escape }}</a></h3>
+          </div>
+
+          {% if child_link.links.size > 0 %}
+            <ul>
+              {% for grandchild_link in child_link.links %}
+                <li><a href="{{ grandchild_link.url }}">{{ grandchild_link.title | escape }}</a></li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <style>
+    .bhd-menu-directory{margin:clamp(2.8rem,5vw,5.5rem) 0;padding:clamp(2.2rem,4vw,4rem);border:1px solid rgba(11,45,103,.10);border-radius:1.8rem;background:linear-gradient(135deg,#f6fbff,#fff)}
+    .bhd-menu-directory__kicker{margin:0 0 .55rem;color:#078ee7;font-size:1.15rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+    .bhd-menu-directory h2{margin:0;color:#0b2d67;font-size:clamp(2.4rem,3.4vw,3.8rem);line-height:1.08}
+    .bhd-menu-directory__intro{max-width:76rem;margin:.8rem 0 0;color:#5b6b82;font-size:1.35rem;line-height:1.5}
+    .bhd-menu-directory__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.1rem;margin-top:2rem}
+    .bhd-menu-directory__card{padding:1.45rem 1.55rem;border:1px solid rgba(11,45,103,.10);border-radius:1.2rem;background:#fff;box-shadow:0 .25rem .9rem rgba(13,33,78,.05)}
+    .bhd-menu-directory__title-row{display:flex;align-items:center;gap:.8rem}
+    .bhd-menu-directory__icon{display:inline-grid;place-items:center;width:2.7rem;height:2.7rem;flex:0 0 2.7rem;border-radius:.75rem;background:#eef8ff;font-size:1.5rem}
+    .bhd-menu-directory__card h3{margin:0;font-size:1.55rem;line-height:1.2}
+    .bhd-menu-directory__card h3 a{color:#0b2d67;text-decoration:none}
+    .bhd-menu-directory__card h3 a:hover{text-decoration:underline}
+    .bhd-menu-directory__card ul{display:flex;flex-wrap:wrap;gap:.55rem .65rem;margin:1rem 0 0;padding:0;list-style:none}
+    .bhd-menu-directory__card li{margin:0}
+    .bhd-menu-directory__card li a{display:inline-block;padding:.48rem .72rem;border:1px solid rgba(11,45,103,.12);border-radius:999px;background:#f7fbff;color:#234b7c;font-size:1.12rem;line-height:1.25;text-decoration:none}
+    .bhd-menu-directory__card li a:hover{text-decoration:underline;background:#eef8ff}
+    @media screen and (max-width:749px){.bhd-menu-directory__grid{grid-template-columns:1fr}}
+  </style>
+{% endif %}
+
+{% comment %}
+Parent page navigation is derived directly from Shopify Admin MAIN, handle new-menu. Top-level pages show children and grandchildren. Level-two parent pages show their direct children. Leaf pages render no directory.
+{% endcomment %}
