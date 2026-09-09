@@ -1,12 +1,7 @@
 {
   "sections": {
-    "main": {
-      "type": "main-404",
-      "settings": {
-      }
-    }
+    "main": {"type":"main-404","settings":{}},
+    "context": {"type":"bhd-surface-context","settings":{}}
   },
-  "order": [
-    "main"
-  ]
+  "order": ["main","context"]
 }
