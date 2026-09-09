@@ -1,10 +1,7 @@
-{% assign hero_product = all_products['lemonade-best-hydrate'] %}
-{% assign hero_product_image = hero_product.featured_image %}
-
-<section id="BhdHero-{{ section.id }}" class="bhd-hero-v2" data-bhd-hero>
+<section id="BhdHero-{{ section.id }}" class="bhd-hero-v3" data-bhd-hero>
   <h1 class="visually-hidden">The Science of Hydration. Hydrate for YOUR Best Day!</h1>
 
-  <div class="bhd-hero-v2__desktop" aria-label="Best Hydrate hydration solutions">
+  <div class="bhd-hero-v3__desktop bhd-hero-v3__frame" aria-label="Best Hydrate hydration solutions">
     <img
       src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQDH94WQynO-SY0f-DScEkVfAcjzjTtpIt757vzEnCibR9w?download=1"
       alt="Best Hydrate, The Science of Hydration, across performance, daily, medical and humanitarian hydration"
@@ -15,74 +12,69 @@
       decoding="async">
   </div>
 
-  <div class="bhd-hero-v2__tablet" data-hero-carousel data-interval="5600" aria-label="Best Hydrate tablet hydration solutions">
-    <div class="bhd-hero-v2__tablet-shell">
-      <div class="bhd-hero-v2__shared-head">
-        <div class="bhd-hero-v2__eyebrow">BEST HYDRATE</div>
-        <div class="bhd-hero-v2__headline"><span>THE SCIENCE OF</span> HYDRATION.</div>
-        <div class="bhd-hero-v2__tagline">Hydrate For <em>YOUR</em> Best Day!</div>
-      </div>
+  <div class="bhd-hero-v3__tablet bhd-hero-v3__frame" data-hero-carousel data-interval="5600" aria-label="Best Hydrate tablet hydration solutions">
+    <div class="bhd-hero-v3__tablet-shell">
+      <header class="bhd-hero-v3__shared-head">
+        <div class="bhd-hero-v3__eyebrow">BEST HYDRATE</div>
+        <div class="bhd-hero-v3__headline"><span>THE SCIENCE OF</span> HYDRATION.</div>
+        <div class="bhd-hero-v3__tagline">Hydrate For <em>YOUR</em> Best Day!</div>
+      </header>
 
-      <div class="bhd-hero-v2__tablet-track">
-        <div class="bhd-hero-v2__tablet-slide is-active" data-hero-slide>
-          <article class="bhd-hero-v2__segment-card">
+      <div class="bhd-hero-v3__tablet-stage">
+        <div class="bhd-hero-v3__tablet-slide is-active" data-hero-slide>
+          <article class="bhd-hero-v3__segment-card">
             <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQAw2nS-N6UaS6qw21HvBAMLAaRMFz5atE3PcfQAKxBRisI?download=1" alt="Performance hydration" width="700" height="500" loading="eager" decoding="async">
-            <div class="bhd-hero-v2__segment-copy">
+            <div class="bhd-hero-v3__segment-copy">
               <strong>Performance</strong>
               <span>Fuels Higher Performance.</span>
             </div>
           </article>
-          <article class="bhd-hero-v2__segment-card">
+          <article class="bhd-hero-v3__segment-card">
             <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQBB1GtZJ3e5Tq5bQeXKnFOtAfxDPApSvR53BzqkP-AHMI4?download=1" alt="Daily hydration" width="700" height="500" loading="eager" decoding="async">
-            <div class="bhd-hero-v2__segment-copy">
+            <div class="bhd-hero-v3__segment-copy">
               <strong>Daily</strong>
               <span>Supports Healthier Everyday Living.</span>
             </div>
           </article>
         </div>
 
-        <div class="bhd-hero-v2__tablet-slide" data-hero-slide>
-          <article class="bhd-hero-v2__segment-card">
+        <div class="bhd-hero-v3__tablet-slide" data-hero-slide>
+          <article class="bhd-hero-v3__segment-card">
             <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQAfdRPvWw9YRYNwoTqMLaLwAQ49LTkN45sBVbboNwA5XoI?download=1" alt="Medical hydration" width="700" height="500" loading="lazy" decoding="async">
-            <div class="bhd-hero-v2__segment-copy">
+            <div class="bhd-hero-v3__segment-copy">
               <strong>Medical</strong>
               <span>Leaders in Clinical Oral Hydration.</span>
             </div>
           </article>
-          <article class="bhd-hero-v2__segment-card">
+          <article class="bhd-hero-v3__segment-card">
             <img src="https://hmentca-my.sharepoint.com/:u:/g/personal/austin_besthydrate_com/IQBeJ0LyvlOfTIN2ERpEN-bhAR7thysCV91p0xeC2qhjdg4?download=1" alt="Humanitarian hydration" width="700" height="500" loading="lazy" decoding="async">
-            <div class="bhd-hero-v2__segment-copy">
+            <div class="bhd-hero-v3__segment-copy">
               <strong>Humanitarian</strong>
               <span>ORS for a Brighter Tomorrow.</span>
             </div>
           </article>
         </div>
+
+        <button class="bhd-hero-v3__arrow bhd-hero-v3__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
+        <button class="bhd-hero-v3__arrow bhd-hero-v3__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
       </div>
 
-      {% if hero_product_image %}
-        <a class="bhd-hero-v2__product" href="{{ hero_product.url }}" aria-label="Shop Best Hydrate">
-          <img src="{{ hero_product_image | image_url: width: 620 }}" alt="{{ hero_product.title | escape }}" width="620" height="620" loading="eager" decoding="async">
-        </a>
-      {% endif %}
+      <div class="bhd-hero-v3__dots" data-hero-dots aria-label="Hero slides"></div>
 
-      <button class="bhd-hero-v2__arrow bhd-hero-v2__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
-      <button class="bhd-hero-v2__arrow bhd-hero-v2__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
-      <div class="bhd-hero-v2__dots" data-hero-dots aria-label="Hero slides"></div>
-
-      <div class="bhd-hero-v2__benefits" aria-label="Best Hydrate benefits">
-        <div class="bhd-hero-v2__benefit">
+      <div class="bhd-hero-v3__benefits" aria-label="Best Hydrate benefits">
+        <div class="bhd-hero-v3__benefit">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2S5.5 9.2 5.5 14.2A6.5 6.5 0 0 0 18.5 14C18.5 9.2 12 2 12 2Z"/></svg>
           <span>Essential<br>Electrolytes</span>
         </div>
-        <div class="bhd-hero-v2__benefit">
+        <div class="bhd-hero-v3__benefit">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6M10 2v5l-5 9a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-5-9V2M8 15h8"/></svg>
           <span>Advanced<br>Hydration Science</span>
         </div>
-        <div class="bhd-hero-v2__benefit">
+        <div class="bhd-hero-v3__benefit">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9M12 3c-3 3-4 6-4 9s1 6 4 9"/></svg>
           <span>Real World<br>Impact</span>
         </div>
-        <div class="bhd-hero-v2__benefit">
+        <div class="bhd-hero-v3__benefit">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15h16M6 15a6 6 0 0 1 12 0M12 3v3M4.9 7.9l2.1 2.1M19.1 7.9 17 10"/></svg>
           <span>A Brighter<br>Tomorrow</span>
         </div>
@@ -90,24 +82,24 @@
     </div>
   </div>
 
-  <div class="bhd-hero-v2__mobile" data-hero-carousel data-interval="5000" aria-label="Best Hydrate mobile hero slideshow">
-    <div class="bhd-hero-v2__mobile-track">
-      <div class="bhd-hero-v2__mobile-slide is-active" data-hero-slide>
+  <div class="bhd-hero-v3__mobile bhd-hero-v3__frame" data-hero-carousel data-interval="5000" aria-label="Best Hydrate mobile hero slideshow">
+    <div class="bhd-hero-v3__mobile-stage">
+      <div class="bhd-hero-v3__mobile-slide is-active" data-hero-slide>
         <img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/a2007747405e9aaf5328daf59b1eef5fd8c1bfc6/assets/hero-v2-mobile-performance.webp" alt="Best Hydrate performance hydration" width="941" height="1672" loading="eager" fetchpriority="high" decoding="async">
       </div>
-      <div class="bhd-hero-v2__mobile-slide" data-hero-slide>
+      <div class="bhd-hero-v3__mobile-slide" data-hero-slide>
         <img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/a2007747405e9aaf5328daf59b1eef5fd8c1bfc6/assets/hero-v2-mobile-daily.webp" alt="Best Hydrate daily hydration" width="941" height="1672" loading="eager" decoding="async">
       </div>
-      <div class="bhd-hero-v2__mobile-slide" data-hero-slide>
+      <div class="bhd-hero-v3__mobile-slide" data-hero-slide>
         <img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/a2007747405e9aaf5328daf59b1eef5fd8c1bfc6/assets/hero-v2-mobile-medical.webp" alt="Best Hydrate medical hydration" width="941" height="1672" loading="eager" decoding="async">
       </div>
-      <div class="bhd-hero-v2__mobile-slide" data-hero-slide>
+      <div class="bhd-hero-v3__mobile-slide" data-hero-slide>
         <img src="https://raw.githubusercontent.com/swini16/BhdMain-260907/a2007747405e9aaf5328daf59b1eef5fd8c1bfc6/assets/hero-v2-mobile-humanitarian.webp" alt="Best Hydrate humanitarian hydration" width="941" height="1672" loading="eager" decoding="async">
       </div>
+      <button class="bhd-hero-v3__arrow bhd-hero-v3__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
+      <button class="bhd-hero-v3__arrow bhd-hero-v3__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
+      <div class="bhd-hero-v3__dots bhd-hero-v3__dots--mobile" data-hero-dots aria-label="Hero slides"></div>
     </div>
-    <button class="bhd-hero-v2__arrow bhd-hero-v2__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
-    <button class="bhd-hero-v2__arrow bhd-hero-v2__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
-    <div class="bhd-hero-v2__dots" data-hero-dots aria-label="Hero slides"></div>
   </div>
 </section>
 
@@ -115,163 +107,296 @@
   #BhdHero-{{ section.id }} {
     --hero-navy:#072b68;
     --hero-blue:#078ee7;
-    position:relative;
     width:100%;
     overflow:hidden;
     background:#eef8fd;
+    box-sizing:border-box;
+    padding:20px;
   }
-  #BhdHero-{{ section.id }} img { display:block; max-width:100%; }
-  #BhdHero-{{ section.id }} .bhd-hero-v2__desktop { display:block; }
-  #BhdHero-{{ section.id }} .bhd-hero-v2__desktop img { width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; }
-  #BhdHero-{{ section.id }} .bhd-hero-v2__tablet,
-  #BhdHero-{{ section.id }} .bhd-hero-v2__mobile { display:none; }
+  #BhdHero-{{ section.id }} * { box-sizing:border-box; }
+  #BhdHero-{{ section.id }} img { display:block; width:100%; max-width:100%; }
+  #BhdHero-{{ section.id }} .bhd-hero-v3__frame {
+    overflow:hidden;
+    border-radius:18px;
+    box-shadow:0 .6rem 1.6rem rgba(7,43,104,.08);
+  }
+  #BhdHero-{{ section.id }} .bhd-hero-v3__desktop { display:block; }
+  #BhdHero-{{ section.id }} .bhd-hero-v3__desktop img {
+    aspect-ratio:16/9;
+    object-fit:cover;
+  }
+  #BhdHero-{{ section.id }} .bhd-hero-v3__tablet,
+  #BhdHero-{{ section.id }} .bhd-hero-v3__mobile { display:none; }
 
-  #BhdHero-{{ section.id }} .bhd-hero-v2__arrow {
-    position:absolute; top:50%; z-index:7; transform:translateY(-50%);
-    width:4.2rem; height:4.2rem; border:1px solid rgba(255,255,255,.75); border-radius:999px;
-    background:rgba(6,43,104,.62); color:#fff; display:grid; place-items:center; padding:0 0 .25rem;
-    font-size:3rem; line-height:1; cursor:pointer; backdrop-filter:blur(7px); box-shadow:0 .5rem 1.5rem rgba(0,30,75,.18);
+  #BhdHero-{{ section.id }} .bhd-hero-v3__arrow {
+    position:absolute;
+    top:50%;
+    z-index:7;
+    transform:translateY(-50%);
+    width:3.6rem;
+    height:3.6rem;
+    border:1px solid rgba(255,255,255,.8);
+    border-radius:999px;
+    background:rgba(6,43,104,.68);
+    color:#fff;
+    display:grid;
+    place-items:center;
+    padding:0 0 .2rem;
+    font-size:2.6rem;
+    line-height:1;
+    cursor:pointer;
+    backdrop-filter:blur(7px);
+    box-shadow:0 .45rem 1.2rem rgba(0,30,75,.18);
   }
-  #BhdHero-{{ section.id }} .bhd-hero-v2__arrow--prev { left:1rem; }
-  #BhdHero-{{ section.id }} .bhd-hero-v2__arrow--next { right:1rem; }
-  #BhdHero-{{ section.id }} .bhd-hero-v2__dots {
-    position:absolute; z-index:8; left:50%; transform:translateX(-50%); display:flex; gap:.55rem;
+  #BhdHero-{{ section.id }} .bhd-hero-v3__arrow--prev { left:.85rem; }
+  #BhdHero-{{ section.id }} .bhd-hero-v3__arrow--next { right:.85rem; }
+  #BhdHero-{{ section.id }} .bhd-hero-v3__dots {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:.55rem;
+    min-height:1.5rem;
   }
-  #BhdHero-{{ section.id }} .bhd-hero-v2__dot {
-    width:.75rem; height:.75rem; padding:0; border:1px solid rgba(7,43,104,.65); border-radius:50%; background:#fff; cursor:pointer;
+  #BhdHero-{{ section.id }} .bhd-hero-v3__dot {
+    width:.72rem;
+    height:.72rem;
+    padding:0;
+    border:1px solid rgba(7,43,104,.55);
+    border-radius:50%;
+    background:#fff;
+    cursor:pointer;
   }
-  #BhdHero-{{ section.id }} .bhd-hero-v2__dot.is-active { background:var(--hero-navy); transform:scale(1.15); }
+  #BhdHero-{{ section.id }} .bhd-hero-v3__dot.is-active { background:var(--hero-navy); transform:scale(1.12); }
 
   @media screen and (max-width:1199px) and (min-width:750px) {
-    #BhdHero-{{ section.id }} .bhd-hero-v2__desktop { display:none; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet { display:block; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet-shell {
-      position:relative; width:100%; aspect-ratio:4/3; overflow:hidden;
-      background:linear-gradient(180deg,#fafdff 0%,#edf8fd 69%,#d8eef9 100%);
+    #BhdHero-{{ section.id }} { padding:16px; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__desktop { display:none; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet { display:block; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-shell {
+      background:linear-gradient(180deg,#fbfdff 0%,#eff8fc 100%);
       color:var(--hero-navy);
+      padding:1.4rem;
     }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__shared-head {
-      position:absolute; z-index:6; top:2.1%; left:15%; right:15%; text-align:center;
+    #BhdHero-{{ section.id }} .bhd-hero-v3__shared-head {
+      text-align:center;
+      padding:.2rem 1rem 1.1rem;
     }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__eyebrow { font-size:clamp(.72rem,1.25vw,1rem); letter-spacing:.42em; font-weight:700; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__headline { font-size:clamp(2rem,5.1vw,4rem); line-height:.88; font-weight:900; color:var(--hero-blue); text-transform:uppercase; letter-spacing:-.035em; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__headline span { display:block; color:var(--hero-navy); font-size:.5em; letter-spacing:.02em; margin-bottom:.05em; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__tagline { margin-top:.25rem; font-size:clamp(1rem,2vw,1.65rem); font-weight:700; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__tagline em { font-style:italic; border-bottom:.18em solid #16bce7; padding:0 .08em; }
-
-    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet-track { position:absolute; inset:21% 3% 20%; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet-slide {
-      position:absolute; inset:0; display:grid; grid-template-columns:1fr 1fr; gap:1.1rem;
-      opacity:0; visibility:hidden; pointer-events:none; transition:opacity .45s ease;
+    #BhdHero-{{ section.id }} .bhd-hero-v3__eyebrow {
+      font-size:.78rem;
+      letter-spacing:.34em;
+      font-weight:700;
     }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet-slide.is-active { opacity:1; visibility:visible; pointer-events:auto; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-card {
-      position:relative; overflow:hidden; border-radius:1.2rem; background:#d8ecf6;
-      box-shadow:0 .6rem 1.7rem rgba(13,68,115,.14); border:1px solid rgba(255,255,255,.9);
+    #BhdHero-{{ section.id }} .bhd-hero-v3__headline {
+      margin-top:.2rem;
+      font-size:clamp(2.35rem,5.4vw,4.3rem);
+      line-height:.88;
+      font-weight:900;
+      color:var(--hero-blue);
+      text-transform:uppercase;
+      letter-spacing:-.035em;
     }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-card img { width:100%; height:100%; object-fit:cover; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-card::after {
-      content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(3,32,72,.7) 0%,rgba(3,32,72,.05) 35%,rgba(3,32,72,0) 58%);
+    #BhdHero-{{ section.id }} .bhd-hero-v3__headline span {
+      display:block;
+      color:var(--hero-navy);
+      font-size:.48em;
+      letter-spacing:.01em;
+      margin-bottom:.06em;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tagline {
+      margin-top:.35rem;
+      font-size:clamp(1rem,2vw,1.5rem);
+      font-weight:700;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tagline em {
+      font-style:italic;
+      border-bottom:.16em solid #16bce7;
+      padding:0 .08em;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-stage { position:relative; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-slide {
+      display:none;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:16px;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-slide.is-active { display:grid; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-card {
+      position:relative;
+      aspect-ratio:4/3;
+      overflow:hidden;
+      border-radius:16px;
+      background:#dbeaf2;
+      border:1px solid rgba(7,43,104,.10);
+      box-shadow:0 .5rem 1.3rem rgba(7,43,104,.10);
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-card img {
+      height:100%;
+      object-fit:cover;
+      object-position:center 42%;
+      transform:scale(1.03);
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-card::after {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg,rgba(4,34,74,.66) 0%,rgba(4,34,74,.08) 38%,rgba(4,34,74,.02) 64%,rgba(4,34,74,.34) 100%);
       pointer-events:none;
     }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-copy { position:absolute; z-index:2; left:1.2rem; top:1rem; right:1rem; color:#fff; text-shadow:0 2px 8px rgba(0,20,55,.3); }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-copy strong { display:block; font-size:clamp(1.5rem,3.2vw,2.6rem); line-height:1; text-transform:uppercase; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__segment-copy span { display:block; margin-top:.28rem; max-width:75%; font-size:clamp(.82rem,1.55vw,1.2rem); line-height:1.08; font-weight:700; }
-
-    #BhdHero-{{ section.id }} .bhd-hero-v2__product {
-      position:absolute; z-index:5; left:50%; bottom:11.8%; transform:translateX(-50%); width:clamp(14rem,24vw,22rem); text-decoration:none;
-      filter:drop-shadow(0 .75rem 1rem rgba(0,25,70,.24));
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-copy {
+      position:absolute;
+      z-index:2;
+      left:1rem;
+      right:1rem;
+      top:.9rem;
+      color:#fff;
+      text-shadow:0 2px 9px rgba(0,20,55,.35);
     }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__product img { width:100%; height:auto; object-fit:contain; }
-
-    #BhdHero-{{ section.id }} .bhd-hero-v2__benefits {
-      position:absolute; z-index:4; left:0; right:0; bottom:0; height:17.5%; padding:1.1% 5% 1.4%;
-      display:grid; grid-template-columns:repeat(4,1fr); align-items:center;
-      background:rgba(250,253,255,.95); border-top:1px solid rgba(7,43,104,.1);
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-copy strong {
+      display:block;
+      font-size:clamp(1.35rem,2.8vw,2.25rem);
+      line-height:1;
+      text-transform:uppercase;
     }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__benefit { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.3rem; text-align:center; font-size:clamp(.62rem,1.08vw,.92rem); line-height:1.05; font-weight:800; text-transform:uppercase; color:var(--hero-navy); }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__benefit + .bhd-hero-v2__benefit { border-left:1px solid rgba(7,43,104,.28); }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__benefit svg { width:clamp(1.8rem,3.2vw,2.7rem); height:clamp(1.8rem,3.2vw,2.7rem); fill:none; stroke:var(--hero-blue); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__dots { bottom:18.2%; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__arrow { top:50%; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__segment-copy span {
+      display:block;
+      margin-top:.28rem;
+      max-width:88%;
+      font-size:clamp(.8rem,1.45vw,1.05rem);
+      line-height:1.15;
+      font-weight:700;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__dots { margin:.8rem 0 .35rem; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__benefits {
+      margin-top:.55rem;
+      padding:.95rem .35rem .2rem;
+      border-top:1px solid rgba(7,43,104,.12);
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:.7rem;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__benefit {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:.5rem;
+      min-width:0;
+      text-align:left;
+      color:var(--hero-navy);
+      font-weight:800;
+      font-size:clamp(.68rem,1.25vw,.9rem);
+      line-height:1.05;
+      text-transform:uppercase;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__benefit svg {
+      width:2rem;
+      min-width:2rem;
+      height:2rem;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.7;
+    }
   }
 
   @media screen and (max-width:749px) {
-    #BhdHero-{{ section.id }} .bhd-hero-v2__desktop,
-    #BhdHero-{{ section.id }} .bhd-hero-v2__tablet { display:none; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__mobile { display:block; position:relative; width:100%; overflow:hidden; background:#eef8fd; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__mobile-track { position:relative; width:100%; aspect-ratio:9/16; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__mobile-slide { position:absolute; inset:0; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .45s ease; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__mobile-slide.is-active { opacity:1; visibility:visible; pointer-events:auto; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__mobile-slide img { width:100%; height:100%; object-fit:cover; object-position:center; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__arrow { width:3.65rem; height:3.65rem; font-size:2.8rem; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__arrow--prev { left:.7rem; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__arrow--next { right:.7rem; }
-    #BhdHero-{{ section.id }} .bhd-hero-v2__dots { bottom:.8rem; padding:.42rem .58rem; border-radius:999px; background:rgba(255,255,255,.78); backdrop-filter:blur(5px); }
-  }
-
-  @media (prefers-reduced-motion:reduce) {
-    #BhdHero-{{ section.id }} [data-hero-slide] { transition:none !important; }
+    #BhdHero-{{ section.id }} { padding:12px; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__desktop,
+    #BhdHero-{{ section.id }} .bhd-hero-v3__tablet { display:none; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__mobile { display:block; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__mobile-stage { position:relative; background:#dff2fb; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__mobile-slide { display:none; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__mobile-slide.is-active { display:block; }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__mobile-slide img {
+      aspect-ratio:941/1672;
+      height:auto;
+      object-fit:cover;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__arrow {
+      width:3.35rem;
+      height:3.35rem;
+      font-size:2.35rem;
+    }
+    #BhdHero-{{ section.id }} .bhd-hero-v3__dots--mobile {
+      position:absolute;
+      left:50%;
+      bottom:.65rem;
+      transform:translateX(-50%);
+      z-index:8;
+      padding:.35rem .55rem;
+      border-radius:999px;
+      background:rgba(255,255,255,.72);
+      backdrop-filter:blur(5px);
+    }
   }
 </style>
 
 <script>
-  (() => {
-    const root = document.getElementById('BhdHero-{{ section.id }}');
-    if (!root) return;
+(() => {
+  const root = document.getElementById('BhdHero-{{ section.id }}');
+  if (!root) return;
 
-    root.querySelectorAll('[data-hero-carousel]').forEach((carousel) => {
-      const slides = Array.from(carousel.querySelectorAll('[data-hero-slide]'));
-      const dotsWrap = carousel.querySelector('[data-hero-dots]');
-      const prev = carousel.querySelector('[data-hero-prev]');
-      const next = carousel.querySelector('[data-hero-next]');
-      if (slides.length < 2 || !dotsWrap) return;
+  const initCarousel = (carousel) => {
+    const slides = Array.from(carousel.querySelectorAll('[data-hero-slide]'));
+    if (slides.length < 2) return;
 
-      let index = 0;
-      let timer;
-      const interval = Number(carousel.dataset.interval || 5200);
+    const prev = carousel.querySelector('[data-hero-prev]');
+    const next = carousel.querySelector('[data-hero-next]');
+    const dotsWrap = carousel.querySelector('[data-hero-dots]');
+    const intervalMs = Number(carousel.dataset.interval || 5000);
+    let index = Math.max(0, slides.findIndex((slide) => slide.classList.contains('is-active')));
+    let timer;
 
-      dotsWrap.innerHTML = '';
-      const dots = slides.map((_, i) => {
-        const dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = 'bhd-hero-v2__dot' + (i === 0 ? ' is-active' : '');
-        dot.setAttribute('aria-label', `Show hero ${i + 1}`);
-        dot.addEventListener('click', () => { show(i); restart(); });
-        dotsWrap.appendChild(dot);
-        return dot;
+    const dots = slides.map((_, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'bhd-hero-v3__dot';
+      dot.setAttribute('aria-label', `Show hero ${i + 1}`);
+      dot.addEventListener('click', () => {
+        goTo(i);
+        restart();
       });
-
-      const show = (nextIndex) => {
-        index = (nextIndex + slides.length) % slides.length;
-        slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
-        dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
-      };
-
-      const stop = () => { if (timer) clearInterval(timer); };
-      const start = () => {
-        stop();
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) timer = setInterval(() => show(index + 1), interval);
-      };
-      const restart = () => start();
-
-      prev?.addEventListener('click', () => { show(index - 1); restart(); });
-      next?.addEventListener('click', () => { show(index + 1); restart(); });
-      carousel.addEventListener('mouseenter', stop);
-      carousel.addEventListener('mouseleave', start);
-      carousel.addEventListener('focusin', stop);
-      carousel.addEventListener('focusout', start);
-      carousel.addEventListener('touchstart', stop, { passive:true });
-      carousel.addEventListener('touchend', start, { passive:true });
-      start();
+      dotsWrap?.appendChild(dot);
+      return dot;
     });
-  })();
+
+    const goTo = (nextIndex) => {
+      index = (nextIndex + slides.length) % slides.length;
+      slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
+      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+    };
+
+    const stop = () => { if (timer) window.clearInterval(timer); };
+    const start = () => {
+      stop();
+      timer = window.setInterval(() => goTo(index + 1), intervalMs);
+    };
+    const restart = () => { start(); };
+
+    prev?.addEventListener('click', () => { goTo(index - 1); restart(); });
+    next?.addEventListener('click', () => { goTo(index + 1); restart(); });
+    carousel.addEventListener('mouseenter', stop);
+    carousel.addEventListener('mouseleave', start);
+    carousel.addEventListener('touchstart', stop, { passive:true });
+    carousel.addEventListener('touchend', start, { passive:true });
+
+    goTo(index);
+    start();
+  };
+
+  root.querySelectorAll('[data-hero-carousel]').forEach(initCarousel);
+})();
 </script>
 
 {% schema %}
 {
-  "name":"Best Hydrate visual hero",
-  "settings":[],
-  "presets":[{"name":"Best Hydrate visual hero"}]
+  "name":"Best Hydrate hero",
+  "settings":[
+    {"type":"text","id":"heading","label":"Heading","default":"Hydrate for YOUR best day."},
+    {"type":"text","id":"subheading","label":"Subheading","default":"Five essential electrolytes. Built for better hydration."},
+    {"type":"product","id":"product","label":"Product"},
+    {"type":"text","id":"button_label","label":"Button label","default":"SHOP NOW"},
+    {"type":"url","id":"button_link","label":"Button link"},
+    {"type":"range","id":"desktop_height","label":"Desktop height","min":400,"max":900,"step":20,"default":620},
+    {"type":"range","id":"mobile_height","label":"Mobile height","min":400,"max":900,"step":20,"default":560}
+  ],
+  "presets":[{"name":"Best Hydrate hero"}]
 }
 {% endschema %}
