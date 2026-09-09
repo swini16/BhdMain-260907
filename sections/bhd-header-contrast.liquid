@@ -72,15 +72,16 @@
     const cancelTier2Timer=(item)=>cancelTimer(tier2Timers,item);
     const cancelMainTimer=(item)=>cancelTimer(mainTimers,item);
 
-    const setTier2Open=(item,open)=>{
+    const setTier2Open=(item,open,preview=false)=>{
       if(!item)return;
       cancelTier2Timer(item);
       item.classList.toggle('is-tier2-open',open);
+      item.dataset.bhdTier2Preview=open&&preview?'1':'0';
       const toggle=item.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-toggle, :scope > .bhd-header__mobile-tier2-split .bhd-header__mobile-tier2-toggle');
       if(toggle)toggle.setAttribute('aria-expanded',open?'true':'false');
     };
 
-    const closeTier2=(item)=>setTier2Open(item,false);
+    const closeTier2=(item)=>setTier2Open(item,false,false);
 
     const closeTier2Siblings=(item)=>{
       const scope=item.closest('.bhd-header__dropdown-menu,.bhd-header__mobile-level-one');
@@ -88,16 +89,19 @@
       scope.querySelectorAll('.is-tier2-open').forEach(other=>{if(other!==item)closeTier2(other)});
     };
 
-    const openTier2=(item)=>{
+    const openTier2=(item,preview=false)=>{
       if(!item)return;
       closeTier2Siblings(item);
-      setTier2Open(item,true);
+      setTier2Open(item,true,preview);
     };
 
     const scheduleTier2Close=(item,delay=TIER2_CLOSE_DELAY)=>{
-      if(!item)return;
+      if(!item||item.dataset.bhdTier2Preview!=='1')return;
       cancelTier2Timer(item);
-      tier2Timers.set(item,setTimeout(()=>{closeTier2(item);tier2Timers.delete(item)},delay));
+      tier2Timers.set(item,setTimeout(()=>{
+        if(item.dataset.bhdTier2Preview==='1')closeTier2(item);
+        tier2Timers.delete(item);
+      },delay));
     };
 
     const closeAllTier2=(main)=>main?.querySelectorAll('.is-tier2-open').forEach(closeTier2);
@@ -187,7 +191,7 @@
         child.addEventListener('mouseenter',()=>{
           if(window.innerWidth<990)return;
           cancelTier2Timer(child);
-          openTier2(child);
+          if(child.dataset.bhdTier2Preview==='1'||!child.classList.contains('is-tier2-open'))openTier2(child,true);
         });
         child.addEventListener('mouseleave',()=>{
           if(window.innerWidth<990)return;
@@ -195,7 +199,7 @@
         });
         child.addEventListener('focusin',()=>{
           if(window.innerWidth<990)return;
-          openTier2(child);
+          if(!child.classList.contains('is-tier2-open'))openTier2(child,true);
         });
         child.addEventListener('focusout',(event)=>{
           if(window.innerWidth<990||child.contains(event.relatedTarget))return;
@@ -267,7 +271,15 @@
 
     document.addEventListener('click',(event)=>{
       const tierToggle=event.target.closest('.bhd-header__tier2-toggle,.bhd-header__mobile-tier2-toggle');
-      if(tierToggle)pinParentForTier2(tierToggle);
+      if(tierToggle){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const item=tierToggle.closest('.bhd-header__dropdown-child,.bhd-header__mobile-tier2');
+        pinParentForTier2(tierToggle);
+        if(item.classList.contains('is-tier2-open')&&item.dataset.bhdTier2Preview!=='1')closeTier2(item);
+        else openTier2(item,false);
+        return;
+      }
 
       const toggle=event.target.closest('.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]');
       if(!toggle)return;
@@ -292,10 +304,10 @@
 
 {% comment %}
 The canonical menu hierarchy is rendered by bhd-header.liquid and mirrored in Shopify Admin MAIN navigation.
-Desktop level-two items expand on hover. Leaving a menu context closes the deepest preview first after 260 ms, then closes the unpinned top-level preview after 520 ms. Click-pinned top-level menus remain pinned until explicitly closed.
-Second-level click toggles still promote their top-level family to the pinned open state first when needed.
+Desktop level-two items expand as hover previews. Leaving the menu context closes the deepest hover preview after 260 ms, then closes the unpinned top-level preview after 520 ms.
+Clicking a level-two toggle converts that preview into a persistent clicked state and pins its top-level parent. Clicked nested states are not removed by the hover timeout.
 Editorial blog breadcrumbs are normalized to the Connect hierarchy used by Page breadcrumbs.
-Sync marker: staged-nested-hover-20260909.
+Sync marker: staged-nested-hover-persistent-click-20260909.
 {% endcomment %}
 
 {% schema %}
