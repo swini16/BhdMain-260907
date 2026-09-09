@@ -19,10 +19,6 @@
         "color_scheme": "scheme-2"
       }
     },
-    "menu_source": {
-      "type": "bhd-header-menu-source",
-      "settings": {}
-    },
     "menu_contrast": {
       "type": "bhd-header-contrast",
       "settings": {}
@@ -34,7 +30,6 @@
   },
   "order": [
     "header",
-    "menu_source",
     "menu_contrast",
     "blog_nav"
   ]
