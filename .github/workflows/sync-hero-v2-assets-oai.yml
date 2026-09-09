@@ -1,0 +1,61 @@
+name: Sync hero v2 mobile assets
+
+on:
+  push:
+    paths:
+      - '.github/workflows/sync-hero-v2-assets-oai.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download verified hero assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets
+          curl -fL --retry 3 --retry-delay 2 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-ae68-81fd-b14c-9bf0b7404661/raw?se=2026-09-09T02%3A31%3A57Z&sp=r&sv=2026-02-06&sr=b&scid=2837ef65-afb9-5103-9dd4-668f9d922eb1&skoid=c69179d1-5b5d-430f-afa3-b9bdcf9d6497&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-09T00%3A33%3A48Z&ske=2026-09-10T00%3A33%3A48Z&sks=b&skv=2026-02-06&sig=bd9cfE9DxNd26bPhrK684rZGfwTGwdbYQcWZC6qnC/g%3D' -o assets/hero-v2-mobile-performance.webp
+          curl -fL --retry 3 --retry-delay 2 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-27b8-81fd-9279-538d1bf3fb86/raw?se=2026-09-09T02%3A32%3A05Z&sp=r&sv=2026-02-06&sr=b&scid=e4147376-eef3-53ca-9163-653efd1112ab&skoid=c69179d1-5b5d-430f-afa3-b9bdcf9d6497&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-08T19%3A19%3A37Z&ske=2026-09-09T19%3A19%3A37Z&sks=b&skv=2026-02-06&sig=YD51m0e6Z8qChyKryCdJbYk2YBTqR/zhKNpUcKVu7vI%3D' -o assets/hero-v2-mobile-daily.webp
+          curl -fL --retry 3 --retry-delay 2 'https://sdmntprwestus.oaiusercontent.com/files/00000000-4084-8230-82ff-2a2f4730eed3/raw?se=2026-09-09T02%3A32%3A12Z&sp=r&sv=2026-02-06&sr=b&scid=1742c887-f6d0-5544-8516-ec154b1379b2&skoid=c69179d1-5b5d-430f-afa3-b9bdcf9d6497&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-08T19%3A14%3A25Z&ske=2026-09-09T19%3A14%3A25Z&sks=b&skv=2026-02-06&sig=AHkUQM%2BMx%2B1U3213MWSK8ShkEK5aeVmk7kb4HipRvAI%3D' -o assets/hero-v2-mobile-medical.webp
+          curl -fL --retry 3 --retry-delay 2 'https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-df48-81f7-b724-9111af85357d/raw?se=2026-09-09T02%3A32%3A20Z&sp=r&sv=2026-02-06&sr=b&scid=6790127a-7334-50ad-8748-ca0889c2cc92&skoid=c69179d1-5b5d-430f-afa3-b9bdcf9d6497&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-08T19%3A19%3A41Z&ske=2026-09-09T19%3A19%3A41Z&sks=b&skv=2026-02-06&sig=31t25y/IpzAeveZ/3F0Hey/qQ3zYsn9nqnPe1v24D%2B8%3D' -o assets/hero-v2-mobile-humanitarian.webp
+
+      - name: Validate WebP files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          expected = {
+              'hero-v2-mobile-performance.webp': 144498,
+              'hero-v2-mobile-daily.webp': 118780,
+              'hero-v2-mobile-medical.webp': 101690,
+              'hero-v2-mobile-humanitarian.webp': 131712,
+          }
+          for name, expected_size in expected.items():
+              p = Path('assets') / name
+              data = p.read_bytes()
+              assert len(data) == expected_size, (name, len(data), expected_size)
+              assert data[:4] == b'RIFF' and data[8:12] == b'WEBP', name
+              print(name, len(data), 'WEBP OK')
+          PY
+
+      - name: Commit hero assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'swini16'
+          git config user.email '59820522+swini16@users.noreply.github.com'
+          git add assets/hero-v2-mobile-*.webp
+          if git diff --cached --quiet; then
+            echo 'No asset changes'
+            exit 0
+          fi
+          git commit -m 'Add verified hero v2 mobile assets'
+          git push origin HEAD:main
