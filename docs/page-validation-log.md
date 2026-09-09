@@ -34,6 +34,10 @@ Status legend:
 | 021 | Endurance | `/pages/endurance` | PASS | PARTIAL | `validation/021-endurance.md` |
 | 022 | Heat & High Sweat | `/pages/heat-high-sweat` | PASS | PARTIAL | `validation/022-heat-high-sweat.md` |
 | 023 | Recovery | `/pages/recovery` | PASS | PARTIAL | `validation/023-recovery.md` |
+| 024 | Everyday Wellness | `/pages/everyday-wellness` | PASS | PARTIAL | `validation/024-everyday-wellness.md` |
+| 025 | Work & Long Shifts | `/pages/work-long-shifts` | PASS | PARTIAL | `validation/025-work-long-shifts.md` |
+| 026 | Travel | `/pages/travel` | PASS | PARTIAL | `validation/026-travel.md` |
+| 027 | Active Living | `/pages/active-living` | PASS | PARTIAL | `validation/027-active-living.md` |
 
 ### Science family milestone
 
@@ -43,9 +47,9 @@ The remaining common validation limitation is Shopify Admin: GitHub theme access
 
 ### Solutions wave progress
 
-The product route has been audited and enhanced. Product Details and Directions are complete theme-side. The Performance cluster is now also implemented: Performance Hydration, Endurance, Heat & High Sweat and Recovery. Each page uses situation-led imagery, contextual science, conservative claim boundaries and cross-links into the Science family.
+The product route has been audited and enhanced. Product Details and Directions are complete theme-side. Performance Hydration, Endurance, Heat & High Sweat and Recovery are complete. The Everyday Wellness cluster is now also implemented: Everyday Wellness, Work & Long Shifts, Travel and Active Living.
 
-Next sequence: Everyday Wellness, Work & Long Shifts, Travel and Active Living, followed by Clinical Hydration, Recovery & Rehabilitation, Active Aging and Eco-Humanitarian.
+Next sequence: Clinical Hydration, Recovery & Rehabilitation, Active Aging and Eco-Humanitarian. After that, run a complete Solutions-family audit before entering Connect.
 
 ## 001 - Hydration Science
 

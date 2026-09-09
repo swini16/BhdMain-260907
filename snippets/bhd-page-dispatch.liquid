@@ -22,6 +22,10 @@
   {% when 'endurance' %}{% render 'bhd-page-endurance' %}
   {% when 'heat-high-sweat' %}{% render 'bhd-page-heat-high-sweat' %}
   {% when 'recovery' %}{% render 'bhd-page-recovery' %}
+  {% when 'everyday-wellness' %}{% render 'bhd-page-everyday-wellness' %}
+  {% when 'work-long-shifts' %}{% render 'bhd-page-work-long-shifts' %}
+  {% when 'travel' %}{% render 'bhd-page-travel' %}
+  {% when 'active-living' %}{% render 'bhd-page-active-living' %}
   {% else %}
     <nav class="bhd-breadcrumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span></nav>
     <div class="bhd-page-fallback__content"><h1>{{ page.title }}</h1><div class="rte">{{ page.content }}</div></div>
