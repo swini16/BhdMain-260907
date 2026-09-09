@@ -24,7 +24,7 @@
 
   <div class="bhd-hero__carousel bhd-hero__mobile" data-hero-carousel data-interval="4700" aria-label="Best Hydrate mobile hero slideshow">
     <div class="bhd-hero__debug" data-hero-debug>
-      <strong>BHD HERO DEBUG v20260908-1805 INLINE</strong>
+      <strong>BHD HERO DEBUG v20260908-RAW-PINNED</strong>
       <div data-debug-runtime>JS: waiting</div>
       <div data-debug-viewport>Viewport: waiting</div>
       <div data-debug-item="performance">Performance: waiting</div>
@@ -34,10 +34,18 @@
     </div>
 
     <div class="bhd-hero__track">
-      <div class="bhd-hero__slide is-active" data-hero-slide>{% render 'bhd-hero-mobile-performance' %}</div>
-      <div class="bhd-hero__slide" data-hero-slide>{% render 'bhd-hero-mobile-daily' %}</div>
-      <div class="bhd-hero__slide" data-hero-slide>{% render 'bhd-hero-mobile-medical' %}</div>
-      <div class="bhd-hero__slide" data-hero-slide>{% render 'bhd-hero-mobile-humanitarian' %}</div>
+      <div class="bhd-hero__slide is-active" data-hero-slide>
+        <img data-hero-debug-name="performance" src="https://raw.githubusercontent.com/swini16/BhdMain-260907/bc2acdf7c97bc5a2bbf9ed73976d7d73951a5e6e/assets/hero-mobile-performance.webp" alt="Best Hydrate performance hydration" width="720" height="1280" loading="eager" fetchpriority="high" decoding="async">
+      </div>
+      <div class="bhd-hero__slide" data-hero-slide>
+        <img data-hero-debug-name="daily" src="https://raw.githubusercontent.com/swini16/BhdMain-260907/bc2acdf7c97bc5a2bbf9ed73976d7d73951a5e6e/assets/hero-mobile-daily.webp" alt="Best Hydrate daily hydration" width="720" height="1280" loading="eager" decoding="async">
+      </div>
+      <div class="bhd-hero__slide" data-hero-slide>
+        <img data-hero-debug-name="medical" src="https://raw.githubusercontent.com/swini16/BhdMain-260907/bc2acdf7c97bc5a2bbf9ed73976d7d73951a5e6e/assets/hero-mobile-medical.webp" alt="Best Hydrate medical hydration" width="720" height="1280" loading="eager" decoding="async">
+      </div>
+      <div class="bhd-hero__slide" data-hero-slide>
+        <img data-hero-debug-name="humanitarian" src="https://raw.githubusercontent.com/swini16/BhdMain-260907/bc2acdf7c97bc5a2bbf9ed73976d7d73951a5e6e/assets/hero-mobile-humanitarian.webp" alt="Best Hydrate humanitarian hydration" width="720" height="1280" loading="eager" decoding="async">
+      </div>
     </div>
     <button class="bhd-hero__arrow bhd-hero__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
     <button class="bhd-hero__arrow bhd-hero__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
@@ -128,7 +136,7 @@
 
         const paint = (state) => {
           const src = img.currentSrc || img.src || '(no src)';
-          const srcLabel = src.startsWith('data:image/') ? `INLINE DATA URI (${src.length} chars)` : (src.length > 95 ? src.slice(0, 92) + '...' : src);
+          const srcLabel = src.length > 115 ? src.slice(0, 112) + '...' : src;
           row.textContent = `${key}: ${state}, natural=${img.naturalWidth}x${img.naturalHeight}, src=${srcLabel}`;
         };
 
