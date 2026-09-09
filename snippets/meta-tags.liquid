@@ -1,4 +1,5 @@
 {%- liquid
+  assign seo_home_title = 'Best Hydrate | Science-Informed Electrolyte Hydration'
   assign seo_default_description = 'Best Hydrate is a Canadian science-informed electrolyte drink mix for performance, everyday hydration and recovery. Explore the formula and hydration science.'
   assign og_title = page_title | default: shop.name
   assign og_url = canonical_url | default: request.origin
@@ -7,7 +8,8 @@
   assign social_image = page_image
   assign seo_noindex = false
 
-  if request.page_type == 'index' and page_description == blank
+  if request.page_type == 'index'
+    assign og_title = seo_home_title
     assign og_description = seo_default_description
   endif
 
@@ -33,10 +35,6 @@
     assign seo_noindex = true
   endif
 -%}
-
-{%- if page_description == blank and request.page_type == 'index' -%}
-  <meta name="description" content="{{ seo_default_description | escape }}">
-{%- endif -%}
 
 {%- if seo_noindex -%}
   <meta name="robots" content="noindex,follow">
