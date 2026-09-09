@@ -1,7 +1,7 @@
 {% assign bhd_navigation = linklists['new-menu'] %}
 {% if bhd_navigation != blank and bhd_navigation.links.size > 0 %}
   {% liquid
-    assign bhd_current_path = request.path
+    assign bhd_current_path = request.path | split: '?' | first | split: '#' | first
     assign bhd_context_depth = 0
     assign bhd_context_1_label = ''
     assign bhd_context_1_url = ''
@@ -11,21 +11,65 @@
     assign bhd_context_3_url = ''
 
     for top_link in bhd_navigation.links
-      if top_link.url == bhd_current_path and bhd_context_depth < 1
+      assign bhd_top_path = top_link.url | split: '?' | first | split: '#' | first
+      if shop.url != blank
+        assign bhd_top_path = bhd_top_path | remove: shop.url
+      endif
+      if bhd_top_path contains '://'
+        assign bhd_top_path = bhd_top_path | remove: 'https://' | remove: 'http://'
+        if shop.domain != blank
+          assign bhd_top_path = bhd_top_path | remove: shop.domain
+        endif
+        if shop.permanent_domain != blank
+          assign bhd_top_path = bhd_top_path | remove: shop.permanent_domain
+        endif
+      endif
+
+      if bhd_top_path == bhd_current_path and bhd_context_depth < 1
         assign bhd_context_depth = 1
         assign bhd_context_1_label = top_link.title
         assign bhd_context_1_url = top_link.url
       endif
+
       for second_link in top_link.links
-        if second_link.url == bhd_current_path and bhd_context_depth < 2
+        assign bhd_second_path = second_link.url | split: '?' | first | split: '#' | first
+        if shop.url != blank
+          assign bhd_second_path = bhd_second_path | remove: shop.url
+        endif
+        if bhd_second_path contains '://'
+          assign bhd_second_path = bhd_second_path | remove: 'https://' | remove: 'http://'
+          if shop.domain != blank
+            assign bhd_second_path = bhd_second_path | remove: shop.domain
+          endif
+          if shop.permanent_domain != blank
+            assign bhd_second_path = bhd_second_path | remove: shop.permanent_domain
+          endif
+        endif
+
+        if bhd_second_path == bhd_current_path and bhd_context_depth < 2
           assign bhd_context_depth = 2
           assign bhd_context_1_label = top_link.title
           assign bhd_context_1_url = top_link.url
           assign bhd_context_2_label = second_link.title
           assign bhd_context_2_url = second_link.url
         endif
+
         for third_link in second_link.links
-          if third_link.url == bhd_current_path and bhd_context_depth < 3
+          assign bhd_third_path = third_link.url | split: '?' | first | split: '#' | first
+          if shop.url != blank
+            assign bhd_third_path = bhd_third_path | remove: shop.url
+          endif
+          if bhd_third_path contains '://'
+            assign bhd_third_path = bhd_third_path | remove: 'https://' | remove: 'http://'
+            if shop.domain != blank
+              assign bhd_third_path = bhd_third_path | remove: shop.domain
+            endif
+            if shop.permanent_domain != blank
+              assign bhd_third_path = bhd_third_path | remove: shop.permanent_domain
+            endif
+          endif
+
+          if bhd_third_path == bhd_current_path and bhd_context_depth < 3
             assign bhd_context_depth = 3
             assign bhd_context_1_label = top_link.title
             assign bhd_context_1_url = top_link.url
@@ -150,4 +194,4 @@
   </script>
 {% endif %}
 
-{% comment %}Shopify Admin MAIN, handle new-menu, is the live interactive header and hierarchy source. Static header markup remains the fallback if the menu object is unavailable. Non-page menu destinations also receive breadcrumbs from the same hierarchy.{% endcomment %}
+{% comment %}Shopify Admin MAIN, handle new-menu, is the live interactive header and hierarchy source. URL comparisons are normalized so manual HTTP links match relative storefront request paths on both page and non-page destinations.{% endcomment %}
