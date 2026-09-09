@@ -10,18 +10,18 @@
     .bhd-header .bhd-header__main-item:hover::after,.bhd-header .bhd-header__main-item.is-open::after{display:block}
     .bhd-header .bhd-header__dropdown-menu{z-index:3;border-top:3px solid rgba(var(--color-button),.5);box-shadow:0 2.2rem 5rem rgba(13,33,78,.18)}
 
-    /* Explicit lock beats every base hover and focus rule while one top-level node is toggled open. */
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.is-open) .bhd-header__dropdown-menu,
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.is-open):hover .bhd-header__dropdown-menu,
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.is-open):focus-within .bhd-header__dropdown-menu{
+    /* A click-open node is explicitly pinned. While pinned, no sibling hover or focus path may display. */
+    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned) .bhd-header__dropdown-menu,
+    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned):hover .bhd-header__dropdown-menu,
+    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned):focus-within .bhd-header__dropdown-menu{
       display:none!important;
       visibility:hidden!important;
       opacity:0!important;
       pointer-events:none!important;
     }
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.is-open)::after{display:none!important}
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.is-open):hover .bhd-header__split-button,
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.is-open):focus-within .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
+    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned)::after{display:none!important}
+    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned):hover .bhd-header__split-button,
+    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned):focus-within .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
 
     .bhd-header .bhd-header__main-item.bhd-hover-suppressed:hover .bhd-header__dropdown-menu,
     .bhd-header .bhd-header__main-item.bhd-hover-suppressed:focus-within .bhd-header__dropdown-menu{display:none!important}
@@ -51,45 +51,60 @@
 
 <script>
   (()=>{
-    const syncLock=(header)=>{
+    const reconcile=(header)=>{
       if(!header)return;
-      header.classList.toggle('bhd-menu-locked',!!header.querySelector('[data-main-item].is-open'));
+      const items=Array.from(header.querySelectorAll('[data-main-item]'));
+      const open=items.find(item=>item.classList.contains('is-open'))||null;
+      header.classList.toggle('bhd-menu-locked',!!open);
+      items.forEach(item=>item.classList.toggle('bhd-menu-pinned',item===open));
     };
 
     const bind=()=>{
       document.querySelectorAll('.bhd-header').forEach(header=>{
-        syncLock(header);
+        if(header.dataset.bhdLockBound==='1')return;
+        header.dataset.bhdLockBound='1';
+
         header.querySelectorAll('[data-main-item]').forEach(item=>{
-          if(item.dataset.bhdCollapseBound==='1')return;
-          item.dataset.bhdCollapseBound='1';
           item.addEventListener('mouseleave',()=>item.classList.remove('bhd-hover-suppressed'));
         });
+
+        const observer=new MutationObserver(()=>reconcile(header));
+        observer.observe(header,{subtree:true,attributes:true,attributeFilter:['class']});
+        reconcile(header);
       });
     };
 
+    /* Capture phase pins the intended node before the base header click handler runs. */
     document.addEventListener('click',(event)=>{
       const toggle=event.target.closest('.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]');
-      const header=event.target.closest('.bhd-header');
+      if(!toggle)return;
+      const item=toggle.closest('[data-main-item]');
+      const header=item&&item.closest('.bhd-header');
+      if(!item||!header)return;
 
-      if(toggle){
-        const item=toggle.closest('[data-main-item]');
+      const wasOpen=item.classList.contains('is-open');
+      if(wasOpen){
+        item.classList.add('bhd-hover-suppressed');
+        item.classList.remove('bhd-menu-pinned');
+        header.classList.remove('bhd-menu-locked');
         requestAnimationFrame(()=>{
-          if(item){
-            if(item.classList.contains('is-open'))item.classList.remove('bhd-hover-suppressed');
-            else item.classList.add('bhd-hover-suppressed');
-          }
-          syncLock(header);
+          if(document.activeElement===toggle)toggle.blur();
+          reconcile(header);
         });
-        return;
+      }else{
+        header.classList.add('bhd-menu-locked');
+        header.querySelectorAll('[data-main-item]').forEach(other=>other.classList.toggle('bhd-menu-pinned',other===item));
+        requestAnimationFrame(()=>reconcile(header));
       }
+    },true);
 
-      if(header||document.querySelector('.bhd-header.bhd-menu-locked')){
-        requestAnimationFrame(()=>document.querySelectorAll('.bhd-header').forEach(syncLock));
-      }
+    document.addEventListener('click',(event)=>{
+      if(event.target.closest('.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]'))return;
+      requestAnimationFrame(()=>document.querySelectorAll('.bhd-header').forEach(reconcile));
     });
 
     document.addEventListener('keydown',(event)=>{
-      if(event.key==='Escape')requestAnimationFrame(()=>document.querySelectorAll('.bhd-header').forEach(syncLock));
+      if(event.key==='Escape')requestAnimationFrame(()=>document.querySelectorAll('.bhd-header').forEach(reconcile));
     });
 
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
@@ -99,8 +114,8 @@
 
 {% comment %}
 The canonical Science, Solutions and Connect hierarchy is rendered directly by bhd-header.liquid.
-This layer adds interaction polish only: a forgiving hover bridge, explicit single-menu lock, reliable manual collapse, and calm active-node emphasis.
-Sync marker: hard-single-menu-lock-20260909.
+This layer adds interaction polish only: forgiving hover access, deterministic single-menu pinning, reliable manual collapse, and calm active-node emphasis.
+Sync marker: deterministic-single-menu-pin-20260909.
 {% endcomment %}
 
 {% schema %}
