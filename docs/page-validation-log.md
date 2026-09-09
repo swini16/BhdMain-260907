@@ -3,83 +3,91 @@
 Last updated: 2026-09-09
 
 Status legend:
-- PASS: theme/content implementation verified in repository
-- PARTIAL: implemented but dependent on a Shopify Page object or final live verification
+- PASS: implementation or external dependency verified
+- PARTIAL: implemented but still dependent on final live/browser verification
 - PENDING: not yet implemented
 
 ## Master page index
 
 | # | Page | Route | Theme/content | Shopify object | Validation |
 |---|---|---|---|---|---|
-| 001 | Hydration Science | `/pages/hydration-science` | PASS | PARTIAL | Main record below |
-| 002 | How Hydration Works | `/pages/how-hydration-works` | PASS | PARTIAL | `validation/002-how-hydration-works.md` |
-| 003 | Electrolytes | `/pages/electrolytes` | PASS | PARTIAL | `validation/003-electrolytes.md` |
-| 004 | Glucose & Water Absorption | `/pages/glucose-water-absorption` | PASS | PARTIAL | `validation/004-glucose-water-absorption.md` |
-| 005 | Our Formula | `/pages/our-formula` | PASS | PARTIAL | `validation/005-our-formula.md` |
-| 006 | Five Essential Electrolytes | `/pages/five-essential-electrolytes` | PASS | PARTIAL | `validation/006-five-essential-electrolytes.md` |
-| 007 | Ingredient Rationale | `/pages/ingredient-rationale` | PASS | PARTIAL | `validation/007-ingredient-rationale.md` |
-| 008 | Why Bicarbonate | `/pages/why-bicarbonate` | PASS | PARTIAL | `validation/008-why-bicarbonate.md` |
-| 009 | Research & Impact | `/pages/research-publications` | PASS | PARTIAL | `validation/009-research-publications.md` |
-| 010 | Publications | `/pages/publications` | PASS | PARTIAL | `validation/010-publications.md` |
-| 011 | Current Research | `/pages/current-research` | PASS | PARTIAL | `validation/011-current-research.md` |
-| 012 | Research Partners | `/pages/research-partners` | PASS | PARTIAL | `validation/012-research-partners.md` |
-| 013 | Research Impact | `/pages/research-impact` | PASS | PARTIAL | `validation/013-research-impact.md` |
-| 014 | Clinical Development | `/pages/clinical-development` | PASS | PARTIAL | `validation/014-clinical-development.md` |
-| 015 | Clinical Program | `/pages/clinical-program` | PASS | PARTIAL | `validation/015-clinical-program.md` |
-| 016 | Pilot Studies | `/pages/pilot-studies` | PASS | PARTIAL | `validation/016-pilot-studies.md` |
-| 017 | Healthcare Applications | `/pages/healthcare-applications` | PASS | PARTIAL | `validation/017-healthcare-applications.md` |
-| 018 | Product Details | `/pages/product-details` | PASS | PARTIAL | `validation/018-product-details.md` |
-| 019 | Directions | `/pages/directions` | PASS | PARTIAL | `validation/019-directions.md` |
-| 020 | Performance Hydration | `/pages/performance-hydration` | PASS | PARTIAL | `validation/020-performance-hydration.md` |
-| 021 | Endurance | `/pages/endurance-hydration` | PASS | PARTIAL | `validation/021-endurance.md` |
-| 022 | Heat & High Sweat | `/pages/heat-high-sweat` | PASS | PARTIAL | `validation/022-heat-high-sweat.md` |
-| 023 | Recovery | `/pages/recovery-hydration` | PASS | PARTIAL | `validation/023-recovery.md` |
-| 024 | Everyday Wellness | `/pages/everyday-wellness` | PASS | PARTIAL | `validation/024-everyday-wellness.md` |
-| 025 | Work & Long Shifts | `/pages/work-long-shifts` | PASS | PARTIAL | `validation/025-work-long-shifts.md` |
-| 026 | Travel | `/pages/travel-hydration` | PASS | PARTIAL | `validation/026-travel.md` |
-| 027 | Active Living | `/pages/active-living` | PASS | PARTIAL | `validation/027-active-living.md` |
-| 028 | Clinical Hydration | `/pages/clinical-hydration` | PASS | PARTIAL | `validation/028-clinical-hydration.md` |
-| 029 | Recovery & Rehabilitation | `/pages/recovery-rehabilitation` | PASS | PARTIAL | `validation/029-recovery-rehabilitation.md` |
-| 030 | Active Aging | `/pages/active-aging` | PASS | PARTIAL | `validation/030-active-aging.md` |
-| 031 | Eco-Humanitarian | `/pages/eco-humanitarian` | PASS | PARTIAL | `validation/031-eco-humanitarian.md` |
+| 001 | Hydration Science | `/pages/hydration-science` | PASS | PASS | Main record below |
+| 002 | How Hydration Works | `/pages/how-hydration-works` | PASS | PASS | `validation/002-how-hydration-works.md` |
+| 003 | Electrolytes | `/pages/electrolytes` | PASS | PASS | `validation/003-electrolytes.md` |
+| 004 | Glucose & Water Absorption | `/pages/glucose-water-absorption` | PASS | PASS | `validation/004-glucose-water-absorption.md` |
+| 005 | Our Formula | `/pages/our-formula` | PASS | PASS | `validation/005-our-formula.md` |
+| 006 | Five Essential Electrolytes | `/pages/five-essential-electrolytes` | PASS | PASS | `validation/006-five-essential-electrolytes.md` |
+| 007 | Ingredient Rationale | `/pages/ingredient-rationale` | PASS | PASS | `validation/007-ingredient-rationale.md` |
+| 008 | Why Bicarbonate | `/pages/why-bicarbonate` | PASS | PASS | `validation/008-why-bicarbonate.md` |
+| 009 | Research & Impact | `/pages/research-publications` | PASS | PASS | `validation/009-research-publications.md` |
+| 010 | Publications | `/pages/publications` | PASS | PASS | `validation/010-publications.md` |
+| 011 | Current Research | `/pages/current-research` | PASS | PASS | `validation/011-current-research.md` |
+| 012 | Research Partners | `/pages/research-partners` | PASS | PASS | `validation/012-research-partners.md` |
+| 013 | Research Impact | `/pages/research-impact` | PASS | PASS | `validation/013-research-impact.md` |
+| 014 | Clinical Development | `/pages/clinical-development` | PASS | PASS | `validation/014-clinical-development.md` |
+| 015 | Clinical Program | `/pages/clinical-program` | PASS | PASS | `validation/015-clinical-program.md` |
+| 016 | Pilot Studies | `/pages/pilot-studies` | PASS | PASS | `validation/016-pilot-studies.md` |
+| 017 | Healthcare Applications | `/pages/healthcare-applications` | PASS | PASS | `validation/017-healthcare-applications.md` |
+| 018 | Product Details | `/pages/product-details` | PASS | PASS | `validation/018-product-details.md` |
+| 019 | Directions | `/pages/directions` | PASS | PASS | `validation/019-directions.md` |
+| 020 | Performance Hydration | `/pages/performance-hydration` | PASS | PASS | `validation/020-performance-hydration.md` |
+| 021 | Endurance | `/pages/endurance-hydration` | PASS | PASS | `validation/021-endurance.md` |
+| 022 | Heat & High Sweat | `/pages/heat-high-sweat` | PASS | PASS | `validation/022-heat-high-sweat.md` |
+| 023 | Recovery | `/pages/recovery-hydration` | PASS | PASS | `validation/023-recovery.md` |
+| 024 | Everyday Wellness | `/pages/everyday-wellness` | PASS | PASS | `validation/024-everyday-wellness.md` |
+| 025 | Work & Long Shifts | `/pages/work-long-shifts` | PASS | PASS | `validation/025-work-long-shifts.md` |
+| 026 | Travel | `/pages/travel-hydration` | PASS | PASS | `validation/026-travel.md` |
+| 027 | Active Living | `/pages/active-living` | PASS | PASS | `validation/027-active-living.md` |
+| 028 | Clinical Hydration | `/pages/clinical-hydration` | PASS | PASS | `validation/028-clinical-hydration.md` |
+| 029 | Recovery & Rehabilitation | `/pages/recovery-rehabilitation` | PASS | PASS | `validation/029-recovery-rehabilitation.md` |
+| 030 | Active Aging | `/pages/active-aging` | PASS | PASS | `validation/030-active-aging.md` |
+| 031 | Eco-Humanitarian | `/pages/eco-humanitarian` | PASS | PASS | `validation/031-eco-humanitarian.md` |
 | 032 | Meet Us | `/pages/our-story` | PASS | PASS | `validation/032-meet-us.md` |
-| 033 | Why Best Hydrate | `/pages/why-best-hydrate` | PASS | PARTIAL | `validation/033-why-best-hydrate.md` |
-| 034 | Mission & Values | `/pages/mission-values` | PASS | PARTIAL | `validation/034-mission-values.md` |
-| 035 | Partnerships | `/pages/partnerships` | PASS | PARTIAL | `validation/035-partnerships.md` |
-| 036 | Research Partnerships | `/pages/research-partnerships` | PASS | PARTIAL | `validation/036-research-partnerships.md` |
-| 037 | Retail & Distribution | `/pages/retail-distribution` | PASS | PARTIAL | `validation/037-retail-distribution.md` |
-| 038 | Humanitarian Partnerships | `/pages/humanitarian-partnerships` | PASS | PARTIAL | `validation/038-humanitarian-partnerships.md` |
-| 039 | Investor Relations | `/pages/investor-relations` | PASS | PARTIAL | `validation/039-investor-relations.md` |
-| 040 | Corporate Information | `/pages/corporate-information` | PASS | PARTIAL | `validation/040-corporate-information.md` |
-| 041 | Investor Contact | `/pages/investor-contact` | PASS | PARTIAL | `validation/041-investor-contact.md` |
+| 033 | Why Best Hydrate | `/pages/why-best-hydrate` | PASS | PASS | `validation/033-why-best-hydrate.md` |
+| 034 | Mission & Values | `/pages/mission-values` | PASS | PASS | `validation/034-mission-values.md` |
+| 035 | Partnerships | `/pages/partnerships` | PASS | PASS | `validation/035-partnerships.md` |
+| 036 | Research Partnerships | `/pages/research-partnerships` | PASS | PASS | `validation/036-research-partnerships.md` |
+| 037 | Retail & Distribution | `/pages/retail-distribution` | PASS | PASS | `validation/037-retail-distribution.md` |
+| 038 | Humanitarian Partnerships | `/pages/humanitarian-partnerships` | PASS | PASS | `validation/038-humanitarian-partnerships.md` |
+| 039 | Investor Relations | `/pages/investor-relations` | PASS | PASS | `validation/039-investor-relations.md` |
+| 040 | Corporate Information | `/pages/corporate-information` | PASS | PASS | `validation/040-corporate-information.md` |
+| 041 | Investor Contact | `/pages/investor-contact` | PASS | PASS | `validation/041-investor-contact.md` |
 | 042 | News & Insights | `/blogs/news` | PASS | PASS | `validation/042-news-insights.md` |
-| 043 | Press & Media | `/pages/press` | PASS | PARTIAL | `validation/043-press-media.md` |
-| 044 | Events | `/pages/events` | PASS | PARTIAL | `validation/044-events.md` |
+| 043 | Press & Media | `/pages/press` | PASS | PASS | `validation/043-press-media.md` |
+| 044 | Events | `/pages/events` | PASS | PASS | `validation/044-events.md` |
 | 045 | Contact Us | `/pages/contact` | PASS | PASS | `validation/045-contact-us.md` |
+
+### Canonical Shopify object milestone
+
+All 45 canonical records now have a verified published Shopify content object. The complete store-side audit is recorded in `validation/shopify-page-object-audit.md`.
+
+The 42 formerly missing canonical Page objects were created directly in Shopify using the default page template: 17 Science, 14 Solutions and 11 Connect pages. Meet Us, Contact and the News blog already existed. A post-creation two-page Shopify Admin inventory confirmed the canonical handles are published.
+
+This closes the former blanket Shopify Page-object dependency. Final browser/device rendering remains a separate whole-site QA item.
 
 ### Science family milestone
 
-All 17 canonical Science pages have dedicated Best Hydrate theme content and a dispatcher route. Every page has breadcrumbs, one visible H1, contextual stock visuals, unique copy, internal cross-links, responsive presentation and claim-sensitive reference material where appropriate.
+All 17 canonical Science pages have dedicated Best Hydrate theme content, canonical Shopify Page objects and dispatcher routes. Every page has breadcrumbs, one visible H1, contextual stock visuals, unique copy, internal cross-links, responsive presentation and claim-sensitive reference material where appropriate.
 
 The shared breadcrumb system renders primary family names as semantic labels rather than fake links because there is no canonical `/pages/science` or `/pages/solutions` family hub. Actual cluster parents remain clickable.
 
 ### Solutions family milestone
 
-All 14 canonical Solutions content pages are implemented theme-side, plus the primary product route bridge. The complete family audit is recorded in `validation/solutions-family-audit.md`.
+All 14 canonical Solutions content pages are implemented theme-side and exist as published Shopify Page objects, plus the primary product route bridge. The complete family audit is recorded in `validation/solutions-family-audit.md`.
 
-The audit corrected three shorthand routes to the canonical inventory paths: `/pages/endurance-hydration`, `/pages/recovery-hydration` and `/pages/travel-hydration`. Cross-links and dispatcher handles now match those routes consistently.
+The audit corrected three shorthand routes to the canonical inventory paths: `/pages/endurance-hydration`, `/pages/recovery-hydration` and `/pages/travel-hydration`. Cross-links and Shopify handles now match those routes consistently.
 
-Claim boundaries, breadcrumbs, image differentiation, responsive structure and internal links passed the theme-side audit. The former forward dependency on `/pages/humanitarian-partnerships` is now implemented in Connect. Remaining external dependencies are Shopify Page-object existence and final live browser/device QA.
+Claim boundaries, breadcrumbs, image differentiation, responsive structure and internal links passed the theme-side audit. The former forward dependency on `/pages/humanitarian-partnerships` is now implemented and published.
 
 ### Connect family milestone
 
-All 14 canonical Connect pages and surfaces are implemented theme-side. The complete family audit is recorded in `validation/connect-family-audit.md`.
+All 14 canonical Connect pages and surfaces are implemented and have verified Shopify objects. The complete family audit is recorded in `validation/connect-family-audit.md`.
 
-Live verification corrected a planning error: Meet Us is `/pages/our-story`, while `/pages/about` is an older Ingredients page that now belongs in legacy-route disposition. The live News blog and Contact page/form are also verified. Newly defined Connect page handles remain PARTIAL where GitHub cannot prove the corresponding Shopify Page object exists.
+Live verification corrected a planning error: Meet Us is `/pages/our-story`, while `/pages/about` is an older Ingredients page that belongs in legacy-route disposition. The live News blog and Contact page/form are also verified.
 
-The Connect audit also normalized research, retail, humanitarian, investor, press, events and contact boundaries. Older dated blog content remains archived, while the rebuilt Science and Product pages control current scientific and product positioning.
+The Connect audit normalized research, retail, humanitarian, investor, press, events and contact boundaries. Older dated blog content remains archived, while the rebuilt Science and Product pages control current scientific and product positioning.
 
-Next sequence: global site audit and cleanup. Normalize server-rendered header/mobile navigation, dispose of legacy routes, audit footer/policies, article template, product, search, collection/list-collections, cart and 404, then run final live browser/device QA.
+Next sequence: complete global site cleanup. Header normalization is complete. Footer normalization is implemented. Remaining work is legacy-route/redirect disposition, article template, product/global surface audit, search, collection/list-collections, cart, 404, announcement/newsletter review and final live browser/device QA.
 
 ## 001 - Hydration Science
 
@@ -105,7 +113,7 @@ Implementation commit: `6e9116de9e24999b2c4137e434064bed2149700f` plus default-t
 | Tablet CSS | PASS | Hero and content grids collapse deliberately. |
 | Mobile CSS | PASS | Single-column cards, compact hero and readable spacing. |
 | Default page fallback | PASS | Unsupported legacy/default pages still render `page.content`. |
-| Shopify Page object exists | PARTIAL | Cannot be proven from GitHub theme alone. |
-| All planned cross-family destinations implemented | PASS | Science, Solutions and Connect canonical theme destinations are now complete. |
+| Shopify Page object exists | PASS | Verified directly in Shopify after canonical Page-object creation. |
+| All planned cross-family destinations implemented | PASS | Science, Solutions and Connect canonical theme destinations are complete and published. |
 
-Overall: **PARTIAL, theme/content implementation complete; Shopify route existence and final live verification remain to be confirmed.**
+Overall: **PASS for theme/content and Shopify route existence; final live browser/device QA remains part of the global site audit.**
