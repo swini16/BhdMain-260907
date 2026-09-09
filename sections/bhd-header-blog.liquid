@@ -1,196 +1,60 @@
+{% if request.page_type == 'article' or request.page_type == 'search' or request.page_type == 'cart' or request.page_type == 'collection' or request.page_type == 'list-collections' or request.page_type == '404' %}
+  <section id="BhdUtilityContext-{{ section.id }}" class="bhd-utility-context bhd-utility-context--{{ request.page_type }}">
+    <div class="page-width">
+      {% case request.page_type %}
+        {% when 'article' %}
+          <nav class="bhd-utility-context__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><a href="{{ blog.url }}">News &amp; Insights</a><span aria-hidden="true">›</span><span aria-current="page">{{ article.title }}</span></nav>
+          <div class="bhd-utility-context__strip"><div><strong>Best Hydrate News &amp; Insights</strong><span>Articles are dated records. For current scientific and product positioning, use the canonical Science and Product pages.</span></div><div class="bhd-utility-context__actions"><a href="/pages/hydration-science">Current Science</a><a href="/pages/product-details">Product Details</a></div></div>
+        {% when 'search' %}
+          <nav class="bhd-utility-context__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">Search</span></nav>
+          <div class="bhd-utility-context__strip"><div><strong>Search Best Hydrate</strong><span>Find science pages, hydration applications, company information, news and products.</span></div><div class="bhd-utility-context__actions"><a href="/pages/hydration-science">Browse Science</a><a href="/products/lemonade-best-hydrate">Shop</a></div></div>
+        {% when 'cart' %}
+          <nav class="bhd-utility-context__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">Cart</span></nav>
+          <div class="bhd-utility-context__strip"><div><strong>Before checkout</strong><span>Need preparation, formula or use-context details? They remain one click away without interrupting your cart.</span></div><div class="bhd-utility-context__actions"><a href="/pages/directions">Directions</a><a href="/pages/our-formula">Our Formula</a></div></div>
+        {% when 'collection' %}
+          <nav class="bhd-utility-context__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span>Shop</span><span aria-hidden="true">›</span><span aria-current="page">{{ collection.title }}</span></nav>
+          <div class="bhd-utility-context__strip"><div><strong>Shop with the science beside you</strong><span>Use current formula, directions and hydration context alongside product information.</span></div><div class="bhd-utility-context__actions"><a href="/pages/product-details">Product Details</a><a href="/pages/hydration-science">Hydration Science</a></div></div>
+        {% when 'list-collections' %}
+          <nav class="bhd-utility-context__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">Shop</span></nav>
+          <div class="bhd-utility-context__strip"><div><strong>Best Hydrate products</strong><span>Browse the catalog, then use Product Details and Directions for the context behind each purchase.</span></div><div class="bhd-utility-context__actions"><a href="/pages/product-details">Product Details</a><a href="/pages/directions">Directions</a></div></div>
+        {% when '404' %}
+          <div class="bhd-utility-context__recovery"><p class="bhd-utility-context__eyebrow">Find the current route</p><h2>The page moved, but the useful content probably did not.</h2><p>Use the current Best Hydrate architecture instead of an old or mistyped link.</p><div class="bhd-utility-context__recovery-grid"><a href="/pages/hydration-science"><strong>Science</strong><span>Hydration physiology, electrolytes, formula and research.</span></a><a href="/pages/product-details"><strong>Solutions</strong><span>Product, performance, everyday, clinical and humanitarian contexts.</span></a><a href="/pages/our-story"><strong>Connect</strong><span>Meet Us, partnerships, investors, news and contact.</span></a><a href="/products/lemonade-best-hydrate"><strong>Shop</strong><span>Go directly to the current Best Hydrate product.</span></a></div><form action="{{ routes.search_url }}" method="get" role="search" class="bhd-utility-context__search"><label for="Bhd404Search-{{ section.id }}">Search Best Hydrate</label><div><input id="Bhd404Search-{{ section.id }}" type="search" name="q" placeholder="Science, directions, research..."><button type="submit">Search</button></div></form></div>
+      {% endcase %}
+    </div>
+  </section>
+{% endif %}
+
 <style>
-  .bhd-header .bhd-header__discuss-button {
-    width: 5.9rem !important;
-    height: 5.9rem !important;
-    flex: 0 0 5.9rem;
-    margin-left: .25rem;
-    padding: 0 !important;
-    overflow: hidden;
-    border: 1px solid rgba(var(--color-button), .22);
-    border-radius: 1.25rem;
-    background: #fff;
-    box-shadow: 0 .35rem 1.15rem rgba(13,33,78,.10);
-    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-  }
-  .bhd-header .bhd-header__discuss-button:hover {
-    transform: translateY(-1px);
-    border-color: rgba(var(--color-button), .42);
-    box-shadow: 0 .55rem 1.55rem rgba(13,33,78,.15);
-  }
-  .bhd-header .bhd-header__discuss-button img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-    transform: scale(1.18);
-    transform-origin: center;
-  }
-
-  .bhd-header .bhd-header__discuss-row {
-    grid-column: 1 / -1;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    gap: .75rem;
-    min-height: 4.15rem;
-    margin-top: .2rem;
-    padding: .62rem .9rem !important;
-    border-top: 1px solid rgba(var(--color-foreground), .09);
-    border-radius: .9rem;
-    background: rgba(var(--color-button), .06);
-    color: rgb(var(--color-foreground)) !important;
-    font-size: 1.34rem;
-    font-weight: 750;
-    line-height: 1.2;
-    text-decoration: none;
-  }
-  .bhd-header .bhd-header__discuss-row:hover { background: rgba(var(--color-button), .12); }
-  .bhd-header .bhd-header__discuss-row img {
-    width: 3rem;
-    height: 3rem;
-    border-radius: .7rem;
-    object-fit: cover;
-    box-shadow: 0 .15rem .5rem rgba(13,33,78,.10);
-  }
-
-  .bhd-header .bhd-header__mobile-discuss {
-    display: flex !important;
-    align-items: center;
-    gap: .75rem;
-    margin: .55rem 0 .05rem;
-    padding: .8rem .9rem !important;
-    border-top: 1px solid rgba(var(--color-foreground), .09);
-    border-radius: .85rem;
-    background: rgba(var(--color-button), .06);
-    color: rgb(var(--color-foreground)) !important;
-    font-size: 1.38rem !important;
-    font-weight: 750;
-    line-height: 1.2;
-    text-decoration: none;
-  }
-  .bhd-header .bhd-header__mobile-discuss img {
-    width: 3.1rem;
-    height: 3.1rem;
-    border-radius: .7rem;
-    object-fit: cover;
-  }
-
-  @media screen and (max-width: 1180px) and (min-width: 990px) {
-    .bhd-header .bhd-header__discuss-button {
-      width: 5.2rem !important;
-      height: 5.2rem !important;
-      flex-basis: 5.2rem;
-    }
-  }
-
-  @media screen and (max-width: 989px) {
-    .bhd-header .bhd-header__discuss-button {
-      width: 4.4rem !important;
-      height: 4.4rem !important;
-      flex-basis: 4.4rem;
-      margin-left: 0;
-      border-radius: 1rem;
-    }
-  }
+  .bhd-header .bhd-header__discuss-button{width:5.9rem!important;height:5.9rem!important;flex:0 0 5.9rem;margin-left:.25rem;padding:0!important;overflow:hidden;border:1px solid rgba(var(--color-button),.22);border-radius:1.25rem;background:#fff;box-shadow:0 .35rem 1.15rem rgba(13,33,78,.10);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+  .bhd-header .bhd-header__discuss-button:hover{transform:translateY(-1px);border-color:rgba(var(--color-button),.42);box-shadow:0 .55rem 1.55rem rgba(13,33,78,.15)}
+  .bhd-header .bhd-header__discuss-button img{width:100%;height:100%;display:block;object-fit:cover;transform:scale(1.18);transform-origin:center}
+  .bhd-header .bhd-header__discuss-row{grid-column:1/-1;display:flex!important;align-items:center;justify-content:center;gap:.75rem;min-height:4.15rem;margin-top:.2rem;padding:.62rem .9rem!important;border-top:1px solid rgba(var(--color-foreground),.09);border-radius:.9rem;background:rgba(var(--color-button),.06);color:rgb(var(--color-foreground))!important;font-size:1.34rem;font-weight:750;line-height:1.2;text-decoration:none}
+  .bhd-header .bhd-header__discuss-row:hover{background:rgba(var(--color-button),.12)}.bhd-header .bhd-header__discuss-row img{width:3rem;height:3rem;border-radius:.7rem;object-fit:cover;box-shadow:0 .15rem .5rem rgba(13,33,78,.10)}
+  .bhd-header .bhd-header__mobile-discuss{display:flex!important;align-items:center;gap:.75rem;margin:.55rem 0 .05rem;padding:.8rem .9rem!important;border-top:1px solid rgba(var(--color-foreground),.09);border-radius:.85rem;background:rgba(var(--color-button),.06);color:rgb(var(--color-foreground))!important;font-size:1.38rem!important;font-weight:750;line-height:1.2;text-decoration:none}.bhd-header .bhd-header__mobile-discuss img{width:3.1rem;height:3.1rem;border-radius:.7rem;object-fit:cover}
+  .bhd-utility-context{padding:1.7rem 0 2.2rem;background:linear-gradient(180deg,#f8fcff,#fff);border-bottom:1px solid rgba(11,45,103,.08)}
+  .bhd-utility-context__crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;margin-bottom:1.3rem;color:#68778b;font-size:1.2rem}.bhd-utility-context__crumbs a{color:#0b2d67;text-decoration:none}.bhd-utility-context__crumbs a:hover{text-decoration:underline}
+  .bhd-utility-context__strip{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2rem;align-items:center;padding:1.6rem 1.8rem;border:1px solid rgba(11,45,103,.1);border-radius:1.4rem;background:#fff}.bhd-utility-context__strip strong{display:block;margin-bottom:.35rem;color:#0b2d67;font-size:1.45rem}.bhd-utility-context__strip span{display:block;max-width:78rem;color:#5b6b82;font-size:1.28rem;line-height:1.45}.bhd-utility-context__actions{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:flex-end}.bhd-utility-context__actions a{padding:.75rem 1.1rem;border:1px solid rgba(11,45,103,.15);border-radius:999px;color:#0b2d67;background:#f5fbff;font-size:1.2rem;font-weight:750;text-decoration:none}
+  .bhd-utility-context__recovery{max-width:105rem;margin:1rem auto 2rem;padding:clamp(2.4rem,5vw,5rem);border-radius:2rem;background:linear-gradient(135deg,#eef9ff,#fff);border:1px solid rgba(7,142,231,.14);text-align:center}.bhd-utility-context__eyebrow{margin:0 0 .7rem;color:#078ee7;font-size:1.2rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.bhd-utility-context__recovery h2{margin:0 auto 1rem;max-width:75rem;color:#0b2d67;font-size:clamp(2.8rem,4vw,4.5rem);line-height:1.05}.bhd-utility-context__recovery>p:not(.bhd-utility-context__eyebrow){color:#5b6b82;font-size:1.5rem}.bhd-utility-context__recovery-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin:2.4rem 0}.bhd-utility-context__recovery-grid a{padding:1.7rem;border:1px solid rgba(11,45,103,.1);border-radius:1.3rem;background:#fff;color:inherit;text-align:left;text-decoration:none}.bhd-utility-context__recovery-grid strong{display:block;color:#0b2d67;font-size:1.55rem}.bhd-utility-context__recovery-grid span{display:block;margin-top:.45rem;color:#64748a;font-size:1.2rem;line-height:1.4}.bhd-utility-context__search{max-width:62rem;margin:2.5rem auto 0;text-align:left}.bhd-utility-context__search label{display:block;margin-bottom:.55rem;color:#0b2d67;font-size:1.25rem;font-weight:750}.bhd-utility-context__search>div{display:grid;grid-template-columns:1fr auto;gap:.7rem}.bhd-utility-context__search input{min-width:0;padding:1rem 1.2rem;border:1px solid rgba(11,45,103,.2);border-radius:.9rem;font:inherit}.bhd-utility-context__search button{padding:1rem 1.5rem;border:0;border-radius:.9rem;background:#0b2d67;color:#fff;font-weight:750;cursor:pointer}
+  @media screen and (max-width:1180px) and (min-width:990px){.bhd-header .bhd-header__discuss-button{width:5.2rem!important;height:5.2rem!important;flex-basis:5.2rem}}
+  @media screen and (max-width:989px){.bhd-header .bhd-header__discuss-button{width:4.4rem!important;height:4.4rem!important;flex-basis:4.4rem;margin-left:0;border-radius:1rem}}
+  @media screen and (max-width:749px){.bhd-utility-context__strip{grid-template-columns:1fr}.bhd-utility-context__actions{justify-content:flex-start}.bhd-utility-context__recovery-grid{grid-template-columns:1fr 1fr}}
+  @media screen and (max-width:480px){.bhd-utility-context__recovery-grid{grid-template-columns:1fr}}
 </style>
 
 <script>
-  (() => {
-    const iconUrl = {{ 'bhd-discuss-icon.webp' | asset_url | json }};
-    const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim().toLowerCase();
-
-    const labelFor = (value) => {
-      const key = normalize(value);
-      if (key === 'science') return 'Discuss Science Blog';
-      if (key === 'solutions' || key === 'hydration solutions') return 'Discuss Solutions Blog';
-      if (key === 'connect' || key === 'connect with us') return 'Discuss & Connect With Us Blog';
-      return 'Discuss Blog';
-    };
-
-    const setDiscussContents = (link, label) => {
-      if (!link) return;
-      link.href = '/blogs/news';
-      link.replaceChildren();
-      const img = document.createElement('img');
-      img.src = iconUrl;
-      img.alt = '';
-      img.width = 96;
-      img.height = 96;
-      const text = document.createElement('strong');
-      text.textContent = label;
-      link.append(img, text);
-    };
-
-    const ensureStandaloneDiscuss = (header) => {
-      const actions = header.querySelector('.bhd-header__actions');
-      if (!actions) return;
-      actions.querySelectorAll('.bhd-header__blog-button').forEach((node) => node.remove());
-      let discuss = actions.querySelector('.bhd-header__discuss-button');
-      if (!discuss) {
-        discuss = document.createElement('a');
-        discuss.href = '/blogs/news';
-        discuss.className = 'bhd-header__icon-button bhd-header__discuss-button';
-        discuss.setAttribute('aria-label', 'Discuss on the Best Hydrate blog');
-        discuss.setAttribute('title', 'Discuss');
-        discuss.innerHTML = `<img src="${iconUrl}" alt="" width="96" height="96" loading="eager">`;
-      }
-      actions.appendChild(discuss);
-    };
-
-    const contextualizeDesktop = (header) => {
-      header.querySelectorAll('[data-main-item]').forEach((main) => {
-        const mainLink = main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
-        const menu = main.querySelector(':scope > .bhd-header__dropdown-menu');
-        if (!mainLink || !menu) return;
-        let discuss = menu.querySelector(':scope > .bhd-header__discuss-row');
-        if (!discuss) {
-          discuss = document.createElement('a');
-          discuss.className = 'bhd-header__discuss-row';
-          menu.appendChild(discuss);
-        }
-        setDiscussContents(discuss, labelFor(mainLink.textContent));
-      });
-    };
-
-    const contextualizeMobile = (header) => {
-      header.querySelectorAll('[data-mobile-main]').forEach((main) => {
-        const mainLink = main.querySelector(':scope > .bhd-header__mobile-main-row > a');
-        const level = main.querySelector(':scope > .bhd-header__mobile-level-one');
-        if (!mainLink || !level) return;
-        let discuss = level.querySelector(':scope > .bhd-header__mobile-discuss');
-        if (!discuss) {
-          discuss = document.createElement('a');
-          discuss.className = 'bhd-header__mobile-discuss';
-          level.appendChild(discuss);
-        }
-        setDiscussContents(discuss, labelFor(mainLink.textContent));
-      });
-    };
-
-    const apply = () => {
-      document.querySelectorAll('.bhd-header').forEach((header) => {
-        ensureStandaloneDiscuss(header);
-        contextualizeDesktop(header);
-        contextualizeMobile(header);
-      });
-    };
-
-    const start = () => {
-      apply();
-      setTimeout(apply, 80);
-      setTimeout(apply, 250);
-    };
-
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
-    else start();
-    window.addEventListener('load', apply, { once: true });
+  (()=>{
+    const iconUrl={{ 'bhd-discuss-icon.webp' | asset_url | json }};
+    const normalize=(value)=>(value||'').replace(/\s+/g,' ').trim().toLowerCase();
+    const labelFor=(value)=>{const key=normalize(value);if(key==='science')return'Discuss Science Blog';if(key==='solutions'||key==='hydration solutions')return'Discuss Solutions Blog';if(key==='connect'||key==='connect with us')return'Discuss & Connect With Us Blog';return'Discuss Blog'};
+    const setDiscussContents=(link,label)=>{if(!link)return;link.href='/blogs/news';link.replaceChildren();const img=document.createElement('img');img.src=iconUrl;img.alt='';img.width=96;img.height=96;const text=document.createElement('strong');text.textContent=label;link.append(img,text)};
+    const ensureStandaloneDiscuss=(header)=>{const actions=header.querySelector('.bhd-header__actions');if(!actions)return;actions.querySelectorAll('.bhd-header__blog-button').forEach(node=>node.remove());let discuss=actions.querySelector('.bhd-header__discuss-button');if(!discuss){discuss=document.createElement('a');discuss.href='/blogs/news';discuss.className='bhd-header__icon-button bhd-header__discuss-button';discuss.setAttribute('aria-label','Discuss on the Best Hydrate blog');discuss.setAttribute('title','Discuss');discuss.innerHTML=`<img src="${iconUrl}" alt="" width="96" height="96" loading="eager">`}actions.appendChild(discuss)};
+    const contextualizeDesktop=(header)=>{header.querySelectorAll('[data-main-item]').forEach(main=>{const mainLink=main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');const menu=main.querySelector(':scope > .bhd-header__dropdown-menu');if(!mainLink||!menu)return;let discuss=menu.querySelector(':scope > .bhd-header__discuss-row');if(!discuss){discuss=document.createElement('a');discuss.className='bhd-header__discuss-row';menu.appendChild(discuss)}setDiscussContents(discuss,labelFor(mainLink.textContent))})};
+    const contextualizeMobile=(header)=>{header.querySelectorAll('[data-mobile-main]').forEach(main=>{const mainLink=main.querySelector(':scope > .bhd-header__mobile-main-row > a');const level=main.querySelector(':scope > .bhd-header__mobile-level-one');if(!mainLink||!level)return;let discuss=level.querySelector(':scope > .bhd-header__mobile-discuss');if(!discuss){discuss=document.createElement('a');discuss.className='bhd-header__mobile-discuss';level.appendChild(discuss)}setDiscussContents(discuss,labelFor(mainLink.textContent))})};
+    const apply=()=>document.querySelectorAll('.bhd-header').forEach(header=>{ensureStandaloneDiscuss(header);contextualizeDesktop(header);contextualizeMobile(header)});
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();window.addEventListener('load',apply,{once:true});
   })();
 </script>
 
 {% schema %}
-{
-  "name": "Header discuss link",
-  "enabled_on": {"groups": ["header"]},
-  "settings": []
-}
+{"name":"Header discuss link","enabled_on":{"groups":["header"]},"settings":[]}
 {% endschema %}
