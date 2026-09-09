@@ -1,4 +1,4 @@
-{% render 'bhd-page-breadcrumbs', current_title: title, preferred_family: family %}
+{% render 'bhd-page-breadcrumbs', page_handle: page.handle, current_title: title, preferred_family: family %}
 
 <header class="bhd-page-hero">
   <div class="bhd-page-hero__copy">
@@ -14,3 +14,4 @@
 </header>
 
 {% render 'bhd-menu-descendants' %}
+{% comment %}QA sync marker: deterministic-breadcrumb-header-20260909-1131.{% endcomment %}
