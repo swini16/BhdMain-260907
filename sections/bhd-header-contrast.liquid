@@ -59,26 +59,64 @@
 
 <script>
   (()=>{
-    const CLOSE_DELAY=300;
+    const TIER2_CLOSE_DELAY=260;
+    const MAIN_CLOSE_DELAY=520;
+    const mainTimers=new WeakMap();
+    const tier2Timers=new WeakMap();
+
+    const cancelTimer=(map,node)=>{
+      const timer=map.get(node);
+      if(timer!==undefined){clearTimeout(timer);map.delete(node)}
+    };
+
+    const cancelTier2Timer=(item)=>cancelTimer(tier2Timers,item);
+    const cancelMainTimer=(item)=>cancelTimer(mainTimers,item);
+
+    const setTier2Open=(item,open)=>{
+      if(!item)return;
+      cancelTier2Timer(item);
+      item.classList.toggle('is-tier2-open',open);
+      const toggle=item.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-toggle, :scope > .bhd-header__mobile-tier2-split .bhd-header__mobile-tier2-toggle');
+      if(toggle)toggle.setAttribute('aria-expanded',open?'true':'false');
+    };
+
+    const closeTier2=(item)=>setTier2Open(item,false);
+
+    const closeTier2Siblings=(item)=>{
+      const scope=item.closest('.bhd-header__dropdown-menu,.bhd-header__mobile-level-one');
+      if(!scope)return;
+      scope.querySelectorAll('.is-tier2-open').forEach(other=>{if(other!==item)closeTier2(other)});
+    };
+
+    const openTier2=(item)=>{
+      if(!item)return;
+      closeTier2Siblings(item);
+      setTier2Open(item,true);
+    };
+
+    const scheduleTier2Close=(item,delay=TIER2_CLOSE_DELAY)=>{
+      if(!item)return;
+      cancelTier2Timer(item);
+      tier2Timers.set(item,setTimeout(()=>{closeTier2(item);tier2Timers.delete(item)},delay));
+    };
+
+    const closeAllTier2=(main)=>main?.querySelectorAll('.is-tier2-open').forEach(closeTier2);
 
     const clearHover=(header,except=null)=>{
       if(!header)return;
       header.querySelectorAll('[data-main-item].bhd-hover-open').forEach(item=>{
-        if(item!==except)item.classList.remove('bhd-hover-open');
+        if(item!==except){item.classList.remove('bhd-hover-open');cancelMainTimer(item)}
       });
     };
 
     const pinned=(header)=>header&&header.querySelector('[data-main-item].is-open');
 
     const closeMainState=(item)=>{
+      cancelMainTimer(item);
       item.classList.remove('is-open');
       const topToggle=item.querySelector(':scope > .bhd-header__split-button [data-menu-toggle], :scope > .bhd-header__mobile-main-row [data-menu-toggle]');
       if(topToggle)topToggle.setAttribute('aria-expanded','false');
-      item.querySelectorAll('.is-tier2-open').forEach(child=>{
-        child.classList.remove('is-tier2-open');
-        const childToggle=child.querySelector('.bhd-header__tier2-toggle,.bhd-header__mobile-tier2-toggle');
-        if(childToggle)childToggle.setAttribute('aria-expanded','false');
-      });
+      closeAllTier2(item);
     };
 
     const pinParentForTier2=(tierToggle)=>{
@@ -91,27 +129,6 @@
       main.classList.add('is-open');
       const topToggle=main.querySelector(':scope > .bhd-header__split-button [data-menu-toggle], :scope > .bhd-header__mobile-main-row [data-menu-toggle]');
       if(topToggle)topToggle.setAttribute('aria-expanded','true');
-    };
-
-    const replaceTier3Links=(item,links)=>{
-      const tier3=item.querySelector(':scope > .bhd-header__tier3, :scope > .bhd-header__mobile-tier3');
-      if(!tier3)return;
-      const nodes=links.map(([label,href])=>{const a=document.createElement('a');a.href=href;a.textContent=label;return a});
-      tier3.replaceChildren(...nodes);
-    };
-
-    const normalizeCompanyPeople=(header)=>{
-      header.querySelectorAll('.bhd-header__tier2-link,.bhd-header__mobile-tier2-link').forEach(link=>{
-        if((link.textContent||'').replace(/\s+/g,' ').trim().toLowerCase()!=='company & people')return;
-        link.href='/pages/mission-values';
-        const item=link.closest('.bhd-header__dropdown-child,.bhd-header__mobile-tier2');
-        if(!item)return;
-        replaceTier3Links(item,[
-          ['Company','/pages/mission-values'],
-          ['Meet Us','/pages/our-story'],
-          ['Jobs & Careers','/pages/jobs-careers']
-        ]);
-      });
     };
 
     const breadcrumbNode=(tag,label,href=null,current=false)=>{
@@ -165,20 +182,38 @@
       }
     };
 
+    const bindTier2Hover=(main)=>{
+      main.querySelectorAll('.bhd-header__dropdown-child').forEach(child=>{
+        child.addEventListener('mouseenter',()=>{
+          if(window.innerWidth<990)return;
+          cancelTier2Timer(child);
+          openTier2(child);
+        });
+        child.addEventListener('mouseleave',()=>{
+          if(window.innerWidth<990)return;
+          scheduleTier2Close(child);
+        });
+        child.addEventListener('focusin',()=>{
+          if(window.innerWidth<990)return;
+          openTier2(child);
+        });
+        child.addEventListener('focusout',(event)=>{
+          if(window.innerWidth<990||child.contains(event.relatedTarget))return;
+          scheduleTier2Close(child);
+        });
+      });
+    };
+
     const bindHeader=(header)=>{
       if(header.dataset.bhdSingleStateBound==='1')return;
       header.dataset.bhdSingleStateBound='1';
-      normalizeCompanyPeople(header);
 
       header.querySelectorAll('[data-main-item]').forEach(item=>{
-        let closeTimer=null;
-
-        const cancelClose=()=>{
-          if(closeTimer!==null){clearTimeout(closeTimer);closeTimer=null;}
-        };
+        bindTier2Hover(item);
 
         item.addEventListener('mouseenter',()=>{
-          cancelClose();
+          cancelMainTimer(item);
+          item.querySelectorAll('.bhd-header__dropdown-child').forEach(cancelTier2Timer);
           if(window.innerWidth<990)return;
           if(pinned(header)){
             clearHover(header);
@@ -189,14 +224,18 @@
         });
 
         item.addEventListener('mouseleave',()=>{
-          cancelClose();
-          closeTimer=setTimeout(()=>{
+          if(window.innerWidth<990)return;
+          item.querySelectorAll('.is-tier2-open').forEach(child=>scheduleTier2Close(child,TIER2_CLOSE_DELAY));
+          cancelMainTimer(item);
+          if(item.classList.contains('is-open'))return;
+          mainTimers.set(item,setTimeout(()=>{
             item.classList.remove('bhd-hover-open');
-            closeTimer=null;
-          },CLOSE_DELAY);
+            mainTimers.delete(item);
+          },MAIN_CLOSE_DELAY));
         });
 
         item.addEventListener('focusin',()=>{
+          cancelMainTimer(item);
           if(window.innerWidth<990||pinned(header))return;
           clearHover(header,item);
           item.classList.add('bhd-hover-open');
@@ -204,7 +243,14 @@
 
         item.addEventListener('focusout',(event)=>{
           if(item.contains(event.relatedTarget))return;
-          item.classList.remove('bhd-hover-open');
+          item.querySelectorAll('.is-tier2-open').forEach(child=>scheduleTier2Close(child,TIER2_CLOSE_DELAY));
+          if(!item.classList.contains('is-open')){
+            cancelMainTimer(item);
+            mainTimers.set(item,setTimeout(()=>{
+              item.classList.remove('bhd-hover-open');
+              mainTimers.delete(item);
+            },MAIN_CLOSE_DELAY));
+          }
         });
       });
 
@@ -233,7 +279,10 @@
     },true);
 
     document.addEventListener('keydown',(event)=>{
-      if(event.key==='Escape')document.querySelectorAll('.bhd-header').forEach(clearHover);
+      if(event.key==='Escape')document.querySelectorAll('.bhd-header').forEach(header=>{
+        clearHover(header);
+        header.querySelectorAll('.is-tier2-open').forEach(closeTier2);
+      });
     });
 
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
@@ -242,11 +291,11 @@
 </script>
 
 {% comment %}
-The Science, Solutions and Connect hierarchy remains rendered by bhd-header.liquid. This presentation layer normalizes the Company & People branch to Company, Meet Us and Jobs & Careers while the legacy routes are consolidated.
-Second-level toggles promote their top-level family to the pinned open state before the child opens, so the visual tree and toggle states stay consistent.
-Top-level mega-menu visibility is state-driven only: exactly one hover-open or one pinned-open menu can render at a time.
-Editorial blog breadcrumbs are normalized to the same Connect hierarchy used by Page breadcrumbs.
-Sync marker: nested-parent-company-breadcrumbs-20260909.
+The canonical menu hierarchy is rendered by bhd-header.liquid and mirrored in Shopify Admin MAIN navigation.
+Desktop level-two items expand on hover. Leaving a menu context closes the deepest preview first after 260 ms, then closes the unpinned top-level preview after 520 ms. Click-pinned top-level menus remain pinned until explicitly closed.
+Second-level click toggles still promote their top-level family to the pinned open state first when needed.
+Editorial blog breadcrumbs are normalized to the Connect hierarchy used by Page breadcrumbs.
+Sync marker: staged-nested-hover-20260909.
 {% endcomment %}
 
 {% schema %}
