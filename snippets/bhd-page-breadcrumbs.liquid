@@ -28,14 +28,18 @@
       endif
 
       if preferred_family == blank or top_link.title == preferred_family
-        if top_path == current_path and menu_depth < 1
-          assign menu_depth = 1
-          assign level_1_label = top_link.title
-          assign level_1_url = top_link.url
-          assign level_2_label = ''
-          assign level_2_url = ''
-          assign level_3_label = ''
-          assign level_3_url = ''
+        if top_path != blank
+          if current_path == top_path or current_path contains top_path
+            if menu_depth < 1
+              assign menu_depth = 1
+              assign level_1_label = top_link.title
+              assign level_1_url = top_link.url
+              assign level_2_label = ''
+              assign level_2_url = ''
+              assign level_3_label = ''
+              assign level_3_url = ''
+            endif
+          endif
         endif
 
         for second_link in top_link.links
@@ -53,14 +57,18 @@
             endif
           endif
 
-          if second_path == current_path and menu_depth < 2
-            assign menu_depth = 2
-            assign level_1_label = top_link.title
-            assign level_1_url = top_link.url
-            assign level_2_label = second_link.title
-            assign level_2_url = second_link.url
-            assign level_3_label = ''
-            assign level_3_url = ''
+          if second_path != blank
+            if current_path == second_path or current_path contains second_path
+              if menu_depth < 2
+                assign menu_depth = 2
+                assign level_1_label = top_link.title
+                assign level_1_url = top_link.url
+                assign level_2_label = second_link.title
+                assign level_2_url = second_link.url
+                assign level_3_label = ''
+                assign level_3_url = ''
+              endif
+            endif
           endif
 
           for third_link in second_link.links
@@ -78,14 +86,18 @@
               endif
             endif
 
-            if third_path == current_path and menu_depth < 3
-              assign menu_depth = 3
-              assign level_1_label = top_link.title
-              assign level_1_url = top_link.url
-              assign level_2_label = second_link.title
-              assign level_2_url = second_link.url
-              assign level_3_label = third_link.title
-              assign level_3_url = third_link.url
+            if third_path != blank
+              if current_path == third_path or current_path contains third_path
+                if menu_depth < 3
+                  assign menu_depth = 3
+                  assign level_1_label = top_link.title
+                  assign level_1_url = top_link.url
+                  assign level_2_label = second_link.title
+                  assign level_2_url = second_link.url
+                  assign level_3_label = third_link.title
+                  assign level_3_url = third_link.url
+                endif
+              endif
             endif
           endfor
         endfor
@@ -155,5 +167,5 @@
 </nav>
 
 {% comment %}
-Breadcrumbs use Shopify Admin MAIN, handle new-menu, as the source of truth. Menu URLs are normalized to request paths before comparison because Shopify manual HTTP menu items can be exposed to Liquid as absolute URLs while request.path is relative. The deepest matching node in the declared family wins.
+Breadcrumbs use Shopify Admin MAIN, handle new-menu, as the source of truth. Menu URLs are normalized before comparison, and localized storefront request prefixes are tolerated by matching the normalized menu path within request.path. The deepest matching node in the declared family wins.
 {% endcomment %}
