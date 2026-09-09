@@ -1,0 +1,54 @@
+name: Inline mobile hero images
+
+on:
+  push:
+    paths:
+      - '.github/workflows/inline-mobile-hero.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Generate self-contained mobile hero snippets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64
+          from pathlib import Path
+
+          items = [
+              ('performance', 'Best Hydrate performance hydration', 'eager'),
+              ('daily', 'Best Hydrate daily hydration', 'eager'),
+              ('medical', 'Best Hydrate medical hydration', 'eager'),
+              ('humanitarian', 'Best Hydrate humanitarian hydration', 'eager'),
+          ]
+          for name, alt, loading in items:
+              p = Path(f'assets/hero-mobile-{name}.webp')
+              data = base64.b64encode(p.read_bytes()).decode('ascii')
+              out = Path(f'snippets/bhd-hero-mobile-{name}.liquid')
+              out.write_text(
+                  f'<img data-hero-debug-name="{name}" src="data:image/webp;base64,{data}" alt="{alt}" width="720" height="1280" loading="{loading}" decoding="async">\n',
+                  encoding='utf-8'
+              )
+          PY
+      - name: Commit generated snippets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add snippets/bhd-hero-mobile-*.liquid
+          if git diff --cached --quiet; then
+            echo 'No snippet changes'
+          else
+            git commit -m 'Inline mobile hero images for Shopify'
+            git push origin HEAD:main
+          fi
