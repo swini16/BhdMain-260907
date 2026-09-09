@@ -7,6 +7,8 @@
     {% render 'bhd-page-electrolytes' %}
   {% when 'glucose-water-absorption' %}
     {% render 'bhd-page-glucose-water-absorption' %}
+  {% when 'our-formula' %}
+    {% render 'bhd-page-our-formula' %}
   {% else %}
     <nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
       <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span>
