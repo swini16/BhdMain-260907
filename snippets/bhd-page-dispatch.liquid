@@ -1,38 +1,20 @@
 {% case page.handle %}
-  {% when 'hydration-science' %}
-    {% render 'bhd-page-hydration-science' %}
-  {% when 'how-hydration-works' %}
-    {% render 'bhd-page-how-hydration-works' %}
-  {% when 'electrolytes' %}
-    {% render 'bhd-page-electrolytes' %}
-  {% when 'glucose-water-absorption' %}
-    {% render 'bhd-page-glucose-water-absorption' %}
-  {% when 'our-formula' %}
-    {% render 'bhd-page-our-formula' %}
-  {% when 'five-essential-electrolytes' %}
-    {% render 'bhd-page-five-essential-electrolytes' %}
-  {% when 'ingredient-rationale' %}
-    {% render 'bhd-page-ingredient-rationale' %}
-  {% when 'why-bicarbonate' %}
-    {% render 'bhd-page-why-bicarbonate' %}
-  {% when 'research-publications' %}
-    {% render 'bhd-page-research-publications' %}
-  {% when 'publications' %}
-    {% render 'bhd-page-publications' %}
-  {% when 'current-research' %}
-    {% render 'bhd-page-current-research' %}
-  {% when 'research-partners' %}
-    {% render 'bhd-page-research-partners' %}
-  {% when 'research-impact' %}
-    {% render 'bhd-page-research-impact' %}
-  {% when 'clinical-development' %}
-    {% render 'bhd-page-clinical-development' %}
+  {% when 'hydration-science' %}{% render 'bhd-page-hydration-science' %}
+  {% when 'how-hydration-works' %}{% render 'bhd-page-how-hydration-works' %}
+  {% when 'electrolytes' %}{% render 'bhd-page-electrolytes' %}
+  {% when 'glucose-water-absorption' %}{% render 'bhd-page-glucose-water-absorption' %}
+  {% when 'our-formula' %}{% render 'bhd-page-our-formula' %}
+  {% when 'five-essential-electrolytes' %}{% render 'bhd-page-five-essential-electrolytes' %}
+  {% when 'ingredient-rationale' %}{% render 'bhd-page-ingredient-rationale' %}
+  {% when 'why-bicarbonate' %}{% render 'bhd-page-why-bicarbonate' %}
+  {% when 'research-publications' %}{% render 'bhd-page-research-publications' %}
+  {% when 'publications' %}{% render 'bhd-page-publications' %}
+  {% when 'current-research' %}{% render 'bhd-page-current-research' %}
+  {% when 'research-partners' %}{% render 'bhd-page-research-partners' %}
+  {% when 'research-impact' %}{% render 'bhd-page-research-impact' %}
+  {% when 'clinical-development' %}{% render 'bhd-page-clinical-development' %}
+  {% when 'clinical-program' %}{% render 'bhd-page-clinical-program' %}
   {% else %}
-    <nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
-      <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span>
-    </nav>
-    <div class="bhd-page-fallback__content">
-      <h1>{{ page.title }}</h1>
-      <div class="rte">{{ page.content }}</div>
-    </div>
+    <nav class="bhd-breadcrumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ page.title }}</span></nav>
+    <div class="bhd-page-fallback__content"><h1>{{ page.title }}</h1><div class="rte">{{ page.content }}</div></div>
 {% endcase %}
