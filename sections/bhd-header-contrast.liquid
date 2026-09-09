@@ -36,17 +36,37 @@
       box-shadow:0 .45rem 1.4rem rgba(13,33,78,.13)
     }
 
+    .bhd-header .bhd-header__main-item.bhd-current-main:not(.is-open):not(.bhd-hover-open) .bhd-header__split-button{
+      background:rgba(72,132,120,.14);
+      border-color:rgba(72,132,120,.46);
+      box-shadow:inset 0 -3px 0 rgba(72,132,120,.72),0 .2rem .75rem rgba(44,92,82,.08)
+    }
+    .bhd-header .bhd-header__main-item.bhd-current-main .bhd-header__main-link{color:#245f55;font-weight:780}
+    .bhd-header .bhd-header__main-item.bhd-current-main .bhd-header__main-toggle{border-left-color:rgba(72,132,120,.42)}
+
     .bhd-header .bhd-header__dropdown-child:hover .bhd-header__tier2-split{background:rgba(var(--color-button),.13);border-color:rgba(var(--color-button),.38)}
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-split{background:rgba(72,132,120,.15);border-color:rgba(72,132,120,.48);box-shadow:0 .3rem .9rem rgba(44,92,82,.10)}
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-link{color:#245f55}
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-toggle{background:rgba(72,132,120,.26);color:#245f55;border-left-color:rgba(72,132,120,.46)}
+    .bhd-header .bhd-header__dropdown-child.bhd-current-tier2 .bhd-header__tier2-split{background:rgba(72,132,120,.12);border-color:rgba(72,132,120,.52);box-shadow:inset 3px 0 0 rgba(72,132,120,.72)}
+    .bhd-header .bhd-header__dropdown-child.bhd-current-tier2 .bhd-header__tier2-link{color:#245f55;font-weight:800}
+    .bhd-header .bhd-header__tier3 a.bhd-current-tier3{background:rgba(72,132,120,.14);color:#245f55;font-weight:800;border-radius:.55rem;box-shadow:inset 3px 0 0 rgba(72,132,120,.72)}
   }
+
+  .bhd-header .bhd-header__discuss-button.bhd-current-blog{border-color:rgba(72,132,120,.68)!important;background:rgba(72,132,120,.10)!important;box-shadow:0 0 0 3px rgba(72,132,120,.16),0 .55rem 1.45rem rgba(44,92,82,.14)!important}
+  .bhd-header .bhd-header__discuss-button.bhd-current-blog::after{content:"";position:absolute;right:.28rem;bottom:.28rem;width:.72rem;height:.72rem;border-radius:50%;background:#488478;border:2px solid #fff;z-index:2}
+  .bhd-header .bhd-header__shop-cta.bhd-current-shop{box-shadow:0 0 0 3px rgba(72,132,120,.20),0 .4rem 1rem rgba(44,92,82,.12)}
 
   @media screen and (max-width:989px){
     .bhd-header .bhd-header__mobile-main.is-open .bhd-header__mobile-main-row{background:rgba(var(--color-button),.2);border-color:rgba(var(--color-button),.5)}
+    .bhd-header .bhd-header__mobile-main.bhd-current-main .bhd-header__mobile-main-row{background:rgba(72,132,120,.12);border-color:rgba(72,132,120,.46);box-shadow:inset 3px 0 0 rgba(72,132,120,.72)}
+    .bhd-header .bhd-header__mobile-main.bhd-current-main .bhd-header__mobile-main-row>a{color:#245f55;font-weight:800}
     .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-split{background:rgba(72,132,120,.15);border-color:rgba(72,132,120,.48);box-shadow:0 .25rem .75rem rgba(44,92,82,.08)}
     .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-link{color:#245f55}
     .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-toggle{background:rgba(72,132,120,.26);color:#245f55;border-left-color:rgba(72,132,120,.46)}
+    .bhd-header .bhd-header__mobile-tier2.bhd-current-tier2 .bhd-header__mobile-tier2-split{background:rgba(72,132,120,.12);border-color:rgba(72,132,120,.5);box-shadow:inset 3px 0 0 rgba(72,132,120,.72)}
+    .bhd-header .bhd-header__mobile-tier2.bhd-current-tier2 .bhd-header__mobile-tier2-link{color:#245f55;font-weight:800}
+    .bhd-header .bhd-header__mobile-tier3 a.bhd-current-tier3{background:rgba(72,132,120,.14);color:#245f55;font-weight:800;border-radius:.55rem;box-shadow:inset 3px 0 0 rgba(72,132,120,.72)}
   }
 
   @media screen and (max-width:360px){
@@ -137,6 +157,106 @@
       if(topToggle)topToggle.setAttribute('aria-expanded','true');
     };
 
+    const normalizedPath=(value)=>{
+      if(!value)return'';
+      try{
+        const parsed=new URL(value,location.origin);
+        let path=parsed.pathname||'/';
+        path=path.replace(/\/+$/,'')||'/';
+        return path;
+      }catch(_){
+        return String(value).split('?')[0].split('#')[0].replace(/\/+$/,'')||'/';
+      }
+    };
+
+    const samePath=(link,path)=>Boolean(link&&normalizedPath(link.getAttribute('href'))===path);
+    const textOf=(node)=>node?.textContent?.replace(/\s+/g,' ').trim()||'';
+
+    const clearCurrentClasses=(header)=>{
+      header.querySelectorAll('.bhd-current-main,.bhd-current-tier2,.bhd-current-tier3,.bhd-current-blog,.bhd-current-shop').forEach(node=>{
+        node.classList.remove('bhd-current-main','bhd-current-tier2','bhd-current-tier3','bhd-current-blog','bhd-current-shop');
+        if(node.getAttribute('aria-current')==='location'||node.getAttribute('aria-current')==='page')node.removeAttribute('aria-current');
+      });
+    };
+
+    const markDesktopPath=(header,path,isBlog)=>{
+      header.querySelectorAll('[data-main-item]').forEach(main=>{
+        const mainLink=main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
+        let mainMatch=samePath(mainLink,path);
+        const mainLabel=textOf(mainLink);
+
+        main.querySelectorAll(':scope > .bhd-header__dropdown-menu > .bhd-header__dropdown-child').forEach(child=>{
+          const tier2Link=child.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-link');
+          let tier2Match=samePath(tier2Link,path);
+          child.querySelectorAll(':scope > .bhd-header__tier3 > a').forEach(leaf=>{
+            const blogLeaf=isBlog&&normalizedPath(leaf.getAttribute('href'))==='/blogs/news';
+            if(samePath(leaf,path)||blogLeaf){
+              leaf.classList.add('bhd-current-tier3');
+              leaf.setAttribute('aria-current',blogLeaf&&path!=='/blogs/news'?'location':'page');
+              tier2Match=true;
+            }
+          });
+          const blogTier=isBlog&&textOf(tier2Link)==='News & Contact';
+          if(tier2Match||blogTier){
+            child.classList.add('bhd-current-tier2');
+            tier2Link?.setAttribute('aria-current','location');
+            if(!isBlog)mainMatch=true;
+          }
+        });
+
+        if(mainMatch&&!isBlog){
+          main.classList.add('bhd-current-main');
+          mainLink?.setAttribute('aria-current',samePath(mainLink,path)?'page':'location');
+        }
+        if(isBlog&&mainLabel==='Connect')main.dataset.bhdContainsBlogContext='1';
+      });
+
+      const discuss=header.querySelector('.bhd-header__discuss-button');
+      if(discuss&&isBlog){discuss.classList.add('bhd-current-blog');discuss.setAttribute('aria-current','page')}
+      const shop=header.querySelector('.bhd-header__shop-cta');
+      if(shop&&samePath(shop,path)){shop.classList.add('bhd-current-shop');shop.setAttribute('aria-current','page')}
+    };
+
+    const markMobilePath=(header,path,isBlog)=>{
+      header.querySelectorAll('[data-mobile-main]').forEach(main=>{
+        const mainLink=main.querySelector(':scope > .bhd-header__mobile-main-row > a');
+        let mainMatch=samePath(mainLink,path);
+        main.querySelectorAll(':scope > .bhd-header__mobile-level-one > .bhd-header__mobile-tier2').forEach(child=>{
+          const tier2Link=child.querySelector(':scope > .bhd-header__mobile-tier2-split .bhd-header__mobile-tier2-link');
+          let tier2Match=samePath(tier2Link,path);
+          child.querySelectorAll(':scope > .bhd-header__mobile-tier3 > a').forEach(leaf=>{
+            const blogLeaf=isBlog&&normalizedPath(leaf.getAttribute('href'))==='/blogs/news';
+            if(samePath(leaf,path)||blogLeaf){
+              leaf.classList.add('bhd-current-tier3');
+              leaf.setAttribute('aria-current',blogLeaf&&path!=='/blogs/news'?'location':'page');
+              tier2Match=true;
+            }
+          });
+          const blogTier=isBlog&&textOf(tier2Link)==='News & Contact';
+          if(tier2Match||blogTier){
+            child.classList.add('bhd-current-tier2');
+            tier2Link?.setAttribute('aria-current','location');
+            if(!isBlog)mainMatch=true;
+          }
+        });
+        if(mainMatch&&!isBlog){
+          main.classList.add('bhd-current-main');
+          mainLink?.setAttribute('aria-current',samePath(mainLink,path)?'page':'location');
+        }
+      });
+      header.querySelectorAll('.bhd-header__mobile-shop').forEach(shop=>{if(samePath(shop,path)){shop.classList.add('bhd-current-shop');shop.setAttribute('aria-current','page')}});
+    };
+
+    const markCurrentLocation=(header)=>{
+      if(!header)return;
+      clearCurrentClasses(header);
+      const path=normalizedPath(location.pathname);
+      const isBlog=path==='/blogs/news'||path.startsWith('/blogs/news/');
+      markDesktopPath(header,path,isBlog);
+      markMobilePath(header,path,isBlog);
+      header.dataset.bhdCurrentContext=isBlog?'Blog':textOf(header.querySelector('[data-main-item].bhd-current-main .bhd-header__main-link'))||'None';
+    };
+
     const breadcrumbNode=(tag,label,href=null,current=false)=>{
       const node=document.createElement(tag);
       node.textContent=label;
@@ -167,20 +287,20 @@
       if(news){
         replaceBreadcrumb(news,[
           {label:'Home',href:'/'},
-          {label:'Connect',href:'/pages/our-story'},
-          {label:'News & Contact',href:'/blogs/news'},
+          {label:'Connect',href:'/pages/connect-overview'},
+          {label:'News & Contact',href:'/pages/news-contact'},
           {label:'News & Insights',current:true}
         ]);
       }
 
       if(/^\/blogs\/news\//.test(location.pathname)){
-        const articleNav=document.querySelector('.bhd-surface-context__crumbs');
+        const articleNav=document.querySelector('.bhd-surface-context__crumbs,.bhd-utility-context__crumbs');
         if(articleNav){
           const current=articleNav.querySelector('[aria-current="page"]')?.textContent?.trim()||document.querySelector('h1')?.textContent?.trim()||'Article';
           replaceBreadcrumb(articleNav,[
             {label:'Home',href:'/'},
-            {label:'Connect',href:'/pages/our-story'},
-            {label:'News & Contact',href:'/blogs/news'},
+            {label:'Connect',href:'/pages/connect-overview'},
+            {label:'News & Contact',href:'/pages/news-contact'},
             {label:'News & Insights',href:'/blogs/news'},
             {label:current,current:true}
           ]);
@@ -211,8 +331,9 @@
     };
 
     const bindHeader=(header)=>{
-      if(header.dataset.bhdSingleStateBound==='1')return;
+      if(header.dataset.bhdSingleStateBound==='1'){markCurrentLocation(header);return}
       header.dataset.bhdSingleStateBound='1';
+      markCurrentLocation(header);
 
       header.querySelectorAll('[data-main-item]').forEach(item=>{
         bindTier2Hover(item);
@@ -260,10 +381,11 @@
         });
       });
 
-      const observer=new MutationObserver(()=>{
+      const observer=new MutationObserver((mutations)=>{
         if(pinned(header))clearHover(header);
+        if(mutations.some(m=>m.type==='childList'))markCurrentLocation(header);
       });
-      observer.observe(header,{subtree:true,attributes:true,attributeFilter:['class']});
+      observer.observe(header,{subtree:true,attributes:true,childList:true,attributeFilter:['class']});
     };
 
     const bind=()=>{
@@ -308,8 +430,8 @@
 Shopify Admin MAIN is injected as the live interactive menu source before interaction bindings run. Static bhd-header markup is retained only as a fallback.
 Desktop level-two items expand as hover previews. Leaving the menu context closes the deepest hover preview after 260 ms, then closes the unpinned top-level preview after 520 ms.
 Clicking a level-two toggle converts that preview into a persistent clicked state and pins its top-level parent. Clicked nested states are not removed by the hover timeout.
-Editorial blog breadcrumbs are normalized to the Connect hierarchy used by Page breadcrumbs.
-Sync marker: shopify-main-live-source-20260909.
+Current route context is highlighted persistently: Science, Solutions or Connect at level one, plus its level-two and level-three branch when visible. Blog and News use the Discuss control as the fourth global context while retaining News & Contact and News & Insights branch markers inside Connect.
+Sync marker: current-menu-context-20260909.
 {% endcomment %}
 
 {% schema %}
