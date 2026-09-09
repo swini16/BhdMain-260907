@@ -1,10 +1,7 @@
 <nav class="bhd-breadcrumbs" aria-label="Breadcrumb">
   <a href="{{ routes.root_url }}">Home</a>
   <span aria-hidden="true">›</span>
-  {% if family != blank and family_url != blank and family_url != page.url %}
-    <a href="{{ family_url }}">{{ family }}</a>
-    <span aria-hidden="true">›</span>
-  {% elsif family != blank %}
+  {% if family != blank %}
     <span>{{ family }}</span>
     <span aria-hidden="true">›</span>
   {% endif %}

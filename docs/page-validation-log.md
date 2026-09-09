@@ -31,12 +31,12 @@ Status legend:
 | 018 | Product Details | `/pages/product-details` | PASS | PARTIAL | `validation/018-product-details.md` |
 | 019 | Directions | `/pages/directions` | PASS | PARTIAL | `validation/019-directions.md` |
 | 020 | Performance Hydration | `/pages/performance-hydration` | PASS | PARTIAL | `validation/020-performance-hydration.md` |
-| 021 | Endurance | `/pages/endurance` | PASS | PARTIAL | `validation/021-endurance.md` |
+| 021 | Endurance | `/pages/endurance-hydration` | PASS | PARTIAL | `validation/021-endurance.md` |
 | 022 | Heat & High Sweat | `/pages/heat-high-sweat` | PASS | PARTIAL | `validation/022-heat-high-sweat.md` |
-| 023 | Recovery | `/pages/recovery` | PASS | PARTIAL | `validation/023-recovery.md` |
+| 023 | Recovery | `/pages/recovery-hydration` | PASS | PARTIAL | `validation/023-recovery.md` |
 | 024 | Everyday Wellness | `/pages/everyday-wellness` | PASS | PARTIAL | `validation/024-everyday-wellness.md` |
 | 025 | Work & Long Shifts | `/pages/work-long-shifts` | PASS | PARTIAL | `validation/025-work-long-shifts.md` |
-| 026 | Travel | `/pages/travel` | PASS | PARTIAL | `validation/026-travel.md` |
+| 026 | Travel | `/pages/travel-hydration` | PASS | PARTIAL | `validation/026-travel.md` |
 | 027 | Active Living | `/pages/active-living` | PASS | PARTIAL | `validation/027-active-living.md` |
 | 028 | Clinical Hydration | `/pages/clinical-hydration` | PASS | PARTIAL | `validation/028-clinical-hydration.md` |
 | 029 | Recovery & Rehabilitation | `/pages/recovery-rehabilitation` | PASS | PARTIAL | `validation/029-recovery-rehabilitation.md` |
@@ -45,15 +45,19 @@ Status legend:
 
 ### Science family milestone
 
-All 17 canonical pages currently defined under the runtime **Science** navigation now have dedicated Best Hydrate theme content and a dispatcher route. Every page has breadcrumbs, one visible H1, contextual stock visuals, unique copy, internal cross-links, responsive presentation and claim-sensitive reference material where appropriate.
+All 17 canonical pages currently defined under the runtime Science navigation now have dedicated Best Hydrate theme content and a dispatcher route. Every page has breadcrumbs, one visible H1, contextual stock visuals, unique copy, internal cross-links, responsive presentation and claim-sensitive reference material where appropriate.
 
-The remaining common validation limitation is Shopify Admin: GitHub theme access does not prove that each `/pages/...` Page object exists. Those checks remain PARTIAL until the Shopify store connection or direct public-route verification is available.
+The shared breadcrumb system now renders primary family names as semantic labels rather than fake links because there is no canonical `/pages/science` or `/pages/solutions` family hub. Actual cluster parents remain clickable.
 
-### Solutions implementation complete
+### Solutions family milestone
 
-All 14 planned Solutions content pages are now implemented theme-side: Product Details, Directions, four Performance pages, four Everyday Wellness pages, three Clinical Hydration pages and Eco-Humanitarian. The live product template also has a dedicated Solutions/Science guide section.
+All 14 canonical Solutions content pages are implemented theme-side, plus the primary product route bridge. The complete family audit is recorded in `validation/solutions-family-audit.md`.
 
-Next action: run the complete Solutions-family route, cross-link, claim and responsive audit. After the audit, proceed into Connect.
+The audit corrected three shorthand routes to the canonical inventory paths: `/pages/endurance-hydration`, `/pages/recovery-hydration` and `/pages/travel-hydration`. Cross-links and dispatcher handles now match those routes consistently.
+
+Claim boundaries, breadcrumbs, image differentiation, responsive structure and internal links passed the theme-side audit. Remaining external dependencies are Shopify Page-object existence, final browser/device QA and the intentionally forward-linked `/pages/humanitarian-partnerships` page, which is next in the Connect wave.
+
+Next sequence: Connect, beginning with Company & People, then Partnerships, Investor Relations, News & Contact. After Connect, audit product/blog/global surfaces, normalize the server-rendered header and legacy routes, then run final whole-site QA.
 
 ## 001 - Hydration Science
 
@@ -80,6 +84,6 @@ Implementation commit: `6e9116de9e24999b2c4137e434064bed2149700f` plus default-t
 | Mobile CSS | PASS | Single-column cards, compact hero and readable spacing. |
 | Default page fallback | PASS | Unsupported legacy/default pages still render `page.content`. |
 | Shopify Page object exists | PARTIAL | Cannot be proven from GitHub theme alone. |
-| All linked destination pages finished | PARTIAL | Science destinations are complete; several Solutions destinations remain later in the queue. |
+| All linked destination pages finished | PARTIAL | Science and Solutions canonical destinations are now complete; Connect forward links remain in the next wave. |
 
-Overall: **PARTIAL, theme/content implementation complete; Shopify route existence and some cross-family destinations remain to be confirmed.**
+Overall: **PARTIAL, theme/content implementation complete; Shopify route existence and later Connect destinations remain to be confirmed.**
