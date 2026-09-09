@@ -1,0 +1,132 @@
+{%- liquid
+  assign seo_origin = request.origin
+  assign seo_home_url = routes.root_url | prepend: seo_origin
+  assign seo_canonical_url = canonical_url | default: seo_home_url
+  assign seo_logo_url = ''
+
+  if settings.logo != blank
+    assign seo_logo_path = settings.logo | image_url: width: 600
+    assign seo_logo_url = seo_logo_path | prepend: 'https:'
+  elsif settings.favicon != blank
+    assign seo_logo_path = settings.favicon | image_url: width: 600
+    assign seo_logo_url = seo_logo_path | prepend: 'https:'
+  endif
+
+  assign seo_menu = linklists['new-menu']
+  assign seo_path = request.path
+  assign seo_depth = 0
+  assign seo_l1_title = ''
+  assign seo_l1_url = ''
+  assign seo_l2_title = ''
+  assign seo_l2_url = ''
+  assign seo_l3_title = ''
+  assign seo_l3_url = ''
+
+  if seo_menu != blank
+    for top_link in seo_menu.links
+      if top_link.url == seo_path
+        assign seo_depth = 1
+        assign seo_l1_title = top_link.title
+        assign seo_l1_url = top_link.url
+      endif
+      for second_link in top_link.links
+        if second_link.url == seo_path
+          assign seo_depth = 2
+          assign seo_l1_title = top_link.title
+          assign seo_l1_url = top_link.url
+          assign seo_l2_title = second_link.title
+          assign seo_l2_url = second_link.url
+        endif
+        for third_link in second_link.links
+          if third_link.url == seo_path
+            assign seo_depth = 3
+            assign seo_l1_title = top_link.title
+            assign seo_l1_url = top_link.url
+            assign seo_l2_title = second_link.title
+            assign seo_l2_url = second_link.url
+            assign seo_l3_title = third_link.title
+            assign seo_l3_url = third_link.url
+          endif
+        endfor
+      endfor
+    endfor
+  endif
+-%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": {{ seo_origin | append: '/#organization' | json }},
+  "name": {{ shop.name | json }},
+  "url": {{ seo_home_url | json }}{% if seo_logo_url != blank %},
+  "logo": {{ seo_logo_url | json }}{% endif %}
+  {%- if settings.social_facebook_link != blank or settings.social_instagram_link != blank or settings.social_youtube_link != blank or settings.social_tiktok_link != blank -%},
+  "sameAs": [
+    {%- assign seo_social_started = false -%}
+    {%- if settings.social_facebook_link != blank -%}{{ settings.social_facebook_link | json }}{%- assign seo_social_started = true -%}{%- endif -%}
+    {%- if settings.social_instagram_link != blank -%}{% if seo_social_started %},{% endif %}{{ settings.social_instagram_link | json }}{%- assign seo_social_started = true -%}{%- endif -%}
+    {%- if settings.social_youtube_link != blank -%}{% if seo_social_started %},{% endif %}{{ settings.social_youtube_link | json }}{%- assign seo_social_started = true -%}{%- endif -%}
+    {%- if settings.social_tiktok_link != blank -%}{% if seo_social_started %},{% endif %}{{ settings.social_tiktok_link | json }}{%- endif -%}
+  ]
+  {%- endif -%}
+}
+</script>
+
+{%- if request.page_type == 'index' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": {{ seo_origin | append: '/#website' | json }},
+  "url": {{ seo_home_url | json }},
+  "name": {{ shop.name | json }},
+  "publisher": { "@id": {{ seo_origin | append: '/#organization' | json }} }
+}
+</script>
+{%- endif -%}
+
+{%- if request.page_type == 'product' and product != blank -%}
+<script type="application/ld+json">
+{{ product | structured_data }}
+</script>
+{%- elsif request.page_type == 'article' and article != blank -%}
+<script type="application/ld+json">
+{{ article | structured_data }}
+</script>
+{%- endif -%}
+
+{%- if request.page_type == 'article' and article != blank -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Home","item":{{ seo_home_url | json }}},
+    {"@type":"ListItem","position":2,"name":"Connect","item":{{ seo_origin | append: '/pages/connect-overview' | json }}},
+    {"@type":"ListItem","position":3,"name":"News & Contact","item":{{ seo_origin | append: '/pages/news-contact' | json }}},
+    {"@type":"ListItem","position":4,"name":"News & Insights","item":{{ seo_origin | append: '/blogs/news' | json }}},
+    {"@type":"ListItem","position":5,"name":{{ article.title | json }},"item":{{ seo_canonical_url | json }}}
+  ]
+}
+</script>
+{%- elsif seo_depth > 0 -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Home","item":{{ seo_home_url | json }}},
+    {"@type":"ListItem","position":2,"name":{{ seo_l1_title | json }},"item":{{ seo_l1_url | prepend: seo_origin | json }}}
+    {%- if seo_depth >= 2 -%},
+    {"@type":"ListItem","position":3,"name":{{ seo_l2_title | json }},"item":{{ seo_l2_url | prepend: seo_origin | json }}}
+    {%- endif -%}
+    {%- if seo_depth >= 3 -%},
+    {"@type":"ListItem","position":4,"name":{{ seo_l3_title | json }},"item":{{ seo_l3_url | prepend: seo_origin | json }}}
+    {%- endif -%}
+  ]
+}
+</script>
+{%- endif -%}
+
+{% comment %}SEO structured data uses Shopify resources and the Admin MAIN hierarchy. It intentionally avoids fabricated ratings, reviews, medical claims, local business details, and unsupported organization facts.{% endcomment %}
