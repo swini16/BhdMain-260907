@@ -1,5 +1,9 @@
 {
   "sections": {
+    "page_system": {
+      "type": "bhd-page-system",
+      "settings": {}
+    },
     "team": {
       "type": "bhd-team",
       "blocks": {
@@ -10,7 +14,7 @@
             "image_position": "object-position: 50% 18%;",
             "name": "Dr. Spencer Proctor",
             "role": "Professor & Department Chair, University of Alberta",
-            "bio": "<p>Nutritional scientist, athlete and coach guiding Best Hydrate's scientific direction in performance and clinical hydration.</p>",
+            "bio": "<p>Nutritional scientist, athlete and coach contributing scientific perspective across performance, nutrition and hydration research.</p>",
             "link_label": "University of Alberta Profile",
             "link": "https://mcvd.ualberta.ca/research/dr-spencer-proctor/"
           }
@@ -22,7 +26,7 @@
             "image_position": "object-position: 55% 20%;",
             "name": "Austin",
             "role": "Founder, CEO",
-            "bio": "<p>Founder and Power Engineer who began developing Best Hydrate after a serious health experience reshaped how he viewed hydration.</p>",
+            "bio": "<p>Founder and Power Engineer who began developing Best Hydrate after a serious health experience reshaped how he viewed hydration, product design and practical access.</p>",
             "link_label": "",
             "link": ""
           }
@@ -34,7 +38,7 @@
             "image_position": "object-position: 50% 20%;",
             "name": "Simone",
             "role": "Co-Founder, Registered Nurse",
-            "bio": "<p>Registered Nurse bringing 16 years of research and management experience to practical everyday hydration.</p>",
+            "bio": "<p>Registered Nurse bringing long-standing research and management experience to practical hydration, health communication and company development.</p>",
             "link_label": "",
             "link": ""
           }
@@ -42,14 +46,14 @@
       },
       "block_order": ["spencer", "austin", "simone"],
       "settings": {
-        "heading": "Meet Us",
+        "heading": "People Behind Best Hydrate",
         "heading_size": "h1",
-        "text": "<p>Best Hydrate brings together lived experience, health care, science and performance.</p>",
+        "text": "<p>Three perspectives represented publicly today: nutrition science, founder-led product development and nursing experience.</p>",
         "color_scheme": "scheme-2",
-        "padding_top": 56,
-        "padding_bottom": 56
+        "padding_top": 24,
+        "padding_bottom": 64
       }
     }
   },
-  "order": ["team"]
+  "order": ["page_system", "team"]
 }
