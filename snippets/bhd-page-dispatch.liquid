@@ -48,10 +48,10 @@
   {% when 'events' %}{% render 'bhd-page-events' %}
   {% when 'contact' %}{% render 'bhd-page-contact' %}
   {% else %}
-    {% render 'bhd-page-breadcrumbs', current_title: page.title %}
+    {% render 'bhd-page-breadcrumbs', page_handle: page.handle, current_title: page.title %}
     <div class="bhd-page-fallback__content"><h1>{{ page.title }}</h1><div class="rte">{{ page.content }}</div></div>
     {% render 'bhd-menu-descendants' %}
 {% endcase %}
 
 {% render 'bhd-page-enrichment' %}
-{% comment %}Canonical breadcrumbs and parent-page menu directories are derived from Shopify Admin MAIN. Specialized parents render their directory directly below the hero; fallback hub pages render it directly below their introduction.{% endcomment %}
+{% comment %}Canonical Page breadcrumbs are keyed by explicit Page handle. Parent page directories remain sourced from Shopify Admin MAIN.{% endcomment %}
