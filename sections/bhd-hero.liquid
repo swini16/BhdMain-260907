@@ -58,6 +58,12 @@
           </article>
         </div>
 
+        {% if hero_product_image %}
+          <a class="bhd-hero-v3__tablet-product" href="{{ hero_product.url }}" aria-label="Shop Best Hydrate">
+            <img src="{{ hero_product_image | image_url: width: 700 }}" alt="{{ hero_product.title | escape }}" width="700" height="700" loading="eager" decoding="async">
+          </a>
+        {% endif %}
+
         <button class="bhd-hero-v3__arrow bhd-hero-v3__arrow--prev" type="button" data-hero-prev aria-label="Previous hero">‹</button>
         <button class="bhd-hero-v3__arrow bhd-hero-v3__arrow--next" type="button" data-hero-next aria-label="Next hero">›</button>
       </div>
@@ -242,7 +248,7 @@
       opacity:0;
       visibility:hidden;
       pointer-events:none;
-      transition:opacity .42s; ease;
+      transition:opacity .42s ease;
     }
     #BhdHero-{{ section.id }} .bhd-hero-v3__tablet-slide.is-active {
       opacity:1; visibility:visible; pointer-events:auto;
