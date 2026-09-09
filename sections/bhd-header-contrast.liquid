@@ -3,42 +3,51 @@
     .bhd-header .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
     .bhd-header .bhd-header__main-link{font-weight:650}
     .bhd-header .bhd-header__main-toggle{background:rgba(var(--color-button),.18);border-left-color:rgba(var(--color-button),.34)}
-    .bhd-header .bhd-header__main-item:hover .bhd-header__split-button,.bhd-header .bhd-header__main-item:focus-within .bhd-header__split-button{background:rgba(var(--color-button),.16);border-color:rgba(var(--color-button),.42);box-shadow:0 .35rem 1rem rgba(13,33,78,.08)}
-    .bhd-header .bhd-header__main-item.is-open .bhd-header__split-button{background:rgba(var(--color-button),.24);border-color:rgba(var(--color-button),.6);box-shadow:0 .45rem 1.4rem rgba(13,33,78,.13)}
 
-    .bhd-header .bhd-header__main-item::after{content:"";position:absolute;z-index:2;top:100%;left:-1.2rem;right:-1.2rem;height:1.15rem;display:none}
-    .bhd-header .bhd-header__main-item:hover::after,.bhd-header .bhd-header__main-item.is-open::after{display:block}
-    .bhd-header .bhd-header__dropdown-menu{z-index:3;border-top:3px solid rgba(var(--color-button),.5);box-shadow:0 2.2rem 5rem rgba(13,33,78,.18)}
+    .bhd-header .bhd-header__main-item::after{content:"";position:absolute;z-index:2;top:100%;left:-1.2rem;right:-1.2rem;height:1.25rem;display:none}
+    .bhd-header .bhd-header__main-item.bhd-hover-open::after,
+    .bhd-header .bhd-header__main-item.is-open::after{display:block}
 
-    /* A click-open node is explicitly pinned. While pinned, no sibling hover or focus path may display. */
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned) .bhd-header__dropdown-menu,
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned):hover .bhd-header__dropdown-menu,
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned):focus-within .bhd-header__dropdown-menu{
+    /* Top-level mega-menu visibility is state-driven only. Base :hover/:focus rules cannot show a menu. */
+    .bhd-header .bhd-header__main-item .bhd-header__dropdown-menu,
+    .bhd-header .bhd-header__main-item:hover .bhd-header__dropdown-menu,
+    .bhd-header .bhd-header__main-item:focus-within .bhd-header__dropdown-menu{
       display:none!important;
       visibility:hidden!important;
       opacity:0!important;
       pointer-events:none!important;
     }
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned)::after{display:none!important}
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned):hover .bhd-header__split-button,
-    .bhd-header.bhd-menu-locked .bhd-header__main-item:not(.bhd-menu-pinned):focus-within .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
+    .bhd-header .bhd-header__main-item.bhd-hover-open .bhd-header__dropdown-menu,
+    .bhd-header .bhd-header__main-item.is-open .bhd-header__dropdown-menu{
+      display:grid!important;
+      visibility:visible!important;
+      opacity:1!important;
+      pointer-events:auto!important;
+      z-index:3;
+      border-top:3px solid rgba(var(--color-button),.5);
+      box-shadow:0 2.2rem 5rem rgba(13,33,78,.18);
+    }
 
-    .bhd-header .bhd-header__main-item.bhd-hover-suppressed:hover .bhd-header__dropdown-menu,
-    .bhd-header .bhd-header__main-item.bhd-hover-suppressed:focus-within .bhd-header__dropdown-menu{display:none!important}
-    .bhd-header .bhd-header__main-item.bhd-hover-suppressed:hover .bhd-header__split-button,
-    .bhd-header .bhd-header__main-item.bhd-hover-suppressed:focus-within .bhd-header__split-button{background:rgba(var(--color-button),.11);border-color:rgba(var(--color-button),.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 .22rem .8rem rgba(13,33,78,.06)}
+    .bhd-header .bhd-header__main-item.bhd-hover-open .bhd-header__split-button,
+    .bhd-header .bhd-header__main-item.is-open .bhd-header__split-button{
+      background:rgba(var(--color-button),.24);
+      border-color:rgba(var(--color-button),.6);
+      box-shadow:0 .45rem 1.4rem rgba(13,33,78,.13)
+    }
 
     .bhd-header .bhd-header__dropdown-child:hover .bhd-header__tier2-split{background:rgba(var(--color-button),.13);border-color:rgba(var(--color-button),.38)}
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-split{background:rgba(72,132,120,.15);border-color:rgba(72,132,120,.48);box-shadow:0 .3rem .9rem rgba(44,92,82,.10)}
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-link{color:#245f55}
     .bhd-header .bhd-header__dropdown-child.is-tier2-open .bhd-header__tier2-toggle{background:rgba(72,132,120,.26);color:#245f55;border-left-color:rgba(72,132,120,.46)}
   }
+
   @media screen and (max-width:989px){
     .bhd-header .bhd-header__mobile-main.is-open .bhd-header__mobile-main-row{background:rgba(var(--color-button),.2);border-color:rgba(var(--color-button),.5)}
     .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-split{background:rgba(72,132,120,.15);border-color:rgba(72,132,120,.48);box-shadow:0 .25rem .75rem rgba(44,92,82,.08)}
     .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-link{color:#245f55}
     .bhd-header .bhd-header__mobile-tier2.is-tier2-open .bhd-header__mobile-tier2-toggle{background:rgba(72,132,120,.26);color:#245f55;border-left-color:rgba(72,132,120,.46)}
   }
+
   @media screen and (max-width:360px){
     .bhd-header .bhd-header__inner{gap:.35rem}
     .bhd-header .bhd-header__actions>a[aria-label="Account"]{display:none}
@@ -51,60 +60,80 @@
 
 <script>
   (()=>{
-    const reconcile=(header)=>{
+    const CLOSE_DELAY=300;
+
+    const clearHover=(header,except=null)=>{
       if(!header)return;
-      const items=Array.from(header.querySelectorAll('[data-main-item]'));
-      const open=items.find(item=>item.classList.contains('is-open'))||null;
-      header.classList.toggle('bhd-menu-locked',!!open);
-      items.forEach(item=>item.classList.toggle('bhd-menu-pinned',item===open));
-    };
-
-    const bind=()=>{
-      document.querySelectorAll('.bhd-header').forEach(header=>{
-        if(header.dataset.bhdLockBound==='1')return;
-        header.dataset.bhdLockBound='1';
-
-        header.querySelectorAll('[data-main-item]').forEach(item=>{
-          item.addEventListener('mouseleave',()=>item.classList.remove('bhd-hover-suppressed'));
-        });
-
-        const observer=new MutationObserver(()=>reconcile(header));
-        observer.observe(header,{subtree:true,attributes:true,attributeFilter:['class']});
-        reconcile(header);
+      header.querySelectorAll('[data-main-item].bhd-hover-open').forEach(item=>{
+        if(item!==except)item.classList.remove('bhd-hover-open');
       });
     };
 
-    /* Capture phase pins the intended node before the base header click handler runs. */
+    const pinned=(header)=>header&&header.querySelector('[data-main-item].is-open');
+
+    const bindHeader=(header)=>{
+      if(header.dataset.bhdSingleStateBound==='1')return;
+      header.dataset.bhdSingleStateBound='1';
+
+      header.querySelectorAll('[data-main-item]').forEach(item=>{
+        let closeTimer=null;
+
+        const cancelClose=()=>{
+          if(closeTimer!==null){clearTimeout(closeTimer);closeTimer=null;}
+        };
+
+        item.addEventListener('mouseenter',()=>{
+          cancelClose();
+          if(window.innerWidth<990)return;
+          if(pinned(header)){
+            clearHover(header);
+            return;
+          }
+          clearHover(header,item);
+          item.classList.add('bhd-hover-open');
+        });
+
+        item.addEventListener('mouseleave',()=>{
+          cancelClose();
+          closeTimer=setTimeout(()=>{
+            item.classList.remove('bhd-hover-open');
+            closeTimer=null;
+          },CLOSE_DELAY);
+        });
+
+        item.addEventListener('focusin',()=>{
+          if(window.innerWidth<990||pinned(header))return;
+          clearHover(header,item);
+          item.classList.add('bhd-hover-open');
+        });
+
+        item.addEventListener('focusout',(event)=>{
+          if(item.contains(event.relatedTarget))return;
+          item.classList.remove('bhd-hover-open');
+        });
+      });
+
+      const observer=new MutationObserver(()=>{
+        if(pinned(header))clearHover(header);
+      });
+      observer.observe(header,{subtree:true,attributes:true,attributeFilter:['class']});
+    };
+
+    const bind=()=>document.querySelectorAll('.bhd-header').forEach(bindHeader);
+
+    /* Clear transient hover state before the core click handler toggles a pinned menu. */
     document.addEventListener('click',(event)=>{
       const toggle=event.target.closest('.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]');
       if(!toggle)return;
-      const item=toggle.closest('[data-main-item]');
-      const header=item&&item.closest('.bhd-header');
-      if(!item||!header)return;
-
-      const wasOpen=item.classList.contains('is-open');
-      if(wasOpen){
-        item.classList.add('bhd-hover-suppressed');
-        item.classList.remove('bhd-menu-pinned');
-        header.classList.remove('bhd-menu-locked');
-        requestAnimationFrame(()=>{
-          if(document.activeElement===toggle)toggle.blur();
-          reconcile(header);
-        });
-      }else{
-        header.classList.add('bhd-menu-locked');
-        header.querySelectorAll('[data-main-item]').forEach(other=>other.classList.toggle('bhd-menu-pinned',other===item));
-        requestAnimationFrame(()=>reconcile(header));
-      }
+      const header=toggle.closest('.bhd-header');
+      clearHover(header);
+      requestAnimationFrame(()=>{
+        if(!toggle.closest('[data-main-item]')?.classList.contains('is-open') && document.activeElement===toggle)toggle.blur();
+      });
     },true);
 
-    document.addEventListener('click',(event)=>{
-      if(event.target.closest('.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]'))return;
-      requestAnimationFrame(()=>document.querySelectorAll('.bhd-header').forEach(reconcile));
-    });
-
     document.addEventListener('keydown',(event)=>{
-      if(event.key==='Escape')requestAnimationFrame(()=>document.querySelectorAll('.bhd-header').forEach(reconcile));
+      if(event.key==='Escape')document.querySelectorAll('.bhd-header').forEach(clearHover);
     });
 
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
@@ -114,8 +143,8 @@
 
 {% comment %}
 The canonical Science, Solutions and Connect hierarchy is rendered directly by bhd-header.liquid.
-This layer adds interaction polish only: forgiving hover access, deterministic single-menu pinning, reliable manual collapse, and calm active-node emphasis.
-Sync marker: deterministic-single-menu-pin-20260909.
+Top-level mega-menu visibility is deliberately state-driven only: exactly one hover-open or one pinned-open menu can render at a time.
+Sync marker: strict-single-megamenu-state-20260909.
 {% endcomment %}
 
 {% schema %}
