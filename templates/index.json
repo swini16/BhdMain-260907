@@ -25,21 +25,31 @@
       "type": "bhd-benefits",
       "settings": {"color_scheme": "scheme-1"}
     },
+    "why": {
+      "type": "bhd-why",
+      "settings": {"color_scheme": "scheme-1"}
+    },
     "markets": {
       "type": "bhd-markets",
       "settings": {
-        "heading": "Hydration for real life.",
+        "heading": "Built for real life.",
         "heading_size": "h1",
-        "text": "<p>Best Hydrate is designed for athletes, daily life and medical or recovery-related hydration needs. One formula, built to make practical hydration simpler across very different days.</p>",
-        "athlete_label": "Athletes",
+        "text": "<p>One hydration platform across performance, everyday, medical and humanitarian settings, with each use case kept in its proper context.</p>",
+        "athlete_label": "Performance",
         "athlete_intro": "For training, competition and recovery when hydration and electrolyte replacement matter.",
         "daily_label": "Daily",
-        "daily_intro": "For work, heat, travel, focus and keeping hydration consistent through everyday life.",
+        "daily_intro": "For work, heat, travel and keeping hydration consistent through everyday life.",
         "medical_label": "Medical",
         "medical_intro": "For recovery, active aging and situations where hydration needs may require extra attention or professional guidance.",
+        "humanitarian_label": "Humanitarian",
+        "humanitarian_intro": "For partnerships focused on practical oral hydration access in community and field settings.",
         "medical_note": "Medical hydration needs vary. Follow the product label and seek clinician guidance when appropriate.",
         "color_scheme": "scheme-1"
       }
+    },
+    "science_research": {
+      "type": "bhd-science-research",
+      "settings": {"color_scheme": "scheme-1"}
     },
     "product_story": {
       "type": "bhd-product-story",
@@ -57,5 +67,5 @@
       "settings": {"color_scheme": "scheme-1"}
     }
   },
-  "order": ["hero", "benefits", "markets", "product_story", "trust"]
+  "order": ["hero", "benefits", "why", "markets", "science_research", "product_story", "trust"]
 }
