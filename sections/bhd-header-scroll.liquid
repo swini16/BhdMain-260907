@@ -21,6 +21,74 @@
       transform: translateY(0);
       box-shadow: 0 6px 20px rgba(0,0,0,.08);
     }
+
+    /* Desktop dropdowns are click-state only. Hover/focus cannot dismiss or summon them. */
+    .bhd-header__main-item:not(.is-open) > .bhd-header__dropdown-menu {
+      display: none !important;
+    }
+
+    .bhd-header__main-item.is-open > .bhd-header__dropdown-menu {
+      display: grid !important;
+    }
+  }
+
+  .bhd-related-nav {
+    box-sizing: border-box;
+    max-width: var(--page-width, 120rem);
+    margin: 4rem auto 1.5rem;
+    padding: 2rem 5rem;
+    border-top: 1px solid rgba(var(--color-foreground), .11);
+  }
+
+  .bhd-related-nav__parent {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    margin-bottom: 1rem;
+    color: rgba(var(--color-foreground), .72);
+    font-size: 1.3rem;
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .bhd-related-nav__title {
+    margin: 0 0 1rem;
+    color: rgb(var(--color-foreground));
+    font-size: 1.7rem;
+    line-height: 1.2;
+  }
+
+  .bhd-related-nav__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .7rem;
+  }
+
+  .bhd-related-nav__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3.6rem;
+    padding: .65rem 1rem;
+    border: 1px solid rgba(var(--color-button), .24);
+    border-radius: 999px;
+    background: rgba(var(--color-button), .06);
+    color: rgb(var(--color-foreground));
+    font-size: 1.3rem;
+    font-weight: 620;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+
+  .bhd-related-nav__parent:hover,
+  .bhd-related-nav__links a:hover {
+    text-decoration: underline;
+  }
+
+  @media screen and (max-width: 749px) {
+    .bhd-related-nav {
+      margin-top: 3rem;
+      padding: 1.6rem 2rem;
+    }
   }
 </style>
 
@@ -30,10 +98,95 @@
     const header = document.querySelector('.bhd-header');
     if (!header) return;
 
+    const qsa = (root, selector) => Array.from(root.querySelectorAll(selector));
     let lastY = window.scrollY;
     let headerHeight = header.getBoundingClientRect().height;
     let ticking = false;
     let resizeTicking = false;
+
+    const closeTier2 = (item) => {
+      item.classList.remove('is-tier2-open');
+      const button = item.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-toggle');
+      if (button) button.setAttribute('aria-expanded', 'false');
+    };
+
+    const closeMain = (item) => {
+      item.classList.remove('is-open');
+      const button = item.querySelector(':scope > .bhd-header__split-button [data-menu-toggle]');
+      if (button) button.setAttribute('aria-expanded', 'false');
+      qsa(item, '.bhd-header__dropdown-child.is-tier2-open').forEach(closeTier2);
+    };
+
+    const positionMenu = (item) => {
+      if (!mq.matches) return;
+      const menu = item.querySelector(':scope > .bhd-header__dropdown-menu');
+      if (!menu) return;
+      menu.style.setProperty('--menu-shift-x', '0px');
+      requestAnimationFrame(() => {
+        const rect = menu.getBoundingClientRect();
+        const margin = 16;
+        let shift = 0;
+        if (rect.left < margin) shift += margin - rect.left;
+        if (rect.right > window.innerWidth - margin) shift -= rect.right - (window.innerWidth - margin);
+        menu.style.setProperty('--menu-shift-x', `${shift}px`);
+      });
+    };
+
+    const openMain = (item) => {
+      qsa(header, '[data-main-item].is-open').forEach((other) => {
+        if (other !== item) closeMain(other);
+      });
+      item.classList.add('is-open');
+      const button = item.querySelector(':scope > .bhd-header__split-button [data-menu-toggle]');
+      if (button) button.setAttribute('aria-expanded', 'true');
+      header.classList.remove('bhd-header--hidden');
+      header.classList.add('bhd-header--shown');
+      positionMenu(item);
+    };
+
+    /* Capture desktop menu clicks before the legacy delegated header handler. */
+    document.addEventListener('click', (event) => {
+      if (!mq.matches || !(event.target instanceof Element)) return;
+
+      const mainToggle = event.target.closest('.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]');
+      if (mainToggle) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const item = mainToggle.closest('[data-main-item]');
+        if (!item) return;
+        if (item.classList.contains('is-open')) closeMain(item);
+        else openMain(item);
+        return;
+      }
+
+      const tierToggle = event.target.closest('.bhd-header__tier2-toggle');
+      if (tierToggle) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const item = tierToggle.closest('.bhd-header__dropdown-child');
+        const scope = item && item.closest('.bhd-header__dropdown-menu');
+        if (!item || !scope) return;
+        qsa(scope, '.bhd-header__dropdown-child.is-tier2-open').forEach((other) => {
+          if (other !== item) closeTier2(other);
+        });
+        if (item.classList.contains('is-tier2-open')) closeTier2(item);
+        else {
+          item.classList.add('is-tier2-open');
+          tierToggle.setAttribute('aria-expanded', 'true');
+        }
+        return;
+      }
+
+      /* A real outside click dismisses the open dropdown. */
+      if (!event.target.closest('.bhd-header__main-item')) {
+        qsa(header, '[data-main-item].is-open').forEach(closeMain);
+      }
+    }, true);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || !mq.matches) return;
+      qsa(header, '[data-main-item].is-open').forEach(closeMain);
+    }, true);
 
     const updateHeader = () => {
       if (!mq.matches) {
@@ -43,8 +196,16 @@
       }
 
       const y = window.scrollY;
-      const delta = y - lastY;
 
+      /* An open menu owns the header until explicitly closed. */
+      if (header.querySelector('[data-main-item].is-open')) {
+        header.classList.remove('bhd-header--hidden');
+        header.classList.add('bhd-header--shown');
+        lastY = y;
+        return;
+      }
+
+      const delta = y - lastY;
       if (y <= 10) {
         header.classList.remove('bhd-header--hidden', 'bhd-header--shown');
       } else if (delta < -5) {
@@ -54,7 +215,6 @@
         header.classList.remove('bhd-header--shown');
         header.classList.add('bhd-header--hidden');
       }
-
       lastY = y;
     };
 
@@ -65,7 +225,7 @@
 
     window.addEventListener('scroll', () => {
       if (!ticking) {
-        window.requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
           updateHeader();
           ticking = false;
         });
@@ -75,8 +235,9 @@
 
     window.addEventListener('resize', () => {
       if (!resizeTicking) {
-        window.requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
           remeasureHeader();
+          qsa(header, '[data-main-item].is-open').forEach(positionMenu);
           resizeTicking = false;
         });
         resizeTicking = true;
@@ -84,7 +245,103 @@
     }, { passive: true });
 
     mq.addEventListener?.('change', remeasureHeader);
-    updateHeader();
+
+    const normalizePath = (href) => {
+      try {
+        const path = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
+        return path || '/';
+      } catch (_) {
+        return '';
+      }
+    };
+
+    const addRelatedNavigation = () => {
+      const main = document.getElementById('MainContent');
+      const nav = header.querySelector('.bhd-header__nav');
+      if (!main || !nav || main.querySelector('.bhd-related-nav')) return;
+
+      const currentPath = normalizePath(window.location.href);
+      let parent = null;
+      let contextLabel = '';
+      let related = [];
+
+      for (const topItem of qsa(nav, '[data-main-item]')) {
+        const topLink = topItem.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
+        if (!topLink) continue;
+        const children = qsa(topItem, ':scope > .bhd-header__dropdown-menu > .bhd-header__dropdown-child');
+        const tier2Links = children.map((child) => child.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-link')).filter(Boolean);
+
+        if (normalizePath(topLink.href) === currentPath) {
+          parent = { href: '/', label: 'Home' };
+          contextLabel = topLink.textContent.trim();
+          related = tier2Links;
+          break;
+        }
+
+        let matched = false;
+        for (const child of children) {
+          const tier2Link = child.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-link');
+          if (!tier2Link) continue;
+
+          if (normalizePath(tier2Link.href) === currentPath) {
+            parent = { href: topLink.href, label: topLink.textContent.trim() };
+            contextLabel = topLink.textContent.trim();
+            related = tier2Links.filter((link) => normalizePath(link.href) !== currentPath);
+            matched = true;
+            break;
+          }
+
+          const tier3Links = qsa(child, ':scope > .bhd-header__tier3 > a');
+          if (tier3Links.some((link) => normalizePath(link.href) === currentPath)) {
+            parent = { href: tier2Link.href, label: tier2Link.textContent.trim() };
+            contextLabel = tier2Link.textContent.trim();
+            related = tier3Links.filter((link) => normalizePath(link.href) !== currentPath);
+            matched = true;
+            break;
+          }
+        }
+        if (matched) break;
+      }
+
+      if (!parent) return;
+
+      const wrapper = document.createElement('nav');
+      wrapper.className = 'bhd-related-nav';
+      wrapper.setAttribute('aria-label', 'Related navigation');
+
+      const parentLink = document.createElement('a');
+      parentLink.className = 'bhd-related-nav__parent';
+      parentLink.href = parent.href;
+      parentLink.textContent = `↑ Up to ${parent.label}`;
+      wrapper.appendChild(parentLink);
+
+      if (related.length) {
+        const title = document.createElement('h2');
+        title.className = 'bhd-related-nav__title';
+        title.textContent = `Continue exploring ${contextLabel}`;
+        wrapper.appendChild(title);
+
+        const links = document.createElement('div');
+        links.className = 'bhd-related-nav__links';
+        related.forEach((source) => {
+          const link = document.createElement('a');
+          link.href = source.href;
+          link.textContent = source.textContent.trim();
+          links.appendChild(link);
+        });
+        wrapper.appendChild(links);
+      }
+
+      main.appendChild(wrapper);
+    };
+
+    const initialize = () => {
+      updateHeader();
+      requestAnimationFrame(addRelatedNavigation);
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true });
+    else initialize();
   })();
 </script>
 
