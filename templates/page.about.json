@@ -23,7 +23,8 @@
           "type": "profile",
           "settings": {
             "image": "shopify://shop_images/Austin_barefeet.png",
-            "image_position": "object-position: 55% 20%;",
+            "photo_url": "https://raw.githubusercontent.com/swini16/BhdMain-260907/main/assets/austin-swiniarski-bio-20260910.webp",
+            "image_position": "object-position: 50% 50%;",
             "name": "Austin Swiniarski",
             "role": "Founder, CEO",
             "bio": "<p>Founder and Power Engineer who began developing Best Hydrate after a serious health experience reshaped how he viewed hydration, product design and practical access.</p>",
