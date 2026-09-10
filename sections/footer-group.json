@@ -2,6 +2,10 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
+    "page_end_nav": {
+      "type": "bhd-page-end-nav",
+      "settings": {}
+    },
     "canonical_nav": {
       "type": "bhd-footer-nav",
       "settings": {
@@ -62,6 +66,7 @@
     }
   },
   "order": [
+    "page_end_nav",
     "canonical_nav",
     "newsletter",
     "footer"
