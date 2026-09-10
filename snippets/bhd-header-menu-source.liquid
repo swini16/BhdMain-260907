@@ -162,6 +162,10 @@
     .bhd-menu-context-breadcrumb a{color:#0b2d67;text-decoration:none}
     .bhd-menu-context-breadcrumb a:hover{text-decoration:underline}
     @media screen and (max-width:749px){.bhd-menu-context-breadcrumb{padding:1.5rem 2rem 1rem;font-size:1.25rem}}
+    @media screen and (min-width:990px){
+      .bhd-header__main-item:not(.is-open) > .bhd-header__dropdown-menu{display:none!important}
+      .bhd-header__main-item.is-open > .bhd-header__dropdown-menu{display:grid!important}
+    }
   </style>
 
   <script>
@@ -192,6 +196,35 @@
       else hydrateContextBreadcrumb();
     })();
   </script>
+
+  <script>
+    (()=>{
+      const restoreTier2=(item)=>{
+        item.classList.add('is-tier2-open');
+        const btn=item.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-toggle');
+        if(btn)btn.setAttribute('aria-expanded','true');
+      };
+
+      document.addEventListener('click',(event)=>{
+        if(window.innerWidth<990||!(event.target instanceof Element))return;
+        const header=document.querySelector('.bhd-header');
+        if(!header)return;
+        if(event.target.closest('.bhd-header [data-menu-toggle]'))return;
+
+        const openItem=header.querySelector('[data-main-item].is-open');
+        if(!openItem||event.target.closest('.bhd-header__main-item'))return;
+        const openTier2=Array.from(openItem.querySelectorAll('.bhd-header__dropdown-child.is-tier2-open'));
+
+        queueMicrotask(()=>{
+          if(header.querySelector('[data-main-item].is-open'))return;
+          openItem.classList.add('is-open');
+          const mainBtn=openItem.querySelector(':scope > .bhd-header__split-button [data-menu-toggle]');
+          if(mainBtn)mainBtn.setAttribute('aria-expanded','true');
+          openTier2.forEach(restoreTier2);
+        });
+      },true);
+    })();
+  </script>
 {% endif %}
 
-{% comment %}Shopify Admin MAIN, handle new-menu, is the live interactive header and hierarchy source. URL comparisons are normalized so manual HTTP links match relative storefront request paths on both page and non-page destinations.{% endcomment %}
+{% comment %}Shopify Admin MAIN, handle new-menu, is the live interactive header and hierarchy source. Desktop level-2 navigation is persistent toggle state: it closes only from its own toggle or when another top-level menu is toggled open. URL comparisons are normalized so manual HTTP links match relative storefront request paths on both page and non-page destinations.{% endcomment %}
