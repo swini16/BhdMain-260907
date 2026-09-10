@@ -9,6 +9,15 @@
  */
 {
   "sections": {
+    "article_context_fix": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<style>.bhd-utility-context--article{padding:1rem 0 .9rem;background:#f8fcff}.bhd-utility-context--article .bhd-utility-context__crumbs{margin-bottom:.7rem;font-size:1.12rem}.bhd-utility-context--article .bhd-utility-context__strip{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.72rem 1rem;border:1px solid rgba(11,45,103,.1);border-radius:1rem;background:rgba(245,251,255,.88);box-shadow:none}.bhd-utility-context--article .bhd-utility-context__strip>div:first-child{min-width:0}.bhd-utility-context--article .bhd-utility-context__strip strong{display:inline;margin:0 .45rem 0 0;font-size:1.15rem}.bhd-utility-context--article .bhd-utility-context__strip span{display:inline;font-size:1.06rem;line-height:1.35}.bhd-utility-context--article .bhd-utility-context__actions{flex:0 0 auto;gap:.55rem}.bhd-utility-context--article .bhd-utility-context__actions a{padding:.52rem .8rem;font-size:1.05rem}.article-template>header.page-width{margin-top:2rem;margin-bottom:.9rem}.article-template__title{margin-bottom:.45rem!important}@media screen and (max-width:749px){.bhd-utility-context--article{padding:.75rem 0 .7rem}.bhd-utility-context--article .bhd-utility-context__strip{display:grid;gap:.65rem;padding:.72rem .8rem}.bhd-utility-context--article .bhd-utility-context__strip strong,.bhd-utility-context--article .bhd-utility-context__strip span{display:block}.bhd-utility-context--article .bhd-utility-context__strip strong{margin:0 0 .18rem}.bhd-utility-context--article .bhd-utility-context__actions{width:100%;justify-content:flex-start}.article-template>header.page-width{margin-top:1.35rem}}</style>",
+        "color_scheme": "scheme-1",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
     "main": {
       "type": "main-article",
       "blocks": {
@@ -36,9 +45,9 @@
           "settings": {}
         }
       },
-      "block_order": ["featured_image","title","share","content"],
+      "block_order": ["title","featured_image","share","content"],
       "settings": {}
     }
   },
-  "order": ["main"]
+  "order": ["article_context_fix","main"]
 }
