@@ -61,11 +61,17 @@ Blog/article cards:
 
 Commit: `c26d62ab866a7211ac23782f272708851adf31c1`
 
+**Deployment verification note:** GitHub `main` contains these article-card attributes, but Shopify MAIN still returned the previous `article-card.liquid` body during immediate verification. A force-sync commit (`2fe30a48ac085438b9a7fff8c76f6489e9a929e4`) was made, but the Shopify file had still not refreshed on the immediate re-check. Treat this one minor optimization as **repo-ready, not yet verified live**.
+
 Press-page below-fold interview image:
 - retained dimensions + lazy loading + async decoding
 - added low fetch priority while updating the press page
 
 Commit: `c98fcb7fb8e5080bcebc7c8c2135caab4edbc94d`
+
+## Shopify MAIN verification
+
+The connected live Shopify theme is `BhdMain-260907/main` and reported healthy (`processing=false`, `processingFailed=false`). Shopify MAIN reflected the updated header-scroll, markets, product-story and press files during this pass. The article-card exception is documented above.
 
 ## Existing good practices confirmed
 
