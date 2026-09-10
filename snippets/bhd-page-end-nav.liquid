@@ -1,0 +1,127 @@
+{% assign bhd_navigation = linklists['new-menu'] %}
+{% assign bhd_current_path = request.path | split: '?' | first | split: '#' | first %}
+{% assign bhd_match_path = bhd_current_path %}
+{% if bhd_current_path contains '/blogs/news/' %}{% assign bhd_match_path = '/blogs/news' %}{% endif %}
+
+{% assign bhd_found = false %}
+{% assign bhd_parent_label = 'Home' %}
+{% assign bhd_parent_url = routes.root_url %}
+{% assign bhd_peer_level = 0 %}
+{% assign bhd_peer_top_index = -1 %}
+{% assign bhd_peer_second_index = -1 %}
+
+{% if bhd_navigation != blank and bhd_navigation.links.size > 0 %}
+  {% for top_link in bhd_navigation.links %}
+    {% assign top_index = forloop.index0 %}
+    {% assign top_path = top_link.url | split: '?' | first | split: '#' | first %}
+    {% if shop.url != blank %}{% assign top_path = top_path | remove: shop.url %}{% endif %}
+
+    {% if top_path == bhd_match_path and top_link.title != 'Shop' %}
+      {% assign bhd_found = true %}
+      {% assign bhd_parent_label = 'Home' %}
+      {% assign bhd_parent_url = routes.root_url %}
+      {% assign bhd_peer_level = 1 %}
+      {% assign bhd_peer_top_index = top_index %}
+    {% endif %}
+
+    {% for second_link in top_link.links %}
+      {% assign second_index = forloop.index0 %}
+      {% assign second_path = second_link.url | split: '?' | first | split: '#' | first %}
+      {% if shop.url != blank %}{% assign second_path = second_path | remove: shop.url %}{% endif %}
+
+      {% if second_path == bhd_match_path %}
+        {% assign bhd_found = true %}
+        {% assign bhd_parent_label = top_link.title %}
+        {% assign bhd_parent_url = top_link.url %}
+        {% assign bhd_peer_level = 2 %}
+        {% assign bhd_peer_top_index = top_index %}
+      {% endif %}
+
+      {% for third_link in second_link.links %}
+        {% assign third_path = third_link.url | split: '?' | first | split: '#' | first %}
+        {% if shop.url != blank %}{% assign third_path = third_path | remove: shop.url %}{% endif %}
+
+        {% if third_path == bhd_match_path %}
+          {% assign bhd_found = true %}
+          {% assign bhd_parent_label = second_link.title %}
+          {% assign bhd_parent_url = second_link.url %}
+          {% assign bhd_peer_level = 3 %}
+          {% assign bhd_peer_top_index = top_index %}
+          {% assign bhd_peer_second_index = second_index %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+
+<section class="bhd-page-end-nav" aria-label="Continue exploring Best Hydrate">
+  <div class="page-width bhd-page-end-nav__inner">
+    <div class="bhd-page-end-nav__nav">
+      {% unless request.page_type == 'index' %}
+        <a class="bhd-page-end-nav__parent" href="{{ bhd_parent_url }}" aria-label="Up to {{ bhd_parent_label | escape }}">↑ {{ bhd_parent_label | escape }}</a>
+      {% endunless %}
+
+      <nav class="bhd-page-end-nav__peers" aria-label="Related pages">
+        {% if bhd_found and bhd_peer_level == 1 %}
+          {% for peer in bhd_navigation.links %}
+            {% unless peer.title == 'Shop' %}
+              {% assign peer_path = peer.url | split: '?' | first | split: '#' | first %}
+              {% if shop.url != blank %}{% assign peer_path = peer_path | remove: shop.url %}{% endif %}
+              <a href="{{ peer.url }}"{% if peer_path == bhd_match_path %} class="is-current" aria-current="page"{% endif %}>{{ peer.title | escape }}</a>
+            {% endunless %}
+          {% endfor %}
+        {% elsif bhd_found and bhd_peer_level == 2 %}
+          {% for top_link in bhd_navigation.links %}
+            {% if forloop.index0 == bhd_peer_top_index %}
+              {% for peer in top_link.links %}
+                {% assign peer_path = peer.url | split: '?' | first | split: '#' | first %}
+                {% if shop.url != blank %}{% assign peer_path = peer_path | remove: shop.url %}{% endif %}
+                <a href="{{ peer.url }}"{% if peer_path == bhd_match_path %} class="is-current" aria-current="page"{% endif %}>{{ peer.title | escape }}</a>
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        {% elsif bhd_found and bhd_peer_level == 3 %}
+          {% for top_link in bhd_navigation.links %}
+            {% if forloop.index0 == bhd_peer_top_index %}
+              {% for second_link in top_link.links %}
+                {% if forloop.index0 == bhd_peer_second_index %}
+                  {% for peer in second_link.links %}
+                    {% assign peer_path = peer.url | split: '?' | first | split: '#' | first %}
+                    {% if shop.url != blank %}{% assign peer_path = peer_path | remove: shop.url %}{% endif %}
+                    <a href="{{ peer.url }}"{% if peer_path == bhd_match_path %} class="is-current" aria-current="page"{% endif %}>{{ peer.title | escape }}</a>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {% for peer in bhd_navigation.links %}
+            {% unless peer.title == 'Shop' %}<a href="{{ peer.url }}">{{ peer.title | escape }}</a>{% endunless %}
+          {% endfor %}
+        {% endif %}
+      </nav>
+    </div>
+
+    <a class="bhd-page-end-nav__shop" href="/products/lemonade-best-hydrate">Shop Best Hydrate →</a>
+  </div>
+</section>
+
+<style>
+  .bhd-page-end-nav{border-top:1px solid rgba(11,45,103,.12);background:#f7faff}
+  .bhd-page-end-nav__inner{display:grid;grid-template-columns:minmax(0,1fr) max-content;align-items:center;gap:2rem;padding-top:2.1rem;padding-bottom:2.1rem}
+  .bhd-page-end-nav__nav{display:flex;align-items:center;gap:1.1rem;min-width:0}
+  .bhd-page-end-nav__parent{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:3.8rem;padding:.75rem 1.15rem;border:1px solid #70a98d;border-radius:999px;background:#e2f1e8;color:#245f55;font-size:1.25rem;font-weight:800;text-decoration:none}
+  .bhd-page-end-nav__peers{display:flex;align-items:center;gap:.55rem;min-width:0;overflow-x:auto;padding:.25rem 0;scrollbar-width:thin}
+  .bhd-page-end-nav__peers a{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:3.6rem;padding:.68rem 1rem;border:1px solid #9fb9d8;border-radius:999px;background:#dbe8f6;color:#0b2d67;font-size:1.2rem;font-weight:700;line-height:1.15;text-decoration:none;white-space:nowrap}
+  .bhd-page-end-nav__peers a:hover{background:#c7dbef;border-color:#7fa3ca}
+  .bhd-page-end-nav__peers a.is-current{background:#fff1bf;border-color:#d1ad3f;color:#66500b;box-shadow:inset 0 -2px 0 #c59a18;font-weight:820}
+  .bhd-page-end-nav__shop{display:inline-flex;align-items:center;justify-content:center;min-height:4.2rem;padding:.85rem 1.5rem;border-radius:999px;background:#0b2d67;color:#fff!important;font-size:1.3rem;font-weight:800;text-decoration:none;white-space:nowrap;box-shadow:0 .35rem 1rem rgba(11,45,103,.15)}
+  .bhd-page-end-nav__shop:hover{background:#173f7c}
+  @media screen and (max-width:749px){
+    .bhd-page-end-nav__inner{grid-template-columns:1fr;gap:1.2rem;padding-top:1.6rem;padding-bottom:1.7rem}
+    .bhd-page-end-nav__nav{display:block}
+    .bhd-page-end-nav__parent{margin-bottom:.75rem}
+    .bhd-page-end-nav__peers{width:100%}
+    .bhd-page-end-nav__shop{width:100%}
+  }
+</style>
