@@ -1,4 +1,22 @@
-{% render 'bhd-page-breadcrumbs', page_handle: page.handle, current_title: title, preferred_family: family %}
+{% if page.handle == 'athlete-team' %}
+  <nav class="bhd-breadcrumbs" aria-label="Breadcrumb" data-bhd-breadcrumb-handle="athlete-team" data-bhd-breadcrumb-depth="2">
+    <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><a href="/pages/connect-overview">Connect</a><span aria-hidden="true">›</span><span aria-current="page">Athlete &amp; Team</span>
+  </nav>
+{% elsif page.handle == 'influencer-social' %}
+  <nav class="bhd-breadcrumbs" aria-label="Breadcrumb" data-bhd-breadcrumb-handle="influencer-social" data-bhd-breadcrumb-depth="2">
+    <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><a href="/pages/connect-overview">Connect</a><span aria-hidden="true">›</span><span aria-current="page">Influencer &amp; Social</span>
+  </nav>
+{% elsif page.handle == 'athletes-ambassadors' %}
+  <nav class="bhd-breadcrumbs" aria-label="Breadcrumb" data-bhd-breadcrumb-handle="athletes-ambassadors" data-bhd-breadcrumb-depth="3">
+    <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><a href="/pages/connect-overview">Connect</a><span aria-hidden="true">›</span><a href="/pages/athlete-team">Athlete &amp; Team</a><span aria-hidden="true">›</span><span aria-current="page">Athletes &amp; Ambassadors</span>
+  </nav>
+{% elsif page.handle == 'dianna-proctor' %}
+  <nav class="bhd-breadcrumbs" aria-label="Breadcrumb" data-bhd-breadcrumb-handle="dianna-proctor" data-bhd-breadcrumb-depth="3">
+    <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><a href="/pages/connect-overview">Connect</a><span aria-hidden="true">›</span><a href="/pages/athlete-team">Athlete &amp; Team</a><span aria-hidden="true">›</span><span aria-current="page">Dianna Proctor</span>
+  </nav>
+{% else %}
+  {% render 'bhd-page-breadcrumbs', page_handle: page.handle, current_title: title, preferred_family: family %}
+{% endif %}
 
 <header class="bhd-page-hero" data-bhd-page-handle="{{ page.handle | escape }}">
   <div class="bhd-page-hero__copy">
@@ -14,4 +32,4 @@
 </header>
 
 {% render 'bhd-menu-descendants' %}
-{% comment %}Canonical page header passes the Shopify Page handle directly into the deterministic breadcrumb map.{% endcomment %}
+{% comment %}Canonical page header uses explicit Connect breadcrumbs for Athlete & Team and Influencer & Social hubs and their athlete children; other Pages use the deterministic breadcrumb map.{% endcomment %}
