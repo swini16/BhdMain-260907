@@ -1,1 +1,42 @@
 {%- render 'cart-drawer' -%}
+
+<style>
+  .bhd-free-shipping-note{display:block;margin-top:.45rem;color:rgba(var(--color-foreground),.76);line-height:1.4}
+  .bhd-free-shipping-note strong{display:block;color:#17643a;font-weight:750}
+</style>
+
+<script>
+  (() => {
+    const copy = '<span class="bhd-free-shipping-note"><strong>✓ Free shipping on all orders.</strong><span>No shipping charge at checkout. Taxes or duties, if applicable, may still apply.</span></span>';
+
+    const applyFreeShippingCopy = (root = document) => {
+      root.querySelectorAll('.cart-drawer .tax-note, .cart__footer-wrapper .tax-note').forEach((note) => {
+        if (note.dataset.bhdFreeShipping === 'true') return;
+        note.dataset.bhdFreeShipping = 'true';
+        note.innerHTML = copy;
+      });
+    };
+
+    const start = () => {
+      applyFreeShippingCopy();
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (node.nodeType !== 1) continue;
+            if (node.matches?.('.tax-note, .cart-drawer, .cart__footer-wrapper') || node.querySelector?.('.tax-note')) {
+              applyFreeShippingCopy(node.matches?.('.tax-note') ? node.parentElement || document : node);
+            }
+          }
+        }
+        applyFreeShippingCopy();
+      });
+      observer.observe(document.documentElement, { childList: true, subtree: true });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start, { once: true });
+    } else {
+      start();
+    }
+  })();
+</script>
