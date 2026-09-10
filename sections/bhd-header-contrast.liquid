@@ -6,10 +6,7 @@
     .bhd-header .bhd-header__main-link{font-weight:650}
     .bhd-header .bhd-header__main-toggle{background:rgba(var(--color-button),.18);border-left-color:rgba(var(--color-button),.34)}
 
-    .bhd-header .bhd-header__main-item::after{content:"";position:absolute;z-index:2;top:100%;left:-1.2rem;right:-1.2rem;height:1.25rem;display:none}
-    .bhd-header .bhd-header__main-item.bhd-hover-open::after,
-    .bhd-header .bhd-header__main-item.is-open::after{display:block}
-
+    /* Desktop interaction is click-only. bhd-header.liquid owns the single state machine. */
     .bhd-header .bhd-header__main-item .bhd-header__dropdown-menu,
     .bhd-header .bhd-header__main-item:hover .bhd-header__dropdown-menu,
     .bhd-header .bhd-header__main-item:focus-within .bhd-header__dropdown-menu{
@@ -18,7 +15,6 @@
       opacity:0!important;
       pointer-events:none!important;
     }
-    .bhd-header .bhd-header__main-item.bhd-hover-open .bhd-header__dropdown-menu,
     .bhd-header .bhd-header__main-item.is-open .bhd-header__dropdown-menu{
       display:grid!important;
       visibility:visible!important;
@@ -29,14 +25,13 @@
       box-shadow:0 2.2rem 5rem rgba(13,33,78,.18);
     }
 
-    .bhd-header .bhd-header__main-item.bhd-hover-open .bhd-header__split-button,
     .bhd-header .bhd-header__main-item.is-open .bhd-header__split-button{
       background:rgba(var(--color-button),.24);
       border-color:rgba(var(--color-button),.6);
       box-shadow:0 .45rem 1.4rem rgba(13,33,78,.13)
     }
 
-    .bhd-header .bhd-header__main-item.bhd-current-main:not(.is-open):not(.bhd-hover-open) .bhd-header__split-button{
+    .bhd-header .bhd-header__main-item.bhd-current-main:not(.is-open) .bhd-header__split-button{
       background:rgba(72,132,120,.14);
       border-color:rgba(72,132,120,.46);
       box-shadow:inset 0 -3px 0 rgba(72,132,120,.72),0 .2rem .75rem rgba(44,92,82,.08)
@@ -81,94 +76,15 @@
 
 <script>
   (()=>{
-    const TIER2_CLOSE_DELAY=260;
-    const MAIN_CLOSE_DELAY=520;
-    const mainTimers=new WeakMap();
-    const tier2Timers=new WeakMap();
-
-    const cancelTimer=(map,node)=>{
-      const timer=map.get(node);
-      if(timer!==undefined){clearTimeout(timer);map.delete(node)}
-    };
-
-    const cancelTier2Timer=(item)=>cancelTimer(tier2Timers,item);
-    const cancelMainTimer=(item)=>cancelTimer(mainTimers,item);
-
-    const setTier2Open=(item,open,preview=false)=>{
-      if(!item)return;
-      cancelTier2Timer(item);
-      item.classList.toggle('is-tier2-open',open);
-      item.dataset.bhdTier2Preview=open&&preview?'1':'0';
-      const toggle=item.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-toggle, :scope > .bhd-header__mobile-tier2-split .bhd-header__mobile-tier2-toggle');
-      if(toggle)toggle.setAttribute('aria-expanded',open?'true':'false');
-    };
-
-    const closeTier2=(item)=>setTier2Open(item,false,false);
-
-    const closeTier2Siblings=(item)=>{
-      const scope=item.closest('.bhd-header__dropdown-menu,.bhd-header__mobile-level-one');
-      if(!scope)return;
-      scope.querySelectorAll('.is-tier2-open').forEach(other=>{if(other!==item)closeTier2(other)});
-    };
-
-    const openTier2=(item,preview=false)=>{
-      if(!item)return;
-      closeTier2Siblings(item);
-      setTier2Open(item,true,preview);
-    };
-
-    const scheduleTier2Close=(item,delay=TIER2_CLOSE_DELAY)=>{
-      if(!item||item.dataset.bhdTier2Preview!=='1')return;
-      cancelTier2Timer(item);
-      tier2Timers.set(item,setTimeout(()=>{
-        if(item.dataset.bhdTier2Preview==='1')closeTier2(item);
-        tier2Timers.delete(item);
-      },delay));
-    };
-
-    const closeAllTier2=(main)=>main?.querySelectorAll('.is-tier2-open').forEach(closeTier2);
-
-    const clearHover=(header,except=null)=>{
-      if(!header)return;
-      header.querySelectorAll('[data-main-item].bhd-hover-open').forEach(item=>{
-        if(item!==except){item.classList.remove('bhd-hover-open');cancelMainTimer(item)}
-      });
-    };
-
-    const pinned=(header)=>header&&header.querySelector('[data-main-item].is-open');
-
-    const closeMainState=(item)=>{
-      cancelMainTimer(item);
-      item.classList.remove('is-open');
-      const topToggle=item.querySelector(':scope > .bhd-header__split-button [data-menu-toggle], :scope > .bhd-header__mobile-main-row [data-menu-toggle]');
-      if(topToggle)topToggle.setAttribute('aria-expanded','false');
-      closeAllTier2(item);
-    };
-
-    const pinParentForTier2=(tierToggle)=>{
-      const main=tierToggle.closest('[data-main-item],[data-mobile-main]');
-      if(!main||main.classList.contains('is-open'))return;
-      const header=main.closest('.bhd-header');
-      clearHover(header);
-      const selector=main.matches('[data-main-item]')?'[data-main-item].is-open':'[data-mobile-main].is-open';
-      header.querySelectorAll(selector).forEach(other=>{if(other!==main)closeMainState(other)});
-      main.classList.add('is-open');
-      const topToggle=main.querySelector(':scope > .bhd-header__split-button [data-menu-toggle], :scope > .bhd-header__mobile-main-row [data-menu-toggle]');
-      if(topToggle)topToggle.setAttribute('aria-expanded','true');
-    };
-
     const normalizedPath=(value)=>{
       if(!value)return'';
       try{
         const parsed=new URL(value,location.origin);
-        let path=parsed.pathname||'/';
-        path=path.replace(/\/+$/,'')||'/';
-        return path;
+        return (parsed.pathname||'/').replace(/\/+$/,'')||'/';
       }catch(_){
         return String(value).split('?')[0].split('#')[0].replace(/\/+$/,'')||'/';
       }
     };
-
     const samePath=(link,path)=>Boolean(link&&normalizedPath(link.getAttribute('href'))===path);
     const textOf=(node)=>node?.textContent?.replace(/\s+/g,' ').trim()||'';
 
@@ -184,7 +100,6 @@
         const mainLink=main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
         let mainMatch=samePath(mainLink,path);
         const mainLabel=textOf(mainLink);
-
         main.querySelectorAll(':scope > .bhd-header__dropdown-menu > .bhd-header__dropdown-child').forEach(child=>{
           const tier2Link=child.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-link');
           let tier2Match=samePath(tier2Link,path);
@@ -203,14 +118,12 @@
             if(!isBlog)mainMatch=true;
           }
         });
-
         if(mainMatch&&!isBlog){
           main.classList.add('bhd-current-main');
           mainLink?.setAttribute('aria-current',samePath(mainLink,path)?'page':'location');
         }
         if(isBlog&&mainLabel==='Connect')main.dataset.bhdContainsBlogContext='1';
       });
-
       const discuss=header.querySelector('.bhd-header__discuss-button');
       if(discuss&&isBlog){discuss.classList.add('bhd-current-blog');discuss.setAttribute('aria-current','page')}
       const shop=header.querySelector('.bhd-header__shop-cta');
@@ -250,6 +163,7 @@
     const markCurrentLocation=(header)=>{
       if(!header)return;
       clearCurrentClasses(header);
+      header.querySelectorAll('.bhd-hover-open').forEach(node=>node.classList.remove('bhd-hover-open'));
       const path=normalizedPath(location.pathname);
       const isBlog=path==='/blogs/news'||path.startsWith('/blogs/news/');
       markDesktopPath(header,path,isBlog);
@@ -264,162 +178,37 @@
       if(current)node.setAttribute('aria-current','page');
       return node;
     };
-
-    const breadcrumbSeparator=()=>{
-      const node=document.createElement('span');
-      node.textContent='›';
-      node.setAttribute('aria-hidden','true');
-      return node;
-    };
-
+    const breadcrumbSeparator=()=>{const node=document.createElement('span');node.textContent='›';node.setAttribute('aria-hidden','true');return node};
     const replaceBreadcrumb=(nav,trail)=>{
       if(!nav)return;
       const nodes=[];
-      trail.forEach((item,index)=>{
-        if(index)nodes.push(breadcrumbSeparator());
-        nodes.push(breadcrumbNode(item.href?'a':'span',item.label,item.href||null,Boolean(item.current)));
-      });
+      trail.forEach((item,index)=>{if(index)nodes.push(breadcrumbSeparator());nodes.push(breadcrumbNode(item.href?'a':'span',item.label,item.href||null,Boolean(item.current)))});
       nav.replaceChildren(...nodes);
     };
-
     const normalizeEditorialBreadcrumbs=()=>{
       const news=document.querySelector('.bhd-blog-intro__breadcrumbs');
-      if(news){
-        replaceBreadcrumb(news,[
-          {label:'Home',href:'/'},
-          {label:'Connect',href:'/pages/connect-overview'},
-          {label:'News & Contact',href:'/pages/news-contact'},
-          {label:'News & Insights',current:true}
-        ]);
-      }
-
+      if(news)replaceBreadcrumb(news,[{label:'Home',href:'/'},{label:'Connect',href:'/pages/connect-overview'},{label:'News & Contact',href:'/pages/news-contact'},{label:'News & Insights',current:true}]);
       if(/^\/blogs\/news\//.test(location.pathname)){
         const articleNav=document.querySelector('.bhd-surface-context__crumbs,.bhd-utility-context__crumbs');
         if(articleNav){
           const current=articleNav.querySelector('[aria-current="page"]')?.textContent?.trim()||document.querySelector('h1')?.textContent?.trim()||'Article';
-          replaceBreadcrumb(articleNav,[
-            {label:'Home',href:'/'},
-            {label:'Connect',href:'/pages/connect-overview'},
-            {label:'News & Contact',href:'/pages/news-contact'},
-            {label:'News & Insights',href:'/blogs/news'},
-            {label:current,current:true}
-          ]);
+          replaceBreadcrumb(articleNav,[{label:'Home',href:'/'},{label:'Connect',href:'/pages/connect-overview'},{label:'News & Contact',href:'/pages/news-contact'},{label:'News & Insights',href:'/blogs/news'},{label:current,current:true}]);
         }
       }
     };
 
-    const bindTier2Hover=(main)=>{
-      main.querySelectorAll('.bhd-header__dropdown-child').forEach(child=>{
-        child.addEventListener('mouseenter',()=>{
-          if(window.innerWidth<990)return;
-          cancelTier2Timer(child);
-          if(child.dataset.bhdTier2Preview==='1'||!child.classList.contains('is-tier2-open'))openTier2(child,true);
-        });
-        child.addEventListener('mouseleave',()=>{
-          if(window.innerWidth<990)return;
-          scheduleTier2Close(child);
-        });
-        child.addEventListener('focusin',()=>{
-          if(window.innerWidth<990)return;
-          if(!child.classList.contains('is-tier2-open'))openTier2(child,true);
-        });
-        child.addEventListener('focusout',(event)=>{
-          if(window.innerWidth<990||child.contains(event.relatedTarget))return;
-          scheduleTier2Close(child);
-        });
-      });
-    };
-
-    const bindHeader=(header)=>{
-      if(header.dataset.bhdSingleStateBound==='1'){markCurrentLocation(header);return}
-      header.dataset.bhdSingleStateBound='1';
-      markCurrentLocation(header);
-
-      header.querySelectorAll('[data-main-item]').forEach(item=>{
-        bindTier2Hover(item);
-
-        item.addEventListener('mouseenter',()=>{
-          cancelMainTimer(item);
-          item.querySelectorAll('.bhd-header__dropdown-child').forEach(cancelTier2Timer);
-          if(window.innerWidth<990)return;
-          if(pinned(header)){
-            clearHover(header);
-            return;
-          }
-          clearHover(header,item);
-          item.classList.add('bhd-hover-open');
-        });
-
-        item.addEventListener('mouseleave',()=>{
-          if(window.innerWidth<990)return;
-          item.querySelectorAll('.is-tier2-open').forEach(child=>scheduleTier2Close(child,TIER2_CLOSE_DELAY));
-          cancelMainTimer(item);
-          if(item.classList.contains('is-open'))return;
-          mainTimers.set(item,setTimeout(()=>{
-            item.classList.remove('bhd-hover-open');
-            mainTimers.delete(item);
-          },MAIN_CLOSE_DELAY));
-        });
-
-        item.addEventListener('focusin',()=>{
-          cancelMainTimer(item);
-          if(window.innerWidth<990||pinned(header))return;
-          clearHover(header,item);
-          item.classList.add('bhd-hover-open');
-        });
-
-        item.addEventListener('focusout',(event)=>{
-          if(item.contains(event.relatedTarget))return;
-          item.querySelectorAll('.is-tier2-open').forEach(child=>scheduleTier2Close(child,TIER2_CLOSE_DELAY));
-          if(!item.classList.contains('is-open')){
-            cancelMainTimer(item);
-            mainTimers.set(item,setTimeout(()=>{
-              item.classList.remove('bhd-hover-open');
-              mainTimers.delete(item);
-            },MAIN_CLOSE_DELAY));
-          }
-        });
-      });
-
-      const observer=new MutationObserver((mutations)=>{
-        if(pinned(header))clearHover(header);
-        if(mutations.some(m=>m.type==='childList'))markCurrentLocation(header);
-      });
-      observer.observe(header,{subtree:true,attributes:true,childList:true,attributeFilter:['class']});
-    };
-
     const bind=()=>{
-      document.querySelectorAll('.bhd-header').forEach(bindHeader);
+      document.querySelectorAll('.bhd-header').forEach(header=>{
+        markCurrentLocation(header);
+        if(header.dataset.bhdContextObserverBound==='1')return;
+        header.dataset.bhdContextObserverBound='1';
+        const observer=new MutationObserver(mutations=>{
+          if(mutations.some(m=>m.type==='childList'))markCurrentLocation(header);
+        });
+        observer.observe(header,{subtree:true,childList:true});
+      });
       normalizeEditorialBreadcrumbs();
     };
-
-    document.addEventListener('click',(event)=>{
-      const tierToggle=event.target.closest('.bhd-header__tier2-toggle,.bhd-header__mobile-tier2-toggle');
-      if(tierToggle){
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        const item=tierToggle.closest('.bhd-header__dropdown-child,.bhd-header__mobile-tier2');
-        pinParentForTier2(tierToggle);
-        if(item.classList.contains('is-tier2-open')&&item.dataset.bhdTier2Preview!=='1')closeTier2(item);
-        else openTier2(item,false);
-        return;
-      }
-
-      const toggle=event.target.closest('.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]');
-      if(!toggle)return;
-      const header=toggle.closest('.bhd-header');
-      clearHover(header);
-      requestAnimationFrame(()=>{
-        if(!toggle.closest('[data-main-item]')?.classList.contains('is-open') && document.activeElement===toggle)toggle.blur();
-      });
-    },true);
-
-    document.addEventListener('keydown',(event)=>{
-      if(event.key==='Escape')document.querySelectorAll('.bhd-header').forEach(header=>{
-        clearHover(header);
-        header.querySelectorAll('.is-tier2-open').forEach(closeTier2);
-      });
-    });
 
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
     else bind();
@@ -427,11 +216,10 @@
 </script>
 
 {% comment %}
-Shopify Admin MAIN is injected as the live interactive menu source before interaction bindings run. Static bhd-header markup is retained only as a fallback.
-Desktop level-two items expand as hover previews. Leaving the menu context closes the deepest hover preview after 260 ms, then closes the unpinned top-level preview after 520 ms.
-Clicking a level-two toggle converts that preview into a persistent clicked state and pins its top-level parent. Clicked nested states are not removed by the hover timeout.
-Current route context is highlighted persistently: Science, Solutions or Connect at level one, plus its level-two and level-three branch when visible. Blog and News use the Discuss control as the fourth global context while retaining News & Contact and News & Insights branch markers inside Connect.
-Sync marker: current-menu-context-20260909.
+Shopify Admin MAIN is injected as the live menu source. Static bhd-header markup remains fallback only.
+Desktop menu interaction has one owner only: sections/bhd-header.liquid. Top-level menus open only from their toggle, persist until the same toggle, another top-level toggle, outside click, or Escape closes them. Hover/focus no longer creates a second menu state.
+This section now handles contrast/current-route styling and editorial breadcrumb normalization only.
+Sync marker: click-only-single-state-20260910.
 {% endcomment %}
 
 {% schema %}
