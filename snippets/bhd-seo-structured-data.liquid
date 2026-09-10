@@ -59,7 +59,8 @@
   "@type": "Organization",
   "@id": {{ seo_origin | append: '/#organization' | json }},
   "name": {{ shop.name | json }},
-  "url": {{ seo_home_url | json }}{% if seo_logo_url != blank %},
+  "url": {{ seo_home_url | json }},
+  "founder": { "@id": {{ seo_origin | append: '/#austin-swiniarski' | json }} }{% if seo_logo_url != blank %},
   "logo": {{ seo_logo_url | json }}{% endif %}
   {%- if settings.social_facebook_link != blank or settings.social_instagram_link != blank or settings.social_youtube_link != blank or settings.social_tiktok_link != blank -%},
   "sameAs": [
@@ -73,6 +74,18 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": {{ seo_origin | append: '/#austin-swiniarski' | json }},
+  "name": "Austin Swiniarski",
+  "jobTitle": "Founder & CEO",
+  "url": {{ seo_origin | append: '/pages/our-story' | json }},
+  "worksFor": { "@id": {{ seo_origin | append: '/#organization' | json }} }
+}
+</script>
+
 {%- if request.page_type == 'index' -%}
 <script type="application/ld+json">
 {
@@ -81,6 +94,20 @@
   "@id": {{ seo_origin | append: '/#website' | json }},
   "url": {{ seo_home_url | json }},
   "name": {{ shop.name | json }},
+  "publisher": { "@id": {{ seo_origin | append: '/#organization' | json }} }
+}
+</script>
+{%- endif -%}
+
+{%- if request.page_type == 'page' and page != blank -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": {{ seo_canonical_url | append: '#webpage' | json }},
+  "url": {{ seo_canonical_url | json }},
+  "name": {{ page.title | json }},
+  "isPartOf": { "@id": {{ seo_origin | append: '/#website' | json }} },
   "publisher": { "@id": {{ seo_origin | append: '/#organization' | json }} }
 }
 </script>
@@ -122,7 +149,8 @@
     {"@type":"ListItem","position":3,"name":{{ seo_l2_title | json }},"item":{{ seo_l2_url | prepend: seo_origin | json }}}
     {%- endif -%}
     {%- if seo_depth >= 3 -%},
-    {"@type":"ListItem","position":4,"name":{{ seo_l3_title | json }},"item":{{ seo_l3_url | prepend: seo_origin | json }}}
+    {"@type":"ListItem","position":4,"name":{{ seo_l3_title | json }},"item":{{ seo_l3_url | prepend: seo_origin | json }}
+    }
     {%- endif -%}
   ]
 }
