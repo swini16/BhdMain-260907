@@ -25,7 +25,7 @@
       <label><span>Email *</span><input type="email" name="contact[email]" autocomplete="email" required value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"></label>
       <label><span>Organization / fund</span><input type="text" name="contact[Organization or fund]"></label>
       <label><span>Role / title</span><input type="text" name="contact[Role or title]"></label>
-      <label><span>Website / LinkedIn</span><input type="url" name="contact[Website or LinkedIn]" placeholder="https://"></label>
+      <label><span>Website / LinkedIn</span><input type="text" inputmode="url" autocomplete="url" autocapitalize="none" spellcheck="false" name="contact[Website or LinkedIn]" placeholder="besthydrate.com or linkedin.com/in/..."></label>
       <label><span>Introduced by</span><input type="text" name="contact[Introduced by]" placeholder="Optional"></label>
     </div>
 
