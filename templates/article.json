@@ -24,7 +24,7 @@
         "featured_image": {
           "type": "featured_image",
           "settings": {
-            "image_height": "medium"
+            "image_height": "adapt"
           }
         },
         "title": {
