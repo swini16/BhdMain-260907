@@ -21,6 +21,33 @@
 
 <section class="bhd-page__feature"><div><p class="bhd-page__kicker">Interview topics</p><h2>Hydration, product development and building the evidence</h2><p>Available topics include oral hydration science, glucose and electrolytes, formulation strategy, performance hydration, research development, consumer-to-medical pathways, humanitarian access and the experience of building an Alberta science-first startup.</p></div></section>
 
-<section class="bhd-page__brand-context"><div><p class="bhd-page__kicker">Media inquiry</p><h2>Talk with Best Hydrate</h2><p>For interviews, fact checks, high-resolution images, logos or company background, contact us with your outlet, topic and deadline.</p></div><div class="bhd-page__brand-actions"><a class="bhd-page__button" href="/pages/contact">Media Contact</a><a class="bhd-page__button bhd-page__button--secondary" href="/blogs/news">News & Insights</a></div></section>
+<section class="bhd-page__brand-context"><div><p class="bhd-page__kicker">Media inquiry</p><h2>Talk with Best Hydrate</h2><p>For interviews, fact checks, high-resolution images, logos or company background, send a media inquiry below.</p></div><div class="bhd-page__brand-actions"><a class="bhd-page__button" href="#media-contact">Media Contact</a><a class="bhd-page__button bhd-page__button--secondary" href="/blogs/news">News & Insights</a></div></section>
+
+<section class="bhd-media-form-wrap" id="media-contact" aria-labelledby="MediaContactHeading-{{ section.id }}">
+  <div class="bhd-media-form-head"><p class="bhd-page__kicker">Press & media contact</p><h2 id="MediaContactHeading-{{ section.id }}">Media inquiry</h2><p>Send your outlet, request and deadline. We will route it directly as a media inquiry.</p></div>
+  {% form 'contact', id: 'BhdMediaContact' %}
+    <input type="hidden" name="contact[Inquiry type]" value="Press & Media">
+    {% if form.posted_successfully? %}<div class="bhd-media-form-status" role="status"><strong>Thank you.</strong> Your media inquiry was sent successfully.</div>{% endif %}
+    {{ form.errors | default_errors }}
+
+    <div class="bhd-media-form-grid">
+      <label><span>Name *</span><input type="text" name="contact[name]" autocomplete="name" required value="{% if form.name %}{{ form.name }}{% endif %}"></label>
+      <label><span>Email *</span><input type="email" name="contact[email]" autocomplete="email" required value="{% if form.email %}{{ form.email }}{% endif %}"></label>
+      <label><span>Outlet / organization *</span><input type="text" name="contact[Outlet or organization]" required></label>
+      <label><span>Role / title</span><input type="text" name="contact[Role or title]"></label>
+      <label><span>Website</span><input type="text" name="contact[Website]" inputmode="url" placeholder="example.com"></label>
+      <label><span>Deadline</span><input type="text" name="contact[Deadline]" placeholder="Date / time / timezone"></label>
+      <label><span>Request</span><select name="contact[Media request]"><option value="">Select</option><option>Interview</option><option>Fact check</option><option>Founder / company background</option><option>Research / science question</option><option>Product information</option><option>Images / logo</option><option>Other</option></select></label>
+      <label><span>Preferred contact method</span><select name="contact[Preferred contact method]"><option>Email</option><option>Phone / video call</option><option>Either</option></select></label>
+      <label class="bhd-media-form-span"><span>Message *</span><textarea name="contact[body]" rows="6" required placeholder="What are you working on, what do you need from Best Hydrate, and by when?"></textarea></label>
+    </div>
+
+    <div class="bhd-media-submit"><button class="bhd-page__button" type="submit">Send Media Inquiry</button></div>
+  {% endform %}
+</section>
 
 <section class="bhd-page__related" aria-labelledby="RelatedPress-{{ section.id }}"><p class="bhd-page__kicker">Explore</p><h2 id="RelatedPress-{{ section.id }}">More from Best Hydrate</h2><div class="bhd-page__related-grid"><a href="/pages/mission-values"><strong>About Best Hydrate</strong><span>Company direction and operating values.</span></a><a href="/pages/hydration-science"><strong>Hydration Science</strong><span>Core physiology and oral hydration science.</span></a><a href="/pages/partnerships"><strong>Partnerships</strong><span>Research, commercial and humanitarian collaboration.</span></a><a href="/pages/investor-relations"><strong>Investor Relations</strong><span>Company opportunity and next-stage growth.</span></a></div></section>
+
+<style>
+.bhd-media-form-wrap{margin:clamp(2rem,5vw,4rem) 0;padding:clamp(1.25rem,3vw,2.5rem);border:1px solid #dfe8f3;border-radius:20px;background:#f7fbff}.bhd-media-form-head{max-width:820px;margin-bottom:1.5rem}.bhd-media-form-head h2{margin:.2rem 0 .65rem}.bhd-media-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 1.15rem}.bhd-media-form-grid label{display:flex;flex-direction:column;gap:.4rem;font-weight:600}.bhd-media-form-grid input,.bhd-media-form-grid select,.bhd-media-form-grid textarea{width:100%;box-sizing:border-box;border:1px solid #cdd9e7;border-radius:12px;background:#fff;padding:.85rem .9rem;font:inherit;color:inherit}.bhd-media-form-grid textarea{resize:vertical}.bhd-media-form-grid input:focus,.bhd-media-form-grid select:focus,.bhd-media-form-grid textarea:focus{outline:2px solid #173f7a;outline-offset:2px}.bhd-media-form-span{grid-column:1/-1}.bhd-media-form-status{padding:1rem 1.1rem;margin:0 0 1rem;border-radius:12px;background:#eaf7ef}.bhd-media-submit{margin-top:1.2rem}.bhd-media-submit .bhd-page__button{border:0;cursor:pointer}@media(max-width:760px){.bhd-media-form-grid{grid-template-columns:1fr}.bhd-media-form-span{grid-column:auto}}
+</style>
