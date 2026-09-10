@@ -5,8 +5,12 @@
       top: 0;
       z-index: 60 !important;
       transition: transform .22s ease, box-shadow .22s ease;
-      will-change: transform;
       background: rgb(var(--color-background));
+    }
+
+    .bhd-header.bhd-header--hidden,
+    .bhd-header.bhd-header--shown {
+      will-change: transform;
     }
 
     .bhd-header.bhd-header--hidden {
@@ -23,13 +27,15 @@
 <script>
   (() => {
     const mq = window.matchMedia('(min-width: 990px)');
+    const header = document.querySelector('.bhd-header');
+    if (!header) return;
+
     let lastY = window.scrollY;
+    let headerHeight = header.getBoundingClientRect().height;
     let ticking = false;
+    let resizeTicking = false;
 
     const updateHeader = () => {
-      const header = document.querySelector('.bhd-header');
-      if (!header) return;
-
       if (!mq.matches) {
         header.classList.remove('bhd-header--hidden', 'bhd-header--shown');
         lastY = window.scrollY;
@@ -44,12 +50,17 @@
       } else if (delta < -5) {
         header.classList.remove('bhd-header--hidden');
         header.classList.add('bhd-header--shown');
-      } else if (delta > 5 && y > header.offsetHeight) {
+      } else if (delta > 5 && y > headerHeight) {
         header.classList.remove('bhd-header--shown');
         header.classList.add('bhd-header--hidden');
       }
 
       lastY = y;
+    };
+
+    const remeasureHeader = () => {
+      headerHeight = header.getBoundingClientRect().height;
+      updateHeader();
     };
 
     window.addEventListener('scroll', () => {
@@ -62,7 +73,17 @@
       }
     }, { passive: true });
 
-    mq.addEventListener?.('change', updateHeader);
+    window.addEventListener('resize', () => {
+      if (!resizeTicking) {
+        window.requestAnimationFrame(() => {
+          remeasureHeader();
+          resizeTicking = false;
+        });
+        resizeTicking = true;
+      }
+    }, { passive: true });
+
+    mq.addEventListener?.('change', remeasureHeader);
     updateHeader();
   })();
 </script>
