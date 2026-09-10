@@ -44,6 +44,7 @@
   {% when 'retail-distribution' %}{% render 'bhd-page-retail-distribution' %}
   {% when 'humanitarian-partnerships' %}{% render 'bhd-page-humanitarian-partnerships' %}
   {% when 'investor-relations' %}{% render 'bhd-page-investor-relations' %}
+  {% when 'investor-overview' %}{% render 'bhd-page-investor-overview' %}
   {% when 'corporate-information' %}{% render 'bhd-page-corporate-information' %}
   {% when 'investor-contact' %}{% render 'bhd-page-investor-contact' %}
   {% when 'press' %}{% render 'bhd-page-press' %}
@@ -55,5 +56,7 @@
     {% render 'bhd-menu-descendants' %}
 {% endcase %}
 
-{% render 'bhd-page-enrichment' %}
-{% comment %}Canonical Page breadcrumbs are keyed by explicit Page handle. Parent page directories remain sourced from Shopify Admin MAIN. Connect athlete/social routes refreshed 20260910.{% endcomment %}
+{% unless page.handle == 'investor-relations' or page.handle == 'investor-overview' or page.handle == 'corporate-information' or page.handle == 'investor-contact' %}
+  {% render 'bhd-page-enrichment' %}
+{% endunless %}
+{% comment %}Canonical Page breadcrumbs are keyed by explicit Page handle. Parent page directories remain sourced from Shopify Admin MAIN. Connect athlete/social routes refreshed 20260910. Investor funnel rewired 20260910.{% endcomment %}
