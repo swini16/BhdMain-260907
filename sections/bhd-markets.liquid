@@ -8,11 +8,13 @@
     <div class="bhd-markets__grid">
       <article class="bhd-market-card bhd-market-card--athlete">
         <div class="bhd-market-card__media">
-          <img src="https://images.pexels.com/photos/8910768/pexels-photo-8910768.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Athlete hydrating during a race" width="1200" height="800" loading="lazy" decoding="async" fetchpriority="low">
+          <a class="bhd-market-card__media-link" href="/pages/performance-hydration" aria-label="Explore performance hydration">
+            <img src="https://images.pexels.com/photos/8910768/pexels-photo-8910768.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Athlete hydrating during a race" width="1200" height="800" loading="lazy" decoding="async" fetchpriority="low">
+          </a>
         </div>
         <div class="bhd-market-card__body">
           <div class="bhd-market-card__icon">↗</div>
-          <h3>{{ section.settings.athlete_label }}</h3>
+          <h3><a href="/pages/performance-hydration">{{ section.settings.athlete_label }}</a></h3>
           <p class="bhd-market-card__tag">Train. Perform. Recover.</p>
           <p>{{ section.settings.athlete_intro }}</p>
           <ul>
@@ -26,11 +28,13 @@
 
       <article class="bhd-market-card bhd-market-card--daily">
         <div class="bhd-market-card__media">
-          <img src="https://images.pexels.com/photos/11158906/pexels-photo-11158906.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Worker hydrating during a demanding day" width="1200" height="800" loading="lazy" decoding="async" fetchpriority="low">
+          <a class="bhd-market-card__media-link" href="/pages/everyday-wellness" aria-label="Explore everyday wellness hydration">
+            <img src="https://images.pexels.com/photos/11158906/pexels-photo-11158906.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Worker hydrating during a demanding day" width="1200" height="800" loading="lazy" decoding="async" fetchpriority="low">
+          </a>
         </div>
         <div class="bhd-market-card__body">
           <div class="bhd-market-card__icon">⌁</div>
-          <h3>{{ section.settings.daily_label }}</h3>
+          <h3><a href="/pages/everyday-wellness">{{ section.settings.daily_label }}</a></h3>
           <p class="bhd-market-card__tag">Hydration for what you do.</p>
           <p>{{ section.settings.daily_intro }}</p>
           <ul>
@@ -44,11 +48,13 @@
 
       <article class="bhd-market-card bhd-market-card--medical">
         <div class="bhd-market-card__media">
-          <img src="https://images.pexels.com/photos/8413217/pexels-photo-8413217.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Medical professional consulting with an older patient" width="1200" height="800" loading="lazy" decoding="async" fetchpriority="low">
+          <a class="bhd-market-card__media-link" href="/pages/clinical-hydration" aria-label="Explore clinical hydration">
+            <img src="https://images.pexels.com/photos/8413217/pexels-photo-8413217.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Medical professional consulting with an older patient" width="1200" height="800" loading="lazy" decoding="async" fetchpriority="low">
+          </a>
         </div>
         <div class="bhd-market-card__body">
           <div class="bhd-market-card__icon">+</div>
-          <h3>{{ section.settings.medical_label }}</h3>
+          <h3><a href="/pages/clinical-hydration">{{ section.settings.medical_label }}</a></h3>
           <p class="bhd-market-card__tag">Support when hydration matters most.</p>
           <p>{{ section.settings.medical_intro }}</p>
           <ul>
@@ -76,6 +82,7 @@
   #BhdMarkets-{{ section.id }} .bhd-market-card--daily { background:linear-gradient(180deg,#fff 0%,#edf7ff 100%); }
   #BhdMarkets-{{ section.id }} .bhd-market-card--medical { background:linear-gradient(180deg,#fff 0%,#eefaf7 100%); }
   #BhdMarkets-{{ section.id }} .bhd-market-card__media { aspect-ratio:1.55/1; overflow:hidden; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card__media-link { display:block; width:100%; height:100%; }
   #BhdMarkets-{{ section.id }} .bhd-market-card__media img { display:block; width:100%; height:100%; object-fit:cover; transition:transform .25s ease; }
   #BhdMarkets-{{ section.id }} .bhd-market-card--athlete .bhd-market-card__media img { object-position:center 42%; }
   #BhdMarkets-{{ section.id }} .bhd-market-card--daily .bhd-market-card__media img { object-position:center 48%; }
@@ -87,6 +94,10 @@
   #BhdMarkets-{{ section.id }} .bhd-market-card--daily .bhd-market-card__icon { background:#398ee1; }
   #BhdMarkets-{{ section.id }} .bhd-market-card--medical .bhd-market-card__icon { background:#48b49e; }
   #BhdMarkets-{{ section.id }} h3 { margin:.25rem 0 .45rem; color:#102a61; font-size:3.15rem; line-height:1.05; letter-spacing:-.02em; }
+  #BhdMarkets-{{ section.id }} h3 a { color:inherit; text-decoration:none; }
+  #BhdMarkets-{{ section.id }} h3 a:hover { text-decoration:underline; text-underline-offset:.16em; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card__media-link:focus-visible,
+  #BhdMarkets-{{ section.id }} h3 a:focus-visible { outline:3px solid #102a61; outline-offset:3px; border-radius:.4rem; }
   #BhdMarkets-{{ section.id }} .bhd-market-card__tag { margin:.15rem 0 1rem; font-size:1.58rem; font-weight:700; color:#17315f; }
   #BhdMarkets-{{ section.id }} .bhd-market-card__body > p:not(.bhd-market-card__tag) { margin:0 auto 1.7rem; line-height:1.48; color:#526078; max-width:32rem; }
   #BhdMarkets-{{ section.id }} ul { list-style:none; padding:0; margin:0; display:grid; gap:.82rem; text-align:left; }
