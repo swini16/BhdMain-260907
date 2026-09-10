@@ -4,7 +4,7 @@
       <div class="bhd-product-story__splash" aria-hidden="true"></div>
       {% if section.settings.product != blank and section.settings.product.featured_image != blank %}
         <a href="{{ section.settings.product.url }}" class="bhd-product-story__product">
-          {{ section.settings.product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '360,540,720,900', sizes: '(min-width: 750px) 42vw, 82vw', alt: section.settings.product.title }}
+          {{ section.settings.product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', decoding: 'async', fetchpriority: 'low', widths: '360,540,720,900', sizes: '(min-width: 750px) 42vw, 82vw', alt: section.settings.product.title }}
         </a>
       {% endif %}
       <div class="bhd-product-story__lemon" aria-hidden="true">🍋</div>
