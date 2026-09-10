@@ -196,6 +196,80 @@
       else hydrateContextBreadcrumb();
     })();
   </script>
+
+  <script>
+    (()=>{
+      const closeTier2=(item)=>{
+        item.classList.remove('is-tier2-open');
+        const button=item.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-toggle');
+        if(button)button.setAttribute('aria-expanded','false');
+      };
+      const closeMain=(item)=>{
+        item.classList.remove('is-open');
+        const button=item.querySelector(':scope > .bhd-header__split-button [data-menu-toggle]');
+        if(button)button.setAttribute('aria-expanded','false');
+        item.querySelectorAll('.bhd-header__dropdown-child.is-tier2-open').forEach(closeTier2);
+      };
+      const positionMenu=(item)=>{
+        const menu=item.querySelector(':scope > .bhd-header__dropdown-menu');
+        if(!menu)return;
+        menu.style.setProperty('--menu-shift-x','0px');
+        requestAnimationFrame(()=>{
+          const rect=menu.getBoundingClientRect();
+          const margin=16;
+          let shift=0;
+          if(rect.left<margin)shift+=margin-rect.left;
+          if(rect.right>window.innerWidth-margin)shift-=rect.right-(window.innerWidth-margin);
+          menu.style.setProperty('--menu-shift-x',`${shift}px`);
+        });
+      };
+      const openMain=(item)=>{
+        const header=item.closest('.bhd-header');
+        header.querySelectorAll('[data-main-item].is-open').forEach(other=>{if(other!==item)closeMain(other)});
+        item.classList.add('is-open');
+        const button=item.querySelector(':scope > .bhd-header__split-button [data-menu-toggle]');
+        if(button)button.setAttribute('aria-expanded','true');
+        positionMenu(item);
+      };
+
+      document.addEventListener('click',(event)=>{
+        if(window.innerWidth<990||!(event.target instanceof Element))return;
+        const header=document.querySelector('.bhd-header');
+        if(!header)return;
+
+        const mainToggle=event.target.closest('.bhd-header [data-main-item] > .bhd-header__split-button [data-menu-toggle]');
+        if(mainToggle){
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          const item=mainToggle.closest('[data-main-item]');
+          if(item.classList.contains('is-open'))closeMain(item);else openMain(item);
+          return;
+        }
+
+        const tierToggle=event.target.closest('.bhd-header__tier2-toggle');
+        if(tierToggle){
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          const item=tierToggle.closest('.bhd-header__dropdown-child');
+          const scope=item.closest('.bhd-header__dropdown-menu');
+          scope.querySelectorAll('.bhd-header__dropdown-child.is-tier2-open').forEach(other=>{if(other!==item)closeTier2(other)});
+          const opening=!item.classList.contains('is-tier2-open');
+          if(opening){item.classList.add('is-tier2-open');tierToggle.setAttribute('aria-expanded','true');}
+          else closeTier2(item);
+          return;
+        }
+
+        if(!event.target.closest('.bhd-header__main-item')){
+          header.querySelectorAll('[data-main-item].is-open').forEach(closeMain);
+        }
+      },true);
+
+      document.addEventListener('keydown',(event)=>{
+        if(event.key!=='Escape'||window.innerWidth<990)return;
+        document.querySelectorAll('.bhd-header [data-main-item].is-open').forEach(closeMain);
+      },true);
+    })();
+  </script>
 {% endif %}
 
-{% comment %}Shopify Admin MAIN, handle new-menu, is the live interactive header and hierarchy source. Desktop level-2 navigation uses persistent toggle state: it stays open after toggling, closes from its own toggle, switches when another top-level menu is toggled, and closes on an outside click. URL comparisons are normalized so manual HTTP links match relative storefront request paths on both page and non-page destinations.{% endcomment %}
+{% comment %}Shopify Admin MAIN, handle new-menu, is the live interactive header and hierarchy source. Desktop dropdowns are click-controlled only: toggle opens persistently, same toggle closes, another toggle switches, outside click or Escape closes. URL comparisons are normalized so manual HTTP links match relative storefront request paths on both page and non-page destinations.{% endcomment %}
