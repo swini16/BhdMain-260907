@@ -14,7 +14,7 @@
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "Hydration science, product updates and field notes",
+            "heading": "Hydration science, without the noise.",
             "heading_size": "h2"
           }
         },
@@ -37,8 +37,17 @@
       "settings": {
         "color_scheme": "scheme-1",
         "full_width": true,
-        "padding_top": 36,
-        "padding_bottom": 24
+        "padding_top": 28,
+        "padding_bottom": 20
+      }
+    },
+    "footer_polish": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<style>.footer__copyright > .copyright__content:nth-of-type(2){display:none!important}</style>",
+        "color_scheme": "scheme-2",
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     },
     "footer": {
@@ -64,6 +73,7 @@
   "order": [
     "canonical_nav",
     "newsletter",
+    "footer_polish",
     "footer"
   ]
 }
