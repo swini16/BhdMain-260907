@@ -103,7 +103,7 @@
                 {% if second_link.links.size > 0 %}<div class="bhd-header__mobile-tier3">{% for third_link in second_link.links %}<a href="{{ third_link.url }}">{{ third_link.title | escape }}</a>{% endfor %}</div>{% endif %}
               </div>
             {% endfor %}
-            <a class="bhd-header__mobile-discuss" href="/blogs/news"><img src="{{ 'bhd-discuss-icon.webp' | asset_url }}" alt="" width="96" height="96"><strong>{% case top_link.title %}{% when 'Science' %}Discuss Science Blog{% when 'Solutions' %}Discuss Solutions Blog{% else %}Discuss &amp; Connect{% endcase %}</strong></a>
+            <a class="bhd-header__mobile-discuss" href="/blogs/news"><img src="{{ 'bhd-discuss-icon.webp' | asset_url }}" alt="" width="96" height="96"><strong>{% case top_link.title %}{% when 'Science' %}Discuss Science Blog{% when 'Solutions' %}Discuss Solutions Blog{% else %}Community Blog{% endcase %}</strong></a>
           </div>
         </div>
       {% endif %}
@@ -124,7 +124,7 @@
                 {% if second_link.links.size > 0 %}<div class="bhd-header__tier3">{% for third_link in second_link.links %}<a href="{{ third_link.url }}">{{ third_link.title | escape }}</a>{% endfor %}</div>{% endif %}
               </div>
             {% endfor %}
-            <a class="bhd-header__discuss-row" href="/blogs/news"><img src="{{ 'bhd-discuss-icon.webp' | asset_url }}" alt="" width="96" height="96"><strong>{% case top_link.title %}{% when 'Science' %}Discuss Science Blog{% when 'Solutions' %}Discuss Solutions Blog{% else %}Discuss &amp; Connect{% endcase %}</strong></a>
+            <a class="bhd-header__discuss-row" href="/blogs/news"><img src="{{ 'bhd-discuss-icon.webp' | asset_url }}" alt="" width="96" height="96"><strong>{% case top_link.title %}{% when 'Science' %}Discuss Science Blog{% when 'Solutions' %}Discuss Solutions Blog{% else %}Community Blog{% endcase %}</strong></a>
           </div>
         </div>
       {% endif %}
