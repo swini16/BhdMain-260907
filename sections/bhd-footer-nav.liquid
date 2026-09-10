@@ -7,8 +7,9 @@
         {% if settings.logo != blank %}{{ settings.logo | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,120,180', class: 'bhd-footer-nav__logo', alt: shop.name }}{% endif %}
         <span><strong>Best Hydrate</strong><small>The Science of Hydration</small></span>
       </a>
-      <p>Science-first oral hydration for performance, everyday life, clinical development and humanitarian access.</p>
+      <p>Science-first oral hydration across performance, daily, medical-development and humanitarian settings.</p>
       <a class="bhd-footer-nav__shop" href="/products/lemonade-best-hydrate">Shop Best Hydrate</a>
+      <small class="bhd-footer-nav__shipping">✓ Free shipping on all orders</small>
     </div>
 
     <nav class="bhd-footer-nav__group" aria-labelledby="FooterScience-{{ section.id }}">
@@ -24,9 +25,9 @@
       <h2 id="FooterSolutions-{{ section.id }}">Solutions</h2>
       <a href="/pages/product-details">Product Details</a>
       <a href="/pages/performance-hydration">Performance</a>
-      <a href="/pages/everyday-wellness">Everyday Wellness</a>
-      <a href="/pages/clinical-hydration">Clinical Hydration</a>
-      <a href="/pages/eco-humanitarian">Humanitarian Hydration</a>
+      <a href="/pages/everyday-wellness">Daily</a>
+      <a href="/pages/clinical-hydration">Medical</a>
+      <a href="/pages/eco-humanitarian">Humanitarian</a>
     </nav>
 
     <nav class="bhd-footer-nav__group" aria-labelledby="FooterConnect-{{ section.id }}">
@@ -50,6 +51,7 @@
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand-link small{margin-top:.35rem;font-size:1.1rem;opacity:.7}
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand p{max-width:36rem;margin:1.5rem 0;color:rgba(var(--color-foreground),.74);font-size:1.35rem;line-height:1.55}
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__shop{display:inline-flex;padding:.9rem 1.4rem;border-radius:999px;background:rgb(var(--color-button));color:rgb(var(--color-button-text));font-size:1.3rem;font-weight:750;text-decoration:none}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__shipping{display:block;margin-top:.7rem;color:#2c6b46;font-size:1.15rem;font-weight:700}
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__group{display:flex;flex-direction:column;align-items:flex-start;gap:.78rem}
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__group h2{margin:0 0 .45rem;font-size:1.6rem;line-height:1.2;color:rgb(var(--color-foreground))}
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__group a{color:rgba(var(--color-foreground),.78);font-size:1.3rem;line-height:1.35;text-decoration:none}
