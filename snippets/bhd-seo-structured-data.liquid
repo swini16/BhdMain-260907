@@ -121,16 +121,6 @@
 </script>
 {%- endif -%}
 
-{%- if request.page_type == 'product' and product != blank -%}
-<script type="application/ld+json">
-{{ product | structured_data }}
-</script>
-{%- elsif request.page_type == 'article' and article != blank -%}
-<script type="application/ld+json">
-{{ article | structured_data }}
-</script>
-{%- endif -%}
-
 {%- if request.page_type == 'article' and article != blank -%}
 <script type="application/ld+json">
 {
@@ -165,4 +155,4 @@
 </script>
 {%- endif -%}
 
-{% comment %}SEO structured data uses Shopify resources and the Admin MAIN hierarchy. It intentionally avoids fabricated ratings, reviews, medical claims, local business details, and unsupported organization facts.{% endcomment %}
+{% comment %}SEO structured data uses Shopify resources and the Admin MAIN hierarchy. Product and article schema remain in their canonical Dawn sections to avoid duplicate JSON-LD. This snippet intentionally avoids fabricated ratings, reviews, medical claims, local business details, and unsupported organization facts.{% endcomment %}
