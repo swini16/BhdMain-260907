@@ -8,6 +8,11 @@
         <span><strong>Best Hydrate</strong><small>The Science of Hydration</small></span>
       </a>
       <p>Science-first oral hydration across performance, daily, medical-development and humanitarian settings.</p>
+      <div class="bhd-footer-nav__social" aria-label="Best Hydrate social media">
+        <a href="https://www.instagram.com/besthydrate/" target="_blank" rel="noopener noreferrer" aria-label="Best Hydrate on Instagram">Instagram</a>
+        <a href="https://www.facebook.com/104214145395682" target="_blank" rel="noopener noreferrer" aria-label="Best Hydrate on Facebook">Facebook</a>
+        <a href="https://www.youtube.com/channel/UCXqEmkYOnl-iU2AUaYS9kkA" target="_blank" rel="noopener noreferrer" aria-label="Best Hydrate on YouTube">YouTube</a>
+      </div>
       {% unless request.page_type == 'index' %}
         <a class="bhd-footer-nav__shop" href="/products/lemonade-best-hydrate">Shop Best Hydrate</a>
         <small class="bhd-footer-nav__shipping">✓ Free shipping</small>
@@ -52,6 +57,9 @@
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand-link strong{font-family:var(--font-heading-family);font-size:2.3rem;line-height:1}
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand-link small{margin-top:.35rem;font-size:1.1rem;opacity:.7}
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__brand p{max-width:36rem;margin:1.5rem 0;color:rgba(var(--color-foreground),.74);font-size:1.35rem;line-height:1.55}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__social{display:flex;flex-wrap:wrap;gap:.65rem 1.15rem;margin:0 0 1.45rem}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__social a{color:rgba(var(--color-foreground),.78);font-size:1.2rem;font-weight:700;text-underline-offset:.2em}
+  #BhdFooterNav-{{ section.id }} .bhd-footer-nav__social a:hover{color:rgb(var(--color-foreground))}
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__shop{display:inline-flex;padding:.9rem 1.4rem;border-radius:999px;background:rgb(var(--color-button));color:rgb(var(--color-button-text));font-size:1.3rem;font-weight:750;text-decoration:none}
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__shipping{display:block;margin-top:.7rem;color:#2c6b46;font-size:1.15rem;font-weight:700}
   #BhdFooterNav-{{ section.id }} .bhd-footer-nav__group{display:flex;flex-direction:column;align-items:flex-start;gap:.78rem}
