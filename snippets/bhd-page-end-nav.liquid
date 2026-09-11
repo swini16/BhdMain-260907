@@ -102,7 +102,10 @@
       </nav>
     </div>
 
-    <a class="bhd-page-end-nav__shop" href="/products/lemonade-best-hydrate">Shop Best Hydrate →</a>
+    <div class="bhd-page-end-nav__shop-wrap">
+      <a class="bhd-page-end-nav__shop" href="/products/lemonade-best-hydrate">Shop Best Hydrate →</a>
+      <small class="bhd-page-end-nav__shipping">✓ Free shipping</small>
+    </div>
   </div>
 </section>
 
@@ -115,13 +118,16 @@
   .bhd-page-end-nav__peers a{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:3.6rem;padding:.68rem 1rem;border:1px solid #9fb9d8;border-radius:999px;background:#dbe8f6;color:#0b2d67;font-size:1.2rem;font-weight:700;line-height:1.15;text-decoration:none;white-space:nowrap}
   .bhd-page-end-nav__peers a:hover{background:#c7dbef;border-color:#7fa3ca}
   .bhd-page-end-nav__peers a.is-current{background:#fff1bf;border-color:#d1ad3f;color:#66500b;box-shadow:inset 0 -2px 0 #c59a18;font-weight:820}
+  .bhd-page-end-nav__shop-wrap{display:flex;flex-direction:column;align-items:center;gap:.5rem}
   .bhd-page-end-nav__shop{display:inline-flex;align-items:center;justify-content:center;min-height:4.2rem;padding:.85rem 1.5rem;border-radius:999px;background:#0b2d67;color:#fff!important;font-size:1.3rem;font-weight:800;text-decoration:none;white-space:nowrap;box-shadow:0 .35rem 1rem rgba(11,45,103,.15)}
   .bhd-page-end-nav__shop:hover{background:#173f7c}
+  .bhd-page-end-nav__shipping{display:block;color:#2c6b46;font-size:1.08rem;font-weight:800;line-height:1.2}
   @media screen and (max-width:749px){
     .bhd-page-end-nav__inner{grid-template-columns:1fr;gap:1.2rem;padding-top:1.6rem;padding-bottom:1.7rem}
     .bhd-page-end-nav__nav{display:block}
     .bhd-page-end-nav__parent{margin-bottom:.75rem}
     .bhd-page-end-nav__peers{width:100%}
+    .bhd-page-end-nav__shop-wrap{width:100%}
     .bhd-page-end-nav__shop{width:100%}
   }
 </style>
