@@ -1,6 +1,6 @@
 # Live theme deployment audit
 
-Date: 2026-09-09
+Date: 2026-09-11
 Theme: `BhdMain-260907/main`
 Shopify theme role: `MAIN`
 
@@ -102,10 +102,47 @@ The retained secondary-page snippets remain present in MAIN:
 
 Their Shopify Page objects remain published and are reached through the active `bhd-page-system` → dispatcher chain.
 
+## Homepage hero asset migration
+
+PASS on September 11.
+
+All homepage hero image references controlled by `sections/bhd-hero-v4.liquid` were migrated away from SharePoint and raw GitHub hosting to Shopify Files/CDN. Repository search after the migration returns no remaining `sharepoint.com`, `pexels.com`, or `raw.githubusercontent.com` references associated with the migrated website assets.
+
+The desktop hero, four tablet hero panels and mobile Performance hero now use Shopify CDN URLs. The other three mobile hero panels were already on Shopify CDN and were retained.
+
+## Careers job board
+
+PASS on September 11.
+
+The published Shopify Page exists as:
+
+- title: `Jobs & Careers`
+- handle: `jobs-careers`
+- published: `2026-09-09T15:46:23Z`
+
+A Shopify metaobject definition now exists for admin-managed postings:
+
+- name: `Job Opening`
+- type: `job_opening`
+- display name field: `title`
+- Storefront access: `PUBLIC_READ`
+- current entries: `0`
+
+`snippets/bhd-page-jobs-careers.liquid` reads `shop.metaobjects.job_opening.values`, displays only entries with `is_open = true`, and preserves the no-openings fallback when there are no active postings.
+
+GitHub-to-Shopify propagation for this change is directly verified by timestamps:
+
+- GitHub commit `8ee5510474df03acc1ce1bcd59db09f6b2fe4e4f` created `2026-09-11T19:32:21Z`
+- Shopify MAIN `snippets/bhd-page-jobs-careers.liquid` updated `2026-09-11T19:32:26Z`
+- Shopify MAIN checksum: `7bbd07a43d6e5399a922f9d6f4d4e0fd`
+- Shopify MAIN file size: `7337` bytes
+
+The five-second sequence is direct evidence that the careers commit propagated from GitHub to the live MAIN theme.
+
 ## Result
 
 **LIVE THEME FILE DEPLOYMENT: PASS AT ACTIVE ENTRY-POINT LEVEL.**
 
-The Page renderer record now reflects the actual active Shopify template rather than the earlier `main-page` assumption. GitHub-to-Shopify synchronization is directly verified for the active page system, dispatcher, breadcrumb component, Recovery renderer and parent-directory component.
+The Page renderer record reflects the actual active Shopify template. GitHub-to-Shopify synchronization is directly verified for the active page system, dispatcher, breadcrumb component, Recovery renderer, parent-directory component, homepage hero asset migration and the Shopify-admin-managed Careers renderer.
 
 Visual browser confirmation remains a separate QA layer when a fresh browser fetch is available.
