@@ -19,53 +19,13 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import base64
           p = Path('sections/bhd-header-contrast.liquid')
           s = p.read_text()
           marker = 'compact-header-shop-20260911'
           if marker not in s:
-              insert = r'''
-
-<style>
-  /* compact-header-shop-20260911 */
-  .bhd-header__compact-shop-wrap{display:none}
-  @media screen and (max-width:989px){
-    .bhd-header__compact-shop-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto;margin:0 .2rem;line-height:1}
-    .bhd-header__compact-shop{display:inline-flex;align-items:center;justify-content:center;min-height:3.55rem;padding:0 1.15rem;border-radius:999px;background:rgb(var(--color-button));color:rgb(var(--color-button-text))!important;font-size:1.2rem;font-weight:800;line-height:1;text-decoration:none!important;white-space:nowrap;box-shadow:0 .25rem .8rem rgba(11,45,103,.14)}
-    .bhd-header__compact-shop:hover{filter:brightness(.96)}
-    .bhd-header__compact-shop-shipping{display:block;margin-top:.22rem;color:#2c6b46;font-size:.76rem;font-weight:750;line-height:1;white-space:nowrap}
-  }
-  @media screen and (max-width:600px){
-    .bhd-header .bhd-header__actions>a[aria-label="Account"]{display:none}
-    .bhd-header__compact-shop{min-height:3.35rem;padding:0 .9rem;font-size:1.08rem}
-    .bhd-header__compact-shop-shipping{font-size:.7rem}
-  }
-  @media screen and (max-width:420px){
-    .bhd-header__compact-shop{padding:0 .7rem;font-size:1rem}
-    .bhd-header__compact-shop-shipping{font-size:.64rem}
-    .bhd-header .bhd-header__actions{gap:0}
-    .bhd-header .bhd-header__icon-button{width:3.35rem;height:3.35rem}
-  }
-</style>
-
-<script>
-  (()=>{
-    const mountCompactShop=()=>{
-      document.querySelectorAll('.bhd-header').forEach(header=>{
-        const actions=header.querySelector('.bhd-header__actions');
-        if(!actions||actions.querySelector('.bhd-header__compact-shop-wrap'))return;
-        const wrap=document.createElement('div');
-        wrap.className='bhd-header__compact-shop-wrap';
-        wrap.innerHTML='<a class="bhd-header__compact-shop" href="/products/lemonade-best-hydrate">Shop</a><small class="bhd-header__compact-shop-shipping">✓ Free shipping</small>';
-        const account=actions.querySelector('a[aria-label="Account"]');
-        actions.insertBefore(wrap,account||actions.firstChild);
-      });
-    };
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountCompactShop,{once:true});
-    else mountCompactShop();
-    document.addEventListener('shopify:section:load',mountCompactShop);
-  })();
-</script>
-'''
+              encoded = 'CjxzdHlsZT4KICAvKiBjb21wYWN0LWhlYWRlci1zaG9wLTIwMjYwOTExICovCiAgLmJoZC1oZWFkZXJfX2NvbXBhY3Qtc2hvcC13cmFwe2Rpc3BsYXk6bm9uZX0KICBAbWVkaWEgc2NyZWVuIGFuZCAobWF4LXdpZHRoOjk4OXB4KXsKICAgIC5iaGQtaGVhZGVyX19jb21wYWN0LXNob3Atd3JhcHtkaXNwbGF5OmZsZXg7ZmxleC1kaXJlY3Rpb246Y29sdW1uO2FsaWduLWl0ZW1zOmNlbnRlcjtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyO2ZsZXg6MCAwIGF1dG87bWFyZ2luOjAgLjJyZW07bGluZS1oZWlnaHQ6MX0KICAgIC5iaGQtaGVhZGVyX19jb21wYWN0LXNob3B7ZGlzcGxheTppbmxpbmUtZmxleDthbGlnbi1pdGVtczpjZW50ZXI7anVzdGlmeS1jb250ZW50OmNlbnRlcjttaW4taGVpZ2h0OjMuNTVyZW07cGFkZGluZzowIDEuMTVyZW07Ym9yZGVyLXJhZGl1czo5OTlweDtiYWNrZ3JvdW5kOnJnYih2YXIoLS1jb2xvci1idXR0b24pKTtjb2xvcjpyZ2IodmFyKC0tY29sb3ItYnV0dG9uLXRleHQpKSFpbXBvcnRhbnQ7Zm9udC1zaXplOjEuMnJlbTtmb250LXdlaWdodDo4MDA7bGluZS1oZWlnaHQ6MTt0ZXh0LWRlY29yYXRpb246bm9uZSFpbXBvcnRhbnQ7d2hpdGUtc3BhY2U6bm93cmFwO2JveC1zaGFkb3c6MCAuMjVyZW0gLjhyZW0gcmdiYSgxMSw0NSwxMDMsLjE0KX0KICAgIC5iaGQtaGVhZGVyX19jb21wYWN0LXNob3A6aG92ZXJ7ZmlsdGVyOmJyaWdodG5lc3MoLjk2KX0KICAgIC5iaGQtaGVhZGVyX19jb21wYWN0LXNob3Atc2hpcHBpbmd7ZGlzcGxheTpibG9jazttYXJnaW4tdG9wOi4yMnJlbTtjb2xvcjojMmM2YjQ2O2ZvbnQtc2l6ZTouNzZyZW07Zm9udC13ZWlnaHQ6NzUwO2xpbmUtaGVpZ2h0OjE7d2hpdGUtc3BhY2U6bm93cmFwfQogIH0KICBAbWVkaWEgc2NyZWVuIGFuZCAobWF4LXdpZHRoOjYwMHB4KXsKICAgIC5iaGQtaGVhZGVyIC5iaGQtaGVhZGVyX19hY3Rpb25zPmFbYXJpYS1sYWJlbD0iQWNjb3VudCJde2Rpc3BsYXk6bm9uZX0KICAgIC5iaGQtaGVhZGVyX19jb21wYWN0LXNob3B7bWluLWhlaWdodDozLjM1cmVtO3BhZGRpbmc6MCAuOXJlbTtmb250LXNpemU6MS4wOHJlbX0KICAgIC5iaGQtaGVhZGVyX19jb21wYWN0LXNob3Atc2hpcHBpbmd7Zm9udC1zaXplOi43cmVtfQogIH0KICBAbWVkaWEgc2NyZWVuIGFuZCAobWF4LXdpZHRoOjQyMHB4KXsKICAgIC5iaGQtaGVhZGVyX19jb21wYWN0LXNob3B7cGFkZGluZzowIC43cmVtO2ZvbnQtc2l6ZToxcmVtfQogICAgLmJoZC1oZWFkZXJfX2NvbXBhY3Qtc2hvcC1zaGlwcGluZ3tmb250LXNpemU6LjY0cmVtfQogICAgLmJoZC1oZWFkZXIgLmJoZC1oZWFkZXJfX2FjdGlvbnN7Z2FwOjB9CiAgICAuYmhkLWhlYWRlciAuYmhkLWhlYWRlcl9faWNvbi1idXR0b257d2lkdGg6My4zNXJlbTtoZWlnaHQ6My4zNXJlbX0KICB9Cjwvc3R5bGU+Cgo8c2NyaXB0PgogICgoKSA9PiB7CiAgICBjb25zdCBtb3VudENvbXBhY3RTaG9wID0gKCkgPT4gewogICAgICBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCcuYmhkLWhlYWRlcicpLmZvckVhY2goaGVhZGVyID0+IHsKICAgICAgICBjb25zdCBhY3Rpb25zID0gaGVhZGVyLnF1ZXJ5U2VsZWN0b3IoJy5iaGQtaGVhZGVyX19hY3Rpb25zJyk7CiAgICAgICAgaWYgKCFhY3Rpb25zIHx8IGFjdGlvbnMucXVlcnlTZWxlY3RvcignLmJoZC1oZWFkZXJfX2NvbXBhY3Qtc2hvcC13cmFwJykpIHJldHVybjsKICAgICAgICBjb25zdCB3cmFwID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7CiAgICAgICAgd3JhcC5jbGFzc05hbWUgPSAnYmhkLWhlYWRlcl9fY29tcGFjdC1zaG9wLXdyYXAnOwogICAgICAgIHdyYXAuaW5uZXJIVE1MID0gJzxhIGNsYXNzPSJiaGQtaGVhZGVyX19jb21wYWN0LXNob3AiIGhyZWY9Ii9wcm9kdWN0cy9sZW1vbmFkZS1iZXN0LWh5ZHJhdGUiPlNob3A8L2E+PHNtYWxsIGNsYXNzPSJiaGQtaGVhZGVyX19jb21wYWN0LXNob3Atc2hpcHBpbmciPuKckyBGcmVlIHNoaXBwaW5nPC9zbWFsbD4nOwogICAgICAgIGNvbnN0IGFjY291bnQgPSBhY3Rpb25zLnF1ZXJ5U2VsZWN0b3IoJ2FbYXJpYS1sYWJlbD0iQWNjb3VudCJdJyk7CiAgICAgICAgYWN0aW9ucy5pbnNlcnRCZWZvcmUod3JhcCwgYWNjb3VudCB8fCBhY3Rpb25zLmZpcnN0Q2hpbGQpOwogICAgICB9KTsKICAgIH07CiAgICBpZiAoZG9jdW1lbnQucmVhZHlTdGF0ZSA9PT0gJ2xvYWRpbmcnKSBkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCdET01Db250ZW50TG9hZGVkJywgbW91bnRDb21wYWN0U2hvcCwgeyBvbmNlOiB0cnVlIH0pOwogICAgZWxzZSBtb3VudENvbXBhY3RTaG9wKCk7CiAgICBkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCdzaG9waWZ5OnNlY3Rpb246bG9hZCcsIG1vdW50Q29tcGFjdFNob3ApOwogIH0pKCk7Cjwvc2NyaXB0Pgo='
+              insert = base64.b64decode(encoded).decode('utf-8')
               s = s.replace('\n{% schema %}', insert + '\n{% schema %}', 1)
               p.write_text(s)
           PY
