@@ -12,6 +12,10 @@
     assign seo_logo_url = seo_logo_path | prepend: 'https:'
   endif
 
+  assign seo_facebook_url = settings.social_facebook_link | default: 'https://www.facebook.com/104214145395682'
+  assign seo_instagram_url = settings.social_instagram_link | default: 'https://www.instagram.com/besthydrate/'
+  assign seo_youtube_url = settings.social_youtube_link | default: 'https://www.youtube.com/channel/UCXqEmkYOnl-iU2AUaYS9kkA'
+
   assign seo_menu = linklists['new-menu']
   assign seo_path = request.path
   assign seo_depth = 0
@@ -69,16 +73,13 @@
     "name": "Alberta, Canada"
   },
   "founder": { "@id": {{ seo_origin | append: '/#austin-swiniarski' | json }} }{% if seo_logo_url != blank %},
-  "logo": {{ seo_logo_url | json }}{% endif %}
-  {%- if settings.social_facebook_link != blank or settings.social_instagram_link != blank or settings.social_youtube_link != blank or settings.social_tiktok_link != blank -%},
+  "logo": {{ seo_logo_url | json }}{% endif %},
   "sameAs": [
-    {%- assign seo_social_started = false -%}
-    {%- if settings.social_facebook_link != blank -%}{{ settings.social_facebook_link | json }}{%- assign seo_social_started = true -%}{%- endif -%}
-    {%- if settings.social_instagram_link != blank -%}{% if seo_social_started %},{% endif %}{{ settings.social_instagram_link | json }}{%- assign seo_social_started = true -%}{%- endif -%}
-    {%- if settings.social_youtube_link != blank -%}{% if seo_social_started %},{% endif %}{{ settings.social_youtube_link | json }}{%- assign seo_social_started = true -%}{%- endif -%}
-    {%- if settings.social_tiktok_link != blank -%}{% if seo_social_started %},{% endif %}{{ settings.social_tiktok_link | json }}{%- endif -%}
+    {{ seo_facebook_url | json }},
+    {{ seo_instagram_url | json }},
+    {{ seo_youtube_url | json }}{% if settings.social_tiktok_link != blank %},
+    {{ settings.social_tiktok_link | json }}{% endif %}
   ]
-  {%- endif -%}
 }
 </script>
 
@@ -155,4 +156,4 @@
 </script>
 {%- endif -%}
 
-{% comment %}SEO structured data uses Shopify resources and the Admin MAIN hierarchy. Product and article schema remain in their canonical Dawn sections to avoid duplicate JSON-LD. This snippet intentionally avoids fabricated ratings, reviews, medical claims, local business details, and unsupported organization facts.{% endcomment %}
+{% comment %}SEO structured data uses Shopify resources and the Admin MAIN hierarchy. Canonical Best Hydrate social profiles provide Organization sameAs fallbacks when theme social settings are blank. Product and article schema remain in their canonical Dawn sections to avoid duplicate JSON-LD. This snippet intentionally avoids fabricated ratings, reviews, medical claims, local business details, and unsupported organization facts.{% endcomment %}
