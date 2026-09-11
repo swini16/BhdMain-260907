@@ -8,7 +8,9 @@
         <span><strong>Best Hydrate</strong><small>The Science of Hydration</small></span>
       </a>
       <p>Science-first oral hydration across performance, daily, medical-development and humanitarian settings.</p>
-      <a class="bhd-footer-nav__shop" href="/products/lemonade-best-hydrate">Shop Best Hydrate</a>
+      {% unless request.page_type == 'index' %}
+        <a class="bhd-footer-nav__shop" href="/products/lemonade-best-hydrate">Shop Best Hydrate</a>
+      {% endunless %}
       <small class="bhd-footer-nav__shipping">✓ Free shipping on all orders</small>
     </div>
 
