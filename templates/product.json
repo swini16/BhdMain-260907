@@ -3,20 +3,19 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "vendor": {"type": "text", "settings": {"text": "{{ product.vendor }}", "text_style": "body"}},
         "title": {"type": "title", "settings": {}},
         "rating": {"type": "rating", "settings": {}},
         "price": {"type": "price", "settings": {}},
+        "trust_strip": {"type": "custom_liquid", "settings": {"custom_liquid": "<div class=\"bhd-trust-strip\" aria-label=\"Product trust signals\"><span><strong>Health Canada NPN</strong><br>80118664</span><span><strong>Made in Alberta</strong><br>Mixed &amp; packaged in Edmonton</span><span><strong>Science-informed formula</strong><br>Glucose + electrolytes</span></div><style>.bhd-trust-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.8rem 0 1rem}.bhd-trust-strip span{display:block;padding:.8rem .7rem;border:1px solid #d7e3f1;border-radius:.9rem;background:#f7fbff;color:#52657a;font-size:1.08rem;line-height:1.35;text-align:center}.bhd-trust-strip strong{color:#0b2d67;font-size:1.12rem}@media screen and (max-width:749px){.bhd-trust-strip{grid-template-columns:1fr}.bhd-trust-strip span{text-align:left}}</style>"}},
         "free_shipping": {"type": "custom_liquid", "settings": {"custom_liquid": "<div class=\"bhd-free-shipping\" role=\"note\"><strong>✓ Free shipping on all orders</strong><span>No shipping charge at checkout.</span></div><style>.product__tax{display:none!important}.bhd-free-shipping{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin:.6rem 0 .2rem;padding:.85rem 1.05rem;border:1px solid #8dc6aa;border-radius:1rem;background:#e7f6ee;color:#174f3c;font-size:1.35rem;line-height:1.3}.bhd-free-shipping strong{font-weight:850}.bhd-free-shipping span{color:#3f6758;font-size:1.2rem}@media screen and (max-width:749px){.bhd-free-shipping{align-items:flex-start;flex-direction:column;gap:.2rem}}</style>"}},
-        "variant_picker": {"type": "variant_picker", "settings": {"picker_type": "button", "swatch_shape": "circle"}},
         "quantity_selector": {"type": "quantity_selector", "settings": {}},
         "buy_buttons": {"type": "buy_buttons", "settings": {"show_dynamic_checkout": true, "show_gift_card_recipient": true}},
-        "marketplaces": {"type": "custom_liquid", "settings": {"custom_liquid": "{% render 'bhd-marketplace-links', variant: 'product' %}"}},
         "description": {"type": "description", "settings": {}},
+        "marketplaces": {"type": "custom_liquid", "settings": {"custom_liquid": "{% render 'bhd-marketplace-links', variant: 'product' %}"}},
         "share": {"type": "share", "settings": {"share_label": "Share"}}
       },
-      "block_order": ["vendor", "title", "rating", "price", "free_shipping", "variant_picker", "quantity_selector", "buy_buttons", "marketplaces", "description", "share"],
-      "settings": {"enable_sticky_info": true, "color_scheme": "scheme-1", "media_size": "small", "constrain_to_viewport": true, "media_fit": "contain", "gallery_layout": "thumbnail_slider", "media_position": "left", "image_zoom": "lightbox", "mobile_thumbnails": "hide", "hide_variants": true, "enable_video_looping": false, "padding_top": 60, "padding_bottom": 60}
+      "block_order": ["title", "rating", "price", "trust_strip", "free_shipping", "quantity_selector", "buy_buttons", "description", "marketplaces", "share"],
+      "settings": {"enable_sticky_info": true, "color_scheme": "scheme-1", "media_size": "small", "constrain_to_viewport": true, "media_fit": "contain", "gallery_layout": "thumbnail_slider", "media_position": "left", "image_zoom": "lightbox", "mobile_thumbnails": "hide", "hide_variants": true, "enable_video_looping": false, "padding_top": 36, "padding_bottom": 48}
     },
     "reviews_intro": {
       "type": "custom-liquid",
