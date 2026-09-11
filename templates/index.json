@@ -14,7 +14,7 @@
       "type": "bhd-hero-v4",
       "settings": {
         "heading": "Hydrate for YOUR best day.",
-        "subheading": "Five essential electrolytes. Built for better hydration.",
+        "subheading": "Five electrolyte species. Built around oral hydration science.",
         "product": "lemonade-best-hydrate",
         "button_label": "SHOP NOW",
         "button_link": "shopify://products/lemonade-best-hydrate",
@@ -76,7 +76,7 @@
       "settings": {
         "product": "lemonade-best-hydrate",
         "heading": "Hydration science, made practical.",
-        "text": "<p>A clean, science-informed electrolyte mix with five essential electrolytes, made for performance, everyday hydration and recovery.</p>",
+        "text": "<p>A clean, science-informed electrolyte mix with five electrolyte species, made for performance, everyday hydration and recovery.</p>",
         "button_label": "Shop Best Hydrate",
         "button_link": "shopify://products/lemonade-best-hydrate",
         "color_scheme": "scheme-1"
