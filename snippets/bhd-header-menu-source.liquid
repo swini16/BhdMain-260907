@@ -113,7 +113,10 @@
   <template id="BhdAdminDesktopMenu">
     {% for top_link in bhd_navigation.links %}
       {% if top_link.title == 'Shop' %}
-        <a href="{{ top_link.url }}" class="bhd-header__shop-cta">{{ top_link.title | escape }}</a>
+        <div class="bhd-header__shop-cta-wrap">
+          <a href="{{ top_link.url }}" class="bhd-header__shop-cta">{{ top_link.title | escape }}</a>
+          <small class="bhd-header__shop-cta-shipping">✓ Free shipping</small>
+        </div>
       {% else %}
         <div class="bhd-header__main-item" data-main-item>
           <div class="bhd-header__split-button"><a class="bhd-header__main-link" href="{{ top_link.url }}">{{ top_link.title | escape }}</a><button type="button" class="bhd-header__main-toggle" data-menu-toggle aria-expanded="false" aria-label="Open {{ top_link.title | escape }} menu"><span aria-hidden="true">⌄</span></button></div>
@@ -165,6 +168,9 @@
     @media screen and (min-width:990px){
       .bhd-header__main-item:not(.is-open) > .bhd-header__dropdown-menu{display:none!important}
       .bhd-header__main-item.is-open > .bhd-header__dropdown-menu{display:grid!important}
+      .bhd-header__shop-cta-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+      .bhd-header__shop-cta-wrap .bhd-header__shop-cta{min-height:3.15rem;padding:0 1rem}
+      .bhd-header__shop-cta-shipping{display:block;margin-top:.22rem;color:#2c6b46;font-size:.72rem;font-weight:750;line-height:1;white-space:nowrap}
     }
   </style>
 
