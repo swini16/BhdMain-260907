@@ -99,6 +99,7 @@
         </div>
       {%- endform -%}
     </product-form>
+    <small class="bhd-buy-buttons__shipping">✓ Free shipping</small>
   {%- else -%}
     <div class="product-form">
       <div class="product-form__buttons form">
@@ -149,3 +150,7 @@
     <script src="{{ 'pickup-availability.js' | asset_url }}" defer="defer"></script>
   {%- endif -%}
 </div>
+
+<style>
+  .bhd-buy-buttons__shipping{display:block;margin-top:.7rem;color:#2c6b46;font-size:1.15rem;font-weight:700;line-height:1.2;text-align:center}
+</style>
