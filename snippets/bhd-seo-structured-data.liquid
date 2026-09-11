@@ -59,7 +59,15 @@
   "@type": "Organization",
   "@id": {{ seo_origin | append: '/#organization' | json }},
   "name": {{ shop.name | json }},
+  "legalName": "Best Hydrate Inc.",
   "url": {{ seo_home_url | json }},
+  "description": "Best Hydrate is an Alberta-based hydration company developing science-informed oral hydration products and research.",
+  "slogan": "The Science of Hydration",
+  "foundingDate": "2021",
+  "foundingLocation": {
+    "@type": "Place",
+    "name": "Alberta, Canada"
+  },
   "founder": { "@id": {{ seo_origin | append: '/#austin-swiniarski' | json }} }{% if seo_logo_url != blank %},
   "logo": {{ seo_logo_url | json }}{% endif %}
   {%- if settings.social_facebook_link != blank or settings.social_instagram_link != blank or settings.social_youtube_link != blank or settings.social_tiktok_link != blank -%},
