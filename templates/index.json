@@ -72,10 +72,23 @@
         "color_scheme": "scheme-1"
       }
     },
+    "reviews": {
+      "type": "apps",
+      "blocks": {
+        "trustreviews_review_cards_home": {
+          "type": "shopify://apps/trustreviews/blocks/review-cards/56d0fe1b-e701-4cff-8f84-466a26e09adb",
+          "settings": {}
+        }
+      },
+      "block_order": ["trustreviews_review_cards_home"],
+      "settings": {
+        "include_margins": true
+      }
+    },
     "trust": {
       "type": "bhd-trust-strip",
       "settings": {"color_scheme": "scheme-1"}
     }
   },
-  "order": ["hero", "hero_links", "benefits", "why", "markets", "science_research", "product_story", "trust"]
+  "order": ["hero", "hero_links", "benefits", "why", "markets", "science_research", "product_story", "reviews", "trust"]
 }
