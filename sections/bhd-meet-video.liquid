@@ -1,0 +1,61 @@
+<section class="bhd-meet-video color-{{ section.settings.color_scheme }} gradient" aria-labelledby="BhdMeetVideoHeading-{{ section.id }}">
+  <div class="bhd-meet-video__inner page-width">
+    <div class="bhd-meet-video__copy">
+      <p class="bhd-meet-video__eyebrow">OUR STORY</p>
+      <h2 id="BhdMeetVideoHeading-{{ section.id }}" class="bhd-meet-video__heading">{{ section.settings.heading | escape }}</h2>
+      {% if section.settings.text != blank %}
+        <div class="bhd-meet-video__text rte">{{ section.settings.text }}</div>
+      {% endif %}
+      {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+        <a class="button button--primary bhd-meet-video__button" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+      {% endif %}
+    </div>
+
+    <div class="bhd-meet-video__media">
+      <video
+        class="bhd-meet-video__video"
+        controls
+        playsinline
+        preload="metadata"
+        poster="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/preview_images/31599e986e964e7292dcac8d17a46650.thumbnail.0000000000.jpg?v=1727970181"
+        aria-label="Meet Best Hydrate video"
+      >
+        <source src="https://cdn.shopify.com/videos/c/vp/31599e986e964e7292dcac8d17a46650/31599e986e964e7292dcac8d17a46650.HD-720p-1.6Mbps-35777487.mp4" type="video/mp4">
+        Your browser does not support HTML video.
+      </video>
+    </div>
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }} .bhd-meet-video{overflow:hidden}
+  #shopify-section-{{ section.id }} .bhd-meet-video__inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,340px);align-items:center;gap:clamp(3rem,6vw,8rem);padding-top:clamp(4.5rem,7vw,8rem);padding-bottom:clamp(4.5rem,7vw,8rem)}
+  #shopify-section-{{ section.id }} .bhd-meet-video__copy{max-width:64rem}
+  #shopify-section-{{ section.id }} .bhd-meet-video__eyebrow{margin:0 0 1rem;color:#087ee5;font-size:1.25rem;font-weight:800;letter-spacing:.16em}
+  #shopify-section-{{ section.id }} .bhd-meet-video__heading{margin:0;color:rgb(var(--color-foreground));font-size:clamp(3rem,4.5vw,5.2rem);line-height:1.02;letter-spacing:-.03em}
+  #shopify-section-{{ section.id }} .bhd-meet-video__text{max-width:58rem;margin-top:1.6rem;color:rgba(var(--color-foreground),.78);font-size:clamp(1.6rem,1.7vw,2rem);line-height:1.55}
+  #shopify-section-{{ section.id }} .bhd-meet-video__text p{margin:0}
+  #shopify-section-{{ section.id }} .bhd-meet-video__button{margin-top:2.4rem}
+  #shopify-section-{{ section.id }} .bhd-meet-video__media{display:flex;justify-content:center}
+  #shopify-section-{{ section.id }} .bhd-meet-video__video{display:block;width:100%;max-width:340px;aspect-ratio:406/720;object-fit:cover;border:1px solid rgba(var(--color-foreground),.1);border-radius:2.2rem;background:#071b45;box-shadow:0 2rem 5rem rgba(10,39,86,.18)}
+  @media screen and (max-width:749px){
+    #shopify-section-{{ section.id }} .bhd-meet-video__inner{grid-template-columns:1fr;gap:3rem;padding-top:4rem;padding-bottom:4rem;text-align:center}
+    #shopify-section-{{ section.id }} .bhd-meet-video__copy{margin:0 auto}
+    #shopify-section-{{ section.id }} .bhd-meet-video__text{margin-left:auto;margin-right:auto}
+    #shopify-section-{{ section.id }} .bhd-meet-video__video{max-width:310px;border-radius:1.8rem}
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Meet Best Hydrate video",
+  "settings": [
+    {"type":"text","id":"heading","label":"Heading","default":"Meet Best Hydrate"},
+    {"type":"richtext","id":"text","label":"Text","default":"<p>Why we built a science-first hydration company.</p>"},
+    {"type":"text","id":"button_label","label":"Button label","default":"Meet Us"},
+    {"type":"url","id":"button_link","label":"Button link"},
+    {"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"}
+  ],
+  "presets": [{"name":"Meet Best Hydrate video"}]
+}
+{% endschema %}
