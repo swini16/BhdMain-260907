@@ -1,4 +1,12 @@
-{% comment %} Careers deploy marker: 2026-09-11-v4 {% endcomment %}
+{% comment %} Careers deploy marker: 2026-09-11-v5-metaobjects {% endcomment %}
+{% assign job_openings = shop.metaobjects.job_opening.values %}
+{% assign open_job_count = 0 %}
+{% for job in job_openings %}
+  {% if job.is_open.value == true %}
+    {% assign open_job_count = open_job_count | plus: 1 %}
+  {% endif %}
+{% endfor %}
+
 {% render 'bhd-page-header',
   family: 'Connect',
   parent: 'Company & People',
@@ -19,13 +27,36 @@
 <section class="bhd-page__feature" id="current-openings">
   <div>
     <p class="bhd-page__kicker">Current openings</p>
-    <h2>No formal roles are posted right now</h2>
-    <p>Best Hydrate is still a startup. Our hiring needs can change quickly as research, retail, operations, partnerships and funding develop. When a formal role is open, it will be published here with enough detail for applicants to understand the problem, expected ownership and working relationship.</p>
-    <p>If no role is listed today, you can still introduce yourself when you see an unusually strong fit. We would rather post a genuine opportunity when it exists than maintain vague placeholder jobs.</p>
-    <div class="bhd-page__brand-actions">
-      <a class="bhd-page__button" href="/pages/contact">Introduce Yourself</a>
-      <a class="bhd-page__button bhd-page__button--secondary" href="/blogs/news">Company Updates</a>
-    </div>
+    {% if open_job_count > 0 %}
+      <h2>Join Best Hydrate</h2>
+      <p>These are the roles we are actively recruiting for now.</p>
+      <div class="bhd-page__cards bhd-page__cards--4">
+        {% for job in job_openings %}
+          {% if job.is_open.value == true %}
+            <article>
+              <h3>{{ job.title.value | escape }}</h3>
+              {% if job.department.value != blank or job.location.value != blank or job.employment_type.value != blank %}
+                <p><strong>
+                  {% if job.department.value != blank %}{{ job.department.value | escape }}{% endif %}
+                  {% if job.location.value != blank %}{% if job.department.value != blank %} · {% endif %}{{ job.location.value | escape }}{% endif %}
+                  {% if job.employment_type.value != blank %}{% if job.department.value != blank or job.location.value != blank %} · {% endif %}{{ job.employment_type.value | escape }}{% endif %}
+                </strong></p>
+              {% endif %}
+              {% if job.summary.value != blank %}<p>{{ job.summary.value | escape | newline_to_br }}</p>{% endif %}
+              {% if job.apply_url.value != blank %}<p><a class="bhd-page__button" href="{{ job.apply_url.value | escape }}">Apply</a></p>{% endif %}
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <h2>No formal roles are posted right now</h2>
+      <p>Best Hydrate is still a startup. Our hiring needs can change quickly as research, retail, operations, partnerships and funding develop. When a formal role is open, it will be published here with enough detail for applicants to understand the problem, expected ownership and working relationship.</p>
+      <p>If no role is listed today, you can still introduce yourself when you see an unusually strong fit. We would rather post a genuine opportunity when it exists than maintain vague placeholder jobs.</p>
+      <div class="bhd-page__brand-actions">
+        <a class="bhd-page__button" href="/pages/contact">Introduce Yourself</a>
+        <a class="bhd-page__button bhd-page__button--secondary" href="/blogs/news">Company Updates</a>
+      </div>
+    {% endif %}
   </div>
 </section>
 
