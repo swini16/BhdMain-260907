@@ -18,6 +18,7 @@
     <a class="bhd-marketplace-links__button" href="{{ bhd_amazon_ca }}" target="_blank" rel="noopener noreferrer">Amazon.ca</a>
     <a class="bhd-marketplace-links__button" href="{{ bhd_amazon_us }}" target="_blank" rel="noopener noreferrer">Amazon.com</a>
   </div>
+  <small class="bhd-marketplace-links__shipping">✓ Free shipping</small>
 
   <div class="bhd-marketplace-links__reviews" aria-label="Best Hydrate customer reviews">
     <a href="/products/lemonade-best-hydrate#customer-reviews">Customer reviews</a>
@@ -26,17 +27,14 @@
     <span aria-hidden="true">·</span>
     <a href="{{ bhd_amazon_us_reviews }}" target="_blank" rel="noopener noreferrer">Amazon.com reviews</a>
   </div>
-
-  {% if bhd_marketplace_variant == 'product' %}
-    <small class="bhd-marketplace-links__note">Direct-store shipping terms apply only to BestHydrate.com. Amazon pricing, delivery and availability are set by the marketplace.</small>
-  {% endif %}
 </div>
 
 <style>
   .bhd-marketplace-links{box-sizing:border-box;display:flex;flex-direction:column;gap:.9rem;margin:1.2rem 0;padding:1.25rem 1.35rem;border:1px solid rgba(11,45,103,.13);border-radius:1.25rem;background:linear-gradient(135deg,#f7fbff,#fff);box-shadow:0 .45rem 1.5rem rgba(13,33,78,.05)}
   .bhd-marketplace-links__copy{display:flex;flex-direction:column;gap:.18rem;color:#0b2d67;line-height:1.3}.bhd-marketplace-links__copy strong{font-size:1.35rem}.bhd-marketplace-links__eyebrow{font-size:1.05rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#52739d}
   .bhd-marketplace-links__actions{display:flex;flex-wrap:wrap;gap:.65rem}.bhd-marketplace-links__button{display:inline-flex;align-items:center;justify-content:center;min-height:3.65rem;padding:.7rem 1.05rem;border:1px solid #9fb9d8;border-radius:999px;background:#eef5fc;color:#0b2d67!important;font-size:1.2rem;font-weight:800;text-decoration:none!important}.bhd-marketplace-links__button:hover{background:#dbe8f6;border-color:#6f97c5}.bhd-marketplace-links__button--direct{background:#0b2d67;border-color:#0b2d67;color:#fff!important}.bhd-marketplace-links__button--direct:hover{background:#17457d;border-color:#17457d}
-  .bhd-marketplace-links__reviews{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;color:#728096;font-size:1.12rem;line-height:1.35}.bhd-marketplace-links__reviews a{color:#245f55;text-decoration:underline;text-underline-offset:.18rem;font-weight:700}.bhd-marketplace-links__note{display:block;color:#6c7889;font-size:1.02rem;line-height:1.4}
+  .bhd-marketplace-links__shipping{display:block;color:#2c6b46;font-size:1.08rem;font-weight:800;line-height:1.2}
+  .bhd-marketplace-links__reviews{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;color:#728096;font-size:1.12rem;line-height:1.35}.bhd-marketplace-links__reviews a{color:#245f55;text-decoration:underline;text-underline-offset:.18rem;font-weight:700}
   .bhd-marketplace-links--footer{margin:1.1rem 0 .25rem;padding:1rem 0 0;border:0;border-top:1px solid rgba(11,45,103,.11);border-radius:0;background:transparent;box-shadow:none}.bhd-marketplace-links--footer .bhd-marketplace-links__copy strong{font-size:1.18rem}.bhd-marketplace-links--footer .bhd-marketplace-links__eyebrow{font-size:.95rem}.bhd-marketplace-links--footer .bhd-marketplace-links__button{min-height:3.15rem;padding:.55rem .85rem;font-size:1.05rem}.bhd-marketplace-links--footer .bhd-marketplace-links__reviews{font-size:1rem}
   @media screen and (max-width:749px){.bhd-marketplace-links{padding:1.1rem}.bhd-marketplace-links__actions{display:grid;grid-template-columns:1fr 1fr}.bhd-marketplace-links__button--direct{grid-column:1/-1}.bhd-marketplace-links__reviews{gap:.42rem}.bhd-marketplace-links--footer{padding-left:0;padding-right:0}.bhd-marketplace-links--footer .bhd-marketplace-links__actions{display:flex}}
 </style>
