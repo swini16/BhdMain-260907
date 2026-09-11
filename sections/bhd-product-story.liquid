@@ -16,6 +16,7 @@
       <div class="rte">{{ section.settings.text }}</div>
       {% if section.settings.button_label != blank %}
         <a class="button button--primary" href="{% if section.settings.button_link != blank %}{{ section.settings.button_link }}{% elsif section.settings.product != blank %}{{ section.settings.product.url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}">{{ section.settings.button_label }}</a>
+        <small class="bhd-product-story__shipping">✓ Free shipping</small>
       {% endif %}
     </div>
   </div>
@@ -36,6 +37,7 @@
   #BhdProductStory-{{ section.id }} h2 { margin:0 0 1.5rem; color:#102a61; font-size:clamp(3.4rem,4.6vw,5.4rem); line-height:1.01; letter-spacing:-.025em; }
   #BhdProductStory-{{ section.id }} .rte { font-size:1.72rem; line-height:1.58; color:#465573; }
   #BhdProductStory-{{ section.id }} .button { margin-top:2rem; min-width:190px; }
+  #BhdProductStory-{{ section.id }} .bhd-product-story__shipping { display:block; margin-top:.7rem; color:#2c6b46; font-size:1.15rem; font-weight:700; }
 
   @media screen and (max-width:749px){
     #BhdProductStory-{{ section.id }} { padding:4rem 0; }
