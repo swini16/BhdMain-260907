@@ -39,6 +39,16 @@
       "type": "bhd-why",
       "settings": {"color_scheme": "scheme-1"}
     },
+    "meet_video": {
+      "type": "bhd-meet-video",
+      "settings": {
+        "heading": "Meet Best Hydrate",
+        "text": "<p>Why we built a science-first hydration company.</p>",
+        "button_label": "Meet Us",
+        "button_link": "shopify://pages/our-story",
+        "color_scheme": "scheme-1"
+      }
+    },
     "markets": {
       "type": "bhd-markets",
       "settings": {
@@ -90,5 +100,5 @@
       "settings": {"color_scheme": "scheme-1"}
     }
   },
-  "order": ["hero", "hero_links", "benefits", "why", "markets", "science_research", "product_story", "reviews", "trust"]
+  "order": ["hero", "hero_links", "benefits", "why", "meet_video", "markets", "science_research", "product_story", "reviews", "trust"]
 }
