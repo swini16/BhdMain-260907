@@ -19,10 +19,6 @@
         "color_scheme": "scheme-2"
       }
     },
-    "mobile_buy": {
-      "type": "bhd-header-mobile-buy",
-      "settings": {}
-    },
     "menu_contrast": {
       "type": "bhd-header-contrast",
       "settings": {}
@@ -34,7 +30,6 @@
   },
   "order": [
     "header",
-    "mobile_buy",
     "menu_contrast",
     "blog_nav"
   ]
