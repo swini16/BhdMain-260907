@@ -67,7 +67,11 @@ if (!customElements.get('product-form')) {
               soldOutMessage.classList.remove('hidden');
               this.error = true;
               return;
-            } else if (!this.cart) {
+            }
+
+            this.trackKlaviyoAddToCart(response);
+
+            if (!this.cart) {
               this.resolveCartLinesUpdate(linesUpdateDeferred);
               window.location = window.routes.cart_url;
               return;
@@ -118,6 +122,69 @@ if (!customElements.get('product-form')) {
 
             CartPerformance.measureFromEvent("add:user-action", evt);
           });
+      }
+
+      trackKlaviyoAddToCart(item) {
+        try {
+          const quantity = Number.parseInt(item.quantity, 10) || 1;
+          const toMoney = (cents) => {
+            const value = Number(cents);
+            return Number.isFinite(value) ? value / 100 : 0;
+          };
+          const absoluteUrl = (url) => {
+            if (!url) return window.location.href;
+            try {
+              return new URL(url, window.location.origin).href;
+            } catch (_) {
+              return window.location.href;
+            }
+          };
+
+          const unitPrice = toMoney(item.final_price ?? item.price);
+          const lineValue = toMoney(item.final_line_price ?? item.line_price) || unitPrice * quantity;
+          const productName = item.product_title || item.title || document.title;
+          const productId = item.product_id != null ? String(item.product_id) : '';
+          const variantId = item.variant_id != null ? String(item.variant_id) : '';
+          const productUrl = absoluteUrl(item.url);
+          const imageUrl = absoluteUrl(item.image);
+          const categories = item.product_type ? [item.product_type] : [];
+
+          window._learnq = window._learnq || [];
+          window._learnq.push([
+            'track',
+            'Added to Cart',
+            {
+              $value: lineValue,
+              AddedItemProductName: productName,
+              AddedItemProductID: productId,
+              AddedItemVariantID: variantId,
+              AddedItemSKU: item.sku || '',
+              AddedItemCategories: categories,
+              AddedItemImageURL: imageUrl,
+              AddedItemURL: productUrl,
+              AddedItemPrice: unitPrice,
+              AddedItemQuantity: quantity,
+              ItemNames: [productName],
+              CheckoutURL: absoluteUrl('/checkout'),
+              Items: [
+                {
+                  ProductID: productId,
+                  VariantID: variantId,
+                  SKU: item.sku || '',
+                  ProductName: productName,
+                  Quantity: quantity,
+                  ItemPrice: unitPrice,
+                  RowTotal: lineValue,
+                  ProductURL: productUrl,
+                  ImageURL: imageUrl,
+                  ProductCategories: categories,
+                },
+              ],
+            },
+          ]);
+        } catch (error) {
+          console.warn('Klaviyo Added to Cart tracking failed', error);
+        }
       }
 
       handleErrorMessage(errorMessage = false) {
