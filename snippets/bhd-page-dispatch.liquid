@@ -1,21 +1,11 @@
 {% case page.handle %}
-  {% when 'hydration-science' %}{% render 'bhd-page-hydration-science' %}
-  {% when 'how-hydration-works' %}{% render 'bhd-page-how-hydration-works' %}
-  {% when 'electrolytes' %}{% render 'bhd-page-electrolytes' %}
-  {% when 'glucose-water-absorption' %}{% render 'bhd-page-glucose-water-absorption' %}
-  {% when 'our-formula' %}{% render 'bhd-page-our-formula' %}
-  {% when 'five-essential-electrolytes' %}{% render 'bhd-page-five-essential-electrolytes' %}
-  {% when 'ingredient-rationale' %}{% render 'bhd-page-ingredient-rationale' %}
-  {% when 'why-bicarbonate' %}{% render 'bhd-page-why-bicarbonate' %}
+  {% when 'hydration-science', 'how-hydration-works', 'electrolytes', 'glucose-water-absorption', 'our-formula', 'five-essential-electrolytes', 'ingredient-rationale', 'why-bicarbonate', 'clinical-development', 'clinical-program', 'pilot-studies', 'healthcare-applications', 'clinical-hydration', 'recovery-rehabilitation', 'active-aging' %}
+    {% render 'bhd-page-concise-science-medical' %}
   {% when 'research-publications' %}{% render 'bhd-page-research-publications' %}
   {% when 'publications' %}{% render 'bhd-page-publications' %}
   {% when 'current-research' %}{% render 'bhd-page-current-research' %}
   {% when 'research-partners' %}{% render 'bhd-page-research-partners' %}
   {% when 'research-impact' %}{% render 'bhd-page-research-impact' %}
-  {% when 'clinical-development' %}{% render 'bhd-page-clinical-development' %}
-  {% when 'clinical-program' %}{% render 'bhd-page-clinical-program' %}
-  {% when 'pilot-studies' %}{% render 'bhd-page-pilot-studies' %}
-  {% when 'healthcare-applications' %}{% render 'bhd-page-healthcare-applications' %}
   {% when 'product-details' %}{% render 'bhd-page-product-details' %}
   {% when 'directions' %}{% render 'bhd-page-directions' %}
   {% when 'q-a' %}{% render 'bhd-page-faq' %}
@@ -27,9 +17,6 @@
   {% when 'work-long-shifts' %}{% render 'bhd-page-work-long-shifts' %}
   {% when 'travel-hydration' %}{% render 'bhd-page-travel' %}
   {% when 'active-living' %}{% render 'bhd-page-active-living' %}
-  {% when 'clinical-hydration' %}{% render 'bhd-page-clinical-hydration' %}
-  {% when 'recovery-rehabilitation' %}{% render 'bhd-page-recovery-rehabilitation' %}
-  {% when 'active-aging' %}{% render 'bhd-page-active-aging' %}
   {% when 'eco-humanitarian' %}{% render 'bhd-page-eco-humanitarian' %}
   {% when 'our-story' %}{% render 'bhd-page-about' %}
   {% when 'why-best-hydrate' %}{% render 'bhd-page-mission-values' %}
@@ -59,7 +46,7 @@
 {% liquid
   assign show_enrichment = true
   case page.handle
-    when 'hydration-science', 'how-hydration-works', 'electrolytes', 'glucose-water-absorption', 'our-formula', 'five-essential-electrolytes', 'ingredient-rationale', 'why-bicarbonate', 'research-publications', 'publications', 'current-research', 'research-partners', 'research-impact', 'clinical-development', 'clinical-program', 'pilot-studies', 'healthcare-applications'
+    when 'hydration-science', 'how-hydration-works', 'electrolytes', 'glucose-water-absorption', 'our-formula', 'five-essential-electrolytes', 'ingredient-rationale', 'why-bicarbonate', 'research-publications', 'publications', 'current-research', 'research-partners', 'research-impact', 'clinical-development', 'clinical-program', 'pilot-studies', 'healthcare-applications', 'clinical-hydration', 'recovery-rehabilitation', 'active-aging'
       assign show_enrichment = false
     when 'investor-relations', 'investor-overview', 'corporate-information', 'investor-contact'
       assign show_enrichment = false
@@ -68,4 +55,4 @@
 {% if show_enrichment %}
   {% render 'bhd-page-enrichment' %}
 {% endif %}
-{% comment %}Canonical Page breadcrumbs are keyed by explicit Page handle. Parent page directories remain sourced from Shopify Admin MAIN. Science-page enrichment removed 20260914 to keep claims pages concise. Investor funnel rewired 20260910.{% endcomment %}
+{% comment %}Science and medical claims pages use a concise evidence-aware template from 20260914. Investor funnel rewired 20260910.{% endcomment %}
