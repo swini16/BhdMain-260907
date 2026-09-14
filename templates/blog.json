@@ -15,7 +15,11 @@
         "padding_top": 36,
         "padding_bottom": 60
       }
+    },
+    "bhd_engagement": {
+      "type": "bhd-blog-engagement",
+      "settings": {}
     }
   },
-  "order": ["bhd_intro", "main"]
+  "order": ["bhd_intro", "main", "bhd_engagement"]
 }
