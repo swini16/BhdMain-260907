@@ -1,0 +1,20 @@
+<section class="bhd-social-archive-section" aria-label="Best Hydrate social archive">
+  <div class="page-width">
+    {% render 'bhd-social-archive',
+      heading: 'Best Hydrate on social',
+      intro: 'A selection of posts from our social history, linked back to the originals.'
+    %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .bhd-social-archive-section{padding:0 0 clamp(1rem,3vw,3rem);background:#fff}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "BHD social archive",
+  "settings": [],
+  "presets": [{"name": "BHD social archive"}]
+}
+{% endschema %}
