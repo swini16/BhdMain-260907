@@ -1,0 +1,321 @@
+{% doc %}
+  Concise evidence-aware content for Best Hydrate science and medical pages.
+  Content is selected from the current page handle.
+{% enddoc %}
+
+{% liquid
+  assign family = 'Science'
+  assign eyebrow = 'Hydration Science'
+  assign title = page.title
+  assign intro = ''
+  assign point_1_title = ''
+  assign point_1_text = ''
+  assign point_2_title = ''
+  assign point_2_text = ''
+  assign point_3_title = ''
+  assign point_3_text = ''
+  assign body_kicker = 'What matters'
+  assign body_heading = ''
+  assign body_1 = ''
+  assign body_2 = ''
+  assign boundary_label = 'Evidence boundary'
+  assign boundary_heading = 'Keep the claim as narrow as the evidence.'
+  assign boundary_text = ''
+  assign related_1_url = '/pages/hydration-science'
+  assign related_1_title = 'Hydration Science'
+  assign related_1_text = 'The core physiology and oral hydration framework.'
+  assign related_2_url = '/pages/our-formula'
+  assign related_2_title = 'Our Formula'
+  assign related_2_text = 'What is in the current Best Hydrate formula.'
+  assign related_3_url = '/pages/research-publications'
+  assign related_3_title = 'Research & Impact'
+  assign related_3_text = 'Published work, current studies and evidence development.'
+  assign related_4_url = '/pages/q-a'
+  assign related_4_title = 'FAQ'
+  assign related_4_text = 'Practical product and hydration questions.'
+
+  case page.handle
+    when 'hydration-science'
+      assign title = 'Hydration Science'
+      assign intro = 'Oral hydration depends on fluid balance, electrolytes and how water and dissolved nutrients are absorbed through the gastrointestinal tract.'
+      assign point_1_title = 'Fluid balance'
+      assign point_1_text = 'Hydration reflects intake relative to losses through urine, sweat, breathing and the gastrointestinal tract.'
+      assign point_2_title = 'Electrolytes'
+      assign point_2_text = 'Sodium and other ions help regulate fluid distribution and normal physiology.'
+      assign point_3_title = 'Absorption'
+      assign point_3_text = 'Intestinal transport of sodium and glucose can support water absorption.'
+      assign body_heading = 'Hydration is a system, not a single ingredient'
+      assign body_1 = 'Water is the foundation. Electrolytes and carbohydrate become more relevant when losses are meaningful or when an oral rehydration approach is appropriate.'
+      assign body_2 = 'Needs vary with activity, heat, illness, diet, body size and health status. No single drink is optimal for every person or every situation.'
+      assign boundary_text = 'Best Hydrate applies established oral hydration principles. Product-specific performance or clinical outcomes require product-specific evidence.'
+
+    when 'how-hydration-works'
+      assign title = 'How Hydration Works'
+      assign intro = 'Hydration is the balance between fluid entering the body, fluid leaving it and the body systems that distribute water and electrolytes.'
+      assign point_1_title = 'Intake'
+      assign point_1_text = 'Water comes from drinks, food and normal metabolism.'
+      assign point_2_title = 'Losses'
+      assign point_2_text = 'Urine, sweat, breathing and gastrointestinal losses change day to day.'
+      assign point_3_title = 'Distribution'
+      assign point_3_text = 'Electrolytes help maintain fluid distribution across body compartments.'
+      assign body_heading = 'Replace what the situation actually requires'
+      assign body_1 = 'For routine daily hydration, water and regular food are often enough. With heavier sweating or gastrointestinal fluid loss, replacing sodium and fluid can become more important.'
+      assign body_2 = 'The useful question is not simply how much water was consumed, but what was lost and what needs to be replaced.'
+      assign boundary_text = 'Hydration needs are individual. Medical conditions and some medications can change safe fluid or electrolyte intake.'
+
+    when 'electrolytes'
+      assign title = 'Electrolytes'
+      assign intro = 'Electrolytes are charged particles in body fluids that support fluid balance, nerve signalling, muscle function and acid-base chemistry.'
+      assign point_1_title = 'Sodium'
+      assign point_1_text = 'A major extracellular ion and a key component of oral rehydration solutions.'
+      assign point_2_title = 'Potassium & chloride'
+      assign point_2_text = 'Important ions involved in normal cellular and fluid-balance functions.'
+      assign point_3_title = 'Bicarbonate & citrate'
+      assign point_3_text = 'Ions involved in acid-base and formulation chemistry.'
+      assign body_heading = 'Electrolytes have different roles'
+      assign body_1 = 'Electrolytes should not be treated as interchangeable. Sodium is especially relevant to extracellular fluid and to established oral rehydration formulations.'
+      assign body_2 = 'Best Hydrate combines several electrolyte species with glucose as part of its oral hydration formulation.'
+      assign boundary_text = 'More electrolyte is not automatically better. Appropriate intake depends on losses, diet, health status and the formulation being used.'
+
+    when 'glucose-water-absorption'
+      assign title = 'Glucose & Water Absorption'
+      assign intro = 'In the small intestine, sodium and glucose can be transported together through Sodium-Glucose Cotransporter 1 (SGLT1), supporting water absorption.'
+      assign point_1_title = 'Sodium + glucose'
+      assign point_1_text = 'Their coupled intestinal transport is a core principle behind oral rehydration solutions.'
+      assign point_2_title = 'Water follows'
+      assign point_2_text = 'Solute absorption helps create conditions that favour water movement across the intestinal wall.'
+      assign point_3_title = 'Concentration matters'
+      assign point_3_text = 'The overall formulation and dissolved-solute concentration affect how a drink behaves.'
+      assign body_heading = 'Why glucose is present'
+      assign body_1 = 'Glucose in an oral hydration formula is not included only for calories or sweetness. It participates in a well-established sodium-glucose transport pathway in the intestine.'
+      assign body_2 = 'That physiology supports the rationale for combining glucose and sodium, but it does not mean every glucose-electrolyte drink has the same composition or clinical evidence.'
+      assign boundary_text = 'We do not claim that Best Hydrate is universally superior to water. The appropriate choice depends on the hydration context.'
+
+    when 'our-formula'
+      assign title = 'Our Formula'
+      assign intro = 'Best Hydrate combines glucose, sodium chloride, potassium chloride, sodium bicarbonate and citric acid, with flavour ingredients varying by product.'
+      assign point_1_title = 'Glucose + sodium'
+      assign point_1_text = 'Included around established intestinal transport principles used in oral rehydration.'
+      assign point_2_title = 'Multiple ions'
+      assign point_2_text = 'The formula supplies sodium, potassium, chloride, bicarbonate and citrate-related species.'
+      assign point_3_title = 'Deliberate formulation'
+      assign point_3_text = 'Each ingredient has a defined functional or formulation role.'
+      assign body_heading = 'Built from oral rehydration principles'
+      assign body_1 = 'The formula is designed around established hydration physiology rather than a long list of added ingredients. Sodium, glucose and the supporting electrolyte system are the focus.'
+      assign body_2 = 'Best Hydrate is its own formulation. Refer to the current product label for exact ingredients, directions and regulated product information.'
+      assign boundary_text = 'Using oral rehydration principles does not make every formulation clinically equivalent to a World Health Organization oral rehydration solution.'
+
+    when 'five-essential-electrolytes'
+      assign title = 'Five Electrolyte Species'
+      assign intro = 'The current formula represents sodium, potassium, chloride, bicarbonate and citrate-related species, alongside glucose.'
+      assign point_1_title = 'Sodium'
+      assign point_1_text = 'Central to extracellular fluid balance and oral rehydration physiology.'
+      assign point_2_title = 'Potassium + chloride'
+      assign point_2_text = 'Common physiological ions included in the formulation.'
+      assign point_3_title = 'Bicarbonate + citrate'
+      assign point_3_text = 'Contribute to the formula’s acid-base and solution chemistry.'
+      assign body_heading = 'Species, not marketing trophies'
+      assign body_1 = 'The value of an electrolyte formula is not determined by the number of ions on the label. What matters is the composition, concentration, intended use and evidence supporting it.'
+      assign body_2 = 'Best Hydrate describes these as electrolyte species to keep the chemistry accurate and avoid implying that every listed ion carries the same nutritional role.'
+      assign boundary_text = 'Ingredient presence alone does not prove a health, performance or clinical outcome.'
+
+    when 'ingredient-rationale'
+      assign title = 'Ingredient Rationale'
+      assign intro = 'Each ingredient in Best Hydrate has a specific hydration, electrolyte, acid-base, flavour or formulation role.'
+      assign point_1_title = 'Glucose'
+      assign point_1_text = 'Supports sodium-glucose intestinal transport and contributes carbohydrate.'
+      assign point_2_title = 'Electrolyte salts'
+      assign point_2_text = 'Provide sodium, potassium, chloride and bicarbonate species.'
+      assign point_3_title = 'Citric acid & flavour'
+      assign point_3_text = 'Support solution chemistry, acidity and palatability.'
+      assign body_heading = 'A short formula with defined jobs'
+      assign body_1 = 'Best Hydrate does not need a wellness claim for every ingredient. The formulation rationale is primarily about oral hydration chemistry and making the prepared drink practical to consume.'
+      assign body_2 = 'For exact composition and regulated claims, the current product label takes priority over explanatory website copy.'
+      assign boundary_text = 'A plausible ingredient mechanism is not the same as demonstrating a product-level outcome in a controlled study.'
+
+    when 'why-bicarbonate'
+      assign title = 'Bicarbonate Advantage'
+      assign intro = 'Sodium bicarbonate supplies sodium and bicarbonate, giving Best Hydrate a different electrolyte profile from many typical sports drinks.'
+      assign point_1_title = 'Sodium source'
+      assign point_1_text = 'Sodium is a central electrolyte in oral rehydration physiology.'
+      assign point_2_title = 'Bicarbonate chemistry'
+      assign point_2_text = 'Bicarbonate participates in normal acid-base chemistry and affects formulation characteristics.'
+      assign point_3_title = 'Formula choice'
+      assign point_3_text = 'Its inclusion is deliberate, but not a stand-alone proof of superior outcomes.'
+      assign body_heading = 'Why we include it'
+      assign body_1 = 'Bicarbonate broadens the ionic composition of the formula while also supplying sodium. That makes it a meaningful formulation component rather than a decorative ingredient.'
+      assign body_2 = 'The advantage we can responsibly describe today is the formulation difference and its established chemistry.'
+      assign boundary_text = 'Specific performance, recovery or medical benefits from Best Hydrate’s bicarbonate-containing formula require direct product evidence.'
+
+    when 'clinical-hydration'
+      assign family = 'Solutions'
+      assign eyebrow = 'Medical & Clinical'
+      assign title = 'Clinical Hydration'
+      assign intro = 'Illness, medications and health conditions can materially change fluid and electrolyte needs, so clinical hydration requires more context than routine daily hydration.'
+      assign point_1_title = 'Clinical context matters'
+      assign point_1_text = 'Kidney, heart and other conditions can alter safe fluid or electrolyte intake.'
+      assign point_2_title = 'Losses vary'
+      assign point_2_text = 'Vomiting, diarrhea, fever and poor intake can change hydration needs quickly.'
+      assign point_3_title = 'Guidance matters'
+      assign point_3_text = 'Individual treatment decisions belong with qualified healthcare professionals.'
+      assign body_heading = 'Hydration can be clinically important without making the product a treatment'
+      assign body_1 = 'Oral rehydration is an established medical concept, but the right formulation and amount depend on the person and situation.'
+      assign body_2 = 'Best Hydrate is developing evidence around hydration questions while keeping consumer product information separate from individualized medical care.'
+      assign boundary_text = 'Best Hydrate is not presented here as a treatment for disease, dehydration severity or a substitute for medical assessment.'
+      assign related_2_url = '/pages/clinical-development'
+      assign related_2_title = 'Clinical Development'
+      assign related_2_text = 'How Best Hydrate approaches healthcare-relevant research.'
+
+    when 'clinical-development'
+      assign family = 'Science'
+      assign eyebrow = 'Research & Impact'
+      assign title = 'Clinical Development'
+      assign intro = 'Best Hydrate is building a structured research pathway for healthcare-relevant hydration questions without presenting untested ideas as established clinical benefits.'
+      assign point_1_title = 'Question first'
+      assign point_1_text = 'Define the population, hydration problem and measurable outcome.'
+      assign point_2_title = 'Study appropriately'
+      assign point_2_text = 'Use methods and controls that match the question being asked.'
+      assign point_3_title = 'Translate cautiously'
+      assign point_3_text = 'Public claims should follow the evidence, not run ahead of it.'
+      assign body_heading = 'From research question to usable evidence'
+      assign body_1 = 'Our clinical-development approach is simple: define the question, build the protocol, test feasibility, collect data and communicate the result at the level the study supports.'
+      assign body_2 = 'Early-stage work is useful for learning, but it should not be described as definitive clinical efficacy.'
+      assign boundary_text = 'Clinical development is a research program, not a current list of approved medical indications.'
+      assign related_2_url = '/pages/current-research'
+      assign related_2_title = 'Current Research'
+      assign related_2_text = 'Current questions and project status.'
+
+    when 'clinical-program'
+      assign family = 'Science'
+      assign eyebrow = 'Research & Impact'
+      assign title = 'Clinical Program'
+      assign intro = 'The Clinical Program organizes Best Hydrate’s healthcare-relevant research questions, collaborators and study pathway.'
+      assign point_1_title = 'Early stage'
+      assign point_1_text = 'The program is developing and should not be read as proof of clinical efficacy.'
+      assign point_2_title = 'Structured work'
+      assign point_2_text = 'Questions move from rationale to protocol, pilot work and stronger studies where warranted.'
+      assign point_3_title = 'Transparent status'
+      assign point_3_text = 'Planned, underway and completed work should be clearly distinguished.'
+      assign body_heading = 'A roadmap, not a claim'
+      assign body_1 = 'The purpose of the program is to build evidence methodically instead of converting plausible physiology into premature product promises.'
+      assign body_2 = 'As projects mature, study design, status and results can be reported through our research pages and publications.'
+      assign boundary_text = 'A research pipeline does not establish a medical indication or guarantee that a study will show benefit.'
+      assign related_2_url = '/pages/current-research'
+      assign related_2_title = 'Current Research'
+      assign related_2_text = 'See what is actually planned or underway.'
+
+    when 'pilot-studies'
+      assign family = 'Science'
+      assign eyebrow = 'Research & Impact'
+      assign title = 'Pilot Studies'
+      assign intro = 'Pilot studies are small early-stage studies used to test feasibility, measurements and procedures before larger work.'
+      assign point_1_title = 'Feasibility'
+      assign point_1_text = 'Can the study be run as intended?'
+      assign point_2_title = 'Measurement'
+      assign point_2_text = 'Do the selected outcomes and procedures produce useful data?'
+      assign point_3_title = 'Next-step evidence'
+      assign point_3_text = 'Pilot findings can inform a larger study, but rarely settle the question alone.'
+      assign body_heading = 'Learn before scaling'
+      assign body_1 = 'A good pilot can reveal recruitment, protocol, adherence or measurement problems before significant resources are committed.'
+      assign body_2 = 'That makes pilot work valuable even when it does not produce a definitive efficacy conclusion.'
+      assign boundary_text = 'Pilot findings should be labelled as preliminary and interpreted according to the study design and sample size.'
+      assign related_2_url = '/pages/current-research'
+      assign related_2_title = 'Current Research'
+      assign related_2_text = 'Current Best Hydrate research activity.'
+
+    when 'healthcare-applications'
+      assign family = 'Solutions'
+      assign eyebrow = 'Medical & Clinical'
+      assign title = 'Healthcare Applications'
+      assign intro = 'Best Hydrate is interested in healthcare-relevant oral hydration questions, but possible applications must be separated from proven indications.'
+      assign point_1_title = 'Oral hydration'
+      assign point_1_text = 'Established physiology provides a rationale for studying specific care settings.'
+      assign point_2_title = 'Population specific'
+      assign point_2_text = 'Needs and safety can differ substantially between patient groups.'
+      assign point_3_title = 'Evidence required'
+      assign point_3_text = 'A plausible use case becomes a claim only after appropriate evidence supports it.'
+      assign body_heading = 'Study the application before marketing it'
+      assign body_1 = 'Healthcare settings may involve fluid losses, poor intake or other hydration challenges, but the relevant formulation, dose and clinical objective must be defined for each population.'
+      assign body_2 = 'Our public language therefore distinguishes research interest from demonstrated medical benefit.'
+      assign boundary_text = 'This page describes areas of research interest, not approved indications, treatment recommendations or individualized medical advice.'
+      assign related_2_url = '/pages/clinical-development'
+      assign related_2_title = 'Clinical Development'
+      assign related_2_text = 'The evidence-development pathway.'
+
+    when 'recovery-rehabilitation'
+      assign family = 'Solutions'
+      assign eyebrow = 'Medical & Clinical'
+      assign title = 'Recovery & Rehabilitation'
+      assign intro = 'Hydration can support normal recovery needs, but rehabilitation outcomes depend on the underlying condition, nutrition, mobility, medications and the broader care plan.'
+      assign point_1_title = 'One part of recovery'
+      assign point_1_text = 'Fluid and electrolyte intake sits alongside food, rest and clinical care.'
+      assign point_2_title = 'Needs differ'
+      assign point_2_text = 'Surgery, illness, mobility and medication can change hydration requirements.'
+      assign point_3_title = 'Escalate when needed'
+      assign point_3_text = 'Persistent poor intake or concerning symptoms warrant professional assessment.'
+      assign body_heading = 'Keep hydration in proportion'
+      assign body_1 = 'Replacing meaningful fluid and electrolyte losses may be useful during recovery, but a hydration drink does not treat the cause of an illness or injury.'
+      assign body_2 = 'Best Hydrate should be considered only within the broader context of the individual’s care and current product directions.'
+      assign boundary_text = 'No rehabilitation, healing or disease-treatment outcome is claimed here.'
+      assign related_2_url = '/pages/clinical-hydration'
+      assign related_2_title = 'Clinical Hydration'
+      assign related_2_text = 'Why medical hydration needs more context.'
+
+    when 'active-aging'
+      assign family = 'Solutions'
+      assign eyebrow = 'Medical & Clinical'
+      assign title = 'Active Aging'
+      assign intro = 'Hydration can become more complicated with age because thirst, mobility, medications, kidney function and health conditions can all affect intake and fluid balance.'
+      assign point_1_title = 'Thirst can change'
+      assign point_1_text = 'Older adults may not always experience thirst in proportion to fluid need.'
+      assign point_2_title = 'Health context matters'
+      assign point_2_text = 'Some conditions or medications require fluid, sodium or potassium limits.'
+      assign point_3_title = 'Practical access matters'
+      assign point_3_text = 'Routine, mobility and easy access to drinks can influence intake.'
+      assign body_heading = 'Support access without oversimplifying the physiology'
+      assign body_1 = 'Regular access to fluids and meals remains fundamental. Electrolyte drinks may have a role in selected situations, but they are not automatically appropriate for every older adult.'
+      assign body_2 = 'When health conditions or medications affect fluid or electrolyte balance, individualized guidance is more important than generic hydration advice.'
+      assign boundary_text = 'People with kidney, heart or other relevant medical conditions should follow their healthcare professional’s fluid and electrolyte guidance.'
+      assign related_2_url = '/pages/clinical-hydration'
+      assign related_2_title = 'Clinical Hydration'
+      assign related_2_text = 'Clinical context and hydration boundaries.'
+  endcase
+%}
+
+{% render 'bhd-page-header',
+  family: family,
+  eyebrow: eyebrow,
+  title: title,
+  intro: intro
+%}
+
+<div class="bhd-page__keypoints" aria-label="Key points">
+  <div><strong>{{ point_1_title }}</strong><span>{{ point_1_text }}</span></div>
+  <div><strong>{{ point_2_title }}</strong><span>{{ point_2_text }}</span></div>
+  <div><strong>{{ point_3_title }}</strong><span>{{ point_3_text }}</span></div>
+</div>
+
+<section class="bhd-page__prose-grid">
+  <article class="bhd-page__prose">
+    <p class="bhd-page__kicker">{{ body_kicker }}</p>
+    <h2>{{ body_heading }}</h2>
+    <p>{{ body_1 }}</p>
+    <p>{{ body_2 }}</p>
+  </article>
+  <aside class="bhd-page__callout">
+    <span class="bhd-page__callout-label">{{ boundary_label }}</span>
+    <h3>{{ boundary_heading }}</h3>
+    <p>{{ boundary_text }}</p>
+  </aside>
+</section>
+
+<section class="bhd-page__related" aria-labelledby="BhdConciseRelated-{{ section.id }}">
+  <p class="bhd-page__kicker">Related</p>
+  <h2 id="BhdConciseRelated-{{ section.id }}">Go deeper only where useful</h2>
+  <div class="bhd-page__related-grid">
+    <a href="{{ related_1_url }}"><strong>{{ related_1_title }}</strong><span>{{ related_1_text }}</span></a>
+    <a href="{{ related_2_url }}"><strong>{{ related_2_title }}</strong><span>{{ related_2_text }}</span></a>
+    <a href="{{ related_3_url }}"><strong>{{ related_3_title }}</strong><span>{{ related_3_text }}</span></a>
+    <a href="{{ related_4_url }}"><strong>{{ related_4_title }}</strong><span>{{ related_4_text }}</span></a>
+  </div>
+</section>
