@@ -95,17 +95,19 @@
   }
   .bhd-guide__cta {
     display: grid;
-    grid-template-columns: repeat(2, minmax(220px, max-content));
+    grid-template-columns: repeat(2, minmax(0, 260px));
     gap: 16px;
-    align-items: end;
+    align-items: start;
     margin-top: 30px;
     padding-top: 26px;
     border-top: 1px solid rgba(8, 47, 107, 0.18);
   }
   .bhd-guide__button {
     display: inline-flex;
+    width: 100%;
+    box-sizing: border-box;
     min-height: 48px;
-    min-width: 220px;
+    min-width: 0;
     align-items: center;
     justify-content: center;
     padding: 12px 22px;
@@ -137,10 +139,11 @@
   }
   .bhd-guide__buy {
     display: inline-flex;
-    min-width: 220px;
+    width: 100%;
+    min-width: 0;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: flex-start;
     gap: 0;
   }
   .bhd-guide__shipping {
@@ -149,6 +152,7 @@
     font-size: 0.9rem;
     line-height: 1.1;
     font-weight: 700;
+    text-align: center;
   }
   .bhd-guide-variants {
     max-width: 1180px;
