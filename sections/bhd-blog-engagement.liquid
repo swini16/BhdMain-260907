@@ -1,0 +1,209 @@
+{% liquid
+  assign engagement_context = 'blog'
+  if request.page_type == 'article'
+    assign engagement_context = 'article'
+  endif
+  assign newsletter_form_id = 'BhdBlogNewsletter-' | append: section.id
+  assign current_share_url = canonical_url | url_encode
+  if request.page_type == 'article'
+    assign current_share_title = article.title | url_encode
+  else
+    assign current_share_title = blog.title | url_encode
+  endif
+%}
+
+<section
+  id="BhdBlogEngagement-{{ section.id }}"
+  class="bhd-blog-engagement"
+  aria-labelledby="BhdBlogEngagementTitle-{{ section.id }}"
+  data-bhd-blog-engagement
+  data-context="{{ engagement_context }}"
+>
+  <div class="page-width">
+    <div class="bhd-blog-engagement__grid">
+      <div class="bhd-blog-engagement__promo" aria-label="Best Hydrate product recommendation">
+        <p class="bhd-blog-engagement__eyebrow">From Best Hydrate</p>
+        <h2 id="BhdBlogEngagementTitle-{{ section.id }}">Put hydration science into practice.</h2>
+        <p>Explore Best Hydrate oral hydration products, or go deeper into the science behind the formula.</p>
+        <div class="bhd-blog-engagement__actions">
+          <a class="bhd-blog-engagement__button bhd-blog-engagement__button--primary" href="/products/lemonade-best-hydrate" data-bhd-track="shop_product">Shop Best Hydrate</a>
+          <a class="bhd-blog-engagement__button bhd-blog-engagement__button--secondary" href="/pages/hydration-science" data-bhd-track="explore_science">Explore the science</a>
+        </div>
+        <p class="bhd-blog-engagement__shipping">Free shipping available.</p>
+      </div>
+
+      <div class="bhd-blog-engagement__newsletter">
+        <p class="bhd-blog-engagement__eyebrow">Stay connected</p>
+        <h2>Hydration updates, without the noise.</h2>
+        <p>Get new research, product updates and Best Hydrate news by email.</p>
+
+        {% form 'customer', id: newsletter_form_id, class: 'bhd-blog-engagement__form' %}
+          <input type="hidden" name="contact[tags]" value="newsletter,blog">
+          <label for="BhdBlogEmail-{{ section.id }}">Email address</label>
+          <div class="bhd-blog-engagement__form-row">
+            <input
+              id="BhdBlogEmail-{{ section.id }}"
+              type="email"
+              name="contact[email]"
+              value="{{ form.email }}"
+              autocomplete="email"
+              autocorrect="off"
+              autocapitalize="off"
+              inputmode="email"
+              required
+              aria-required="true"
+              {% if form.errors %}aria-invalid="true" aria-describedby="BhdBlogFormMessage-{{ section.id }}"{% endif %}
+              placeholder="you@example.com"
+            >
+            <button type="submit" data-bhd-track="newsletter_submit">Subscribe</button>
+          </div>
+
+          {% if form.posted_successfully? %}
+            <p id="BhdBlogFormMessage-{{ section.id }}" class="bhd-blog-engagement__message" role="status" tabindex="-1">Thanks. You are subscribed.</p>
+          {% elsif form.errors %}
+            <p id="BhdBlogFormMessage-{{ section.id }}" class="bhd-blog-engagement__message bhd-blog-engagement__message--error" role="alert">Please enter a valid email address.</p>
+          {% endif %}
+        {% endform %}
+
+        <p class="bhd-blog-engagement__privacy">Unsubscribe anytime. See our <a href="/policies/privacy-policy">privacy policy</a>.</p>
+      </div>
+    </div>
+
+    <div class="bhd-blog-engagement__social-row">
+      <div class="bhd-blog-engagement__follow" aria-labelledby="BhdFollowTitle-{{ section.id }}">
+        <h2 id="BhdFollowTitle-{{ section.id }}">Follow Best Hydrate</h2>
+        <div class="bhd-blog-engagement__social-links">
+          <a href="https://www.instagram.com/besthydrate/" target="_blank" rel="noopener noreferrer" data-bhd-track="follow_instagram">Instagram<span class="visually-hidden">, opens in a new tab</span></a>
+          <a href="https://www.facebook.com/104214145395682" target="_blank" rel="noopener noreferrer" data-bhd-track="follow_facebook">Facebook<span class="visually-hidden">, opens in a new tab</span></a>
+          <a href="https://www.youtube.com/channel/UCXqEmkYOnl-iU2AUaYS9kkA" target="_blank" rel="noopener noreferrer" data-bhd-track="follow_youtube">YouTube<span class="visually-hidden">, opens in a new tab</span></a>
+        </div>
+      </div>
+
+      {% if request.page_type == 'article' %}
+        <div class="bhd-blog-engagement__share" aria-labelledby="BhdShareTitle-{{ section.id }}">
+          <h2 id="BhdShareTitle-{{ section.id }}">Share this article</h2>
+          <div class="bhd-blog-engagement__social-links">
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ current_share_url }}" target="_blank" rel="noopener noreferrer" data-bhd-track="share_linkedin">LinkedIn<span class="visually-hidden">, opens in a new tab</span></a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ current_share_url }}" target="_blank" rel="noopener noreferrer" data-bhd-track="share_facebook">Facebook<span class="visually-hidden">, opens in a new tab</span></a>
+            <a href="mailto:?subject={{ current_share_title }}&amp;body={{ current_share_url }}" data-bhd-track="share_email">Email</a>
+            <button type="button" class="bhd-blog-engagement__copy" data-bhd-copy-link data-bhd-track="share_copy">Copy link</button>
+          </div>
+          <p class="visually-hidden" role="status" aria-live="polite" data-bhd-copy-status></p>
+        </div>
+      {% else %}
+        <div class="bhd-blog-engagement__share" aria-labelledby="BhdExploreTitle-{{ section.id }}">
+          <h2 id="BhdExploreTitle-{{ section.id }}">Explore more</h2>
+          <div class="bhd-blog-engagement__social-links">
+            <a href="/pages/press" data-bhd-track="explore_press">Press &amp; media</a>
+            <a href="/pages/research-publications" data-bhd-track="explore_research">Research &amp; impact</a>
+            <a href="/pages/partnerships" data-bhd-track="explore_partnerships">Connect with us</a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #BhdBlogEngagement-{{ section.id }}{padding:clamp(3.6rem,6vw,7rem) 0;background:#f7fbff;color:#1d3151;border-top:1px solid rgba(11,45,103,.08)}
+  #BhdBlogEngagement-{{ section.id }} *{box-sizing:border-box}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(32rem,.85fr);gap:clamp(1.6rem,3vw,3rem)}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__promo,#BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__newsletter{padding:clamp(2.2rem,4vw,4rem);border:1px solid rgba(11,45,103,.12);border-radius:2rem;background:#fff;box-shadow:0 1.4rem 4rem rgba(21,58,105,.07)}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__promo{background:linear-gradient(135deg,#0b2d67,#153f80);color:#fff}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__eyebrow{margin:0 0 .8rem;font-size:1.15rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#078ee7}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__promo .bhd-blog-engagement__eyebrow{color:#80d8ff}
+  #BhdBlogEngagement-{{ section.id }} h2{margin:0;color:#0b2d67;font-size:clamp(2.4rem,3.2vw,3.6rem);line-height:1.08;letter-spacing:-.025em}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__promo h2{color:#fff}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__promo>p:not(.bhd-blog-engagement__eyebrow):not(.bhd-blog-engagement__shipping),#BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__newsletter>p:not(.bhd-blog-engagement__eyebrow):not(.bhd-blog-engagement__privacy){margin:1.2rem 0 0;font-size:1.55rem;line-height:1.55}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__promo>p{color:rgba(255,255,255,.82)}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__newsletter>p{color:#52647d}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__actions{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:2rem}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__button{display:inline-flex;align-items:center;justify-content:center;min-height:4.6rem;padding:.95rem 1.55rem;border:1px solid transparent;border-radius:999px;font-size:1.3rem;font-weight:800;text-decoration:none}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__button--primary{background:#fff;color:#0b2d67}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__button--secondary{border-color:rgba(255,255,255,.45);background:transparent;color:#fff}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__shipping{margin:1rem 0 0!important;font-size:1.15rem!important;font-weight:700;color:#bfead0!important}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__form{margin-top:1.8rem}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__form label{display:block;margin-bottom:.55rem;color:#0b2d67;font-size:1.25rem;font-weight:800}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__form-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.8rem}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__form input{width:100%;min-height:4.8rem;padding:.9rem 1.3rem;border:1px solid rgba(11,45,103,.25);border-radius:999px;background:#fff;color:#0b2d67;font:inherit}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__form button{min-height:4.8rem;padding:.9rem 1.55rem;border:1px solid #0b2d67;border-radius:999px;background:#0b2d67;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__privacy{margin:.8rem 0 0;color:#66758a;font-size:1.05rem;line-height:1.4}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__privacy a{color:#315b91}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__message{margin:.9rem 0 0;color:#2c6b46;font-size:1.2rem;font-weight:700}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__message--error{color:#a32118}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__social-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.6rem,3vw,3rem);margin-top:2rem;padding:2rem 0 0;border-top:1px solid rgba(11,45,103,.1)}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__social-row h2{font-size:1.55rem;letter-spacing:0}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__social-links{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1rem}
+  #BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__social-links a,#BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__social-links button{display:inline-flex;align-items:center;justify-content:center;min-height:4.4rem;padding:.8rem 1.15rem;border:1px solid rgba(11,45,103,.18);border-radius:999px;background:#fff;color:#0b2d67;font:inherit;font-size:1.2rem;font-weight:800;text-decoration:none;cursor:pointer}
+  #BhdBlogEngagement-{{ section.id }} a:focus-visible,#BhdBlogEngagement-{{ section.id }} button:focus-visible,#BhdBlogEngagement-{{ section.id }} input:focus-visible{outline:3px solid #078ee7;outline-offset:3px}
+  #BhdBlogEngagement-{{ section.id }} a:hover,#BhdBlogEngagement-{{ section.id }} button:hover{text-decoration:underline;text-underline-offset:.18em}
+  @media screen and (max-width:899px){#BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__grid{grid-template-columns:1fr}#BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__social-row{grid-template-columns:1fr}}
+  @media screen and (max-width:549px){#BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__form-row{grid-template-columns:1fr}#BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__form button{width:100%}#BhdBlogEngagement-{{ section.id }} .bhd-blog-engagement__button{width:100%}}
+  @media (prefers-reduced-motion:reduce){#BhdBlogEngagement-{{ section.id }} *,#BhdBlogEngagement-{{ section.id }} *::before,#BhdBlogEngagement-{{ section.id }} *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+
+<script>
+  (() => {
+    const root = document.getElementById('BhdBlogEngagement-{{ section.id }}');
+    if (!root || root.dataset.bhdReady === 'true') return;
+    root.dataset.bhdReady = 'true';
+
+    const context = root.dataset.context || 'blog';
+    const publish = (action, destination = '') => {
+      try {
+        if (window.Shopify && Shopify.analytics && typeof Shopify.analytics.publish === 'function') {
+          Shopify.analytics.publish('best_hydrate:blog_engagement', {
+            action,
+            context,
+            destination,
+            path: window.location.pathname
+          });
+        }
+      } catch (_) {}
+    };
+
+    root.querySelectorAll('[data-bhd-track]').forEach((element) => {
+      element.addEventListener('click', () => {
+        publish(element.dataset.bhdTrack || 'click', element.getAttribute('href') || 'form');
+      });
+    });
+
+    const form = root.querySelector('.bhd-blog-engagement__form');
+    if (form) {
+      form.addEventListener('submit', () => publish('newsletter_submit', 'shopify_customer_form'));
+    }
+
+    const copyButton = root.querySelector('[data-bhd-copy-link]');
+    const copyStatus = root.querySelector('[data-bhd-copy-status]');
+    if (copyButton) {
+      copyButton.addEventListener('click', async () => {
+        const url = window.location.href;
+        let copied = false;
+        try {
+          await navigator.clipboard.writeText(url);
+          copied = true;
+        } catch (_) {
+          const temp = document.createElement('textarea');
+          temp.value = url;
+          temp.setAttribute('readonly', '');
+          temp.style.position = 'fixed';
+          temp.style.opacity = '0';
+          document.body.appendChild(temp);
+          temp.select();
+          copied = document.execCommand('copy');
+          temp.remove();
+        }
+        if (copyStatus) copyStatus.textContent = copied ? 'Link copied.' : 'Copy failed. Please copy the address from your browser.';
+        if (copied) copyButton.textContent = 'Copied';
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Best Hydrate blog engagement",
+  "settings": [],
+  "presets": [{"name": "Best Hydrate blog engagement"}]
+}
+{% endschema %}
