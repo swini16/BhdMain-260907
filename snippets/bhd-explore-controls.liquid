@@ -20,7 +20,8 @@
     <div class="bhd-explore-tools__field">
       <label for="BhdGuideSort">Sort</label>
       <select id="BhdGuideSort" data-bhd-guide-sort>
-        <option value="guide">Guide order</option>
+        <option value="guide">Guide # 01–09</option>
+        <option value="guide-desc">Guide # 09–01</option>
         <option value="topic-asc">Topic A–Z</option>
         <option value="topic-desc">Topic Z–A</option>
       </select>
@@ -208,6 +209,7 @@
             return b.dataset.bhdCategory.localeCompare(a.dataset.bhdCategory);
           }
           const numberDiff = Number(a.dataset.bhdGuideNumber) - Number(b.dataset.bhdGuideNumber);
+          if (mode === 'guide-desc' && numberDiff !== 0) return -numberDiff;
           if (numberDiff !== 0) return numberDiff;
           return Number(a.dataset.bhdOriginalIndex) - Number(b.dataset.bhdOriginalIndex);
         });
