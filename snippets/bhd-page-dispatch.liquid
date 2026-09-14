@@ -56,7 +56,16 @@
     {% render 'bhd-menu-descendants' %}
 {% endcase %}
 
-{% unless page.handle == 'investor-relations' or page.handle == 'investor-overview' or page.handle == 'corporate-information' or page.handle == 'investor-contact' %}
+{% liquid
+  assign show_enrichment = true
+  case page.handle
+    when 'hydration-science', 'how-hydration-works', 'electrolytes', 'glucose-water-absorption', 'our-formula', 'five-essential-electrolytes', 'ingredient-rationale', 'why-bicarbonate', 'research-publications', 'publications', 'current-research', 'research-partners', 'research-impact', 'clinical-development', 'clinical-program', 'pilot-studies', 'healthcare-applications'
+      assign show_enrichment = false
+    when 'investor-relations', 'investor-overview', 'corporate-information', 'investor-contact'
+      assign show_enrichment = false
+  endcase
+%}
+{% if show_enrichment %}
   {% render 'bhd-page-enrichment' %}
-{% endunless %}
-{% comment %}Canonical Page breadcrumbs are keyed by explicit Page handle. Parent page directories remain sourced from Shopify Admin MAIN. Connect athlete/social routes refreshed 20260910. Investor funnel rewired 20260910.{% endcomment %}
+{% endif %}
+{% comment %}Canonical Page breadcrumbs are keyed by explicit Page handle. Parent page directories remain sourced from Shopify Admin MAIN. Science-page enrichment removed 20260914 to keep claims pages concise. Investor funnel rewired 20260910.{% endcomment %}
