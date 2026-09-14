@@ -1,0 +1,56 @@
+{% doc %}
+  Renders the public numbered guide variants associated with each top-level guide category.
+  Guide numbers stay global so they can match the corresponding post/ad catalog number.
+{% enddoc %}
+
+{% case page.handle %}
+  {% when 'hydration-science' %}
+    <section class="bhd-guide-variants" aria-labelledby="Guides-hydration-science">
+      <h2 id="Guides-hydration-science">Guides</h2>
+      <ul><li><a href="/pages/lp-01-hydration-is-more-than-water"><strong>01 · Hydration Is More Than Water</strong></a></li></ul>
+    </section>
+  {% when 'our-formula' %}
+    <section class="bhd-guide-variants" aria-labelledby="Guides-our-formula">
+      <h2 id="Guides-our-formula">Guides</h2>
+      <ul><li><a href="/pages/lp-02-six-ingredients"><strong>02 · Six Ingredients. Each Has a Purpose.</strong></a></li></ul>
+    </section>
+  {% when 'publications' %}
+    <section class="bhd-guide-variants" aria-labelledby="Guides-publications">
+      <h2 id="Guides-publications">Guides</h2>
+      <ul><li><a href="/pages/lp-03-research-milestone"><strong>03 · Research Milestone</strong></a></li></ul>
+    </section>
+  {% when 'performance-hydration' %}
+    <section class="bhd-guide-variants" aria-labelledby="Guides-performance-hydration">
+      <h2 id="Guides-performance-hydration">Guides</h2>
+      <ul><li><a href="/pages/lp-04-hydration-follows-the-session"><strong>04 · Hydration Follows the Session</strong></a></li></ul>
+    </section>
+  {% when 'active-living' %}
+    <section class="bhd-guide-variants" aria-labelledby="Guides-active-living">
+      <h2 id="Guides-active-living">Guides</h2>
+      <ul><li><a href="/pages/lp-05-cold-dry-air"><strong>05 · Cold, Dry Air Still Dehydrates</strong></a></li></ul>
+    </section>
+  {% when 'clinical-hydration' %}
+    <section class="bhd-guide-variants" aria-labelledby="Guides-clinical-hydration">
+      <h2 id="Guides-clinical-hydration">Guides</h2>
+      <ul><li><a href="/pages/lp-06-clinical-hydration-context"><strong>06 · Clinical Hydration Requires Context</strong></a></li></ul>
+    </section>
+{% endcase %}
+
+{% stylesheet %}
+  .bhd-guide-variants {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 22px clamp(18px, 4vw, 44px) 30px;
+  }
+  .bhd-guide-variants h2 {
+    margin: 0 0 8px;
+  }
+  .bhd-guide-variants ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .bhd-guide-variants li {
+    margin: 0;
+  }
+{% endstylesheet %}
