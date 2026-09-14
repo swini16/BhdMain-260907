@@ -40,25 +40,25 @@
 </section>
 
 <style>
-  #BhdMainPage-{{ section.id }} .bhd-field-photos{margin:-1rem 0 6rem}
-  #BhdMainPage-{{ section.id }} .bhd-field-photos__head{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(240px,.85fr);gap:3rem;align-items:end;margin-bottom:1.7rem}
-  #BhdMainPage-{{ section.id }} .bhd-field-photos__head h2{margin-bottom:0}
-  #BhdMainPage-{{ section.id }} .bhd-field-photos__head>p{margin:0;color:#5b6b82;font-size:1.42rem;line-height:1.5}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel{position:relative;max-width:98rem;margin:0 auto}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__viewport{overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;border:1px solid rgba(11,45,103,.12);border-radius:1.8rem;background:#fff;box-shadow:0 1rem 3rem rgba(11,45,103,.08)}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__viewport::-webkit-scrollbar{display:none}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__track{display:grid;grid-auto-flow:column;grid-auto-columns:100%}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__slide{scroll-snap-align:start;margin:0;min-width:0;background:#fff}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__slide img{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;background:#eef5fa}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__slide figcaption{padding:1.25rem 1.6rem 1.4rem;color:#51627a;font-size:1.35rem;line-height:1.45;text-align:center}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__nav{position:absolute;z-index:2;top:calc(50% - 2.7rem);width:4.8rem;height:4.8rem;border:1px solid rgba(11,45,103,.14);border-radius:50%;background:rgba(255,255,255,.96);color:#0b2d67;font-size:3rem;line-height:1;display:grid;place-items:center;cursor:pointer;box-shadow:0 .5rem 1.6rem rgba(11,45,103,.13)}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__nav:hover{background:#fff;transform:translateY(-1px)}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__nav--prev{left:-2.4rem}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__nav--next{right:-2.4rem}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__dots{display:flex;justify-content:center;gap:.8rem;margin-top:1.25rem}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__dots button{width:.9rem;height:.9rem;padding:0;border:0;border-radius:50%;background:#bac6d4;cursor:pointer}
-  #BhdMainPage-{{ section.id }} .bhd-field-carousel__dots button.is-active{width:2.6rem;border-radius:999px;background:#0b2d67}
-  @media screen and (max-width:749px){#BhdMainPage-{{ section.id }} .bhd-field-photos{margin-top:0;margin-bottom:4.5rem}#BhdMainPage-{{ section.id }} .bhd-field-photos__head{grid-template-columns:1fr;gap:.8rem}#BhdMainPage-{{ section.id }} .bhd-field-carousel__slide img{aspect-ratio:auto;max-height:58rem;object-fit:contain}#BhdMainPage-{{ section.id }} .bhd-field-carousel__nav{width:4.2rem;height:4.2rem;top:42%;font-size:2.6rem}#BhdMainPage-{{ section.id }} .bhd-field-carousel__nav--prev{left:.8rem}#BhdMainPage-{{ section.id }} .bhd-field-carousel__nav--next{right:.8rem}}
+  .bhd-field-photos{margin:-1rem 0 6rem}
+  .bhd-field-photos__head{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(240px,.85fr);gap:3rem;align-items:end;margin-bottom:1.7rem}
+  .bhd-field-photos__head h2{margin-bottom:0}
+  .bhd-field-photos__head>p{margin:0;color:#5b6b82;font-size:1.42rem;line-height:1.5}
+  .bhd-field-carousel{position:relative;max-width:98rem;margin:0 auto}
+  .bhd-field-carousel__viewport{overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;border:1px solid rgba(11,45,103,.12);border-radius:1.8rem;background:#fff;box-shadow:0 1rem 3rem rgba(11,45,103,.08)}
+  .bhd-field-carousel__viewport::-webkit-scrollbar{display:none}
+  .bhd-field-carousel__track{display:grid;grid-auto-flow:column;grid-auto-columns:100%}
+  .bhd-field-carousel__slide{scroll-snap-align:start;margin:0;min-width:0;background:#fff}
+  .bhd-field-carousel__slide img{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;background:#eef5fa}
+  .bhd-field-carousel__slide figcaption{padding:1.25rem 1.6rem 1.4rem;color:#51627a;font-size:1.35rem;line-height:1.45;text-align:center}
+  .bhd-field-carousel__nav{position:absolute;z-index:2;top:calc(50% - 2.7rem);width:4.8rem;height:4.8rem;border:1px solid rgba(11,45,103,.14);border-radius:50%;background:rgba(255,255,255,.96);color:#0b2d67;font-size:3rem;line-height:1;display:grid;place-items:center;cursor:pointer;box-shadow:0 .5rem 1.6rem rgba(11,45,103,.13)}
+  .bhd-field-carousel__nav:hover{background:#fff;transform:translateY(-1px)}
+  .bhd-field-carousel__nav--prev{left:-2.4rem}
+  .bhd-field-carousel__nav--next{right:-2.4rem}
+  .bhd-field-carousel__dots{display:flex;justify-content:center;gap:.8rem;margin-top:1.25rem}
+  .bhd-field-carousel__dots button{width:.9rem;height:.9rem;padding:0;border:0;border-radius:50%;background:#bac6d4;cursor:pointer}
+  .bhd-field-carousel__dots button.is-active{width:2.6rem;border-radius:999px;background:#0b2d67}
+  @media screen and (max-width:749px){.bhd-field-photos{margin-top:0;margin-bottom:4.5rem}.bhd-field-photos__head{grid-template-columns:1fr;gap:.8rem}.bhd-field-carousel__slide img{aspect-ratio:auto;max-height:58rem;object-fit:contain}.bhd-field-carousel__nav{width:4.2rem;height:4.2rem;top:42%;font-size:2.6rem}.bhd-field-carousel__nav--prev{left:.8rem}.bhd-field-carousel__nav--next{right:.8rem}}
 </style>
 
 <script>
@@ -118,4 +118,4 @@
 
 <section class="bhd-page__references" aria-labelledby="ReferencesHumanitarian-{{ section.id }}"><h2 id="ReferencesHumanitarian-{{ section.id }}">Selected references</h2><ol><li><a href="https://www.who.int/publications/i/item/WHO-FCH-CAH-06.1" target="_blank" rel="noopener">WHO. Oral Rehydration Salts: Production of the New ORS.</a></li><li><a href="https://www.who.int/news-room/fact-sheets/detail/cholera" target="_blank" rel="noopener">WHO. Cholera fact sheet.</a></li><li><a href="https://www.who.int/emergencies/operations/ipc-wash" target="_blank" rel="noopener">WHO. Infection prevention and control and WASH in health emergencies.</a></li><li><a href="https://www.unicef.org/wash/emergencies" target="_blank" rel="noopener">UNICEF. Water, sanitation and hygiene in emergencies.</a></li></ol><p class="bhd-page__reference-note">Therapeutic diarrhoeal dehydration management should follow appropriate public-health and clinical guidance. The current Best Hydrate consumer product is not represented here as WHO therapeutic ORS.</p></section>
 
-{% comment %}Carousel sync touch 2026-09-14{% endcomment %}
+{% comment %}Carousel CSS scope fix 2026-09-14{% endcomment %}
