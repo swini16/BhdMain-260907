@@ -1,0 +1,33 @@
+<div hidden aria-hidden="true"></div>
+<script>
+  (() => {
+    const repair = () => {
+      const root = document.querySelector('[id^="BhdMarkets-"]');
+      if (!root) return;
+      const images = [
+        ['.bhd-market-card--athlete img', 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/homepage-performance-hydration.png?v=1789388143', 'Athlete hydrating during performance'],
+        ['.bhd-market-card--daily img', 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/homepage-daily-hydration.png?v=1789388150', 'Workers hydrating during a demanding workday'],
+        ['.bhd-market-card--medical img', 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/homepage-medical-hydration.jpg?v=1789388164', 'Medical professional consulting with an older patient'],
+        ['.bhd-market-card--humanitarian img', 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/homepage-humanitarian-hydration.webp?v=1789388157', 'Community access to drinking water']
+      ];
+      images.forEach(([selector, src, alt]) => {
+        const img = root.querySelector(selector);
+        if (!img) return;
+        if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+        img.removeAttribute('srcset');
+        img.setAttribute('alt', alt);
+        img.style.maxWidth = '100%';
+        img.style.height = '100%';
+      });
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', repair, { once:true });
+    else repair();
+  })();
+</script>
+{% schema %}
+{
+  "name":"BHD image reliability",
+  "settings":[],
+  "presets":[{"name":"BHD image reliability"}]
+}
+{% endschema %}
