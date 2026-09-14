@@ -1,56 +1,273 @@
 {% doc %}
-  Renders the public numbered guide variants associated with each top-level guide category.
-  Guide numbers stay global so they can match the corresponding post/ad catalog number.
+  Renders public guide navigation on category pages and related links after numbered guide CTAs.
+  Also provides shared styling for guide media, calls to action, and the Explore Guides index.
 {% enddoc %}
 
 {% case page.handle %}
   {% when 'hydration-science' %}
     <section class="bhd-guide-variants" aria-labelledby="Guides-hydration-science">
       <h2 id="Guides-hydration-science">Guides</h2>
-      <ul><li><a href="/pages/lp-01-hydration-is-more-than-water"><strong>01 · Hydration Is More Than Water</strong></a></li></ul>
+      <h3 class="bhd-guide-variants__featured"><a href="/pages/lp-01-hydration-is-more-than-water">01 · Hydration Is More Than Water</a></h3>
+      <h4 class="bhd-guide-variants__subheading">More guides &amp; articles</h4>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/how-hydration-works">How Hydration Works</a></li>
+        <li><a href="/pages/electrolytes">Electrolytes</a></li>
+        <li><a href="/pages/glucose-water-absorption">Glucose &amp; Water Absorption</a></li>
+      </ul>
     </section>
   {% when 'our-formula' %}
     <section class="bhd-guide-variants" aria-labelledby="Guides-our-formula">
       <h2 id="Guides-our-formula">Guides</h2>
-      <ul><li><a href="/pages/lp-02-six-ingredients"><strong>02 · Six Ingredients. Each Has a Purpose.</strong></a></li></ul>
+      <h3 class="bhd-guide-variants__featured"><a href="/pages/lp-02-six-ingredients">02 · Six Ingredients. Each Has a Purpose.</a></h3>
+      <h4 class="bhd-guide-variants__subheading">More guides &amp; articles</h4>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/ingredient-rationale">Ingredient Rationale</a></li>
+        <li><a href="/pages/electrolytes">Electrolytes</a></li>
+        <li><a href="/pages/glucose-water-absorption">Glucose &amp; Water Absorption</a></li>
+        <li><a href="/pages/why-bicarbonate">Why Bicarbonate</a></li>
+      </ul>
     </section>
   {% when 'publications' %}
     <section class="bhd-guide-variants" aria-labelledby="Guides-publications">
       <h2 id="Guides-publications">Guides</h2>
-      <ul><li><a href="/pages/lp-03-research-milestone"><strong>03 · Research Milestone</strong></a></li></ul>
+      <h3 class="bhd-guide-variants__featured"><a href="/pages/lp-03-research-milestone">03 · Research Milestone</a></h3>
+      <h4 class="bhd-guide-variants__subheading">More guides &amp; articles</h4>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/current-research">Current Research</a></li>
+        <li><a href="/pages/research-partners">Research Partners</a></li>
+        <li><a href="/pages/research-impact">Research Impact</a></li>
+      </ul>
     </section>
   {% when 'performance-hydration' %}
     <section class="bhd-guide-variants" aria-labelledby="Guides-performance-hydration">
       <h2 id="Guides-performance-hydration">Guides</h2>
-      <ul><li><a href="/pages/lp-04-hydration-follows-the-session"><strong>04 · Hydration Follows the Session</strong></a></li></ul>
+      <h3 class="bhd-guide-variants__featured"><a href="/pages/lp-04-hydration-follows-the-session">04 · Hydration Follows the Session</a></h3>
+      <h4 class="bhd-guide-variants__subheading">More guides &amp; articles</h4>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/endurance-hydration">Endurance Hydration</a></li>
+        <li><a href="/pages/heat-high-sweat">Heat &amp; High Sweat</a></li>
+        <li><a href="/pages/recovery-hydration">Recovery Hydration</a></li>
+      </ul>
     </section>
   {% when 'active-living' %}
     <section class="bhd-guide-variants" aria-labelledby="Guides-active-living">
       <h2 id="Guides-active-living">Guides</h2>
-      <ul><li><a href="/pages/lp-05-cold-dry-air"><strong>05 · Cold, Dry Air Still Dehydrates</strong></a></li></ul>
+      <h3 class="bhd-guide-variants__featured"><a href="/pages/lp-05-cold-dry-air">05 · Cold, Dry Air Still Dehydrates</a></h3>
+      <h4 class="bhd-guide-variants__subheading">More guides &amp; articles</h4>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/everyday-wellness">Everyday Hydration</a></li>
+        <li><a href="/pages/work-long-shifts">Work &amp; Long Shifts</a></li>
+        <li><a href="/pages/travel-hydration">Travel Hydration</a></li>
+      </ul>
     </section>
   {% when 'clinical-hydration' %}
     <section class="bhd-guide-variants" aria-labelledby="Guides-clinical-hydration">
       <h2 id="Guides-clinical-hydration">Guides</h2>
-      <ul><li><a href="/pages/lp-06-clinical-hydration-context"><strong>06 · Clinical Hydration Requires Context</strong></a></li></ul>
+      <h3 class="bhd-guide-variants__featured"><a href="/pages/lp-06-clinical-hydration-context">06 · Clinical Hydration Requires Context</a></h3>
+      <h4 class="bhd-guide-variants__subheading">More guides &amp; articles</h4>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/clinical-development">Clinical Development</a></li>
+        <li><a href="/pages/clinical-program">Clinical Program</a></li>
+        <li><a href="/pages/pilot-studies">Pilot Studies</a></li>
+        <li><a href="/pages/healthcare-applications">Healthcare Applications</a></li>
+      </ul>
+    </section>
+
+  {% when 'lp-01-hydration-is-more-than-water' %}
+    <section class="bhd-guide-variants bhd-guide-variants--after-cta" aria-labelledby="More-guide-01">
+      <h2 id="More-guide-01">More in Hydration Science</h2>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/hydration-science">Hydration Science overview</a></li>
+        <li><a href="/pages/how-hydration-works">How Hydration Works</a></li>
+        <li><a href="/pages/electrolytes">Electrolytes</a></li>
+        <li><a href="/pages/glucose-water-absorption">Glucose &amp; Water Absorption</a></li>
+      </ul>
+    </section>
+  {% when 'lp-02-six-ingredients' %}
+    <section class="bhd-guide-variants bhd-guide-variants--after-cta" aria-labelledby="More-guide-02">
+      <h2 id="More-guide-02">More in Formula &amp; Ingredients</h2>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/our-formula">Our Formula overview</a></li>
+        <li><a href="/pages/ingredient-rationale">Ingredient Rationale</a></li>
+        <li><a href="/pages/electrolytes">Electrolytes</a></li>
+        <li><a href="/pages/glucose-water-absorption">Glucose &amp; Water Absorption</a></li>
+        <li><a href="/pages/why-bicarbonate">Why Bicarbonate</a></li>
+      </ul>
+    </section>
+  {% when 'lp-03-research-milestone' %}
+    <section class="bhd-guide-variants bhd-guide-variants--after-cta" aria-labelledby="More-guide-03">
+      <h2 id="More-guide-03">More in Research</h2>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/publications">Publications overview</a></li>
+        <li><a href="/pages/current-research">Current Research</a></li>
+        <li><a href="/pages/research-partners">Research Partners</a></li>
+        <li><a href="/pages/research-impact">Research Impact</a></li>
+      </ul>
+    </section>
+  {% when 'lp-04-hydration-follows-the-session' %}
+    <section class="bhd-guide-variants bhd-guide-variants--after-cta" aria-labelledby="More-guide-04">
+      <h2 id="More-guide-04">More in Performance Hydration</h2>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/performance-hydration">Performance Hydration overview</a></li>
+        <li><a href="/pages/endurance-hydration">Endurance Hydration</a></li>
+        <li><a href="/pages/heat-high-sweat">Heat &amp; High Sweat</a></li>
+        <li><a href="/pages/recovery-hydration">Recovery Hydration</a></li>
+      </ul>
+    </section>
+  {% when 'lp-05-cold-dry-air' %}
+    <section class="bhd-guide-variants bhd-guide-variants--after-cta" aria-labelledby="More-guide-05">
+      <h2 id="More-guide-05">More in Active Living</h2>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/active-living">Active Living overview</a></li>
+        <li><a href="/pages/everyday-wellness">Everyday Hydration</a></li>
+        <li><a href="/pages/work-long-shifts">Work &amp; Long Shifts</a></li>
+        <li><a href="/pages/travel-hydration">Travel Hydration</a></li>
+      </ul>
+    </section>
+  {% when 'lp-06-clinical-hydration-context' %}
+    <section class="bhd-guide-variants bhd-guide-variants--after-cta" aria-labelledby="More-guide-06">
+      <h2 id="More-guide-06">More in Clinical Hydration</h2>
+      <ul class="bhd-guide-variants__links">
+        <li><a href="/pages/clinical-hydration">Clinical Hydration overview</a></li>
+        <li><a href="/pages/clinical-development">Clinical Development</a></li>
+        <li><a href="/pages/clinical-program">Clinical Program</a></li>
+        <li><a href="/pages/pilot-studies">Pilot Studies</a></li>
+        <li><a href="/pages/healthcare-applications">Healthcare Applications</a></li>
+      </ul>
     </section>
 {% endcase %}
 
 {% stylesheet %}
+  .bhd-guide__media {
+    max-width: 680px;
+    margin: 20px auto 28px;
+  }
+  .bhd-guide__media--product {
+    max-width: 420px;
+  }
+  .bhd-guide__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 18px;
+  }
+  .bhd-guide__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 14px;
+    margin-top: 30px;
+    padding-top: 26px;
+    border-top: 1px solid rgba(8, 47, 107, 0.18);
+  }
+  .bhd-guide__button {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
+    border: 2px solid #082f6b;
+    border-radius: 999px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+  .bhd-guide__button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(8, 47, 107, 0.14);
+  }
+  .bhd-guide__button--read {
+    background: #ffffff;
+    color: #082f6b;
+  }
+  .bhd-guide__button--buy {
+    background: #082f6b;
+    color: #ffffff;
+  }
+  .bhd-guide__buy {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  .bhd-guide__shipping {
+    color: #315a32;
+    font-weight: 700;
+  }
   .bhd-guide-variants {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 22px clamp(18px, 4vw, 44px) 30px;
+    padding: 24px clamp(18px, 4vw, 44px) 34px;
+    border-top: 1px solid rgba(8, 47, 107, 0.14);
   }
   .bhd-guide-variants h2 {
-    margin: 0 0 8px;
+    margin: 0 0 12px;
   }
-  .bhd-guide-variants ul {
+  .bhd-guide-variants__featured {
+    margin: 0 0 18px;
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+  }
+  .bhd-guide-variants__featured a,
+  .bhd-guide-variants__links a,
+  .bhd-explore-guides a {
+    color: #082f6b;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .bhd-guide-variants__subheading {
+    margin: 16px 0 8px;
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .bhd-guide-variants__links {
+    display: grid;
+    gap: 7px;
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  .bhd-guide-variants li {
+  .bhd-guide-variants__links li {
     margin: 0;
+  }
+  .bhd-explore-guides > p {
+    margin-bottom: 28px;
+  }
+  .bhd-explore-guides__category {
+    padding: 24px 0;
+    border-top: 1px solid rgba(8, 47, 107, 0.14);
+  }
+  .bhd-explore-guides__category h2,
+  .bhd-explore-guides__category h3,
+  .bhd-explore-guides__category h4 {
+    margin-top: 0;
+  }
+  .bhd-explore-guides__main {
+    margin-bottom: 16px;
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+  }
+  .bhd-explore-guides__subheading {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .bhd-explore-guides__links {
+    display: grid;
+    gap: 7px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  @media (max-width: 640px) {
+    .bhd-guide__cta {
+      align-items: stretch;
+    }
+    .bhd-guide__button,
+    .bhd-guide__buy {
+      width: 100%;
+    }
   }
 {% endstylesheet %}
