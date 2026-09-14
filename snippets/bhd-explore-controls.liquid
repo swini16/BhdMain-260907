@@ -1,0 +1,274 @@
+{% doc %}
+  Adds client-side search, topic filtering and sorting to the Explore Best Hydrate guide index.
+  Enhances the existing .bhd-explore-guides markup without changing guide URLs or page content.
+{% enddoc %}
+
+{% if page.handle == 'explore-bhd' %}
+  <div class="bhd-explore-tools" data-bhd-explore-tools hidden>
+    <div class="bhd-explore-tools__field bhd-explore-tools__field--search">
+      <label for="BhdGuideSearch">Search guides</label>
+      <input id="BhdGuideSearch" type="search" inputmode="search" autocomplete="off" placeholder="Search title or topic" data-bhd-guide-search>
+    </div>
+
+    <div class="bhd-explore-tools__field">
+      <label for="BhdGuideCategory">Filter by topic</label>
+      <select id="BhdGuideCategory" data-bhd-guide-category>
+        <option value="">All topics</option>
+      </select>
+    </div>
+
+    <div class="bhd-explore-tools__field">
+      <label for="BhdGuideSort">Sort</label>
+      <select id="BhdGuideSort" data-bhd-guide-sort>
+        <option value="guide">Guide order</option>
+        <option value="topic-asc">Topic A–Z</option>
+        <option value="topic-desc">Topic Z–A</option>
+      </select>
+    </div>
+
+    <button class="bhd-explore-tools__clear" type="button" data-bhd-guide-clear>Clear</button>
+    <p class="bhd-explore-tools__status" role="status" aria-live="polite" data-bhd-guide-status></p>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .bhd-explore-tools {
+    display: grid;
+    grid-template-columns: minmax(220px, 2fr) minmax(170px, 1fr) minmax(150px, 1fr) auto;
+    gap: 12px;
+    align-items: end;
+    margin: 0 0 28px;
+    padding: 18px;
+    border: 1px solid rgba(8, 47, 107, 0.16);
+    border-radius: 16px;
+    background: rgba(8, 47, 107, 0.035);
+  }
+  .bhd-explore-tools__field {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+  .bhd-explore-tools__field label {
+    margin: 0;
+    color: #082f6b;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+  .bhd-explore-tools input,
+  .bhd-explore-tools select {
+    width: 100%;
+    min-height: 44px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 9px 12px;
+    border: 1px solid rgba(8, 47, 107, 0.28);
+    border-radius: 10px;
+    background: #ffffff;
+    color: #172033;
+    font: inherit;
+  }
+  .bhd-explore-tools input:focus,
+  .bhd-explore-tools select:focus,
+  .bhd-explore-tools__clear:focus-visible {
+    outline: 3px solid rgba(8, 47, 107, 0.2);
+    outline-offset: 2px;
+  }
+  .bhd-explore-tools__clear {
+    min-height: 44px;
+    padding: 9px 16px;
+    border: 1px solid #082f6b;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #082f6b;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .bhd-explore-tools__clear:hover {
+    background: #082f6b;
+    color: #ffffff;
+  }
+  .bhd-explore-tools__status {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: rgba(23, 32, 51, 0.74);
+    font-size: 0.9rem;
+  }
+  .bhd-explore-guides__category[hidden],
+  .bhd-explore-guides__main[hidden],
+  .bhd-explore-guides__links li[hidden],
+  .bhd-explore-guides__subheading[hidden],
+  .bhd-explore-guides__links[hidden] {
+    display: none !important;
+  }
+  @media (max-width: 820px) {
+    .bhd-explore-tools {
+      grid-template-columns: 1fr 1fr;
+    }
+    .bhd-explore-tools__field--search {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 560px) {
+    .bhd-explore-tools {
+      grid-template-columns: 1fr;
+      padding: 14px;
+    }
+    .bhd-explore-tools__field--search,
+    .bhd-explore-tools__status {
+      grid-column: auto;
+    }
+    .bhd-explore-tools__clear {
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const initGuideExplorer = () => {
+      const root = document.querySelector('.bhd-explore-guides');
+      const tools = document.querySelector('[data-bhd-explore-tools]');
+      if (!root || !tools || tools.dataset.ready === 'true') return;
+
+      const sections = Array.from(root.querySelectorAll('.bhd-explore-guides__category'));
+      if (!sections.length) return;
+
+      const search = tools.querySelector('[data-bhd-guide-search]');
+      const categorySelect = tools.querySelector('[data-bhd-guide-category]');
+      const sortSelect = tools.querySelector('[data-bhd-guide-sort]');
+      const clearButton = tools.querySelector('[data-bhd-guide-clear]');
+      const status = tools.querySelector('[data-bhd-guide-status]');
+
+      const normalize = (value) => (value || '').trim().toLocaleLowerCase();
+      let totalGuides = 0;
+
+      sections.forEach((section, index) => {
+        const heading = section.querySelector('h2');
+        const main = section.querySelector('.bhd-explore-guides__main');
+        const variantList = section.querySelector('.bhd-explore-guides__links');
+        const variantHeading = section.querySelector('.bhd-explore-guides__subheading');
+        const variantItems = variantList ? Array.from(variantList.querySelectorAll('li')) : [];
+        const mainLink = main ? main.querySelector('a') : null;
+        const category = heading ? heading.textContent.trim() : 'Other';
+        const guideMatch = mainLink ? mainLink.textContent.match(/^\s*(\d+)/) : null;
+        const guideNumber = guideMatch ? Number.parseInt(guideMatch[1], 10) : 9999;
+
+        section.dataset.bhdCategory = category;
+        section.dataset.bhdCategoryKey = normalize(category);
+        section.dataset.bhdGuideNumber = String(guideNumber);
+        section.dataset.bhdOriginalIndex = String(index);
+        section._bhdGuideNodes = [];
+
+        if (main && mainLink) {
+          section._bhdGuideNodes.push({
+            wrapper: main,
+            text: normalize(mainLink.textContent),
+            isVariant: false
+          });
+          totalGuides += 1;
+        }
+
+        variantItems.forEach((item) => {
+          const link = item.querySelector('a');
+          if (!link) return;
+          section._bhdGuideNodes.push({
+            wrapper: item,
+            text: normalize(link.textContent),
+            isVariant: true
+          });
+          totalGuides += 1;
+        });
+
+        section._bhdVariantList = variantList;
+        section._bhdVariantHeading = variantHeading;
+      });
+
+      const topicNames = [...new Set(sections.map((section) => section.dataset.bhdCategory))]
+        .sort((a, b) => a.localeCompare(b));
+      topicNames.forEach((topic) => {
+        const option = document.createElement('option');
+        option.value = normalize(topic);
+        option.textContent = topic;
+        categorySelect.appendChild(option);
+      });
+
+      const firstSection = root.querySelector('.bhd-explore-guides__category');
+      if (firstSection) root.insertBefore(tools, firstSection);
+      tools.hidden = false;
+      tools.dataset.ready = 'true';
+
+      const sortSections = () => {
+        const mode = sortSelect.value;
+        const sorted = [...sections].sort((a, b) => {
+          if (mode === 'topic-asc') {
+            return a.dataset.bhdCategory.localeCompare(b.dataset.bhdCategory);
+          }
+          if (mode === 'topic-desc') {
+            return b.dataset.bhdCategory.localeCompare(a.dataset.bhdCategory);
+          }
+          const numberDiff = Number(a.dataset.bhdGuideNumber) - Number(b.dataset.bhdGuideNumber);
+          if (numberDiff !== 0) return numberDiff;
+          return Number(a.dataset.bhdOriginalIndex) - Number(b.dataset.bhdOriginalIndex);
+        });
+        sorted.forEach((section) => root.appendChild(section));
+      };
+
+      const apply = () => {
+        const query = normalize(search.value);
+        const selectedCategory = categorySelect.value;
+        let shownGuides = 0;
+
+        sections.forEach((section) => {
+          const categoryMatches = !selectedCategory || section.dataset.bhdCategoryKey === selectedCategory;
+          const categoryTextMatches = query && section.dataset.bhdCategoryKey.includes(query);
+          let visibleInSection = 0;
+          let visibleVariants = 0;
+
+          section._bhdGuideNodes.forEach((guide) => {
+            const textMatches = !query || guide.text.includes(query) || categoryTextMatches;
+            const visible = categoryMatches && textMatches;
+            guide.wrapper.hidden = !visible;
+            if (visible) {
+              visibleInSection += 1;
+              shownGuides += 1;
+              if (guide.isVariant) visibleVariants += 1;
+            }
+          });
+
+          section.hidden = visibleInSection === 0;
+          if (section._bhdVariantHeading) section._bhdVariantHeading.hidden = visibleVariants === 0;
+          if (section._bhdVariantList) section._bhdVariantList.hidden = visibleVariants === 0;
+        });
+
+        sortSections();
+        status.textContent = `Showing ${shownGuides} of ${totalGuides} guides`;
+      };
+
+      search.addEventListener('input', apply);
+      categorySelect.addEventListener('change', apply);
+      sortSelect.addEventListener('change', apply);
+      clearButton.addEventListener('click', () => {
+        search.value = '';
+        categorySelect.value = '';
+        sortSelect.value = 'guide';
+        apply();
+        search.focus();
+      });
+      search.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && search.value) {
+          search.value = '';
+          apply();
+        }
+      });
+
+      apply();
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGuideExplorer, { once: true });
+    } else {
+      initGuideExplorer();
+    }
+  })();
+{% endjavascript %}
