@@ -1,0 +1,47 @@
+<div class="bhd-article-media-safety" hidden aria-hidden="true"></div>
+
+<style>
+  .article-template__content img:not([src]),
+  .article-template__content img[src=""] {
+    display:none !important;
+  }
+  .article-template__content img {
+    max-width:100%;
+    height:auto;
+  }
+  .article-template__content iframe,
+  .article-template__content video {
+    max-width:100%;
+  }
+</style>
+
+<script>
+  (() => {
+    const content = document.querySelector('.article-template__content');
+    if (!content) return;
+
+    const cleanImage = (img) => {
+      const src = (img.getAttribute('src') || '').trim();
+      if (!src) {
+        img.remove();
+        return;
+      }
+      img.style.maxWidth = '100%';
+      img.style.height = 'auto';
+      img.addEventListener('error', () => {
+        img.style.display = 'none';
+        img.setAttribute('aria-hidden', 'true');
+      }, { once: true });
+    };
+
+    content.querySelectorAll('img').forEach(cleanImage);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BHD article media safety",
+  "settings": [],
+  "presets": [{"name":"BHD article media safety"}]
+}
+{% endschema %}
