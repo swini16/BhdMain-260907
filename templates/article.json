@@ -49,10 +49,14 @@
       "block_order": ["title","featured_image","share","content"],
       "settings": {}
     },
+    "media_safety": {
+      "type": "bhd-article-media-safety",
+      "settings": {}
+    },
     "bhd_engagement": {
       "type": "bhd-blog-engagement",
       "settings": {}
     }
   },
-  "order": ["article_context_fix","main","bhd_engagement"]
+  "order": ["article_context_fix","main","media_safety","bhd_engagement"]
 }
