@@ -1,5 +1,5 @@
 {% doc %}
-  Adds client-side search, topic filtering and sorting to the Explore Best Hydrate guide index.
+  Adds client-side search, topic filtering and numerical sorting to the Explore Best Hydrate guide index.
   Enhances the existing .bhd-explore-guides markup without changing guide URLs or page content.
 {% enddoc %}
 
@@ -20,10 +20,8 @@
     <div class="bhd-explore-tools__field">
       <label for="BhdGuideSort">Sort</label>
       <select id="BhdGuideSort" data-bhd-guide-sort>
-        <option value="guide">Guide # 01–09</option>
-        <option value="guide-desc">Guide # 09–01</option>
-        <option value="topic-asc">Topic A–Z</option>
-        <option value="topic-desc">Topic Z–A</option>
+        <option value="guide">Guide # low to high</option>
+        <option value="guide-desc">Guide # high to low</option>
       </select>
     </div>
 
@@ -200,17 +198,10 @@
       tools.dataset.ready = 'true';
 
       const sortSections = () => {
-        const mode = sortSelect.value;
+        const descending = sortSelect.value === 'guide-desc';
         const sorted = [...sections].sort((a, b) => {
-          if (mode === 'topic-asc') {
-            return a.dataset.bhdCategory.localeCompare(b.dataset.bhdCategory);
-          }
-          if (mode === 'topic-desc') {
-            return b.dataset.bhdCategory.localeCompare(a.dataset.bhdCategory);
-          }
           const numberDiff = Number(a.dataset.bhdGuideNumber) - Number(b.dataset.bhdGuideNumber);
-          if (mode === 'guide-desc' && numberDiff !== 0) return -numberDiff;
-          if (numberDiff !== 0) return numberDiff;
+          if (numberDiff !== 0) return descending ? -numberDiff : numberDiff;
           return Number(a.dataset.bhdOriginalIndex) - Number(b.dataset.bhdOriginalIndex);
         });
         sorted.forEach((section) => root.appendChild(section));
