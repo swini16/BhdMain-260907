@@ -56,6 +56,8 @@
   {% render 'bhd-page-enrichment' %}
 {% endif %}
 
-{% render 'bhd-guide-variants' %}
-{% render 'bhd-explore-controls' %}
-{% comment %}Science and medical claims pages use a concise evidence-aware template from 20260914. Investor funnel rewired 20260910. Category guide lists wired 20260914. Explore guide filtering, search and sorting added 20260914.{% endcomment %}
+{% if page.handle == 'explore-bhd' %}
+  {% render 'bhd-guide-variants' %}
+  {% render 'bhd-explore-controls' %}
+{% endif %}
+{% comment %}Science and medical claims pages use a concise evidence-aware template from 20260914. Investor funnel rewired 20260910. Numbered guides and their search/filter/sort controls are isolated to Explore Best Hydrate only as of 20260914.{% endcomment %}
