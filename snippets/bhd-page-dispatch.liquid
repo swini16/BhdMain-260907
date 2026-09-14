@@ -39,7 +39,12 @@
   {% when 'contact' %}{% render 'bhd-page-contact' %}
   {% else %}
     {% render 'bhd-page-breadcrumbs', page_handle: page.handle, current_title: page.title %}
-    <div class="bhd-page-fallback__content"><h1>{{ page.title }}</h1><div class="rte">{{ page.content }}</div></div>
+    {% assign rendered_page_content = page.content %}
+    {% if page.handle contains 'lp-' and rendered_page_content contains '<p><small>Guide ' %}
+      {% assign guide_label_parts = rendered_page_content | split: '</small></p>' %}
+      {% assign rendered_page_content = guide_label_parts | slice: 1, 999 | join: '</small></p>' %}
+    {% endif %}
+    <div class="bhd-page-fallback__content"><h1>{{ page.title }}</h1><div class="rte">{{ rendered_page_content }}</div></div>
     {% render 'bhd-menu-descendants' %}
 {% endcase %}
 
@@ -94,4 +99,4 @@
 {% if page.handle == 'explore-bhd' %}
   {% render 'bhd-explore-controls' %}
 {% endif %}
-{% comment %}Science and medical claims pages use a concise evidence-aware template from 20260914. Investor funnel rewired 20260910. Numbered guides and their search/filter/sort controls are isolated to Explore Best Hydrate only as of 20260914.{% endcomment %}
+{% comment %}Science and medical claims pages use a concise evidence-aware template from 20260914. Investor funnel rewired 20260910. Guide numbering and variant metadata are centralized on Explore Best Hydrate; landing pages suppress their internal guide label.{% endcomment %}
