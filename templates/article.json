@@ -47,7 +47,11 @@
       },
       "block_order": ["title","featured_image","share","content"],
       "settings": {}
+    },
+    "bhd_engagement": {
+      "type": "bhd-blog-engagement",
+      "settings": {}
     }
   },
-  "order": ["article_context_fix","main"]
+  "order": ["article_context_fix","main","bhd_engagement"]
 }
