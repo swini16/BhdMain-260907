@@ -56,8 +56,42 @@
   {% render 'bhd-page-enrichment' %}
 {% endif %}
 
-{% if page.handle == 'explore-bhd' %}
+{% if page.handle == 'explore-bhd' or page.handle contains 'lp-' %}
   {% render 'bhd-guide-variants' %}
+{% endif %}
+
+{% if page.handle contains 'lp-' %}
+  <style>
+    .bhd-guide__buy { gap: 8px; }
+    .bhd-guide__shipping { margin-top: 0; }
+    @media (max-width: 640px) {
+      .bhd-guide__cta {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+      }
+      .bhd-guide__button {
+        min-height: 50px;
+        padding: 12px 16px;
+        font-size: 1rem;
+        line-height: 1.2;
+        white-space: normal;
+        text-align: center;
+      }
+      .bhd-guide__buy {
+        width: 100%;
+        gap: 10px;
+      }
+      .bhd-guide__shipping {
+        margin-top: 0;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+{% endif %}
+
+{% if page.handle == 'explore-bhd' %}
   {% render 'bhd-explore-controls' %}
 {% endif %}
 {% comment %}Science and medical claims pages use a concise evidence-aware template from 20260914. Investor funnel rewired 20260910. Numbered guides and their search/filter/sort controls are isolated to Explore Best Hydrate only as of 20260914.{% endcomment %}
