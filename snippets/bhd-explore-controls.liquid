@@ -1,5 +1,5 @@
 {% doc %}
-  Adds client-side search, topic filtering and numerical sorting to the Explore Best Hydrate guide index.
+  Adds client-side search, topic filtering and sorting to the Explore Best Hydrate guide index.
   Enhances the existing .bhd-explore-guides markup without changing guide URLs or page content.
 {% enddoc %}
 
@@ -22,6 +22,8 @@
       <select id="BhdGuideSort" data-bhd-guide-sort>
         <option value="guide">Guide # low to high</option>
         <option value="guide-desc">Guide # high to low</option>
+        <option value="topic-asc">Topic A–Z</option>
+        <option value="topic-desc">Topic Z–A</option>
       </select>
     </div>
 
@@ -42,11 +44,7 @@
     border-radius: 16px;
     background: rgba(8, 47, 107, 0.035);
   }
-  .bhd-explore-tools__field {
-    display: grid;
-    gap: 6px;
-    min-width: 0;
-  }
+  .bhd-explore-tools__field { display: grid; gap: 6px; min-width: 0; }
   .bhd-explore-tools__field label {
     margin: 0;
     color: #082f6b;
@@ -83,10 +81,7 @@
     font-weight: 700;
     cursor: pointer;
   }
-  .bhd-explore-tools__clear:hover {
-    background: #082f6b;
-    color: #ffffff;
-  }
+  .bhd-explore-tools__clear:hover { background: #082f6b; color: #ffffff; }
   .bhd-explore-tools__status {
     grid-column: 1 / -1;
     margin: 0;
@@ -97,29 +92,17 @@
   .bhd-explore-guides__main[hidden],
   .bhd-explore-guides__links li[hidden],
   .bhd-explore-guides__subheading[hidden],
-  .bhd-explore-guides__links[hidden] {
-    display: none !important;
-  }
+  .bhd-explore-guides__links[hidden] { display: none !important; }
+
   @media (max-width: 820px) {
-    .bhd-explore-tools {
-      grid-template-columns: 1fr 1fr;
-    }
-    .bhd-explore-tools__field--search {
-      grid-column: 1 / -1;
-    }
+    .bhd-explore-tools { grid-template-columns: 1fr 1fr; }
+    .bhd-explore-tools__field--search { grid-column: 1 / -1; }
   }
   @media (max-width: 560px) {
-    .bhd-explore-tools {
-      grid-template-columns: 1fr;
-      padding: 14px;
-    }
+    .bhd-explore-tools { grid-template-columns: 1fr; padding: 14px; }
     .bhd-explore-tools__field--search,
-    .bhd-explore-tools__status {
-      grid-column: auto;
-    }
-    .bhd-explore-tools__clear {
-      width: 100%;
-    }
+    .bhd-explore-tools__status { grid-column: auto; }
+    .bhd-explore-tools__clear { width: 100%; }
   }
 {% endstylesheet %}
 
@@ -138,7 +121,6 @@
       const sortSelect = tools.querySelector('[data-bhd-guide-sort]');
       const clearButton = tools.querySelector('[data-bhd-guide-clear]');
       const status = tools.querySelector('[data-bhd-guide-status]');
-
       const normalize = (value) => (value || '').trim().toLocaleLowerCase();
       let totalGuides = 0;
 
@@ -160,22 +142,14 @@
         section._bhdGuideNodes = [];
 
         if (main && mainLink) {
-          section._bhdGuideNodes.push({
-            wrapper: main,
-            text: normalize(mainLink.textContent),
-            isVariant: false
-          });
+          section._bhdGuideNodes.push({ wrapper: main, text: normalize(mainLink.textContent), isVariant: false });
           totalGuides += 1;
         }
 
         variantItems.forEach((item) => {
           const link = item.querySelector('a');
           if (!link) return;
-          section._bhdGuideNodes.push({
-            wrapper: item,
-            text: normalize(link.textContent),
-            isVariant: true
-          });
+          section._bhdGuideNodes.push({ wrapper: item, text: normalize(link.textContent), isVariant: true });
           totalGuides += 1;
         });
 
@@ -183,14 +157,14 @@
         section._bhdVariantHeading = variantHeading;
       });
 
-      const topicNames = [...new Set(sections.map((section) => section.dataset.bhdCategory))]
-        .sort((a, b) => a.localeCompare(b));
-      topicNames.forEach((topic) => {
-        const option = document.createElement('option');
-        option.value = normalize(topic);
-        option.textContent = topic;
-        categorySelect.appendChild(option);
-      });
+      [...new Set(sections.map((section) => section.dataset.bhdCategory))]
+        .sort((a, b) => a.localeCompare(b))
+        .forEach((topic) => {
+          const option = document.createElement('option');
+          option.value = normalize(topic);
+          option.textContent = topic;
+          categorySelect.appendChild(option);
+        });
 
       const firstSection = root.querySelector('.bhd-explore-guides__category');
       if (firstSection) root.insertBefore(tools, firstSection);
@@ -198,10 +172,13 @@
       tools.dataset.ready = 'true';
 
       const sortSections = () => {
-        const descending = sortSelect.value === 'guide-desc';
+        const mode = sortSelect.value;
         const sorted = [...sections].sort((a, b) => {
+          if (mode === 'topic-asc') return a.dataset.bhdCategory.localeCompare(b.dataset.bhdCategory);
+          if (mode === 'topic-desc') return b.dataset.bhdCategory.localeCompare(a.dataset.bhdCategory);
+
           const numberDiff = Number(a.dataset.bhdGuideNumber) - Number(b.dataset.bhdGuideNumber);
-          if (numberDiff !== 0) return descending ? -numberDiff : numberDiff;
+          if (numberDiff !== 0) return mode === 'guide-desc' ? -numberDiff : numberDiff;
           return Number(a.dataset.bhdOriginalIndex) - Number(b.dataset.bhdOriginalIndex);
         });
         sorted.forEach((section) => root.appendChild(section));
