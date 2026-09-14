@@ -1,5 +1,4 @@
 {
-
   "sections": {
     "bhd_intro": {
       "type": "bhd-blog-intro",
@@ -17,10 +16,14 @@
         "padding_bottom": 60
       }
     },
+    "bhd_social_archive": {
+      "type": "bhd-social-archive-section",
+      "settings": {}
+    },
     "bhd_engagement": {
       "type": "bhd-blog-engagement",
       "settings": {}
     }
   },
-  "order": ["bhd_intro", "main", "bhd_engagement"]
+  "order": ["bhd_intro", "main", "bhd_social_archive", "bhd_engagement"]
 }
