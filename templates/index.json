@@ -67,6 +67,10 @@
         "color_scheme": "scheme-1"
       }
     },
+    "image_reliability": {
+      "type": "bhd-home-image-reliability",
+      "settings": {}
+    },
     "science_research": {
       "type": "bhd-science-research",
       "settings": {"color_scheme": "scheme-1"}
@@ -100,5 +104,5 @@
       "settings": {"color_scheme": "scheme-1"}
     }
   },
-  "order": ["hero", "hero_links", "benefits", "why", "meet_video", "markets", "science_research", "product_story", "reviews", "trust"]
+  "order": ["hero", "hero_links", "benefits", "why", "meet_video", "markets", "image_reliability", "science_research", "product_story", "reviews", "trust"]
 }
