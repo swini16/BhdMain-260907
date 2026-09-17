@@ -104,5 +104,5 @@
       "settings": {"color_scheme": "scheme-1"}
     }
   },
-  "order": ["hero", "hero_links", "benefits", "why", "meet_video", "markets", "image_reliability", "science_research", "product_story", "reviews", "trust"]
+  "order": ["hero", "hero_links", "science_research", "benefits", "why", "meet_video", "markets", "image_reliability", "product_story", "reviews", "trust"]
 }
