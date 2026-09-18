@@ -49,6 +49,30 @@
 {% endcase %}
 
 {% liquid
+  assign show_low_sugar = false
+  assign low_sugar_context = 'site'
+
+  case page.handle
+    when 'science-overview', 'solutions-overview', 'products-overview', 'ingredients-formula', 'shop-overview', 'explore-bhd', 'hydration-science', 'how-hydration-works', 'electrolytes', 'our-formula', 'five-essential-electrolytes', 'ingredient-rationale', 'why-bicarbonate', 'product-details', 'performance-hydration', 'endurance-hydration', 'heat-high-sweat', 'recovery-hydration', 'everyday-wellness', 'work-long-shifts', 'travel-hydration', 'active-living'
+      assign show_low_sugar = true
+    when 'investor-relations', 'investor-overview', 'retail-distribution', 'press'
+      assign show_low_sugar = true
+      assign low_sugar_context = 'investor'
+  endcase
+
+  if page.handle contains 'lp-01' or page.handle contains 'lp-02' or page.handle contains 'lp-04' or page.handle contains 'lp-05' or page.handle contains 'lp-07' or page.handle contains 'lp-09'
+    assign show_low_sugar = true
+  endif
+
+  if page.handle == 'lp-02f-hydration-thats-not-too-sweet' or page.handle == 'lp-02f-low-sugar-vs-zero-sugar' or page.handle == 'low-sugar-hydration-glucose-sglt1'
+    assign show_low_sugar = false
+  endif
+%}
+{% if show_low_sugar %}
+  {% render 'bhd-low-sugar-differentiator', context: low_sugar_context %}
+{% endif %}
+
+{% liquid
   assign show_enrichment = true
   case page.handle
     when 'hydration-science', 'how-hydration-works', 'electrolytes', 'glucose-water-absorption', 'our-formula', 'five-essential-electrolytes', 'ingredient-rationale', 'why-bicarbonate', 'research-publications', 'publications', 'current-research', 'research-partners', 'research-impact', 'clinical-development', 'clinical-program', 'pilot-studies', 'healthcare-applications', 'clinical-hydration', 'recovery-rehabilitation', 'active-aging'
@@ -99,4 +123,4 @@
 {% if page.handle == 'explore-bhd' %}
   {% render 'bhd-explore-controls' %}
 {% endif %}
-{% comment %}Science and medical claims pages use a concise evidence-aware template from 20260914. Investor funnel rewired 20260910. Guide numbering and variant metadata are centralized on Explore Best Hydrate; landing pages suppress their internal guide label.{% endcomment %}
+{% comment %}Science and medical claims pages use a concise evidence-aware template from 20260914. Low-sugar differentiation is threaded through relevant science, product, performance, everyday, retail, investor and landing-page routes. Investor funnel rewired 20260910. Guide numbering and variant metadata are centralized on Explore Best Hydrate; landing pages suppress their internal guide label.{% endcomment %}
