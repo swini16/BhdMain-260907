@@ -1,0 +1,55 @@
+{% liquid
+  assign ls_context = context | default: 'site'
+%}
+
+<section class="bhd-low-sugar-diff bhd-low-sugar-diff--{{ ls_context }}" aria-label="Best Hydrate low-sugar formulation difference">
+  <div class="bhd-low-sugar-diff__inner">
+    <div class="bhd-low-sugar-diff__copy">
+      {% if ls_context == 'investor' %}
+        <p class="bhd-low-sugar-diff__eyebrow">COMMERCIAL DIFFERENTIATOR</p>
+        <h2>A simple difference consumers can understand.</h2>
+        <p>Best Hydrate occupies a deliberate low-sugar middle: <strong>1 g of sugar per 100 mL prepared</strong>, retaining purposeful glucose for sodium-glucose transport without the sugar load common in conventional sports and energy drinks.</p>
+        <p><strong>Low sugar. Purposeful glucose. Balanced electrolytes.</strong></p>
+      {% else %}
+        <p class="bhd-low-sugar-diff__eyebrow">LOW-SUGAR HYDRATION</p>
+        <h2>LOW SUGAR HITS THE HYDRATION SWEET SPOT.</h2>
+        <p><strong>1 g of sugar per 100 mL prepared.</strong> Best Hydrate keeps a small amount of purposeful glucose in the formula for sodium-glucose transport while avoiding a conventional high-sugar load.</p>
+        <p><strong>Purposeful glucose. Not zero. Not overloaded.</strong></p>
+      {% endif %}
+    </div>
+    <div class="bhd-low-sugar-diff__facts" aria-label="Low-sugar formulation highlights">
+      <div><strong>1.0 g</strong><span>sugar / 100 mL</span></div>
+      <div><strong>SGLT1</strong><span>sodium + glucose transport</span></div>
+      <div><strong>5</strong><span>electrolyte species</span></div>
+    </div>
+    <div class="bhd-low-sugar-diff__actions">
+      <a href="/pages/low-sugar-hydration-glucose-sglt1">Read the low-sugar science →</a>
+      {% if ls_context == 'homepage' %}
+        <a class="bhd-low-sugar-diff__shop" href="/products/lemonade-best-hydrate">Shop Best Hydrate</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .bhd-low-sugar-diff{max-width:1200px;margin:3rem auto;padding:0 1.5rem;color:#102a61}
+  .bhd-low-sugar-diff__inner{padding:2rem 2.2rem;border:1px solid #bdd8ec;border-radius:1.5rem;background:linear-gradient(135deg,#f7fcff 0%,#eef8fd 58%,#fffdf3 100%);box-shadow:0 .7rem 2.2rem rgba(16,42,97,.07)}
+  .bhd-low-sugar-diff__copy{max-width:900px}
+  .bhd-low-sugar-diff__eyebrow{margin:0 0 .55rem;color:#1681d8;font-size:1.05rem;font-weight:900;letter-spacing:.15em}
+  .bhd-low-sugar-diff h2{margin:.1rem 0 .8rem;color:#102a61;font-size:clamp(2.25rem,3.4vw,4rem);line-height:1.02;letter-spacing:-.025em}
+  .bhd-low-sugar-diff__copy p:not(.bhd-low-sugar-diff__eyebrow){margin:.65rem 0;color:#425675;font-size:1.3rem;line-height:1.5}
+  .bhd-low-sugar-diff__facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:1.4rem 0}
+  .bhd-low-sugar-diff__facts div{padding:1rem;border:1px solid #c9ddec;border-radius:1rem;background:rgba(255,255,255,.88);text-align:center}
+  .bhd-low-sugar-diff__facts strong{display:block;color:#0a4380;font-size:1.55rem;line-height:1.05}
+  .bhd-low-sugar-diff__facts span{display:block;margin-top:.35rem;color:#5b6e86;font-size:1rem;line-height:1.2}
+  .bhd-low-sugar-diff__actions{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}
+  .bhd-low-sugar-diff__actions a{display:inline-flex;min-height:3.3rem;align-items:center;justify-content:center;padding:.7rem 1.05rem;border:1px solid #82acd0;border-radius:999px;background:#fff;color:#0b477f;font-size:1.05rem;font-weight:850;text-decoration:none}
+  .bhd-low-sugar-diff__actions .bhd-low-sugar-diff__shop{border-color:#0c5798;background:#0c5798;color:#fff}
+  @media screen and (max-width:749px){
+    .bhd-low-sugar-diff{margin:2rem auto;padding:0 1rem}
+    .bhd-low-sugar-diff__inner{padding:1.5rem}
+    .bhd-low-sugar-diff__facts{grid-template-columns:1fr}
+    .bhd-low-sugar-diff__actions{align-items:stretch;flex-direction:column}
+    .bhd-low-sugar-diff__actions a{width:100%;text-align:center}
+  }
+</style>
