@@ -11,9 +11,13 @@
     </div>
 
     <div class="bhd-product-story__copy">
-      <p class="bhd-product-story__eyebrow">BEST HYDRATE</p>
-      <h2>{{ section.settings.heading }}</h2>
-      <div class="rte">{{ section.settings.text }}</div>
+      <p class="bhd-product-story__eyebrow">LOW-SUGAR HYDRATION</p>
+      <h2>Purposeful glucose. Low sugar by design.</h2>
+      <div class="rte">
+        <p><strong>1 g of sugar per 100 mL prepared.</strong> Best Hydrate keeps glucose in the formula for sodium-glucose transport while avoiding a conventional high-sugar load.</p>
+        {{ section.settings.text }}
+        <p><a href="/pages/low-sugar-hydration-glucose-sglt1"><strong>Why low sugar hits the hydration sweet spot →</strong></a></p>
+      </div>
       {% if section.settings.button_label != blank %}
         <a class="button button--primary" href="{% if section.settings.button_link != blank %}{{ section.settings.button_link }}{% elsif section.settings.product != blank %}{{ section.settings.product.url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}">{{ section.settings.button_label }}</a>
         <small class="bhd-product-story__shipping">✓ Free shipping</small>
@@ -36,6 +40,7 @@
   #BhdProductStory-{{ section.id }} .bhd-product-story__eyebrow { margin:0 0 .9rem; color:#3b7fc3; font-size:1.2rem; letter-spacing:.16em; font-weight:800; }
   #BhdProductStory-{{ section.id }} h2 { margin:0 0 1.5rem; color:#102a61; font-size:clamp(3.4rem,4.6vw,5.4rem); line-height:1.01; letter-spacing:-.025em; }
   #BhdProductStory-{{ section.id }} .rte { font-size:1.72rem; line-height:1.58; color:#465573; }
+  #BhdProductStory-{{ section.id }} .rte a { color:#0b5797; }
   #BhdProductStory-{{ section.id }} .button { margin-top:2rem; min-width:190px; }
   #BhdProductStory-{{ section.id }} .bhd-product-story__shipping { display:block; margin-top:.7rem; color:#2c6b46; font-size:1.15rem; font-weight:700; }
 
