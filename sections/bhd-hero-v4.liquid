@@ -140,7 +140,7 @@
     position:relative;
     z-index:5;
     min-width:0;
-    padding:clamp(32px,3.4vw,58px) clamp(30px,3.5vw,60px);
+    padding:clamp(32px,3.4vw,58px) clamp(26px,2.7vw,46px);
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -157,12 +157,15 @@
     max-width:760px;
     margin:0;
     color:var(--bhd-navy);
-    font-size:clamp(2.7rem,3.45vw,4.55rem);
+    font-size:clamp(2.2rem,2.75vw,3.75rem);
     line-height:.98;
     letter-spacing:-.047em;
     font-weight:900;
   }
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__title span{display:block}
+  @media screen and (min-width:1200px){
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__title span{white-space:nowrap}
+  }
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__title em{color:var(--bhd-blue);font-style:normal}
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__middle{
     margin:1rem 0 .65rem;
