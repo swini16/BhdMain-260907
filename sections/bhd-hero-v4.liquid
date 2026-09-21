@@ -23,11 +23,11 @@
       <div class="bhd-hero-v4__tablet-stage">
         <div class="bhd-hero-v4__slide is-active" data-v4-slide>
           <article class="bhd-hero-v4__audience bhd-hero-v4__audience--left">
-            <img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-hero-tablet-performance-20260911.png?v=1789147094" alt="Asian female athlete hydrating during performance" width="445" height="720" loading="eager" decoding="async">
+            <img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-hero-tablet-performance-20260911.png?v=1789147094" alt="Asian female athlete hydrating during performance" width="445" height="720" loading="lazy" fetchpriority="low" decoding="async">
             <div class="bhd-hero-v4__audience-copy"><strong>Performance</strong><span>Built for Performance Hydration.</span></div>
           </article>
           <article class="bhd-hero-v4__audience bhd-hero-v4__audience--right">
-            <img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-hero-tablet-daily-20260911.png?v=1789147197" alt="Construction workers hydrating during a demanding workday" width="450" height="720" loading="eager" decoding="async">
+            <img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-hero-tablet-daily-20260911.png?v=1789147197" alt="Construction workers hydrating during a demanding workday" width="450" height="720" loading="lazy" fetchpriority="low" decoding="async">
             <div class="bhd-hero-v4__audience-copy"><strong>Daily</strong><span>For <u>YOUR</u> Best Everyday.</span></div>
           </article>
         </div>
@@ -73,12 +73,29 @@
   <div class="bhd-hero-v4__mobile bhd-hero-v4__frame" data-v4-carousel data-interval="5000" aria-label="Best Hydrate mobile hero slideshow">
     <div class="bhd-hero-v4__mobile-stage">
       <div class="bhd-hero-v4__mobile-slide is-active" data-v4-slide><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-mobile-performance-20260911.webp?v=1789147245" alt="Best Hydrate performance hydration" width="941" height="1672" loading="eager" fetchpriority="high" decoding="async"></div>
-      <div class="bhd-hero-v4__mobile-slide" data-v4-slide><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-mobile-daily-20260909.png?v=1788969528" alt="Best Hydrate daily hydration" width="941" height="1672" loading="eager" decoding="async"></div>
-      <div class="bhd-hero-v4__mobile-slide" data-v4-slide><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-mobile-medical-20260909.jpg?v=1788969538" alt="Best Hydrate medical hydration" width="941" height="1672" loading="eager" decoding="async"></div>
-      <div class="bhd-hero-v4__mobile-slide" data-v4-slide><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-mobile-humanitarian-20260909.jpg?v=1788969549" alt="Best Hydrate humanitarian hydration" width="941" height="1672" loading="eager" decoding="async"></div>
+      <div class="bhd-hero-v4__mobile-slide" data-v4-slide><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-mobile-daily-20260909.png?v=1788969528" alt="Best Hydrate daily hydration" width="941" height="1672" loading="lazy" fetchpriority="low" decoding="async"></div>
+      <div class="bhd-hero-v4__mobile-slide" data-v4-slide><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-mobile-medical-20260909.jpg?v=1788969538" alt="Best Hydrate medical hydration" width="941" height="1672" loading="lazy" fetchpriority="low" decoding="async"></div>
+      <div class="bhd-hero-v4__mobile-slide" data-v4-slide><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-mobile-humanitarian-20260909.jpg?v=1788969549" alt="Best Hydrate humanitarian hydration" width="941" height="1672" loading="lazy" fetchpriority="low" decoding="async"></div>
       <button class="bhd-hero-v4__arrow bhd-hero-v4__arrow--prev" type="button" data-v4-prev aria-label="Previous hero">‹</button>
       <button class="bhd-hero-v4__arrow bhd-hero-v4__arrow--next" type="button" data-v4-next aria-label="Next hero">›</button>
       <div class="bhd-hero-v4__dots bhd-hero-v4__dots--mobile" data-v4-dots aria-label="Hero slides"></div>
+    </div>
+  </div>
+  <div class="bhd-hero-v4__cro-strip">
+    <div class="bhd-hero-v4__cro-copy">
+      <span class="bhd-hero-v4__cro-eyebrow">LOW-SUGAR PERFORMANCE HYDRATION</span>
+      <strong>Purposeful glucose. Low sugar by design.</strong>
+      <p>Best Hydrate keeps glucose alongside five electrolyte species, without the heavy sugar load common in traditional sports drinks.</p>
+    </div>
+    <div class="bhd-hero-v4__cro-actions">
+      <a class="button button--primary" href="{{ hero_product.url }}">Shop Best Hydrate</a>
+      <a class="button button--secondary" href="/pages/low-sugar-hydration-glucose-sglt1">Why low sugar?</a>
+    </div>
+    <div class="bhd-hero-v4__cro-trust" aria-label="Best Hydrate product highlights">
+      <span><b>1 g</b> sugar / 100 mL</span>
+      <span><b>32</b> servings</span>
+      <span><b>Health Canada NPN</b> 80118664</span>
+      <span><b>Free &amp; Fast Delivery</b></span>
     </div>
   </div>
 </section>
@@ -91,6 +108,16 @@
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__desktop{display:block;width:100%;max-width:1600px;margin:0 auto;background:#eef8fd}
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__desktop img{width:100%;height:auto;object-fit:contain;margin:0 auto}
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tablet,#BhdHeroV4-{{ section.id }} .bhd-hero-v4__mobile{display:none}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-strip{max-width:1600px;margin:1.2rem auto 0;padding:1.1rem 1.25rem;border:1px solid rgba(7,43,104,.12);border-radius:1.2rem;background:#fff;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem 1.5rem;align-items:center;box-shadow:0 .45rem 1.2rem rgba(7,43,104,.06)}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-copy{min-width:0}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-eyebrow{display:block;margin-bottom:.2rem;color:#52739d;font-size:.78rem;font-weight:850;letter-spacing:.12em}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-copy strong{display:block;color:var(--navy);font-size:clamp(1.25rem,1.8vw,1.7rem);line-height:1.2}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-copy p{margin:.35rem 0 0;color:#5f6f83;font-size:.95rem;line-height:1.4}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-actions{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:flex-end}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-actions .button{min-height:3.9rem;padding:0 1.2rem;border-radius:999px;font-size:1.05rem;font-weight:800}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-trust{grid-column:1/-1;display:flex;gap:.5rem .7rem;flex-wrap:wrap;color:#5f6f83;font-size:.82rem}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-trust span{padding:.38rem .58rem;border-radius:999px;background:#f3f8fd}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-trust b{color:var(--navy)}
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__arrow{position:absolute;top:50%;z-index:12;transform:translateY(-50%);width:3.45rem;height:3.45rem;border:1px solid rgba(255,255,255,.85);border-radius:999px;background:rgba(6,43,104,.76);color:#fff;display:grid;place-items:center;padding:0 0 .2rem;font-size:2.45rem;line-height:1;cursor:pointer;backdrop-filter:blur(7px);box-shadow:0 .45rem 1.2rem rgba(0,30,75,.18)}
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__arrow--prev{left:.72rem}#BhdHeroV4-{{ section.id }} .bhd-hero-v4__arrow--next{right:.72rem}
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__dots{display:flex;justify-content:center;align-items:center;gap:.55rem;min-height:1.5rem}
@@ -146,6 +173,10 @@
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__mobile-slide img{aspect-ratio:941/1672;height:auto;object-fit:cover}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__arrow{width:3.35rem;height:3.35rem;font-size:2.35rem}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__dots--mobile{position:absolute;left:50%;bottom:.65rem;transform:translateX(-50%);z-index:8;padding:.35rem .55rem;border-radius:999px;background:rgba(255,255,255,.72);backdrop-filter:blur(5px)}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-strip{grid-template-columns:1fr;margin-top:.8rem;padding:1rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-actions{justify-content:flex-start}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-actions .button{width:100%}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cro-trust{grid-column:1}
   }
 </style>
 
