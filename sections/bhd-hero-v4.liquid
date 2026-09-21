@@ -1,5 +1,5 @@
 {% assign hero_product_url = '/products/lemonade-best-hydrate' %}
-{% assign hero_scene_url = 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-customer-performance-hero-20260921.png?v=1790010487' %}
+{% assign hero_scene_url = 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-customer-hero-jar-on-thigh-v2-20260921.png?v=1790020939' %}
 {% assign hero_product_image_url = 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-lemonade-powder-jar-hero-v2-20260921.png?v=1790018423' %}
 
 <section id="BhdHeroV4-{{ section.id }}" class="bhd-hero-v4" data-bhd-hero-v4>
@@ -96,19 +96,6 @@
         <strong>YOUR Best Day!</strong>
         <small>Purposeful hydration. Real results.</small>
       </div>
-
-      <a class="bhd-hero-v4__product" href="{{ hero_product_url }}" aria-label="Shop Best Hydrate Lemonade">
-        <span class="bhd-hero-v4__product-shadow" aria-hidden="true"></span>
-        <img
-          src="{{ hero_product_image_url }}&width=900"
-          srcset="{{ hero_product_image_url }}&width=450 450w, {{ hero_product_image_url }}&width=700 700w, {{ hero_product_image_url }}&width=900 900w"
-          sizes="(max-width: 749px) 24vw, (max-width: 1199px) 18vw, 14vw"
-          alt="Best Hydrate Lemonade electrolyte powder jar"
-          width="900"
-          height="900"
-          loading="eager"
-          decoding="async">
-      </a>
     </div>
   </div>
 </section>
@@ -370,40 +357,6 @@
     text-transform:uppercase;
   }
 
-  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{
-    position:absolute;
-    z-index:4;
-    left:auto;
-    right:12%;
-    bottom:2%;
-    width:min(20%,12.5rem);
-    aspect-ratio:1;
-    display:block;
-    transform:rotate(-1deg);
-    transform-origin:50% 100%;
-  }
-  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product-shadow{
-    position:absolute;
-    z-index:1;
-    left:12%;
-    right:12%;
-    bottom:-1%;
-    height:6%;
-    border-radius:50%;
-    background:rgba(61,37,24,.26);
-    filter:blur(5px);
-    transform:rotate(-4deg);
-  }
-  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product img{
-    position:relative;
-    z-index:2;
-    display:block;
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    filter:drop-shadow(0 1.1rem 1.1rem rgba(4,35,74,.2));
-  }
-
   @media screen and (max-width:1399px) and (min-width:1200px){
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__shell{grid-template-columns:minmax(0,50%) minmax(0,50%)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__copy{padding:30px 32px}
@@ -445,7 +398,6 @@
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline span{font-size:clamp(1.45rem,3vw,2.25rem)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline strong{font-size:clamp(1.9rem,3.55vw,2.75rem)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline small{font-size:.52rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{left:auto;right:9%;bottom:2%;width:min(21%,8.6rem);transform:rotate(-1deg)}
   }
 
   @media screen and (max-width:749px){
@@ -465,7 +417,6 @@
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline span{font-size:clamp(1.35rem,6.5vw,1.95rem)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline strong{font-size:clamp(1.75rem,7.8vw,2.45rem)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline small{margin-top:.4rem;font-size:.46rem;letter-spacing:.11em}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{left:auto;right:7%;bottom:1%;width:min(23%,6.1rem);transform:rotate(-1deg)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__copy{
       order:2;
       padding:24px 18px 28px;
