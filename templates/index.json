@@ -35,6 +35,10 @@
       "type": "bhd-benefits",
       "settings": {"color_scheme": "scheme-1"}
     },
+    "how_to_use": {
+      "type": "bhd-how-to-use",
+      "settings": {"color_scheme": "scheme-1"}
+    },
     "why": {
       "type": "bhd-why",
       "settings": {"color_scheme": "scheme-1"}
@@ -104,5 +108,5 @@
       "settings": {"color_scheme": "scheme-1"}
     }
   },
-  "order": ["hero", "hero_links", "science_research", "benefits", "why", "meet_video", "markets", "image_reliability", "product_story", "reviews", "trust"]
+  "order": ["hero", "hero_links", "science_research", "benefits", "how_to_use", "why", "meet_video", "markets", "image_reliability", "product_story", "reviews", "trust"]
 }
