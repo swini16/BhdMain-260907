@@ -50,7 +50,7 @@
           </span>
           <span><b>32 servings</b></span>
         </a>
-        <a class="bhd-hero-v4__proof-card bhd-hero-v4__proof-card--orange" href="/policies/shipping-policy" aria-label="View Best Hydrate delivery information">
+        <a class="bhd-hero-v4__proof-card bhd-hero-v4__proof-card--orange" href="{{ hero_product_url }}" aria-label="Shop Best Hydrate with Free and Fast Delivery">
           <span class="bhd-hero-v4__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M3 6h11v10H3V6Zm11 4h4l3 3v3h-7v-6Z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
           </span>
@@ -373,22 +373,26 @@
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{
     position:absolute;
     z-index:4;
-    left:38%;
-    bottom:-1.5%;
-    width:min(28%,17.5rem);
+    left:auto;
+    right:14%;
+    bottom:1.5%;
+    width:min(25%,15.5rem);
     aspect-ratio:1;
     display:block;
+    transform:rotate(-1.25deg);
+    transform-origin:50% 100%;
   }
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product-shadow{
     position:absolute;
-    z-index:-1;
-    left:8%;
-    right:8%;
-    bottom:4%;
-    height:8%;
+    z-index:1;
+    left:14%;
+    right:12%;
+    bottom:1%;
+    height:7%;
     border-radius:50%;
-    background:rgba(4,35,74,.34);
-    filter:blur(8px);
+    background:rgba(54,34,22,.34);
+    filter:blur(6px);
+    transform:rotate(-5deg);
   }
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product img{
     position:relative;
@@ -441,7 +445,7 @@
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline span{font-size:clamp(1.45rem,3vw,2.25rem)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline strong{font-size:clamp(1.9rem,3.55vw,2.75rem)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline small{font-size:.52rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{left:36%;bottom:-1%;width:min(27%,10rem)}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{left:auto;right:8%;bottom:1%;width:min(24%,9.5rem);transform:rotate(-1.25deg)}
   }
 
   @media screen and (max-width:749px){
@@ -461,7 +465,7 @@
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline span{font-size:clamp(1.35rem,6.5vw,1.95rem)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline strong{font-size:clamp(1.75rem,7.8vw,2.45rem)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline small{margin-top:.4rem;font-size:.46rem;letter-spacing:.11em}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{left:43%;bottom:-1%;width:min(25%,6.7rem)}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{left:auto;right:7%;bottom:0;width:min(24%,6.4rem);transform:rotate(-1deg)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__copy{
       order:2;
       padding:24px 18px 28px;
