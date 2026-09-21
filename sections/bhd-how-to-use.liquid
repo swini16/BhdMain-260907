@@ -1,0 +1,92 @@
+{% comment %}
+  Best Hydrate: simple product-use explainer plus separate athlete use cycle.
+{% endcomment %}
+
+<section id="BhdHowTo-{{ section.id }}" class="bhd-how-to color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    <div class="bhd-how-to__head">
+      <p class="bhd-how-to__eyebrow">HOW TO USE</p>
+      <h2>Three simple steps.</h2>
+      <p>Keep Best Hydrate handy, mix one scoop with 500 mL of water, mix lightly and enjoy.</p>
+    </div>
+
+    <div class="bhd-how-to__grid" role="list">
+      <article class="bhd-how-to__card" role="listitem">
+        <span class="bhd-how-to__num">1</span>
+        <p class="bhd-how-to__label">PACK IT</p>
+        <h3>Keep it within reach.</h3>
+        <p>Store Best Hydrate in your gym bag, work bag or travel kit so it is ready when you need it.</p>
+      </article>
+
+      <article class="bhd-how-to__card" role="listitem">
+        <span class="bhd-how-to__num">2</span>
+        <p class="bhd-how-to__label">MIX IT</p>
+        <h3>1 scoop + 500 mL water.</h3>
+        <p>Add one scoop to 500 mL of water and mix lightly.</p>
+      </article>
+
+      <article class="bhd-how-to__card" role="listitem">
+        <span class="bhd-how-to__num">3</span>
+        <p class="bhd-how-to__label">ENJOY IT</p>
+        <h3>Hydration, ready to go.</h3>
+        <p>Drink and enjoy wherever your day, training or recovery takes you.</p>
+      </article>
+    </div>
+
+    <div class="bhd-how-to__cycle" aria-label="Athlete use cycle">
+      <p class="bhd-how-to__cycle-kicker">FOR ATHLETES</p>
+      <div class="bhd-how-to__cycle-row">
+        <span><strong>PREP</strong><small>Prepare for YOUR best.</small></span>
+        <b aria-hidden="true">→</b>
+        <span><strong>PERFORM</strong><small>Perform at YOUR best.</small></span>
+        <b aria-hidden="true">→</b>
+        <span><strong>RECOVER</strong><small>Recover for YOUR next best.</small></span>
+      </div>
+    </div>
+
+    <div class="bhd-how-to__actions">
+      <a class="button button--primary" href="/products/lemonade-best-hydrate">Shop Best Hydrate</a>
+      <a class="bhd-how-to__link" href="/pages/directions">Full directions →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  #BhdHowTo-{{ section.id }}{padding:clamp(3.8rem,5vw,6rem) 0}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__head{max-width:72rem;margin:0 auto 2.4rem;text-align:center}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__eyebrow,#BhdHowTo-{{ section.id }} .bhd-how-to__label,#BhdHowTo-{{ section.id }} .bhd-how-to__cycle-kicker{margin:0 0 .6rem;color:#52739d;font-size:1.1rem;font-weight:850;letter-spacing:.12em}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__head h2{margin:.2rem 0 .8rem;color:#0b2d67;font-size:clamp(2.6rem,4vw,4rem)}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__head>p:last-child{margin:0;color:#5f6f83;font-size:1.45rem;line-height:1.5}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.4rem}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__card{padding:2rem;border:1px solid #d7e3f1;border-radius:1.4rem;background:#fff}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__num{display:grid;place-items:center;width:3.4rem;height:3.4rem;margin-bottom:1.2rem;border-radius:999px;background:#0b2d67;color:#fff;font-weight:850}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__card h3{margin:.2rem 0 .6rem;color:#0b2d67;font-size:1.8rem}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__card p:last-child{margin:0;color:#5f6f83;font-size:1.3rem;line-height:1.5}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__cycle{margin-top:1.6rem;padding:1.6rem 1.8rem;border:1px solid #d7e3f1;border-radius:1.4rem;background:#f7fbff;text-align:center}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row span{display:grid;gap:.15rem}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row strong{color:#0b2d67;font-size:1.3rem;letter-spacing:.08em}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row small{color:#5f6f83;font-size:1.15rem}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row b{color:#66a7d4;font-size:1.6rem}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__actions{display:flex;align-items:center;justify-content:center;gap:1.2rem;flex-wrap:wrap;margin-top:2rem}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__link{color:#0b2d67;font-weight:800;text-underline-offset:.3rem}
+  @media screen and (max-width:749px){
+    #BhdHowTo-{{ section.id }} .bhd-how-to__head{text-align:left}
+    #BhdHowTo-{{ section.id }} .bhd-how-to__grid{grid-template-columns:1fr}
+    #BhdHowTo-{{ section.id }} .bhd-how-to__cycle{text-align:left}
+    #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row{justify-content:flex-start}
+    #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row b{display:none}
+    #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row span{width:100%}
+    #BhdHowTo-{{ section.id }} .bhd-how-to__actions{justify-content:flex-start}
+  }
+</style>
+
+{% schema %}
+{
+  "name":"Best Hydrate how to use",
+  "settings":[
+    {"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"}
+  ],
+  "presets":[{"name":"Best Hydrate how to use"}]
+}
+{% endschema %}
