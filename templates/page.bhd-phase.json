@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "bhd-phase-page",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}
