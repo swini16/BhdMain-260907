@@ -27,6 +27,10 @@
   {{ 'component-price.css' | asset_url | stylesheet_tag }}
   {{ 'quick-order-list.css' | asset_url | stylesheet_tag }}
   {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
+  <style>
+    .bhd-card-proof{display:grid;gap:.18rem;margin-top:.55rem;color:rgba(var(--color-foreground),.68);font-size:1.08rem;line-height:1.35}
+    .bhd-card-proof__stock{color:#26734d;font-weight:750}
+  </style>
 {%- endunless -%}
 {%- if card_product and card_product != empty -%}
   {%- liquid
@@ -207,6 +211,14 @@
               {%- endif -%}
 
               {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+              {%- if card_product.vendor == 'Best Hydrate' -%}
+                {%- assign bhd_per_serving = card_product.price | plus: 16 | divided_by: 32 -%}
+                <div class="bhd-card-proof">
+                  <span>32 servings · ≈ {{ bhd_per_serving | money }}/serving</span>
+                  <span>1 g sugar / 100 mL prepared</span>
+                  {%- if card_product.available -%}<span class="bhd-card-proof__stock">In stock · Free &amp; Fast Delivery</span>{%- endif -%}
+                </div>
+              {%- endif -%}
               {%- if card_product.quantity_price_breaks_configured? -%}
                 {% if card_product.variants_count == 1 and quick_add == 'bulk' %}
                   {% liquid
