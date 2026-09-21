@@ -71,6 +71,105 @@
 
     {{ content_for_header }}
 
+    {%- comment -%}
+      BHD Klaviyo onsite fallback
+      The Klaviyo Shopify app embed remains enabled. This fallback only activates
+      when the embed fails to render Klaviyo.js, preventing duplicate loaders/events.
+    {%- endcomment -%}
+    <script>
+      (function () {
+        if (window.__bhdKlaviyoFallbackChecked) return;
+        window.__bhdKlaviyoFallbackChecked = true;
+
+        function hasKlaviyoLoader() {
+          return Array.prototype.some.call(document.scripts, function (script) {
+            return script.src && /static\.klaviyo\.com\/onsite\/js\//.test(script.src);
+          });
+        }
+
+        function initKlaviyoQueue() {
+          if (window.klaviyo) return;
+          window._klOnsite = window._klOnsite || [];
+          try {
+            window.klaviyo = new Proxy({}, {
+              get: function (_, property) {
+                if (property === 'push') {
+                  return function () {
+                    window._klOnsite.push.apply(window._klOnsite, arguments);
+                  };
+                }
+                return function () {
+                  var args = Array.prototype.slice.call(arguments);
+                  var callback = typeof args[args.length - 1] === 'function' ? args.pop() : undefined;
+                  return new Promise(function (resolve) {
+                    window._klOnsite.push([property].concat(args, [function (result) {
+                      if (callback) callback(result);
+                      resolve(result);
+                    }]));
+                  });
+                };
+              }
+            });
+          } catch (error) {
+            window.klaviyo = window.klaviyo || [];
+            window.klaviyo.push = function () {
+              window._klOnsite.push.apply(window._klOnsite, arguments);
+            };
+          }
+        }
+
+        function activateFallback() {
+          if (hasKlaviyoLoader()) return;
+
+          initKlaviyoQueue();
+
+          var script = document.createElement('script');
+          script.type = 'text/javascript';
+          script.async = true;
+          script.src = 'https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=UmwHWm';
+          script.setAttribute('data-bhd-klaviyo-fallback', 'true');
+          document.head.appendChild(script);
+
+          {% if request.page_type == 'product' and product %}
+            if (!window.__bhdKlaviyoViewedProductTracked) {
+              window.__bhdKlaviyoViewedProductTracked = true;
+
+              var viewedProduct = {
+                Name: {{ product.title | json }},
+                ProductID: {{ product.id | json }},
+                Categories: {{ product.collections | map: 'title' | json }},
+                ImageURL: {{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }},
+                URL: {{ shop.url | append: product.url | json }},
+                Brand: {{ product.vendor | json }},
+                Price: {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+                CompareAtPrice: {{ product.compare_at_price_max | divided_by: 100.0 | json }}
+              };
+
+              window.klaviyo.track('Viewed Product', viewedProduct);
+              window.klaviyo.trackViewedItem({
+                Title: viewedProduct.Name,
+                ItemId: viewedProduct.ProductID,
+                Categories: viewedProduct.Categories,
+                ImageUrl: viewedProduct.ImageURL,
+                Url: viewedProduct.URL,
+                Metadata: {
+                  Brand: viewedProduct.Brand,
+                  Price: viewedProduct.Price,
+                  CompareAtPrice: viewedProduct.CompareAtPrice
+                }
+              });
+            }
+          {% endif %}
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', activateFallback, { once: true });
+        } else {
+          activateFallback();
+        }
+      })();
+    </script>
+
     {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
       assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
