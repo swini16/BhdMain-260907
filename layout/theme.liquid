@@ -145,19 +145,28 @@
                 CompareAtPrice: {{ product.compare_at_price_max | divided_by: 100.0 | json }}
               };
 
-              window.klaviyo.track('Viewed Product', viewedProduct);
-              window.klaviyo.trackViewedItem({
-                Title: viewedProduct.Name,
-                ItemId: viewedProduct.ProductID,
-                Categories: viewedProduct.Categories,
-                ImageUrl: viewedProduct.ImageURL,
-                Url: viewedProduct.URL,
-                Metadata: {
-                  Brand: viewedProduct.Brand,
-                  Price: viewedProduct.Price,
-                  CompareAtPrice: viewedProduct.CompareAtPrice
-                }
-              });
+              function trackViewedProduct() {
+                window.klaviyo.track('Viewed Product', viewedProduct);
+                window.klaviyo.trackViewedItem({
+                  Title: viewedProduct.Name,
+                  ItemId: viewedProduct.ProductID,
+                  Categories: viewedProduct.Categories,
+                  ImageUrl: viewedProduct.ImageURL,
+                  Url: viewedProduct.URL,
+                  Metadata: {
+                    Brand: viewedProduct.Brand,
+                    Price: viewedProduct.Price,
+                    CompareAtPrice: viewedProduct.CompareAtPrice
+                  }
+                });
+              }
+
+              var identifiedEmail = new URLSearchParams(window.location.search).get('utm_email');
+              if (identifiedEmail) {
+                window.klaviyo.identify({ email: identifiedEmail }).then(trackViewedProduct);
+              } else {
+                trackViewedProduct();
+              }
             }
           {% endif %}
         }
