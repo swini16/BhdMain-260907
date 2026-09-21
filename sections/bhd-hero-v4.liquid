@@ -1,5 +1,5 @@
-{% assign hero_product = all_products['lemonade-best-hydrate'] %}
-{% assign hero_product_image = hero_product.featured_image %}
+{% assign hero_product_url = '/products/lemonade-best-hydrate' %}
+{% assign hero_product_image_url = 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-lemonade-clean-20260910.png?v=1789057777' %}
 
 <section id="BhdHeroV4-{{ section.id }}" class="bhd-hero-v4" data-bhd-hero-v4>
   <h1 class="visually-hidden">The Science of Hydration. Hydrate for YOUR Best Day!</h1>
@@ -44,11 +44,9 @@
 
         <div class="bhd-hero-v4__formula-card">
           <div class="bhd-hero-v4__formula-kicker">SCIENTIFIC FORMULA</div>
-          {% if hero_product_image %}
-            <a class="bhd-hero-v4__product" href="{{ hero_product.url }}" aria-label="Shop Best Hydrate">
-              <img src="{{ hero_product_image | image_url: width: 760 }}" alt="{{ hero_product.title | escape }}" width="760" height="760" loading="eager" decoding="async">
-            </a>
-          {% endif %}
+          <a class="bhd-hero-v4__product" href="{{ hero_product_url }}" aria-label="Shop Best Hydrate">
+            <img src="{{ hero_product_image_url }}&width=760" alt="Best Hydrate Lemonade electrolyte powder jar" width="760" height="760" loading="eager" decoding="async">
+          </a>
           <div class="bhd-hero-v4__nutrients" aria-label="Formula components">
             <span>Na<sup>+</sup></span><span>K<sup>+</sup></span><span>Cl<sup>−</sup></span><span>HCO<sub>3</sub><sup>−</sup></span><span class="is-wide">Glucose</span>
           </div>
@@ -87,7 +85,7 @@
       <p>Best Hydrate keeps glucose alongside five electrolyte species, without the heavy sugar load common in traditional sports drinks.</p>
     </div>
     <div class="bhd-hero-v4__cro-actions">
-      <a class="button button--primary" href="{{ hero_product.url }}">Shop Best Hydrate</a>
+      <a class="button button--primary" href="{{ hero_product_url }}">Shop Best Hydrate</a>
       <a class="button button--secondary" href="/pages/low-sugar-hydration-glucose-sglt1">Why low sugar?</a>
     </div>
     <div class="bhd-hero-v4__cro-trust" aria-label="Best Hydrate product highlights">
