@@ -1,5 +1,4 @@
-{% assign hero_product = section.settings.product %}
-{% if hero_product == blank %}{% assign hero_product = all_products['lemonade-best-hydrate'] %}{% endif %}
+{% assign hero_product = all_products['lemonade-best-hydrate'] %}
 {% assign hero_product_image = hero_product.featured_image %}
 
 <section id="BhdHeroV4-{{ section.id }}" class="bhd-hero-v4" data-bhd-hero-v4>
