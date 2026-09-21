@@ -18,7 +18,7 @@
       <p class="bhd-hero-v4__body">
         <span class="bhd-hero-v4__body-line">Zero sugar leaves helpful glucose out. Traditional sports drinks bring a heavy sugar load.</span>
         <span class="bhd-hero-v4__body-line">Best Hydrate hits the hydration sweet spot with purposeful glucose, five electrolyte species,</span>
-        <span class="bhd-hero-v4__body-line">and just 1 g sugar per 100 mL prepared.</span>
+        <span class="bhd-hero-v4__body-line">and just 1 g sugar per 100 mL prepared. And it fits in your bag :D</span>
       </p>
 
       <div class="bhd-hero-v4__actions">
@@ -101,6 +101,7 @@
   }
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__copy{
     min-width:0;
+    overflow:hidden;
     padding:clamp(26px,3vw,48px) clamp(22px,2.8vw,46px);
     display:flex;
     flex-direction:column;
@@ -134,10 +135,13 @@
     font-weight:850;
   }
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body{
+    width:100%;
+    max-width:100%;
     margin:0;
     color:var(--bhd-muted);
     font-size:clamp(.98rem,1.08vw,1.2rem);
     line-height:1.45;
+    overflow-wrap:break-word;
   }
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body-line{display:block}
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__actions{
@@ -265,12 +269,13 @@
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{
     position:absolute;
     z-index:4;
-    right:3.5%;
-    bottom:3%;
-    width:min(27%,17rem);
+    left:24%;
+    right:auto;
+    bottom:3.5%;
+    width:min(25%,15rem);
     aspect-ratio:1;
     display:block;
-    filter:drop-shadow(0 16px 22px rgba(7,43,104,.24));
+    filter:drop-shadow(0 14px 18px rgba(7,43,104,.2));
   }
   #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product::before{
     content:"";
@@ -291,6 +296,21 @@
     object-fit:contain;
   }
 
+
+  @media screen and (max-width:1399px) and (min-width:1200px){
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__copy{padding:30px 28px}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__title{font-size:clamp(2.2rem,2.8vw,2.65rem)}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__middle{font-size:1.08rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body{font-size:.9rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body-line{display:inline}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body-line:not(:last-child)::after{content:" "}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__actions .button{min-height:4rem;font-size:.96rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__primary,
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__secondary{min-width:14rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__proof span{font-size:.68rem;padding:.48rem .62rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cycle span{min-width:6.2rem;font-size:.72rem}
+  }
+
   @media screen and (max-width:1199px) and (min-width:750px){
     #BhdHeroV4-{{ section.id }}{padding:14px}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__shell{
@@ -305,7 +325,7 @@
       font-size:.72rem;
     }
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__title{
-      font-size:clamp(2.1rem,3.45vw,2.95rem);
+      font-size:clamp(1.25rem,2.6vw,2rem);
       letter-spacing:-.04em;
     }
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__middle{
@@ -313,9 +333,11 @@
       font-size:clamp(.98rem,1.35vw,1.18rem);
     }
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body{
-      font-size:clamp(.78rem,1.08vw,.92rem);
+      font-size:clamp(.72rem,.96vw,.88rem);
       line-height:1.42;
     }
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body-line{display:inline}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body-line:not(:last-child)::after{content:" "}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__actions{
       gap:.55rem;
       margin-top:1rem;
@@ -352,7 +374,7 @@
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline span{font-size:clamp(1.6rem,3.1vw,2.6rem)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline strong{font-size:clamp(2rem,3.6vw,3.1rem)}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline small{font-size:.58rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{width:min(28%,10rem)}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{left:22%;right:auto;bottom:2.5%;width:min(25%,9rem)}
   }
 
   @media screen and (max-width:749px){
@@ -384,9 +406,10 @@
       letter-spacing:.13em;
     }
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__product{
-      right:2.5%;
+      left:28%;
+      right:auto;
       bottom:2%;
-      width:min(24%,6rem);
+      width:min(23%,5.8rem);
     }
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__copy{
       order:2;
