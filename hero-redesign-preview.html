@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Best Hydrate Hero Redesign Preview</title>
+<style>
+  :root{--navy:#0e1b4d;--blue:#4770db;--deep:#072b68;--bg:#eff0f5;--white:#fff;--muted:#52657a;--line:#dbe4f0}
+  *{box-sizing:border-box}
+  body{margin:0;background:#eef3f8;color:var(--navy);font-family:Questrial,Arial,sans-serif}
+  h1,h2,h3,.kicker,.device{font-family:Archivo,Arial,sans-serif}
+  .sheet{max-width:1800px;margin:0 auto;padding:24px}
+  .title{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:18px}
+  .title h1{margin:0;font-size:34px;letter-spacing:-.03em}
+  .title p{margin:4px 0 0;color:var(--muted)}
+  .badge{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-weight:700}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .colhead{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-radius:14px 14px 0 0;color:#fff;font-weight:800}
+  .beforeHead{background:#313b4a}.afterHead{background:linear-gradient(90deg,#4770db,#072b68)}
+  .colhead small{font-weight:500;opacity:.9}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:0 0 16px 16px;padding:16px;box-shadow:0 8px 22px rgba(14,27,77,.06)}
+  .row{margin-bottom:20px}
+  .row:last-child{margin-bottom:0}
+  .device{font-size:13px;letter-spacing:.08em;font-weight:800;color:#6a7c93;margin:0 0 8px}
+  .frame{border:1px solid #d5deea;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 8px 20px rgba(14,27,77,.08)}
+  .beforeDesktop img,.beforeMobile img{display:block;width:100%;height:auto}
+  .mobileWrap{max-width:290px;margin:auto}
+  .tabletWrap{max-width:760px;margin:auto}
+  .currentTablet{padding:16px;background:linear-gradient(180deg,#fff,#eaf6fb)}
+  .currentTablet .top{text-align:center;margin-bottom:12px}
+  .currentTablet .top .eyebrow{font-size:10px;letter-spacing:.3em;font-weight:800}
+  .currentTablet .top .headline{font-family:Archivo,Arial,sans-serif;font-weight:900;color:#078ee7;font-size:36px;line-height:.95}
+  .currentTablet .top .headline span{display:block;color:#072b68;font-size:16px}
+  .currentTablet .top .tag{font-weight:800;margin-top:6px}
+  .tabletStage{display:grid;grid-template-columns:1fr 230px 1fr;gap:12px;align-items:stretch;position:relative}
+  .tabletPic{position:relative;border-radius:16px;overflow:hidden;min-height:340px;background:#d7e9f3}
+  .tabletPic img{width:100%;height:100%;object-fit:cover;display:block}
+  .tabletPic .copy{position:absolute;left:12px;right:12px;bottom:12px;color:#fff;text-shadow:0 2px 7px rgba(0,0,0,.45);font-weight:800}
+  .tabletPic.right .copy{text-align:right}
+  .formula{background:#fff;border:1px solid #dbe4f0;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;box-shadow:0 12px 24px rgba(7,43,104,.12)}
+  .formula small{font-size:10px;letter-spacing:.18em;font-weight:800}
+  .formula img{width:100%;max-width:210px;display:block}
+  .formula .ions{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;font-size:11px;font-weight:800}
+  .formula .ions span{background:#edf7fc;border-radius:999px;padding:5px 8px}
+
+  .hero{background:linear-gradient(135deg,#fff 0%,#f6fbff 58%,#e7f3fb 100%);position:relative;overflow:hidden}
+  .offer{background:linear-gradient(90deg,#4770db,#072b68);color:#fff;text-align:center;padding:10px 16px;font-weight:800;font-size:14px}
+  .sitebar{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid #e2eaf3;background:rgba(255,255,255,.94)}
+  .sitebar img{width:120px;height:56px;object-fit:contain;object-position:left center}
+  .sitebar .nav{display:flex;gap:18px;font-size:13px;font-weight:700}
+  .heroInner{display:grid;grid-template-columns:1.05fr .95fr;min-height:470px}
+  .copyArea{padding:46px 34px 28px 36px;display:flex;flex-direction:column;justify-content:center}
+  .kicker{color:#4770db;font-size:13px;letter-spacing:.12em;font-weight:850;margin-bottom:10px}
+  .copyArea h2{font-size:48px;line-height:.98;letter-spacing:-.035em;margin:0 0 14px;color:#0e1b4d}
+  .copyArea h2 em{font-style:normal;color:#4770db}
+  .lead{font-size:20px;line-height:1.45;color:#42556d;margin:0 0 18px;max-width:600px}
+  .cycle{display:flex;gap:10px;margin:0 0 20px;flex-wrap:wrap}
+  .cycle span{display:flex;align-items:center;gap:8px;background:#edf4ff;border:1px solid #d8e5fb;border-radius:999px;padding:8px 11px;font-weight:800;font-size:12px}
+  .cycle b{width:24px;height:24px;border-radius:999px;background:#4770db;color:#fff;display:grid;place-items:center;font-size:11px}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+  .actions a{text-decoration:none;border-radius:999px;padding:13px 20px;font-weight:850;font-size:14px}
+  .primary{background:#4770db;color:#fff}.secondary{border:1px solid #0e1b4d;color:#0e1b4d;background:#fff}
+  .trust{display:flex;gap:8px 12px;flex-wrap:wrap;color:#52657a;font-size:12px}
+  .trust span{padding:7px 10px;border-radius:999px;background:#fff;border:1px solid #dde7f2}
+  .visual{position:relative;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 55% 38%,rgba(120,210,255,.42),transparent 40%)}
+  .visual:after{content:"";position:absolute;inset:auto -10% -24% 22%;height:65%;background:radial-gradient(ellipse,rgba(71,112,219,.13),transparent 70%);transform:rotate(-7deg)}
+  .visual img{position:relative;z-index:2;width:min(92%,520px);height:auto;filter:drop-shadow(0 24px 30px rgba(7,43,104,.22))}
+  .afterTablet .copyArea h2{font-size:38px}.afterTablet .lead{font-size:17px}
+  .afterTablet .heroInner{min-height:400px}
+  .afterMobile{max-width:290px;margin:auto}
+  .afterMobile .offer{font-size:9px;padding:7px 5px}
+  .afterMobile .sitebar{padding:8px 10px}
+  .afterMobile .sitebar img{width:78px;height:36px}.afterMobile .nav{display:none}
+  .afterMobile .heroInner{display:flex;flex-direction:column;min-height:auto}
+  .afterMobile .copyArea{padding:20px 16px 6px;text-align:center;align-items:center}
+  .afterMobile .kicker{font-size:9px;margin-bottom:6px}
+  .afterMobile .copyArea h2{font-size:28px;line-height:1;margin-bottom:9px}
+  .afterMobile .lead{font-size:13px;margin-bottom:11px;line-height:1.35}
+  .afterMobile .cycle{justify-content:center;gap:5px;margin-bottom:12px}
+  .afterMobile .cycle span{font-size:9px;padding:5px 7px}.afterMobile .cycle b{width:18px;height:18px}
+  .afterMobile .actions{width:100%;display:grid;grid-template-columns:1fr;margin-bottom:10px}
+  .afterMobile .actions a{font-size:11px;padding:10px 12px}
+  .afterMobile .visual{padding:2px 14px 4px;min-height:200px}
+  .afterMobile .visual img{width:92%}
+  .afterMobile .trust{justify-content:center;font-size:9px;gap:5px}.afterMobile .trust span{padding:4px 6px}
+  .notes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+  .note{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .note h3{margin:0 0 8px;font-size:15px}.note ul{margin:0;padding-left:18px;color:#52657a;line-height:1.5}
+  @media(max-width:1100px){.grid{grid-template-columns:1fr}.notes{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="title">
+    <div><h1>Best Hydrate hero redesign</h1><p>Actual Shopify assets on the left. One responsive hero architecture on the right.</p></div>
+    <div class="badge">PREVIEW ONLY · no implementation</div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="colhead beforeHead"><span>BEFORE · CURRENT SHOPIFY HERO</span><small>device-specific assets + carousel</small></div>
+      <div class="panel">
+        <div class="row">
+          <div class="device">DESKTOP · actual live desktop asset</div>
+          <div class="frame beforeDesktop">
+            <img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-hero-desktop-20260911.webp?v=1789147024" alt="Current Best Hydrate desktop hero">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="device">TABLET · current live tablet composition using actual Shopify assets</div>
+          <div class="frame tabletWrap currentTablet">
+            <div class="top">
+              <div class="eyebrow">BEST HYDRATE</div>
+              <div class="headline"><span>THE SCIENCE OF</span>HYDRATION.</div>
+              <div class="tag">Hydrate For <em>YOUR</em> Best Day!</div>
+            </div>
+            <div class="tabletStage">
+              <div class="tabletPic"><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-hero-tablet-performance-20260911.png?v=1789147094"><div class="copy">PERFORMANCE<br><small>Built for Performance Hydration.</small></div></div>
+              <div class="formula"><small>SCIENTIFIC FORMULA</small><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-lemonade-clean-20260910.png?v=1789057777"><div class="ions"><span>Na+</span><span>K+</span><span>Cl−</span><span>HCO3−</span><span>Glucose</span></div></div>
+              <div class="tabletPic right"><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-hero-tablet-daily-20260911.png?v=1789147197"><div class="copy">DAILY<br><small>For YOUR Best Everyday.</small></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="device">MOBILE · actual current first-slide asset</div>
+          <div class="frame mobileWrap beforeMobile">
+            <img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/bhd-mobile-performance-20260911.webp?v=1789147246" alt="Current Best Hydrate mobile performance hero">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="colhead afterHead"><span>AFTER · PROPOSED SINGLE RESPONSIVE HERO</span><small>same component, same product + brand assets</small></div>
+      <div class="panel">
+        <div class="row">
+          <div class="device">DESKTOP · proposed</div>
+          <div class="frame hero">
+            <div class="offer">LAUNCH OFFER · 15% OFF · CODE FIRST15 · Free & Fast Delivery</div>
+            <div class="sitebar">
+              <img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/LOGOClear_2.png?v=1682354904">
+              <div class="nav"><span>Science</span><span>Solutions</span><span>Connect</span><span>Shop</span></div>
+            </div>
+            <div class="heroInner">
+              <div class="copyArea">
+                <div class="kicker">LOW-SUGAR PERFORMANCE HYDRATION</div>
+                <h2>Hydrate For <em>YOUR</em> Best Day!</h2>
+                <p class="lead">Purposeful glucose + five electrolyte species. <strong>1 g sugar / 100 mL prepared.</strong></p>
+                <div class="cycle"><span><b>1</b>PREP</span><span><b>2</b>PERFORM</span><span><b>3</b>RECOVER</span></div>
+                <div class="actions"><a class="primary" href="#">Shop Best Hydrate →</a><a class="secondary" href="#">Why low sugar?</a></div>
+                <div class="trust"><span>Health Canada NPN 80118664</span><span>Made in Alberta</span><span>32 servings</span><span>Free & Fast Delivery</span></div>
+              </div>
+              <div class="visual"><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-lemonade-splash-20260910.png?v=1789057786"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="device">TABLET · same component reflowed</div>
+          <div class="frame hero afterTablet tabletWrap">
+            <div class="offer">LAUNCH OFFER · 15% OFF · CODE FIRST15 · Free & Fast Delivery</div>
+            <div class="sitebar"><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/LOGOClear_2.png?v=1682354904"><div class="nav"><span>Science</span><span>Solutions</span><span>Shop</span></div></div>
+            <div class="heroInner">
+              <div class="copyArea">
+                <div class="kicker">LOW-SUGAR PERFORMANCE HYDRATION</div>
+                <h2>Hydrate For <em>YOUR</em> Best Day!</h2>
+                <p class="lead">Purposeful glucose + five electrolyte species. 1 g sugar / 100 mL prepared.</p>
+                <div class="cycle"><span><b>1</b>PREP</span><span><b>2</b>PERFORM</span><span><b>3</b>RECOVER</span></div>
+                <div class="actions"><a class="primary" href="#">Shop Best Hydrate →</a><a class="secondary" href="#">Why low sugar?</a></div>
+                <div class="trust"><span>NPN 80118664</span><span>32 servings</span><span>Free & Fast Delivery</span></div>
+              </div>
+              <div class="visual"><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-lemonade-splash-20260910.png?v=1789057786"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="device">MOBILE · same component stacked</div>
+          <div class="frame hero afterMobile">
+            <div class="offer">15% OFF · CODE FIRST15</div>
+            <div class="sitebar"><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/LOGOClear_2.png?v=1682354904"></div>
+            <div class="heroInner">
+              <div class="copyArea">
+                <div class="kicker">LOW-SUGAR PERFORMANCE HYDRATION</div>
+                <h2>Hydrate For <em>YOUR</em> Best Day!</h2>
+                <p class="lead">Purposeful glucose + five electrolyte species.<br><strong>1 g sugar / 100 mL prepared.</strong></p>
+                <div class="cycle"><span><b>1</b>PREP</span><span><b>2</b>PERFORM</span><span><b>3</b>RECOVER</span></div>
+                <div class="actions"><a class="primary" href="#">Shop Best Hydrate →</a><a class="secondary" href="#">Why low sugar?</a></div>
+              </div>
+              <div class="visual"><img src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-lemonade-splash-20260910.png?v=1789057786"></div>
+              <div class="copyArea" style="padding-top:2px"><div class="trust"><span>NPN 80118664</span><span>Made in Alberta</span><span>32 servings</span><span>Free & Fast</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><h3>What stays</h3><ul><li>Existing Best Hydrate site/theme and navigation</li><li>Actual logo, product packaging and brand palette</li><li>Hydrate For YOUR Best Day! brand line</li><li>Performance / Daily / Medical / Humanitarian content remains below the hero</li></ul></div>
+    <div class="note"><h3>What changes</h3><ul><li>One hero component instead of separate desktop/tablet/mobile systems</li><li>No carousel JavaScript in the hero</li><li>Real HTML headline, value proposition and calls to action</li><li>One responsive product visual with srcset/sizes</li></ul></div>
+  </div>
+</div>
+</body>
+</html>
