@@ -370,36 +370,95 @@
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__icon svg{width:1.05rem;height:1.05rem}
   }
 
-  @media screen and (max-width:1199px) and (min-width:750px){
+  @media screen and (max-width:1199px) and (min-width:900px){
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__shell{
-      grid-template-columns:minmax(0,49%) minmax(0,51%);
-      min-height:530px;
+      grid-template-columns:minmax(0,53%) minmax(0,47%);
+      min-height:470px;
     }
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__copy{padding:24px 22px}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__eyebrow{margin-bottom:.55rem;font-size:.7rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__title{font-size:clamp(1.55rem,2.55vw,2rem);letter-spacing:-.035em}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__middle{margin:.7rem 0 .5rem;font-size:clamp(.92rem,1.25vw,1.08rem)}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body{font-size:clamp(.71rem,.95vw,.84rem);line-height:1.4}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__actions{gap:.55rem;margin-top:.9rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__button{min-height:3.7rem;padding:.6rem .8rem;font-size:.88rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__secondary small{font-size:.56rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__copy{padding:28px 26px}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__eyebrow{margin-bottom:.65rem;font-size:.76rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__title{font-size:clamp(2.05rem,3.2vw,2.55rem);letter-spacing:-.04em}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__middle{margin:.78rem 0 .55rem;font-size:1.1rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body{font-size:.92rem;line-height:1.45}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__actions{gap:.65rem;margin-top:1rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__button{min-height:4rem;padding:.7rem 1rem;font-size:.98rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__secondary small{font-size:.66rem}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__proof{
       grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:.45rem;
-      margin-top:.75rem;
+      gap:.5rem;
+      margin-top:.8rem;
     }
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__proof-card{min-height:3.35rem;padding:.45rem .55rem;font-size:.64rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__icon{flex-basis:1.7rem;width:1.7rem;height:1.7rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__icon svg{width:1rem;height:1rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cycle{width:100%;gap:.45rem;margin-top:.6rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cycle-pill{min-height:2.8rem;padding:.4rem .55rem;font-size:.66rem;gap:.35rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cycle-icon svg{width:1.15rem;height:1.15rem}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__visual{min-height:530px}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__proof-card{min-height:3.6rem;padding:.5rem .6rem;font-size:.75rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__icon{flex-basis:1.85rem;width:1.85rem;height:1.85rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__icon svg{width:1.1rem;height:1.1rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cycle{width:100%;gap:.5rem;margin-top:.7rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cycle-pill{min-height:3rem;padding:.45rem .6rem;font-size:.74rem;gap:.4rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cycle-icon svg{width:1.2rem;height:1.2rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__visual{min-height:470px}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__scene{object-position:center center}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline{top:6%;left:5%;width:58%}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline span{font-size:clamp(1.45rem,3vw,2.25rem)}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline strong{font-size:clamp(1.9rem,3.55vw,2.75rem)}
-    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__tagline small{font-size:.52rem}
+  }
+
+  @media screen and (max-width:899px) and (min-width:750px){
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__shell{
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__visual{
+      order:1;
+      min-height:0;
+      height:auto;
+      aspect-ratio:3 / 2;
+    }
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__scene{
+      object-fit:contain;
+      object-position:center center;
+    }
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__visual::before{display:none}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__copy{
+      order:2;
+      padding:30px 28px 34px;
+      text-align:center;
+      align-items:center;
+      background:#fff;
+    }
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__eyebrow{margin-bottom:.7rem;font-size:.8rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__title{
+      width:100%;
+      max-width:720px;
+      font-size:clamp(2.25rem,5vw,2.8rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+    }
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__middle{margin:.9rem 0 .65rem;font-size:1.2rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__body{max-width:720px;font-size:1rem;line-height:1.52}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__actions{
+      width:min(100%,720px);
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:.7rem;
+      margin-top:1.1rem;
+    }
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__button{min-height:4.25rem;font-size:1rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__secondary small{font-size:.72rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__proof{
+      width:min(100%,720px);
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:.55rem;
+      margin-top:.9rem;
+    }
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__proof-card{
+      min-height:4rem;
+      padding:.55rem .6rem;
+      font-size:.78rem;
+      text-align:left;
+    }
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__icon{flex-basis:2rem;width:2rem;height:2rem}
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cycle{
+      width:min(100%,720px);
+      gap:.6rem;
+      margin-top:.8rem;
+    }
+    #BhdHeroV4-{{ section.id }} .bhd-hero-v4__cycle-pill{min-height:3.2rem;font-size:.8rem}
   }
 
   @media screen and (max-width:749px){
