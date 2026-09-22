@@ -84,6 +84,13 @@
       <img
         class="bhd-hero-v4__scene"
         src="{{ hero_scene_url }}"
+        srcset="{{ hero_scene_url }}&width=384 384w,
+                {{ hero_scene_url }}&width=576 576w,
+                {{ hero_scene_url }}&width=768 768w,
+                {{ hero_scene_url }}&width=960 960w,
+                {{ hero_scene_url }}&width=1200 1200w,
+                {{ hero_scene_url }}&width=1536 1536w"
+        sizes="(max-width: 749px) 100vw, (max-width: 1680px) 51vw, 857px"
         alt="Athlete mixing hydration beside a mountain lake"
         width="1536"
         height="1024"
