@@ -82,8 +82,8 @@
     let raf=0;
 
     const schedule=()=>{if(!raf)raf=requestAnimationFrame(update)};
-    const headerBusy=()=>Boolean(header&&(header.matches(':focus-within')||header.querySelector('.is-open,.bhd-hover-open,details[open]')));
-    const measureHeader=()=>{if(!header)return 82;const height=Math.max(1,Math.ceil(header.getBoundingClientRect().height));root.style.setProperty('--bhd-scroll-header-height',`${height}px`);return height};
+    const headerBusy=()=>Boolean(shell&&(shell.matches(':focus-within')||header?.querySelector('.is-open,.bhd-hover-open,details[open]')));
+    const measureHeader=()=>{const target=shell||header;if(!target)return 82;const height=Math.max(1,Math.ceil(target.getBoundingClientRect().height));root.style.setProperty('--bhd-scroll-header-height',`${height}px`);return height};
     const breadcrumbSource=()=>document.querySelector(BREADCRUMB_SELECTOR);
 
     const syncBreadcrumb=()=>{
@@ -150,9 +150,23 @@
     const init=()=>{
       header=document.querySelector('.bhd-header');
       if(!header)return;
-      shell=header.closest('.shopify-section')||header;
-      shell.classList.add('bhd-sticky-header-shell');
-      shell.dataset.bhdScrollStack='up-menu-breadcrumb';
+      const headerSection=header.closest('.shopify-section')||header;
+      const announcementNode=document.querySelector('.announcement-bar-section');
+      const announcementSection=announcementNode?.closest('.shopify-section')||announcementNode;
+
+      if(announcementSection&&announcementSection!==headerSection&&announcementSection.parentNode===headerSection.parentNode&&!window.Shopify?.designMode){
+        const stack=document.createElement('div');
+        stack.className='bhd-sticky-header-shell';
+        stack.dataset.bhdScrollStack='offer-up-menu-breadcrumb';
+        announcementSection.parentNode.insertBefore(stack,announcementSection);
+        stack.appendChild(announcementSection);
+        stack.appendChild(headerSection);
+        shell=stack;
+      }else{
+        shell=headerSection;
+        shell.classList.add('bhd-sticky-header-shell');
+        shell.dataset.bhdScrollStack='offer-up-menu-breadcrumb';
+      }
       syncBreadcrumb();
       measureHeader();
       setHeaderVisible(true);
@@ -177,7 +191,7 @@
 
       if('ResizeObserver'in window){
         const resizeObserver=new ResizeObserver(schedule);
-        resizeObserver.observe(header);
+        resizeObserver.observe(shell);
       }
     };
 
