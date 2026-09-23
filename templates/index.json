@@ -10,6 +10,10 @@
  */
 {
   "sections": {
+    "publication_ribbon": {
+      "type": "bhd-publication-ribbon",
+      "settings": {}
+    },
     "hero": {
       "type": "bhd-hero-v4",
       "settings": {
@@ -112,6 +116,7 @@
     }
   },
   "order": [
+    "publication_ribbon",
     "hero",
     "science_research",
     "benefits",
