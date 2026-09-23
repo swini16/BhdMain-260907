@@ -75,8 +75,7 @@
     "science_research": {
       "type": "bhd-science-research",
       "settings": {
-        "color_scheme": "scheme-1",
-        "publication_published": true
+        "color_scheme": "scheme-1"
       }
     },
     "product_story": {
