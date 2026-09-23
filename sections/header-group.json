@@ -17,8 +17,8 @@
         "launch_offer": {
           "type": "announcement",
           "settings": {
-            "text": "LAUNCH OFFER • 15% OFF • CODE FIRST15 • Free & Fast Delivery",
-            "link": "shopify://products/lemonade-best-hydrate"
+            "text": "JUST PUBLISHED • New peer-reviewed hydration review in Frontiers in Nutrition • Read →",
+            "link": "https://besthydrate.com/blogs/news/just-published-innovative-oral-hydration-technologies"
           }
         }
       },
