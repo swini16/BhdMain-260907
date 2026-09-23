@@ -1,0 +1,26 @@
+<section id="BhdPublicationRibbon-{{ section.id }}" class="bhd-publication-ribbon" aria-label="Publication announcement">
+  <a href="/blogs/news/just-published-innovative-oral-hydration-technologies">
+    <strong>JUST PUBLISHED</strong>
+    <span>New peer-reviewed hydration review in <em>Frontiers in Nutrition</em></span>
+    <b>Read →</b>
+  </a>
+</section>
+
+<style>
+  #BhdPublicationRibbon-{{ section.id }}{background:#eef8ff;border-bottom:1px solid #cfe4f3}
+  #BhdPublicationRibbon-{{ section.id }} a{display:flex;align-items:center;justify-content:center;gap:.8rem;min-height:4.4rem;padding:.85rem 1.5rem;color:#0b3f73;text-decoration:none;text-align:center;font-size:1.25rem;line-height:1.25}
+  #BhdPublicationRibbon-{{ section.id }} strong{font-size:1.05rem;letter-spacing:.11em}
+  #BhdPublicationRibbon-{{ section.id }} b{white-space:nowrap}
+  @media(max-width:749px){
+    #BhdPublicationRibbon-{{ section.id }} a{flex-wrap:wrap;gap:.35rem .65rem;padding:.72rem 1rem;font-size:1.12rem}
+    #BhdPublicationRibbon-{{ section.id }} strong{width:100%}
+  }
+</style>
+
+{% schema %}
+{
+  "name":"Publication ribbon",
+  "settings":[],
+  "presets":[{"name":"Publication ribbon"}]
+}
+{% endschema %}
