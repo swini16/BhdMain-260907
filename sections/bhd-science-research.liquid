@@ -21,39 +21,23 @@
     <div class="bhd-science-research__shell">
       <div class="bhd-science-research__intro">
         <p class="bhd-science-research__eyebrow">SCIENCE UPDATE</p>
-        {% if section.settings.publication_published %}
-          <span class="bhd-science-research__status">NOW PUBLISHED</span>
-          <h2 id="BhdScienceResearchHeading-{{ section.id }}">New peer-reviewed review explores the expanding potential of hydration.</h2>
-          <p><em>Revisiting the Need for Innovative Oral Hydration Technologies</em> is now published in <em>Frontiers in Nutrition</em>, examining developments and opportunities across hydration technology and applications.</p>
-          <a class="bhd-science-research__cta" href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2026.1851906/full" target="_blank" rel="noopener">Read the review →</a>
-        {% else %}
-          <span class="bhd-science-research__status">PUBLICATION COMING SOON</span>
-          <h2 id="BhdScienceResearchHeading-{{ section.id }}">Peer-reviewed hydration research is nearing publication.</h2>
-          <p>Our oral hydration review has been accepted by <em>Frontiers in Nutrition</em> and is now in final production. We’ll add the final article here as soon as it is released.</p>
-          <a class="bhd-science-research__cta" href="/pages/publications">Follow the publication →</a>
-        {% endif %}
+        <span class="bhd-science-research__status">NOW PUBLISHED</span>
+        <h2 id="BhdScienceResearchHeading-{{ section.id }}">New peer-reviewed review explores the expanding potential of hydration.</h2>
+        <p><em>Revisiting the Need for Innovative Oral Hydration Technologies</em> is now published in <em>Frontiers in Nutrition</em>, examining developments and opportunities across hydration technology and applications.</p>
+        <a class="bhd-science-research__cta" href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2026.1851906/full" target="_blank" rel="noopener">Read the review →</a>
       </div>
 
       <div class="bhd-science-research__grid">
-        {% if section.settings.publication_published %}
         <a class="bhd-science-research__card" href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2026.1851906/full" target="_blank" rel="noopener">
           <span class="bhd-science-research__label">PUBLISHED</span>
           <strong>Peer-reviewed hydration review</strong>
           <span>Published in <em>Frontiers in Nutrition</em> on September 23, 2026. Explore the review and its discussion of hydration technology and applications.</span>
           <b>Read the article →</b>
         </a>
-        {% else %}
-        <a class="bhd-science-research__card" href="/pages/publications">
-          <span class="bhd-science-research__label">FINAL PRODUCTION</span>
-          <strong>Peer-reviewed oral hydration review</strong>
-          <span>Accepted by <em>Frontiers in Nutrition</em>. The final formatted publication is being prepared.</span>
-          <b>View publication status →</b>
-        </a>
-        {% endif %}
         <a class="bhd-science-research__card" href="/pages/current-research">
           <span class="bhd-science-research__label">IN PROGRESS</span>
           <strong>Current research program</strong>
-          <span>See what is accepted, planned, exploratory and still awaiting data.</span>
+          <span>See what is published, planned, exploratory and still awaiting data.</span>
           <b>Current research →</b>
         </a>
         <a class="bhd-science-research__card" href="/pages/research-partners">
@@ -103,10 +87,7 @@
 {% schema %}
 {
   "name":"Science and research",
-  "settings":[
-    {"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"},
-    {"type":"checkbox","id":"publication_published","label":"Review is published","default":false}
-  ],
+  "settings":[{"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"}],
   "presets":[{"name":"Science and research"}]
 }
 {% endschema %}
