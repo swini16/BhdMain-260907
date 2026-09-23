@@ -1,19 +1,67 @@
 <section id="BhdPublicationRibbon-{{ section.id }}" class="bhd-publication-ribbon" aria-label="Publication announcement">
   <a href="/blogs/news/just-published-innovative-oral-hydration-technologies">
-    <strong>JUST PUBLISHED</strong>
-    <span>New peer-reviewed hydration review in <em>Frontiers in Nutrition</em></span>
-    <b>Read →</b>
+    <span class="bhd-publication-ribbon__badge">JUST PUBLISHED</span>
+    <span class="bhd-publication-ribbon__headline">New peer-reviewed hydration review in <em>Frontiers in Nutrition</em></span>
+    <span class="bhd-publication-ribbon__cta">Read the story →</span>
   </a>
 </section>
 
 <style>
-  #BhdPublicationRibbon-{{ section.id }}{background:#eef8ff;border-bottom:1px solid #cfe4f3}
-  #BhdPublicationRibbon-{{ section.id }} a{display:flex;align-items:center;justify-content:center;gap:.8rem;min-height:4.4rem;padding:.85rem 1.5rem;color:#0b3f73;text-decoration:none;text-align:center;font-size:1.25rem;line-height:1.25}
-  #BhdPublicationRibbon-{{ section.id }} strong{font-size:1.05rem;letter-spacing:.11em}
-  #BhdPublicationRibbon-{{ section.id }} b{white-space:nowrap}
+  #BhdPublicationRibbon-{{ section.id }}{
+    position:relative;
+    z-index:2;
+    background:linear-gradient(90deg,#0b2d67 0%,#154f92 55%,#0b2d67 100%);
+    border-top:1px solid rgba(255,255,255,.12);
+    border-bottom:1px solid rgba(5,31,72,.55);
+    box-shadow:0 .55rem 1.35rem rgba(13,33,78,.14)
+  }
+  #BhdPublicationRibbon-{{ section.id }} a{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:1rem;
+    min-height:5.4rem;
+    padding:1rem 1.6rem;
+    color:#fff;
+    text-decoration:none;
+    text-align:center;
+    line-height:1.25
+  }
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__badge{
+    display:inline-flex;
+    align-items:center;
+    min-height:2.8rem;
+    padding:.48rem .8rem;
+    border-radius:999px;
+    background:#dff5ff;
+    color:#0b3f73;
+    font-size:1.02rem;
+    font-weight:900;
+    letter-spacing:.11em;
+    white-space:nowrap
+  }
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__headline{
+    font-size:1.38rem;
+    font-weight:760
+  }
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__cta{
+    padding-left:.9rem;
+    border-left:1px solid rgba(255,255,255,.34);
+    font-size:1.2rem;
+    font-weight:850;
+    white-space:nowrap
+  }
+  #BhdPublicationRibbon-{{ section.id }} a:hover .bhd-publication-ribbon__cta{text-decoration:underline}
   @media(max-width:749px){
-    #BhdPublicationRibbon-{{ section.id }} a{flex-wrap:wrap;gap:.35rem .65rem;padding:.72rem 1rem;font-size:1.12rem}
-    #BhdPublicationRibbon-{{ section.id }} strong{width:100%}
+    #BhdPublicationRibbon-{{ section.id }} a{
+      flex-wrap:wrap;
+      gap:.45rem .7rem;
+      min-height:6.2rem;
+      padding:.82rem 1rem
+    }
+    #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__badge{font-size:.95rem}
+    #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__headline{width:100%;font-size:1.16rem}
+    #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__cta{padding-left:0;border-left:0;font-size:1.08rem}
   }
 </style>
 
