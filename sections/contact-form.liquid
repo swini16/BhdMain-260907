@@ -112,6 +112,33 @@
         >
         <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
       </div>
+      <div class="contact__topic">
+        <label class="form__label" for="ContactForm-topic">
+          Topic <span aria-hidden="true">*</span>
+        </label>
+        <div class="select">
+          <select
+            id="ContactForm-topic"
+            class="select__select"
+            name="contact[Topic]"
+            required
+            aria-required="true"
+          >
+            <option value="" selected disabled>Choose a topic</option>
+            <option value="Product & order">Product &amp; order</option>
+            <option value="Research">Research</option>
+            <option value="Retail & distribution">Retail &amp; distribution</option>
+            <option value="Humanitarian">Humanitarian</option>
+            <option value="Investor relations">Investor relations</option>
+            <option value="Press & media">Press &amp; media</option>
+            <option value="Events & sponsorship">Events &amp; sponsorship</option>
+            <option value="General">General</option>
+          </select>
+          <span class="svg-wrapper" aria-hidden="true">
+            {{- 'icon-caret.svg' | inline_asset_content -}}
+          </span>
+        </div>
+      </div>
       <div class="field">
         <textarea
           rows="10"
