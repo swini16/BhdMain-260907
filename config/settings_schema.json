@@ -1400,6 +1400,88 @@
     ]
   },
   {
+    "name": "Best Hydrate announcement",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "bhd_announcement_enabled",
+        "label": "Announcement active",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "bhd_announcement_scope",
+        "label": "Scope",
+        "default": "major",
+        "options": [
+          {
+            "value": "minor",
+            "label": "Minor — home + news/content"
+          },
+          {
+            "value": "medium",
+            "label": "Medium — most public pages"
+          },
+          {
+            "value": "major",
+            "label": "Major — all theme pages"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": "Major includes landing pages and cart. Shopify checkout is outside the theme and is never affected. Medium excludes cart plus any paths listed below."
+      },
+      {
+        "type": "text",
+        "id": "bhd_announcement_badge",
+        "label": "Badge",
+        "default": "JUST PUBLISHED"
+      },
+      {
+        "type": "inline_richtext",
+        "id": "bhd_announcement_headline",
+        "label": "Headline",
+        "default": "New peer-reviewed hydration review in <em>Frontiers in Nutrition</em>"
+      },
+      {
+        "type": "text",
+        "id": "bhd_announcement_cta",
+        "label": "Call to action",
+        "default": "Read the story →"
+      },
+      {
+        "type": "url",
+        "id": "bhd_announcement_link",
+        "label": "Link"
+      },
+      {
+        "type": "text",
+        "id": "bhd_announcement_start_date",
+        "label": "Start date (YYYY-MM-DD)",
+        "default": "2026-09-23"
+      },
+      {
+        "type": "text",
+        "id": "bhd_announcement_end_date",
+        "label": "End date (YYYY-MM-DD)",
+        "default": "2026-11-05"
+      },
+      {
+        "type": "textarea",
+        "id": "bhd_announcement_minor_extra_paths",
+        "label": "Minor extra paths (comma-separated)",
+        "info": "Exact paths, e.g. /pages/research-and-impact,/pages/press-and-media"
+      },
+      {
+        "type": "textarea",
+        "id": "bhd_announcement_medium_exclusions",
+        "label": "Medium excluded paths (comma-separated)",
+        "info": "Exact landing-page paths to reserve for Major only."
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.cart.name",
     "settings": [
       {
