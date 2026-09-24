@@ -1,0 +1,126 @@
+{%- liquid
+  assign bhd_announcement_show = false
+  assign bhd_announcement_in_window = true
+  assign bhd_today = 'now' | date: '%Y-%m-%d'
+
+  if settings.bhd_announcement_start_date != blank and bhd_today < settings.bhd_announcement_start_date
+    assign bhd_announcement_in_window = false
+  endif
+  if settings.bhd_announcement_end_date != blank and bhd_today > settings.bhd_announcement_end_date
+    assign bhd_announcement_in_window = false
+  endif
+
+  if settings.bhd_announcement_enabled and bhd_announcement_in_window
+    case settings.bhd_announcement_scope
+      when 'major'
+        unless request.page_type == 'password'
+          assign bhd_announcement_show = true
+        endunless
+
+      when 'medium'
+        unless request.page_type == 'cart' or request.page_type == 'password'
+          assign bhd_announcement_show = true
+        endunless
+
+        if bhd_announcement_show and settings.bhd_announcement_medium_exclusions != blank
+          assign bhd_medium_exclusions = settings.bhd_announcement_medium_exclusions | split: ','
+          for bhd_excluded_path in bhd_medium_exclusions
+            assign bhd_excluded_path = bhd_excluded_path | strip
+            if bhd_excluded_path != blank and request.path == bhd_excluded_path
+              assign bhd_announcement_show = false
+              break
+            endif
+          endfor
+        endif
+
+      when 'minor'
+        if request.page_type == 'index' or request.page_type == 'blog' or request.page_type == 'article'
+          assign bhd_announcement_show = true
+        endif
+
+        if settings.bhd_announcement_minor_extra_paths != blank
+          assign bhd_minor_paths = settings.bhd_announcement_minor_extra_paths | split: ','
+          for bhd_minor_path in bhd_minor_paths
+            assign bhd_minor_path = bhd_minor_path | strip
+            if bhd_minor_path != blank and request.path == bhd_minor_path
+              assign bhd_announcement_show = true
+              break
+            endif
+          endfor
+        endif
+    endcase
+  endif
+-%}
+
+{%- if bhd_announcement_show -%}
+  <aside class="bhd-global-announcement bhd-global-announcement--{{ settings.bhd_announcement_scope }}" aria-label="Announcement">
+    <a class="bhd-global-announcement__link" href="{{ settings.bhd_announcement_link | default: '/' }}">
+      {%- if settings.bhd_announcement_badge != blank -%}
+        <span class="bhd-global-announcement__badge">{{ settings.bhd_announcement_badge | escape }}</span>
+      {%- endif -%}
+      <span class="bhd-global-announcement__headline">{{ settings.bhd_announcement_headline }}</span>
+      {%- if settings.bhd_announcement_cta != blank -%}
+        <span class="bhd-global-announcement__cta">{{ settings.bhd_announcement_cta | escape }}</span>
+      {%- endif -%}
+    </a>
+  </aside>
+
+  <style>
+    .bhd-global-announcement{
+      position:relative;
+      z-index:20;
+      background:linear-gradient(90deg,#0b2d67 0%,#154f92 55%,#0b2d67 100%);
+      border-top:1px solid rgba(255,255,255,.12);
+      border-bottom:1px solid rgba(5,31,72,.55);
+      box-shadow:0 .55rem 1.35rem rgba(13,33,78,.14)
+    }
+    .bhd-global-announcement__link{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:1rem;
+      min-height:5.4rem;
+      padding:1rem 1.6rem;
+      color:#fff;
+      text-decoration:none;
+      text-align:center;
+      line-height:1.25
+    }
+    .bhd-global-announcement__badge{
+      display:inline-flex;
+      align-items:center;
+      min-height:2.8rem;
+      padding:.48rem .8rem;
+      border-radius:999px;
+      background:#dff5ff;
+      color:#0b3f73;
+      font-size:1.02rem;
+      font-weight:900;
+      letter-spacing:.11em;
+      white-space:nowrap
+    }
+    .bhd-global-announcement__headline{
+      font-size:1.38rem;
+      font-weight:760
+    }
+    .bhd-global-announcement__cta{
+      padding-left:.9rem;
+      border-left:1px solid rgba(255,255,255,.34);
+      font-size:1.2rem;
+      font-weight:850;
+      white-space:nowrap
+    }
+    .bhd-global-announcement__link:hover .bhd-global-announcement__cta{text-decoration:underline}
+    @media(max-width:749px){
+      .bhd-global-announcement__link{
+        flex-wrap:wrap;
+        gap:.45rem .7rem;
+        min-height:6.2rem;
+        padding:.82rem 1rem
+      }
+      .bhd-global-announcement__badge{font-size:.95rem}
+      .bhd-global-announcement__headline{width:100%;font-size:1.16rem}
+      .bhd-global-announcement__cta{padding-left:0;border-left:0;font-size:1.08rem}
+    }
+  </style>
+{%- endif -%}
