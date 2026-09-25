@@ -10,6 +10,9 @@
   {% assign phase_bg = '#e8f8f1' %}
   {% assign phase_when = 'Before training, competition, long active days, travel, or whenever you want hydration ready before you need it.' %}
   {% assign phase_action = 'Pack it. Mix it. Start ready.' %}
+  {% assign phase_more_title = 'Build the plan before performance starts.' %}
+  {% assign phase_more_text = 'Go deeper on purposeful hydration before activity, including practical planning around fluid access, duration, heat and the demands of the session ahead.' %}
+  {% assign phase_more_url = '/pages/performance-hydration' %}
 {% elsif phase == 'perform' %}
   {% assign phase_label = 'PERFORM' %}
   {% assign phase_title = 'Perform at YOUR best.' %}
@@ -18,6 +21,9 @@
   {% assign phase_bg = '#e8f2ff' %}
   {% assign phase_when = 'During training, sport, outdoor activity, demanding work, or other periods when convenient hydration matters.' %}
   {% assign phase_action = 'Mix lightly. Sip. Keep moving.' %}
+  {% assign phase_more_title = 'Go deeper on hydration during performance.' %}
+  {% assign phase_more_text = 'Explore the longer performance guide for context on duration, environment, sweat, fluid access and why hydration strategy should fit the effort rather than follow one universal rule.' %}
+  {% assign phase_more_url = '/pages/performance-hydration' %}
 {% else %}
   {% assign phase_label = 'RECOVER' %}
   {% assign phase_title = 'Recover for YOUR next best.' %}
@@ -26,86 +32,31 @@
   {% assign phase_bg = '#fdecef' %}
   {% assign phase_when = 'After training, competition, long active days, travel, heat, or whenever you want a simple hydration reset.' %}
   {% assign phase_action = 'Rehydrate. Reset. Get ready again.' %}
+  {% assign phase_more_title = 'Recovery is more than the finish line.' %}
+  {% assign phase_more_text = 'Read the longer recovery guide for context on replacing meaningful fluid losses while returning to normal food, rest and the rest of your recovery routine.' %}
+  {% assign phase_more_url = '/pages/recovery-hydration' %}
 {% endif %}
 
 <section class="bhd-phase" style="--phase-accent:{{ phase_accent }};--phase-bg:{{ phase_bg }};">
-  <div class="bhd-phase__hero">
-    <div class="bhd-phase__inner">
-      <p class="bhd-phase__eyebrow">{{ phase_label }} • BEST HYDRATE</p>
-      <h1>{{ phase_title }}</h1>
-      <p class="bhd-phase__lead">{{ phase_intro }}</p>
-      <div class="bhd-phase__actions">
-        <a href="{{ product_url }}" class="bhd-phase__primary">Shop Best Hydrate →</a>
-        <a href="{{ science_url }}" class="bhd-phase__secondary">Why low sugar? →</a>
-      </div>
-    </div>
-  </div>
-
+  <div class="bhd-phase__hero"><div class="bhd-phase__inner">
+    <p class="bhd-phase__eyebrow">{{ phase_label }} • BEST HYDRATE</p><h1>{{ phase_title }}</h1>
+    <p class="bhd-phase__lead">{{ phase_intro }}</p>
+    <div class="bhd-phase__actions"><a href="{{ product_url }}" class="bhd-phase__primary">Shop Best Hydrate →</a><a href="{{ science_url }}" class="bhd-phase__secondary">Why low sugar? →</a></div>
+  </div></div>
   <div class="bhd-phase__content">
-    <div class="bhd-phase__card">
-      <span class="bhd-phase__num">01</span>
-      <h2>When it fits</h2>
-      <p>{{ phase_when }}</p>
-    </div>
-    <div class="bhd-phase__card">
-      <span class="bhd-phase__num">02</span>
-      <h2>How to use it</h2>
-      <p>Keep the jar within reach. Add one scoop to 500 mL of water, mix lightly, and enjoy.</p>
-    </div>
-    <div class="bhd-phase__card">
-      <span class="bhd-phase__num">03</span>
-      <h2>The simple cue</h2>
-      <p><strong>{{ phase_action }}</strong></p>
-    </div>
+    <div class="bhd-phase__card"><span class="bhd-phase__num">01</span><h2>When it fits</h2><p>{{ phase_when }}</p></div>
+    <div class="bhd-phase__card"><span class="bhd-phase__num">02</span><h2>How to use it</h2><p>Keep the jar within reach. Add one scoop to 500 mL of water, mix lightly, and enjoy.</p></div>
+    <div class="bhd-phase__card"><span class="bhd-phase__num">03</span><h2>The simple cue</h2><p><strong>{{ phase_action }}</strong></p></div>
   </div>
-
-  <div class="bhd-phase__proof">
-    <span>1 g sugar / 100 mL prepared</span>
-    <span>5 electrolyte species</span>
-    <span>32 servings</span>
-    <span>Small, portable jar</span>
-  </div>
-
-  <nav class="bhd-phase__nav" aria-label="Prep, perform, recover">
-    <a href="/pages/prep" class="{% if phase == 'prep' %}is-active{% endif %}">PREP</a>
-    <a href="/pages/perform" class="{% if phase == 'perform' %}is-active{% endif %}">PERFORM</a>
-    <a href="/pages/recover" class="{% if phase == 'recover' %}is-active{% endif %}">RECOVER</a>
-  </nav>
+  <div class="bhd-phase__proof"><span>1 g sugar / 100 mL prepared</span><span>5 electrolyte species</span><span>32 servings</span><span>Small, portable jar</span></div>
+  <aside class="bhd-phase__more" aria-label="More about {{ phase_label | downcase }} hydration">
+    <div><p class="bhd-phase__more-kicker">GO DEEPER</p><h2>{{ phase_more_title }}</h2><p>{{ phase_more_text }}</p></div>
+    <a href="{{ phase_more_url }}">Read more →</a>
+  </aside>
+  <nav class="bhd-phase__nav" aria-label="Prep, perform, recover"><a href="/pages/prep" class="{% if phase == 'prep' %}is-active{% endif %}">PREP</a><a href="/pages/perform" class="{% if phase == 'perform' %}is-active{% endif %}">PERFORM</a><a href="/pages/recover" class="{% if phase == 'recover' %}is-active{% endif %}">RECOVER</a></nav>
 </section>
-
 <style>
-.bhd-phase{--navy:#0d1d53;--blue:#1475ef;color:var(--navy);background:#fff}
-.bhd-phase *{box-sizing:border-box}
-.bhd-phase__hero{background:linear-gradient(135deg,var(--phase-bg),#fff 72%);border-bottom:1px solid #e2ebf5}
-.bhd-phase__inner{max-width:1100px;margin:0 auto;padding:clamp(48px,7vw,92px) 24px;text-align:center}
-.bhd-phase__eyebrow{margin:0 0 12px;color:var(--phase-accent);font-weight:900;letter-spacing:.14em;font-size:.82rem}
-.bhd-phase h1{margin:0;font-size:clamp(2.4rem,5vw,4.8rem);line-height:.98;letter-spacing:-.04em}
-.bhd-phase__lead{max-width:820px;margin:20px auto 0;color:#52657f;font-size:clamp(1rem,1.4vw,1.22rem);line-height:1.55}
-.bhd-phase__actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}
-.bhd-phase__actions a{text-decoration:none;border-radius:999px;padding:15px 24px;font-weight:850}
-.bhd-phase__primary{background:#1475ef;color:#fff}
-.bhd-phase__secondary{border:2px solid var(--navy);color:var(--navy);background:#fff}
-.bhd-phase__content{max-width:1100px;margin:0 auto;padding:40px 24px 22px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.bhd-phase__card{border:1px solid #e1e9f3;border-radius:22px;padding:24px;background:#fff;box-shadow:0 8px 24px rgba(13,29,83,.06)}
-.bhd-phase__num{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--phase-bg);color:var(--phase-accent);font-weight:900}
-.bhd-phase__card h2{margin:16px 0 8px;font-size:1.2rem}
-.bhd-phase__card p{margin:0;color:#52657f;line-height:1.55}
-.bhd-phase__proof{max-width:1100px;margin:0 auto;padding:12px 24px 30px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.bhd-phase__proof span{display:flex;align-items:center;justify-content:center;text-align:center;padding:13px;border:1px solid #dce7f2;border-radius:999px;background:#f8fbff;font-size:.85rem;font-weight:800}
-.bhd-phase__nav{max-width:820px;margin:0 auto;padding:6px 24px 54px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.bhd-phase__nav a{text-decoration:none;text-align:center;padding:14px 10px;border-radius:999px;background:#f1f6fb;color:var(--navy);font-weight:900;border:1px solid #dbe7f3}
-.bhd-phase__nav a.is-active{background:var(--phase-bg);color:var(--phase-accent);border-color:var(--phase-accent)}
-@media(max-width:749px){
-  .bhd-phase__content{grid-template-columns:1fr;padding-top:26px}
-  .bhd-phase__proof{grid-template-columns:repeat(2,1fr)}
-  .bhd-phase__nav{padding-bottom:36px}
-}
+.bhd-phase{--navy:#0d1d53;--blue:#1475ef;color:var(--navy);background:#fff}.bhd-phase *{box-sizing:border-box}.bhd-phase__hero{background:linear-gradient(135deg,var(--phase-bg),#fff 72%);border-bottom:1px solid #e2ebf5}.bhd-phase__inner{max-width:1100px;margin:0 auto;padding:clamp(48px,7vw,92px) 24px;text-align:center}.bhd-phase__eyebrow{margin:0 0 12px;color:var(--phase-accent);font-weight:900;letter-spacing:.14em;font-size:.82rem}.bhd-phase h1{margin:0;font-size:clamp(2.4rem,5vw,4.8rem);line-height:.98;letter-spacing:-.04em}.bhd-phase__lead{max-width:820px;margin:20px auto 0;color:#52657f;font-size:clamp(1rem,1.4vw,1.22rem);line-height:1.55}.bhd-phase__actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}.bhd-phase__actions a{text-decoration:none;border-radius:999px;padding:15px 24px;font-weight:850}.bhd-phase__primary{background:#1475ef;color:#fff}.bhd-phase__secondary{border:2px solid var(--navy);color:var(--navy);background:#fff}.bhd-phase__content{max-width:1100px;margin:0 auto;padding:40px 24px 22px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.bhd-phase__card{border:1px solid #e1e9f3;border-radius:22px;padding:24px;background:#fff;box-shadow:0 8px 24px rgba(13,29,83,.06)}.bhd-phase__num{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--phase-bg);color:var(--phase-accent);font-weight:900}.bhd-phase__card h2{margin:16px 0 8px;font-size:1.2rem}.bhd-phase__card p{margin:0;color:#52657f;line-height:1.55}.bhd-phase__proof{max-width:1100px;margin:0 auto;padding:12px 24px 24px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.bhd-phase__proof span{display:flex;align-items:center;justify-content:center;text-align:center;padding:13px;border:1px solid #dce7f2;border-radius:999px;background:#f8fbff;font-size:.85rem;font-weight:800}.bhd-phase__more{max-width:1052px;margin:0 auto 28px;padding:22px 24px;border:1px solid #dce7f2;border-left:4px solid var(--phase-accent);border-radius:18px;background:linear-gradient(135deg,var(--phase-bg),#fff);display:flex;align-items:center;justify-content:space-between;gap:24px}.bhd-phase__more-kicker{margin:0 0 5px;color:var(--phase-accent);font-size:.75rem;font-weight:900;letter-spacing:.12em}.bhd-phase__more h2{margin:0 0 6px;font-size:1.15rem}.bhd-phase__more p:not(.bhd-phase__more-kicker){margin:0;color:#52657f;line-height:1.5;max-width:760px}.bhd-phase__more a{flex:0 0 auto;text-decoration:none;font-weight:900;color:var(--phase-accent);white-space:nowrap}.bhd-phase__nav{max-width:820px;margin:0 auto;padding:6px 24px 54px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.bhd-phase__nav a{text-decoration:none;text-align:center;padding:14px 10px;border-radius:999px;background:#f1f6fb;color:var(--navy);font-weight:900;border:1px solid #dbe7f3}.bhd-phase__nav a.is-active{background:var(--phase-bg);color:var(--phase-accent);border-color:var(--phase-accent)}
+@media(max-width:749px){.bhd-phase__content{grid-template-columns:1fr;padding-top:26px}.bhd-phase__proof{grid-template-columns:repeat(2,1fr)}.bhd-phase__more{margin:0 24px 24px;display:block}.bhd-phase__more a{display:inline-block;margin-top:12px}.bhd-phase__nav{padding-bottom:36px}}
 </style>
-
-{% schema %}
-{
-  "name": "Best Hydrate phase page",
-  "settings": [],
-  "presets": [{"name":"Best Hydrate phase page"}]
-}
-{% endschema %}
+{% schema %}{"name":"Best Hydrate phase page","settings":[],"presets":[{"name":"Best Hydrate phase page"}]}{% endschema %}
