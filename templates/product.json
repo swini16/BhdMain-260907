@@ -83,6 +83,12 @@
           "settings": {
             "custom_liquid": "<script>(()=>{const init=()=>{const root=document.getElementById('MainProduct-{{ section.id }}');if(!root||root.dataset.bhdRecurringGuard==='true')return;root.dataset.bhdRecurringGuard='true';const phrase='This item is a deferred, subscription, or recurring purchase.';const hasPlan=()=>{const checked=root.querySelector('input[name=\"selling_plan\"]:checked');if(checked&&checked.value)return true;const select=root.querySelector('select[name=\"selling_plan\"]');if(select&&select.value)return true;const hidden=[...root.querySelectorAll('input[name=\"selling_plan\"][type=\"hidden\"]')].find(el=>el.value);return !!hidden};const apply=()=>{const selected=hasPlan();const candidates=[...root.querySelectorAll('label,p,small,div,span')].filter(el=>{const text=(el.textContent||'').trim();return text.includes(phrase)&&text.length<900});candidates.forEach(el=>{let target=el;if(el.closest('label'))target=el.closest('label');else if(el.parentElement&&el.parentElement.querySelector('input[type=\"checkbox\"]')&&(el.parentElement.textContent||'').includes(phrase))target=el.parentElement;target.style.display=selected?'':'none';target.setAttribute('data-bhd-recurring-policy',selected?'visible':'hidden')})};apply();root.addEventListener('change',e=>{if(e.target&&((e.target.name||'')==='selling_plan'||e.target.closest?.('[name=\"selling_plan\"]')))requestAnimationFrame(apply)});if('MutationObserver'in window)new MutationObserver(apply).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['value','checked']})};document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init()})();</script>"
           }
+        },
+        "flavour_vote": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'bhd-flavour-vote', product: product %}"
+          }
         }
       },
       "block_order": [
@@ -90,6 +96,7 @@
         "rating",
         "price",
         "purchase_value",
+        "flavour_vote",
         "free_shipping",
         "purchase_choice",
         "quantity_selector",
