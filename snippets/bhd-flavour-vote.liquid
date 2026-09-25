@@ -1,0 +1,513 @@
+{% doc %}
+Renders a compact expandable flavour vote with optional Klaviyo email opt-in.
+@param {product} product - Product shown on the product page.
+{% enddoc %}
+
+<details
+  class="bhd-flavour-vote"
+  data-bhd-flavour-vote
+  data-product-title="{{ product.title | escape }}"
+>
+  <summary>{{ 'products.flavour_vote.summary' | t }}</summary>
+
+  <div class="bhd-flavour-vote__panel">
+    <p class="bhd-flavour-vote__prompt">{{ 'products.flavour_vote.prompt' | t }}</p>
+
+    <form class="bhd-flavour-vote__form" data-bhd-vote-form>
+      <fieldset class="bhd-flavour-vote__fieldset">
+        <legend class="visually-hidden">{{ 'products.flavour_vote.prompt' | t }}</legend>
+
+        <div class="bhd-flavour-vote__options">
+          <label class="bhd-flavour-vote__option">
+            <input type="radio" name="bhd_flavour" value="Orange" required>
+            <span>{{ 'products.flavour_vote.orange' | t }}</span>
+          </label>
+          <label class="bhd-flavour-vote__option">
+            <input type="radio" name="bhd_flavour" value="Berry" required>
+            <span>{{ 'products.flavour_vote.berry' | t }}</span>
+          </label>
+          <label class="bhd-flavour-vote__option">
+            <input type="radio" name="bhd_flavour" value="Fruit Punch" required>
+            <span>{{ 'products.flavour_vote.fruit_punch' | t }}</span>
+          </label>
+          <label class="bhd-flavour-vote__option">
+            <input type="radio" name="bhd_flavour" value="Lime" required>
+            <span>{{ 'products.flavour_vote.lime' | t }}</span>
+          </label>
+          <label class="bhd-flavour-vote__option">
+            <input type="radio" name="bhd_flavour" value="Tropical" required>
+            <span>{{ 'products.flavour_vote.tropical' | t }}</span>
+          </label>
+          <label class="bhd-flavour-vote__option">
+            <input type="radio" name="bhd_flavour" value="Watermelon" required>
+            <span>{{ 'products.flavour_vote.watermelon' | t }}</span>
+          </label>
+          <label class="bhd-flavour-vote__option">
+            <input type="radio" name="bhd_flavour" value="Other" required>
+            <span>{{ 'products.flavour_vote.other' | t }}</span>
+          </label>
+        </div>
+
+        <label class="bhd-flavour-vote__other" data-bhd-other-field hidden>
+          <span>{{ 'products.flavour_vote.other_label' | t }}</span>
+          <input
+            type="text"
+            maxlength="60"
+            autocomplete="off"
+            placeholder="{{ 'products.flavour_vote.other_placeholder' | t | escape }}"
+            data-bhd-other-input
+          >
+        </label>
+      </fieldset>
+
+      <button class="button button--secondary bhd-flavour-vote__button" type="submit" data-bhd-vote-submit>
+        {{ 'products.flavour_vote.submit_vote' | t }}
+      </button>
+    </form>
+
+    <div class="bhd-flavour-vote__notify" data-bhd-notify-step hidden>
+      <p class="bhd-flavour-vote__recorded">{{ 'products.flavour_vote.vote_recorded' | t }}</p>
+      <p class="bhd-flavour-vote__notify-prompt">{{ 'products.flavour_vote.notify_prompt' | t }}</p>
+
+      <form class="bhd-flavour-vote__notify-form" data-bhd-notify-form>
+        <label class="bhd-flavour-vote__email">
+          <span>{{ 'products.flavour_vote.email_label' | t }}</span>
+          <input
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            placeholder="{{ 'products.flavour_vote.email_placeholder' | t | escape }}"
+            required
+            data-bhd-notify-email
+          >
+        </label>
+
+        <label class="bhd-flavour-vote__consent">
+          <input type="checkbox" required data-bhd-notify-consent>
+          <span>{{ 'products.flavour_vote.consent' | t }}</span>
+        </label>
+
+        <button class="button button--secondary bhd-flavour-vote__button" type="submit" data-bhd-notify-submit>
+          {{ 'products.flavour_vote.notify_button' | t }}
+        </button>
+
+        <p class="bhd-flavour-vote__fineprint">{{ 'products.flavour_vote.fineprint' | t }}</p>
+        <p class="bhd-flavour-vote__status" role="status" data-bhd-notify-success hidden>
+          {{ 'products.flavour_vote.notify_success' | t }}
+        </p>
+        <p class="bhd-flavour-vote__status bhd-flavour-vote__status--error" role="alert" data-bhd-notify-error hidden>
+          {{ 'products.flavour_vote.notify_error' | t }}
+        </p>
+      </form>
+    </div>
+  </div>
+</details>
+
+{% stylesheet %}
+.bhd-flavour-vote {
+  flex-basis: 100%;
+  width: 100%;
+  margin: .45rem 0 0;
+  padding-top: .4rem;
+  border-top: 1px solid #e0e8f1;
+  color: #52657a;
+}
+
+.bhd-flavour-vote summary {
+  position: relative;
+  padding: .35rem 2.2rem .35rem 0;
+  color: #0b2d67;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.3;
+  cursor: pointer;
+  list-style: none;
+}
+
+.bhd-flavour-vote summary::-webkit-details-marker {
+  display: none;
+}
+
+.bhd-flavour-vote summary::after {
+  content: '+';
+  position: absolute;
+  top: .2rem;
+  right: .2rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.bhd-flavour-vote[open] summary::after {
+  content: '−';
+}
+
+.bhd-flavour-vote__panel {
+  padding: .65rem 0 .2rem;
+}
+
+.bhd-flavour-vote__prompt,
+.bhd-flavour-vote__notify-prompt,
+.bhd-flavour-vote__recorded,
+.bhd-flavour-vote__fineprint,
+.bhd-flavour-vote__status {
+  margin: 0 0 .65rem;
+}
+
+.bhd-flavour-vote__prompt,
+.bhd-flavour-vote__recorded {
+  color: #0b2d67;
+  font-weight: 750;
+}
+
+.bhd-flavour-vote__fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.bhd-flavour-vote__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+}
+
+.bhd-flavour-vote__option {
+  position: relative;
+  cursor: pointer;
+}
+
+.bhd-flavour-vote__option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.bhd-flavour-vote__option span {
+  display: inline-block;
+  padding: .5rem .75rem;
+  border: 1px solid #c8d6e5;
+  border-radius: 999px;
+  background: #fbfdff;
+  color: #38516d;
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.bhd-flavour-vote__option input:checked + span {
+  border-color: #0b2d67;
+  background: #eef5fc;
+  color: #0b2d67;
+}
+
+.bhd-flavour-vote__option input:focus-visible + span {
+  outline: 2px solid #0b2d67;
+  outline-offset: 2px;
+}
+
+.bhd-flavour-vote__other,
+.bhd-flavour-vote__email {
+  display: grid;
+  gap: .35rem;
+  margin-top: .65rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.bhd-flavour-vote__other input,
+.bhd-flavour-vote__email input {
+  width: 100%;
+  min-height: 4rem;
+  padding: .8rem 1rem;
+  border: 1px solid #c8d6e5;
+  border-radius: .8rem;
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  font: inherit;
+}
+
+.bhd-flavour-vote__button {
+  min-height: 4rem;
+  margin-top: .7rem;
+  padding: .75rem 1.2rem;
+  font-size: 1.1rem;
+}
+
+.bhd-flavour-vote__notify {
+  margin-top: .8rem;
+  padding-top: .8rem;
+  border-top: 1px solid #e0e8f1;
+}
+
+.bhd-flavour-vote__consent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .55rem;
+  align-items: start;
+  margin-top: .65rem;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.bhd-flavour-vote__consent input {
+  margin-top: .2rem;
+}
+
+.bhd-flavour-vote__fineprint {
+  margin-top: .5rem;
+  color: #6c7c8f;
+  font-size: .95rem;
+}
+
+.bhd-flavour-vote__status {
+  margin-top: .65rem;
+  color: #26734d;
+  font-weight: 750;
+}
+
+.bhd-flavour-vote__status--error {
+  color: #9a2f2f;
+}
+
+@media screen and (max-width: 749px) {
+  .bhd-flavour-vote__options {
+    gap: .4rem;
+  }
+
+  .bhd-flavour-vote__option span {
+    padding: .48rem .68rem;
+    font-size: 1.02rem;
+  }
+}
+{% endstylesheet %}
+
+{% javascript %}
+(() => {
+  const init = () => {
+    const roots = document.querySelectorAll('[data-bhd-flavour-vote]:not([data-bhd-ready])');
+
+    roots.forEach((root) => {
+      root.dataset.bhdReady = 'true';
+
+      const voteForm = root.querySelector('[data-bhd-vote-form]');
+      const notifyStep = root.querySelector('[data-bhd-notify-step]');
+      const notifyForm = root.querySelector('[data-bhd-notify-form]');
+      const otherField = root.querySelector('[data-bhd-other-field]');
+      const otherInput = root.querySelector('[data-bhd-other-input]');
+      const voteSubmit = root.querySelector('[data-bhd-vote-submit]');
+      const notifySubmit = root.querySelector('[data-bhd-notify-submit]');
+      const notifyEmail = root.querySelector('[data-bhd-notify-email]');
+      const notifySuccess = root.querySelector('[data-bhd-notify-success]');
+      const notifyError = root.querySelector('[data-bhd-notify-error]');
+      const productTitle = root.dataset.productTitle || 'Best Hydrate';
+      let currentVote = '';
+
+      if (!voteForm || !notifyForm) return;
+
+      const radios = Array.from(voteForm.querySelectorAll('input[name="bhd_flavour"]'));
+
+      const syncOther = () => {
+        const selected = voteForm.querySelector('input[name="bhd_flavour"]:checked');
+        const isOther = selected && selected.value === 'Other';
+        otherField.hidden = !isOther;
+        otherInput.required = Boolean(isOther);
+        if (!isOther) otherInput.value = '';
+      };
+
+      const trackVote = (vote) => {
+        const properties = {
+          Flavour: vote,
+          Source: 'Product page',
+          Product: productTitle
+        };
+
+        try {
+          if (window.klaviyo && typeof window.klaviyo.track === 'function') {
+            window.klaviyo.track('Flavour Vote', properties);
+          } else {
+            window._learnq = window._learnq || [];
+            window._learnq.push(['track', 'Flavour Vote', properties]);
+          }
+        } catch (_) {}
+
+        try {
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'flavour_vote', {
+              flavour: vote,
+              source: 'product_page'
+            });
+          } else if (Array.isArray(window.dataLayer)) {
+            window.dataLayer.push({
+              event: 'flavour_vote',
+              flavour: vote,
+              source: 'product_page'
+            });
+          }
+        } catch (_) {}
+
+        try {
+          window.localStorage.setItem('bhd_flavour_vote_v1', vote);
+        } catch (_) {}
+      };
+
+      const identifyInterest = (email, vote) => {
+        const properties = {
+          email: email,
+          'Preferred Flavour': vote,
+          'Flavour Launch Interest': true,
+          'Flavour Vote Source': 'Product page'
+        };
+
+        try {
+          if (window.klaviyo && typeof window.klaviyo.identify === 'function') {
+            window.klaviyo.identify(properties);
+          } else {
+            window._learnq = window._learnq || [];
+            window._learnq.push(['identify', properties]);
+          }
+        } catch (_) {}
+      };
+
+      const subscribeEmail = async (email, vote) => {
+        const response = await fetch('https://a.klaviyo.com/client/subscriptions/?company_id=UmwHWm', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'revision': '2026-07-15'
+          },
+          body: JSON.stringify({
+            data: {
+              type: 'subscription',
+              attributes: {
+                custom_source: 'Best Hydrate product flavour vote',
+                profile: {
+                  data: {
+                    type: 'profile',
+                    attributes: {
+                      email: email,
+                      properties: {
+                        'Preferred Flavour': vote,
+                        'Flavour Launch Interest': true,
+                        'Flavour Vote Source': 'Product page'
+                      },
+                      subscriptions: {
+                        email: {
+                          marketing: {
+                            consent: 'SUBSCRIBED'
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              relationships: {
+                list: {
+                  data: {
+                    type: 'list',
+                    id: 'XH5XXv'
+                  }
+                }
+              }
+            }
+          })
+        });
+
+        if (!response.ok) throw new Error('Klaviyo subscription failed');
+      };
+
+      radios.forEach((radio) => radio.addEventListener('change', syncOther));
+      syncOther();
+
+      voteForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const selected = voteForm.querySelector('input[name="bhd_flavour"]:checked');
+        if (!selected) {
+          voteForm.reportValidity();
+          return;
+        }
+
+        if (selected.value === 'Other') {
+          if (!otherInput.value.trim()) {
+            otherInput.reportValidity();
+            return;
+          }
+          currentVote = otherInput.value.trim();
+        } else {
+          currentVote = selected.value;
+        }
+
+        trackVote(currentVote);
+
+        radios.forEach((radio) => {
+          radio.disabled = true;
+        });
+        otherInput.disabled = true;
+        voteSubmit.hidden = true;
+        notifyStep.hidden = false;
+
+        const focusTarget = notifyStep.querySelector('input, button');
+        if (focusTarget) focusTarget.focus({ preventScroll: true });
+      });
+
+      notifyForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        if (!notifyForm.reportValidity() || !currentVote) return;
+
+        const email = notifyEmail.value.trim();
+        notifySubmit.disabled = true;
+        notifySubmit.setAttribute('aria-busy', 'true');
+        notifySuccess.hidden = true;
+        notifyError.hidden = true;
+
+        try {
+          await subscribeEmail(email, currentVote);
+          identifyInterest(email, currentVote);
+
+          try {
+            if (window.klaviyo && typeof window.klaviyo.track === 'function') {
+              window.klaviyo.track('Flavour Launch Interest', {
+                Flavour: currentVote,
+                Source: 'Product page',
+                Product: productTitle
+              });
+            } else {
+              window._learnq = window._learnq || [];
+              window._learnq.push([
+                'track',
+                'Flavour Launch Interest',
+                {
+                  Flavour: currentVote,
+                  Source: 'Product page',
+                  Product: productTitle
+                }
+              ]);
+            }
+          } catch (_) {}
+
+          notifyForm.querySelectorAll('input, button').forEach((element) => {
+            element.disabled = true;
+          });
+          notifySuccess.hidden = false;
+        } catch (_) {
+          notifyError.hidden = false;
+          notifySubmit.disabled = false;
+        } finally {
+          notifySubmit.removeAttribute('aria-busy');
+        }
+      });
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
+{% endjavascript %}
