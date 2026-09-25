@@ -41,7 +41,7 @@
         "purchase_reassurance": {
           "type": "custom_liquid",
           "settings": {
-            "custom_liquid": "<div class=\"bhd-purchase-reassurance\">{% if product.selected_or_first_available_variant.available %}<span class=\"bhd-stock\">● In stock</span>{% endif %}<span class=\"bhd-purchase-note\">One-time purchase available. Subscription terms apply only if you choose a subscription option.</span><a href=\"/policies/shipping-policy\">Shipping &amp; delivery</a><a href=\"/policies/refund-policy\">Returns &amp; refunds</a></div><style>.product-form__submit:not([disabled]){min-height:5.2rem;background:#0b2d67!important;color:#fff!important;font-weight:850}.product-form__submit:not([disabled]):after{box-shadow:0 0 0 1px #0b2d67!important}.shopify-payment-button{margin-top:.6rem}.bhd-purchase-reassurance{display:flex;align-items:center;gap:.7rem 1.1rem;flex-wrap:wrap;margin:.7rem 0 1rem;color:#52657a;font-size:1.15rem}.bhd-purchase-reassurance a{color:#0b2d67;text-underline-offset:.25rem}.bhd-purchase-note{flex-basis:100%;color:#52657a}.bhd-stock{color:#26734d;font-weight:800}</style>"
+            "custom_liquid": "<div class=\"bhd-purchase-reassurance\">{% if product.selected_or_first_available_variant.available %}<span class=\"bhd-stock\">● In stock</span>{% endif %}<span class=\"bhd-purchase-note\">Secure checkout.</span><a href=\"/policies/shipping-policy\">Shipping &amp; delivery</a><a href=\"/policies/refund-policy\">Returns &amp; refunds</a></div><style>.product-form__submit:not([disabled]){min-height:5.2rem;background:#0b2d67!important;color:#fff!important;font-weight:850}.product-form__submit:not([disabled]):after{box-shadow:0 0 0 1px #0b2d67!important}.shopify-payment-button{margin-top:.6rem}.bhd-purchase-reassurance{display:flex;align-items:center;gap:.7rem 1.1rem;flex-wrap:wrap;margin:.7rem 0 1rem;color:#52657a;font-size:1.15rem}.bhd-purchase-reassurance a{color:#0b2d67;text-underline-offset:.25rem}.bhd-purchase-note{color:#52657a}.bhd-stock{color:#26734d;font-weight:800}</style>"
           }
         },
         "description": {
@@ -59,17 +59,31 @@
           "settings": {
             "share_label": "Share"
           }
+        },
+        "purchase_value": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<div class=\"bhd-product-value\" aria-label=\"Best Hydrate value\"><strong>LOW SUGAR, ON PURPOSE.</strong><span>1 g sugar / 100 mL prepared</span><span>5 electrolytes</span><span>32 servings</span><span>~C$1.25/serving</span></div><style>.bhd-product-value{display:flex;flex-wrap:wrap;gap:.45rem .6rem;align-items:center;margin:.55rem 0 .25rem}.bhd-product-value strong{flex-basis:100%;color:#0b2d67;font-size:1.32rem}.bhd-product-value span{display:inline-block;padding:.45rem .7rem;border:1px solid #d7e3f1;border-radius:999px;background:#f7fbff;color:#52657a;font-size:1.08rem;font-weight:700;line-height:1.2}</style>"
+          }
+        },
+        "purchase_choice": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<div class=\"bhd-purchase-choice\" role=\"note\"><strong>One-time purchase</strong><span>No subscription required.</span></div><style>.bhd-purchase-choice{display:flex;align-items:center;gap:.45rem .7rem;flex-wrap:wrap;margin:.45rem 0 .1rem;padding:.7rem .9rem;border:1px solid #d7e3f1;border-radius:.9rem;background:#fbfdff;color:#52657a;font-size:1.15rem;line-height:1.25}.bhd-purchase-choice strong{color:#0b2d67}.bhd-purchase-choice span{font-weight:600}</style>"
+          }
         }
       },
       "block_order": [
         "title",
         "rating",
         "price",
-        "trust_strip",
+        "purchase_value",
         "free_shipping",
+        "purchase_choice",
         "quantity_selector",
         "buy_buttons",
         "purchase_reassurance",
+        "trust_strip",
         "description",
         "marketplaces",
         "share"
