@@ -214,9 +214,36 @@
       "sort_by_label": "Sort by:",
       "to": "To",
       "clear_filter": "Remove filter"
+    },
+    "flavour_vote": {
+      "summary": "More flavours coming. Vote for the next one",
+      "prompt": "What should we make next?",
+      "orange": "Orange",
+      "berry": "Berry",
+      "fruit_punch": "Fruit Punch",
+      "lime": "Lime",
+      "tropical": "Tropical",
+      "watermelon": "Watermelon",
+      "other": "Other",
+      "other_label": "Your flavour idea",
+      "other_placeholder": "Type a flavour",
+      "submit_vote": "Submit vote",
+      "vote_recorded": "Vote recorded.",
+      "notify_prompt": "Want to know when your flavour launches?",
+      "email_label": "Email (optional)",
+      "email_placeholder": "you@example.com",
+      "consent": "Email me when this flavour launches and occasionally about Best Hydrate.",
+      "notify_button": "Notify me",
+      "fineprint": "Unsubscribe anytime.",
+      "notify_success": "You’re on the list. Check your inbox if confirmation is required.",
+      "notify_error": "We couldn’t save your email. Please try again."
     }
   },
   "templates": {
+    "404": {
+      "title": "Page not found",
+      "subtext": "404"
+    },
     "search": {
       "no_results": "No results found for “{{ terms }}”. Check the spelling or use a different word or phrase.",
       "page": "Page",
@@ -260,10 +287,6 @@
         "post_success": "Thanks for contacting us. We'll get back to you as soon as possible.",
         "error_heading": "Please adjust the following:"
       }
-    },
-    "404": {
-      "title": "Page not found",
-      "subtext": "404"
     }
   },
   "sections": {
@@ -274,7 +297,6 @@
       "announcement": "Announcement",
       "announcement_bar": "Announcement bar"
     },
-
     "header": {
       "announcement": "Announcement",
       "menu": "Menu",
