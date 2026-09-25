@@ -100,46 +100,6 @@
       {%- endform -%}
     </product-form>
     <small class="bhd-buy-buttons__shipping">✓ Free & Fast Delivery</small>
-    <div class="bhd-mobile-sticky-buy" data-bhd-mobile-sticky-buy="{{ section_id }}" hidden>
-      <button type="button" class="button button--primary button--full-width" data-bhd-sticky-submit>
-        Add to cart
-      </button>
-      <span>Free &amp; Fast Delivery</span>
-    </div>
-    <script>
-      (() => {
-        const initBhdStickyBuy = () => {
-          const sticky = document.querySelector('[data-bhd-mobile-sticky-buy="{{ section_id }}"]');
-          const primary = document.getElementById('ProductSubmitButton-{{ section_id }}');
-          if (!sticky || !primary || sticky.dataset.ready === 'true') return;
-          sticky.dataset.ready = 'true';
-          const button = sticky.querySelector('[data-bhd-sticky-submit]');
-          const sync = () => {
-            button.disabled = primary.disabled || primary.getAttribute('aria-disabled') === 'true';
-          };
-          sync();
-          sticky.hidden = false;
-          button.addEventListener('click', () => primary.click());
-          if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver(([entry]) => {
-              sticky.classList.toggle('is-hidden', entry.isIntersecting);
-            }, { threshold: 0.2 });
-            observer.observe(primary);
-          }
-          if ('MutationObserver' in window) {
-            new MutationObserver(sync).observe(primary, {
-              attributes: true,
-              attributeFilter: ['disabled', 'aria-disabled']
-            });
-          }
-        };
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initBhdStickyBuy, { once: true });
-        } else {
-          initBhdStickyBuy();
-        }
-      })();
-    </script>
   {%- else -%}
     <div class="product-form">
       <div class="product-form__buttons form">
@@ -193,12 +153,4 @@
 
 <style>
   .bhd-buy-buttons__shipping{display:block;margin-top:.7rem;color:#2c6b46;font-size:1.15rem;font-weight:700;line-height:1.2;text-align:center}
-  .bhd-mobile-sticky-buy{display:none}
-  @media screen and (max-width:749px){
-    .bhd-mobile-sticky-buy:not([hidden]){position:fixed;left:1rem;right:1rem;bottom:calc(1rem + env(safe-area-inset-bottom));z-index:45;display:grid;gap:.35rem;padding:.7rem;background:rgb(var(--color-background));border:1px solid rgba(var(--color-foreground),.16);border-radius:1.2rem;box-shadow:0 .6rem 2rem rgba(0,0,0,.18);transition:opacity .2s ease,transform .2s ease}
-    .bhd-mobile-sticky-buy .button{min-height:4.8rem;font-weight:850}
-    .bhd-mobile-sticky-buy span{text-align:center;color:#2c6b46;font-size:1.05rem;font-weight:700;line-height:1.2}
-    .bhd-mobile-sticky-buy.is-hidden{opacity:0;pointer-events:none;transform:translateY(120%)}
-    body:has(cart-drawer.active) .bhd-mobile-sticky-buy{display:none!important}
-  }
 </style>
