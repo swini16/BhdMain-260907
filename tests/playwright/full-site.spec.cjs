@@ -189,7 +189,7 @@ async function auditPage(context, path, { themeId = PREVIEW_THEME_ID } = {}) {
       firstPartyFailures.length = 0;
       pageErrors.length = 0;
 
-      response = await page.goto(withQa(path, { preview }), {
+      response = await page.goto(withQa(path, { themeId }), {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
       });
@@ -215,7 +215,7 @@ async function auditPage(context, path, { themeId = PREVIEW_THEME_ID } = {}) {
     ) {
       firstPartyFailures.length = 0;
       pageErrors.length = 0;
-      response = await page.goto(withQa(finalPath, { preview }), {
+      response = await page.goto(withQa(finalPath, { themeId }), {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
       });
