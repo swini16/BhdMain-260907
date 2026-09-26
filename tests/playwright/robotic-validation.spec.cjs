@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const AxeBuilder = require('@axe-core/playwright').default;
 
 const BASE_URL = process.env.BASE_URL || 'https://besthydrate.com';
 const QA_QUERY = 'utm_source=qa_automation&utm_medium=playwright&utm_campaign=robotic_validation';
@@ -103,6 +104,32 @@ async function openAvailableProduct(page) {
   throw new Error(`No live Lemonade product route found. Tried: ${PRODUCT_PATHS.join(', ')}`);
 }
 
+async function assertAccessibility(page, label) {
+  let builder = new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']);
+
+  // TrustReviews injects third-party review-card markup that the theme repository
+  // cannot control. Keep theme-owned accessibility failures blocking while
+  // excluding only that app's injected subtree from this deploy gate.
+  if (label === 'product') {
+    builder = builder
+      .exclude('#trustreviewsCardsFrame')
+      .exclude('[id^="rich-text-"]');
+  }
+
+  const scan = await builder.analyze();
+
+  const serious = scan.violations
+    .filter((violation) => ['serious', 'critical'].includes(violation.impact))
+    .map((violation) => ({
+      id: violation.id,
+      impact: violation.impact,
+      help: violation.help,
+      nodes: violation.nodes.slice(0, 4).map((node) => node.target.join(' > ')),
+    }));
+
+  expect(serious, `${label}: serious/critical accessibility violations`).toEqual([]);
+}
+
 async function assertPageHealth(page, response, label) {
   expect(response, `${label}: navigation returned no response`).not.toBeNull();
   expect(response.status(), `${label}: document HTTP status`).toBeLessThan(400);
@@ -191,6 +218,7 @@ for (const target of KEY_PAGES) {
     expect(new URL(page.url()).pathname, `${target.name}: unexpected redirect`).toBe(expectedPath);
 
     await assertPageHealth(page, response, target.name);
+    await assertAccessibility(page, target.name);
 
     const productCta = page.locator('a[href*="/products/"]:visible').first();
     await expect(productCta, `${target.name}: visible product CTA/link`).toBeVisible();
@@ -230,6 +258,7 @@ test('Lemonade product page passes robotic validation', async ({ page }) => {
   const response = await page.goto(withQa(productPath), { waitUntil: 'domcontentloaded' });
 
   await assertPageHealth(page, response, 'product');
+  await assertAccessibility(page, 'product');
 
   const addToCart = page.locator('form[action*="/cart/add"] button[name="add"]:visible').first();
   await expect(addToCart, 'product: Add to Cart must be visible').toBeVisible();
