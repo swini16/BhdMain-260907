@@ -59,7 +59,7 @@ jobs:
           find test-results -type f -name 'visual-*.jpg' -print0 | while IFS= read -r -d '' f; do
             cp "$f" "visual-current/$(basename "$f")"
           done
-          echo 'bhd-visual-v2' > visual-current/baseline-version.txt
+          echo 'bhd-visual-v3' > visual-current/baseline-version.txt
           test "$(find visual-current -maxdepth 1 -name 'visual-*.jpg' | wc -l)" -ge 10
 
       - name: Compare screenshots with last approved main run
@@ -97,8 +97,8 @@ jobs:
           unzip -q /tmp/visual-baseline.zip -d /tmp/visual-baseline-extract
 
           BASELINE_VERSION="$(find /tmp/visual-baseline-extract -type f -name 'baseline-version.txt' -print -quit || true)"
-          if [ -z "$BASELINE_VERSION" ] || [ "$(cat "$BASELINE_VERSION")" != "bhd-visual-v2" ]; then
-            echo "Prior artifact uses an older visual-capture format. Bootstrapping bhd-visual-v2 baseline."
+          if [ -z "$BASELINE_VERSION" ] || [ "$(cat "$BASELINE_VERSION")" != "bhd-visual-v3" ]; then
+            echo "Prior artifact uses an older visual-capture format. Bootstrapping bhd-visual-v3 baseline."
             exit 0
           fi
 
