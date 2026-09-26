@@ -63,7 +63,7 @@ jobs:
           test "$(find visual-current -maxdepth 1 -name 'visual-*.jpg' | wc -l)" -ge 10
 
       - name: Compare screenshots with last approved main run
-        if: ${{ github.event_name == 'push' && !cancelled() }}
+        if: ${{ github.event_name == 'push' && !cancelled() && !contains(github.event.head_commit.message, '[approve-visual-baseline]') }}
         env:
           GH_TOKEN: ${{ github.token }}
           VISUAL_PIXEL_THRESHOLD: '0.12'
@@ -107,6 +107,12 @@ jobs:
           done
 
           node scripts/visual-regression-compare.mjs visual-baseline visual-current visual-diff
+
+      - name: Record approved visual baseline
+        if: ${{ github.event_name == 'push' && !cancelled() && contains(github.event.head_commit.message, '[approve-visual-baseline]') }}
+        run: |
+          echo "Intentional visual change approved by commit marker."
+          echo "This successful run becomes the next automatic baseline."
 
       - name: Upload visual regression evidence
         if: ${{ !cancelled() }}
