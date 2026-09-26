@@ -12,6 +12,7 @@ on:
 permissions:
   contents: read
   actions: read
+  issues: write
 
 concurrency:
   group: storefront-smoke-${{ github.ref }}
@@ -128,3 +129,107 @@ jobs:
             test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+      - name: Triage real live validation failure
+        if: ${{ failure() && github.event_name != 'pull_request' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TITLE='Storefront QA live validation failure'
+          RUN_URL="https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          SHORT_SHA="${GITHUB_SHA:0:8}"
+
+          FAILED_STEPS="$(
+            gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs?filter=latest&per_page=100"               --jq '[.jobs[].steps[]? | select(.conclusion=="failure") | .name] | unique | join(", ")'
+          )"
+          [ -n "$FAILED_STEPS" ] || FAILED_STEPS='Unknown step; inspect run summary'
+
+          case "$FAILED_STEPS" in
+            *"Compare screenshots with last approved main run"*)
+              CATEGORY='Visual regression'
+              NEXT='Review the visual-regression artifact and diff summary; confirm whether the appearance change is intended.'
+              ;;
+            *"Run storefront Playwright validation"*)
+              CATEGORY='Live storefront functionality / layout / accessibility'
+              NEXT='Open the Playwright report first; use the failed test name, screenshot and trace to isolate the page and breakpoint.'
+              ;;
+            *"Prepare stable visual captures"*)
+              CATEGORY='Visual capture pipeline'
+              NEXT='Inspect screenshot generation and test-results output before changing storefront code.'
+              ;;
+            *"Install Playwright"*|*"Set up Node"*|*"Checkout repository"*)
+              CATEGORY='CI infrastructure'
+              NEXT='Retry only after checking the failed setup step; storefront code may be healthy.'
+              ;;
+            *)
+              CATEGORY='Validation pipeline'
+              NEXT='Open the failed run and inspect the first failed step before changing production code.'
+              ;;
+          esac
+
+          ARTIFACTS="$(
+            gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?per_page=100"               --jq '.artifacts | if length == 0 then "None uploaded" else map("- [\(.name)](https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"'/artifacts/\(.id))") | join("\n") end'
+          )"
+
+          cat > /tmp/storefront-qa-issue.md <<EOF
+          ## Current failure
+
+          **Category:** $CATEGORY  
+          **Trigger:** $GITHUB_EVENT_NAME  
+          **Commit:** `$SHORT_SHA`  
+          **Failed step(s):** $FAILED_STEPS
+
+          **Next action:** $NEXT
+
+          [Open workflow run]($RUN_URL)
+
+          ### Evidence
+          $ARTIFACTS
+
+          ---
+          This issue is maintained automatically. Repeated failures update it in place; the next successful live validation closes it.
+          EOF
+
+          ISSUE="$(
+            gh issue list               --repo "$GITHUB_REPOSITORY"               --state open               --search "$TITLE in:title"               --json number,title               --jq '.[] | select(.title=="'"$TITLE"'") | .number'               | head -n 1
+          )"
+
+          if [ -n "$ISSUE" ]; then
+            gh issue edit "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file /tmp/storefront-qa-issue.md
+            echo "Updated existing triage issue #$ISSUE"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" --body-file /tmp/storefront-qa-issue.md
+          fi
+
+      - name: Auto-close recovered live validation issue
+        if: ${{ success() && github.event_name != 'pull_request' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TITLE='Storefront QA live validation failure'
+          ISSUE="$(
+            gh issue list               --repo "$GITHUB_REPOSITORY"               --state open               --search "$TITLE in:title"               --json number,title               --jq '.[] | select(.title=="'"$TITLE"'") | .number'               | head -n 1
+          )"
+
+          if [ -z "$ISSUE" ]; then
+            echo 'No open live-validation issue to close.'
+            exit 0
+          fi
+
+          BODY="$(gh issue view "$ISSUE" --repo "$GITHUB_REPOSITORY" --json body --jq .body)"
+          {
+            printf '%s\n\n' "$BODY"
+            echo '---'
+            echo "**Recovered automatically:** $(date -u +'%Y-%m-%d %H:%M UTC')"
+            echo
+            echo "[Successful validation run](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)"
+          } > /tmp/storefront-qa-recovered.md
+
+          gh issue edit "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file /tmp/storefront-qa-recovered.md
+          gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason completed
