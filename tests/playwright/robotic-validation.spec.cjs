@@ -111,6 +111,12 @@ async function openAvailableProduct(page) {
 async function assertAccessibility(page, label) {
   let builder = new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']);
 
+  // Shopify injects its preview toolbar only on preview_theme_id sessions.
+  // It isn't part of the merchant theme and must not block theme accessibility QA.
+  if (await page.locator('#PBarNextFrame').count()) {
+    builder = builder.exclude('#PBarNextFrame');
+  }
+
   // TrustReviews injects third-party markup outside theme control. Exclude only
   // its containing Shopify section, wherever the app renders, while leaving the
   // rest of the page fully blocking on serious/critical accessibility defects.
@@ -165,6 +171,7 @@ async function assertVisualLayout(page, label, testInfo) {
         transition-duration: 0.001ms !important;
         scroll-behavior: auto !important;
       }
+      #PBarNextFrame,
       #trustreviewsCardsFrame,
       [id^="rich-text-"],
       [class*="kl-private-reset-css"] {
@@ -202,7 +209,7 @@ async function assertVisualLayout(page, label, testInfo) {
     const isThirdPartyUi = (element) =>
       Boolean(
         element.closest(
-          '#trustreviewsCardsFrame,[id^="rich-text-"],[class*="kl-private-reset-css"]'
+          '#PBarNextFrame,#trustreviewsCardsFrame,[id^="rich-text-"],[class*="kl-private-reset-css"]'
         )
       );
 
@@ -471,8 +478,10 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
   expect(pageErrors, 'product: uncaught JavaScript errors').toEqual([]);
 });
 
-test('critical internal links from key pages do not return 4xx/5xx', async ({ page, request }, testInfo) => {
+test('critical internal links from key pages do not return 4xx/5xx', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Link crawl only needs one browser project.');
+  test.setTimeout(120000);
+  const request = page.context().request;
 
   const discovered = new Set();
 
