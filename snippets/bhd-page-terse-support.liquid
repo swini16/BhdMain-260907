@@ -68,7 +68,7 @@
       assign t_p2 = 'Portable|Small container for work, travel and daily routines.'
       assign t_p3 = 'Flexible|Use when fluid and electrolyte needs are higher than usual.'
       assign t_proof = 'Hydration needs vary. Best Hydrate is not necessary for every drink or every day.'
-    when 'travel'
+    when 'travel-hydration'
       assign t_intro = 'Travel can disrupt normal drinking, meals, climate and activity. Keep hydration simple.'
       assign t_p1 = 'Pack small|Powder is easy to carry.'
       assign t_p2 = 'Mix as needed|Useful when travel increases fluid or electrolyte losses.'
@@ -167,6 +167,6 @@
   {% assign a = t_p3 | split: '|' %}<div><strong>{{ a[0] }}</strong><span>{{ a[1] }}</span></div>
 </div>
 
-<section class="bhd-page__feature"><div><p class="bhd-page__kicker">Context</p><h2>The useful part</h2><p>{{ t_proof }}</p></div></section>
+<section class="bhd-page__feature"><div><p class="bhd-page__kicker">Why it matters</p><h2>What to know</h2><p>{{ t_proof }}</p></div></section>
 
-<section class="bhd-page__brand-context"><div><p class="bhd-page__kicker">Next</p><h2>Go where the detail is useful.</h2></div><div class="bhd-page__brand-actions"><a class="bhd-page__button" href="{{ t_primary }}">{{ t_primary_label }}</a><a class="bhd-page__button bhd-page__button--secondary" href="{{ t_secondary }}">{{ t_secondary_label }}</a></div></section>
+<section class="bhd-page__brand-context"><div><p class="bhd-page__kicker">Next</p><h2>Choose the next step.</h2></div><div class="bhd-page__brand-actions"><a class="bhd-page__button" href="{{ t_primary }}">{{ t_primary_label }}</a><a class="bhd-page__button bhd-page__button--secondary" href="{{ t_secondary }}">{{ t_secondary_label }}</a></div></section>
