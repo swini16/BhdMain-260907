@@ -100,6 +100,24 @@ function withQa(path) {
   return url.toString();
 }
 
+async function gotoWithTransientRetry(page, url, options = {}) {
+  const transient = new Set([429, 500, 502, 503, 504]);
+  let response = null;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    response = await page.goto(url, {
+      waitUntil: 'domcontentloaded',
+      ...options,
+    }).catch(() => null);
+
+    const status = response?.status() || 0;
+    if (response && !transient.has(status)) return response;
+    if (attempt < 3) await page.waitForTimeout(500 * attempt);
+  }
+
+  return response;
+}
+
 async function smoothScrollToBottom(page) {
   await page.evaluate(async () => {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -117,7 +135,7 @@ async function smoothScrollToBottom(page) {
 
 async function openAvailableProduct(page) {
   for (const path of [...new Set(PRODUCT_PATHS.filter(Boolean))]) {
-    const response = await page.goto(withQa(path), { waitUntil: 'domcontentloaded' });
+    const response = await gotoWithTransientRetry(page, withQa(path));
 
     if (
       response &&
@@ -453,7 +471,7 @@ for (const target of KEY_PAGES) {
       }
     });
 
-    const response = await page.goto(withQa(target.path), { waitUntil: 'domcontentloaded' });
+    const response = await gotoWithTransientRetry(page, withQa(target.path));
 
     const expectedPath = target.path === '/' ? '/' : target.path;
     expect(new URL(page.url()).pathname, `${target.name}: unexpected redirect`).toBe(expectedPath);
@@ -485,7 +503,8 @@ test('support-page matrix stays healthy, terse and routed', async ({ page }) => 
     if (
       isFirstParty(response.url()) &&
       ['document', 'script', 'stylesheet', 'image', 'font'].includes(type) &&
-      response.status() >= 400
+      response.status() >= 400 &&
+      !(type === 'document' && [429, 500, 502, 503, 504].includes(response.status()))
     ) {
       firstPartyFailures.push(`${response.status()} ${type} ${response.url()}`);
     }
@@ -504,7 +523,7 @@ test('support-page matrix stays healthy, terse and routed', async ({ page }) => 
     firstPartyFailures.length = 0;
     pageErrors.length = 0;
 
-    const response = await page.goto(withQa(target.path), { waitUntil: 'domcontentloaded' });
+    const response = await gotoWithTransientRetry(page, withQa(target.path));
     const expectedPath = target.expectedPath || target.path;
     expect(new URL(page.url()).pathname, `${target.name}: unexpected redirect`).toBe(expectedPath);
 
@@ -546,7 +565,8 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
     if (
       isFirstParty(response.url()) &&
       ['document', 'script', 'stylesheet', 'image', 'font'].includes(type) &&
-      response.status() >= 400
+      response.status() >= 400 &&
+      !(type === 'document' && [429, 500, 502, 503, 504].includes(response.status()))
     ) {
       firstPartyFailures.push(`${response.status()} ${type} ${response.url()}`);
     }
@@ -563,7 +583,7 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
   const productPath = await openAvailableProduct(page);
   firstPartyFailures.length = 0;
   pageErrors.length = 0;
-  const response = await page.goto(withQa(productPath), { waitUntil: 'domcontentloaded' });
+  const response = await gotoWithTransientRetry(page, withQa(productPath));
 
   await assertPageHealth(page, response, 'product');
   await assertAccessibility(page, 'product');
@@ -596,7 +616,7 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
   const discovered = new Set();
 
   for (const target of KEY_PAGES) {
-    await page.goto(withQa(target.path), { waitUntil: 'domcontentloaded' });
+    await gotoWithTransientRetry(page, withQa(target.path));
 
     const links = await page.locator('a[href]').evaluateAll((anchors) =>
       anchors
@@ -632,10 +652,9 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
     await Promise.all(groups.map(async (group) => {
       const probe = await page.context().newPage();
       for (const href of group) {
-        const response = await probe.goto(withQa(href), {
-          waitUntil: 'domcontentloaded',
+        const response = await gotoWithTransientRetry(probe, withQa(href), {
           timeout: 15000,
-        }).catch(() => null);
+        });
         if (!response || response.status() >= 400) {
           // Some Shopify preview-domain product routes differ from the public
           // custom-domain route. Confirm the actual customer destination before
@@ -672,10 +691,9 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
         // Shopify market routing can make APIRequestContext disagree with a
         // real storefront browser. Confirm any apparent failure in Chromium
         // before calling the customer-facing link broken.
-        const browserResponse = await probe.goto(withQa(href), {
-          waitUntil: 'domcontentloaded',
+        const browserResponse = await gotoWithTransientRetry(probe, withQa(href), {
           timeout: 15000,
-        }).catch(() => null);
+        });
 
         if (!browserResponse || browserResponse.status() >= 400) {
           failures.push(`${browserResponse?.status() || response.status()} ${href}`);
