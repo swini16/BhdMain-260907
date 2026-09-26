@@ -444,6 +444,24 @@ for (const target of KEY_PAGES) {
     const productCta = page.locator('a[href*="/products/"]:visible').first();
     await expect(productCta, `${target.name}: visible product CTA/link`).toBeVisible();
 
+    if (['prep', 'perform', 'recover'].includes(target.name)) {
+      const phaseShopLinks = page.locator('[data-bhd-phase-shop]');
+      await expect(
+        phaseShopLinks,
+        `${target.name}: hero + bridge product CTAs`
+      ).toHaveCount(2);
+      await expect(
+        page.locator('.bhd-phase__shop-bridge:visible'),
+        `${target.name}: visible bottom product bridge`
+      ).toBeVisible();
+      for (let i = 0; i < 2; i += 1) {
+        await expect(
+          phaseShopLinks.nth(i),
+          `${target.name}: product CTA destination`
+        ).toHaveAttribute('href', '/products/lemonade-best-hydrate');
+      }
+    }
+
     expect(firstPartyFailures, `${target.name}: first-party network failures`).toEqual([]);
     expect(pageErrors, `${target.name}: uncaught JavaScript errors`).toEqual([]);
   });
