@@ -31,7 +31,7 @@ jobs:
     timeout-minutes: 20
     env:
       SHOPIFY_FLAG_STORE: best-hydrate.myshopify.com
-      SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+      SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN || secrets.SHOPIFY_THEME_ACCESS_TOKEN || secrets.SHOPIFY_ADMIN_API_TOKEN || secrets.SHOPIFY_ACCESS_TOKEN }}
       SHOPIFY_FLAG_FORCE: '1'
       BASE_URL: https://best-hydrate.myshopify.com
       PRODUCT_PATH: /products/lemonade-best-hydrate
@@ -45,7 +45,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${SHOPIFY_CLI_THEME_TOKEN:-}" ]; then
-            echo "::error::Missing repository secret SHOPIFY_CLI_THEME_TOKEN. Add a Shopify Theme Access password or Admin API token with read_themes/write_themes."
+            echo "::error::Missing a Shopify theme credential. Accepted secret names: SHOPIFY_CLI_THEME_TOKEN, SHOPIFY_THEME_ACCESS_TOKEN, SHOPIFY_ADMIN_API_TOKEN, or SHOPIFY_ACCESS_TOKEN. Use a Theme Access password or Admin API token with read_themes/write_themes."
             exit 1
           fi
 
