@@ -533,7 +533,20 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
           timeout: 15000,
         }).catch(() => null);
         if (!response || response.status() >= 400) {
-          failures.push(`${response?.status() || 'NO_RESPONSE'} ${href}`);
+          // Some Shopify preview-domain product routes differ from the public
+          // custom-domain route. Confirm the actual customer destination before
+          // calling the link broken.
+          const liveUrl = new URL(href, 'https://besthydrate.com').toString();
+          const liveResponse = await page.context().request.get(liveUrl, {
+            failOnStatusCode: false,
+            timeout: 15000,
+            maxRedirects: 5,
+            headers: { 'User-Agent': 'BestHydrate-QA-Playwright/1.0' },
+          }).catch(() => null);
+
+          if (!liveResponse || liveResponse.status() >= 400) {
+            failures.push(`${response?.status() || 'NO_RESPONSE'} ${href}`);
+          }
         }
       }
       await probe.close();
