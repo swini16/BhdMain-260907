@@ -76,10 +76,15 @@ jobs:
         run: |
           set -euo pipefail
           PR_NUMBER="${{ github.event.pull_request.number || 0 }}"
-          SHORT_SHA="${GITHUB_SHA:0:8}"
-          THEME_NAME="QA PR-${PR_NUMBER} ${SHORT_SHA}"
+          DEV_CONTEXT="pr-${PR_NUMBER}"
 
-          npx shopify theme push             --path /tmp/bhd-theme             --store "$SHOPIFY_FLAG_STORE"             --password "$SHOPIFY_CLI_THEME_TOKEN"             --unpublished             --theme "$THEME_NAME"             --json > /tmp/shopify-preview.json
+          npx shopify theme push \
+            --path /tmp/bhd-theme \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --password "$SHOPIFY_CLI_THEME_TOKEN" \
+            --development \
+            --development-context "$DEV_CONTEXT" \
+            --json > /tmp/shopify-preview.json
 
           cat /tmp/shopify-preview.json
           THEME_ID="$(jq -er '.theme.id | tostring' /tmp/shopify-preview.json)"
@@ -128,4 +133,8 @@ jobs:
         if: ${{ always() && steps.preview.outputs.theme_id != '' }}
         shell: bash
         run: |
-          npx shopify theme delete             --store "$SHOPIFY_FLAG_STORE"             --password "$SHOPIFY_CLI_THEME_TOKEN"             --theme "${{ steps.preview.outputs.theme_id }}"             --force
+          npx shopify theme delete \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --password "$SHOPIFY_CLI_THEME_TOKEN" \
+            --theme "${{ steps.preview.outputs.theme_id }}" \
+            --force
