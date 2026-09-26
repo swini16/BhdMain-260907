@@ -5,6 +5,7 @@ test.describe.configure({ retries: 0 });
 
 const BASE_URL = process.env.BASE_URL || 'https://besthydrate.com';
 const PREVIEW_THEME_ID = process.env.PREVIEW_THEME_ID || '';
+const BASELINE_PREVIEW_THEME_ID = process.env.BASELINE_PREVIEW_THEME_ID || '';
 const QA_QUERY = 'utm_source=qa_automation&utm_medium=playwright&utm_campaign=full_site';
 
 const ANALYTICS_ENDPOINTS = [
@@ -69,11 +70,11 @@ function isIgnorableQaPageError(message) {
   );
 }
 
-function withQa(path, { preview = true } = {}) {
+function withQa(path, { themeId = PREVIEW_THEME_ID } = {}) {
   const url = new URL(path, BASE_URL);
   const qa = new URLSearchParams(QA_QUERY);
   for (const [key, value] of qa) url.searchParams.set(key, value);
-  if (preview && PREVIEW_THEME_ID) url.searchParams.set('preview_theme_id', PREVIEW_THEME_ID);
+  if (themeId) url.searchParams.set('preview_theme_id', themeId);
   return url.toString();
 }
 
@@ -151,7 +152,7 @@ async function scrollForLazyAssets(page) {
   await page.waitForTimeout(80);
 }
 
-async function auditPage(context, path, { preview = true } = {}) {
+async function auditPage(context, path, { themeId = PREVIEW_THEME_ID } = {}) {
   const page = await context.newPage();
   const firstPartyFailures = [];
   const pageErrors = [];
@@ -340,20 +341,20 @@ function defectSet(result) {
   return set;
 }
 
-function compareAgainstLive(preview, live) {
+function compareAgainstBaseline(preview, live) {
   const previewDefects = defectSet(preview);
-  const liveDefects = defectSet(live);
+  const baselineDefects = defectSet(live);
   const regressions = [];
 
   for (const defect of previewDefects) {
     if (defect.startsWith('overflow:')) continue;
-    if (!liveDefects.has(defect)) regressions.push(defect);
+    if (!baselineDefects.has(defect)) regressions.push(defect);
   }
 
   const previewOverflow = preview.horizontalOverflow || 0;
-  const liveOverflow = live.horizontalOverflow || 0;
-  if (previewOverflow > Math.max(4, liveOverflow + 4)) {
-    regressions.push(`overflow:${previewOverflow} (live ${liveOverflow})`);
+  const baselineOverflow = live.horizontalOverflow || 0;
+  if (previewOverflow > Math.max(4, baselineOverflow + 4)) {
+    regressions.push(`overflow:${previewOverflow} (live ${baselineOverflow})`);
   }
 
   return {
@@ -361,7 +362,7 @@ function compareAgainstLive(preview, live) {
     preview,
     live,
     regressions,
-    baselineOnly: [...liveDefects],
+    baselineOnly: [...baselineDefects],
   };
 }
 
@@ -407,10 +408,10 @@ test('full public storefront passes robotic QA', async ({ context, request }, te
   );
 
   // Regression-aware PR gate:
-  // re-audit only failing preview pages on the current live theme, then block
-  // only defects that are new or worse than today's production baseline.
+  // re-audit only failing proposed-preview pages against a rendered preview
+  // of the PR base commit, then block only defects that are new or worse.
   const comparisons = [];
-  if (PREVIEW_THEME_ID && previewFailures.length) {
+  if (PREVIEW_THEME_ID && BASELINE_PREVIEW_THEME_ID && previewFailures.length) {
     let baselineCursor = 0;
     const baselineWorkers = Math.max(1, Math.min(6, Number(process.env.FULL_SITE_BASELINE_CONCURRENCY || 8)));
 
@@ -419,22 +420,22 @@ test('full public storefront passes robotic QA', async ({ context, request }, te
         const index = baselineCursor++;
         if (index >= previewFailures.length) return;
         const preview = previewFailures[index];
-        const live = await auditPage(context, preview.path, { preview: false });
-        comparisons[index] = compareAgainstLive(preview, live);
+        const baseline = await auditPage(context, preview.path, { themeId: BASELINE_PREVIEW_THEME_ID });
+        comparisons[index] = compareAgainstBaseline(preview, baseline);
       }
     }
 
     await Promise.all(Array.from({ length: baselineWorkers }, () => baselineWorker()));
   }
 
-  const regressions = PREVIEW_THEME_ID
+  const regressions = PREVIEW_THEME_ID && BASELINE_PREVIEW_THEME_ID
     ? comparisons.filter((item) => item.regressions.length)
     : [];
 
   // On the live storefront this test is a baseline inventory, not a hard
   // full-site blocker. Critical live smoke/commerce checks remain blocking.
   // PR previews are the hard regression gate.
-  const knownBaselinePages = PREVIEW_THEME_ID
+  const knownBaselinePages = PREVIEW_THEME_ID && BASELINE_PREVIEW_THEME_ID
     ? comparisons.filter((item) => !item.regressions.length).map((item) => item.path)
     : previewFailures.map((item) => item.path);
 
