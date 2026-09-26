@@ -1,4 +1,4 @@
-name: Storefront Playwright smoke
+name: Storefront Playwright validation
 
 on:
   workflow_dispatch:
@@ -16,9 +16,9 @@ concurrency:
 
 jobs:
   smoke:
-    name: Product → cart → checkout
+    name: Smoke + robotic validation
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     env:
       BASE_URL: https://besthydrate.com
@@ -42,7 +42,7 @@ jobs:
         if: github.event_name == 'push'
         run: sleep 30
 
-      - name: Run storefront smoke tests
+      - name: Run storefront Playwright validation
         run: npx playwright test --config=playwright.config.cjs
 
       - name: Upload Playwright diagnostics
