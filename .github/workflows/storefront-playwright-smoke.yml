@@ -59,7 +59,7 @@ jobs:
           find test-results -type f -name 'visual-*.jpg' -print0 | while IFS= read -r -d '' f; do
             cp "$f" "visual-current/$(basename "$f")"
           done
-          echo 'bhd-visual-v2' > visual-current/baseline-version.txt
+          echo 'bhd-visual-v3' > visual-current/baseline-version.txt
           test "$(find visual-current -maxdepth 1 -name 'visual-*.jpg' | wc -l)" -ge 10
 
       - name: Compare screenshots with last approved main run
@@ -75,7 +75,8 @@ jobs:
           npm install --no-save sharp@latest pixelmatch@latest
 
           BASELINE_RUN_ID="$(
-            gh api "/repos/$GITHUB_REPOSITORY/actions/workflows/storefront-playwright-smoke.yml/runs?branch=main&status=success&event=push&per_page=20"               --jq '.workflow_runs[] | select((.id|tostring) != env.GITHUB_RUN_ID) | .id'               | head -n 1
+            gh api "/repos/$GITHUB_REPOSITORY/actions/workflows/storefront-playwright-smoke.yml/runs?branch=main&status=success&event=push&per_page=20" \
+              --jq '[.workflow_runs[] | select((.id|tostring) != env.GITHUB_RUN_ID) | .id][0] // empty'
           )"
 
           if [ -z "$BASELINE_RUN_ID" ]; then
@@ -84,7 +85,8 @@ jobs:
           fi
 
           ARTIFACT_ID="$(
-            gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$BASELINE_RUN_ID/artifacts?per_page=100"               --jq '.artifacts[] | select(.name | startswith("visual-regression-")) | .id'               | head -n 1
+            gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$BASELINE_RUN_ID/artifacts?per_page=100" \
+              --jq '[.artifacts[] | select(.name | startswith("visual-regression-")) | .id][0] // empty'
           )"
 
           if [ -z "$ARTIFACT_ID" ]; then
@@ -97,8 +99,8 @@ jobs:
           unzip -q /tmp/visual-baseline.zip -d /tmp/visual-baseline-extract
 
           BASELINE_VERSION="$(find /tmp/visual-baseline-extract -type f -name 'baseline-version.txt' -print -quit || true)"
-          if [ -z "$BASELINE_VERSION" ] || [ "$(cat "$BASELINE_VERSION")" != "bhd-visual-v2" ]; then
-            echo "Prior artifact uses an older visual-capture format. Bootstrapping bhd-visual-v2 baseline."
+          if [ -z "$BASELINE_VERSION" ] || [ "$(cat "$BASELINE_VERSION")" != "bhd-visual-v3" ]; then
+            echo "Prior artifact uses an older visual-capture format. Bootstrapping bhd-visual-v3 baseline."
             exit 0
           fi
 
@@ -185,7 +187,7 @@ jobs:
 
           **Category:** $CATEGORY  
           **Trigger:** $GITHUB_EVENT_NAME  
-          **Commit:** `$SHORT_SHA`  
+          **Commit:** \`$SHORT_SHA\`  
           **Failed step(s):** $FAILED_STEPS
 
           **Next action:** $NEXT
@@ -200,7 +202,12 @@ jobs:
           EOF
 
           ISSUE="$(
-            gh issue list               --repo "$GITHUB_REPOSITORY"               --state open               --search "$TITLE in:title"               --json number,title               --jq '.[] | select(.title=="'"$TITLE"'") | .number'               | head -n 1
+            gh issue list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --search "$TITLE in:title" \
+              --json number,title \
+              --jq '[.[] | select(.title=="'"$TITLE"'") | .number][0] // empty'
           )"
 
           if [ -n "$ISSUE" ]; then
@@ -220,7 +227,12 @@ jobs:
 
           TITLE='Storefront QA live validation failure'
           ISSUE="$(
-            gh issue list               --repo "$GITHUB_REPOSITORY"               --state open               --search "$TITLE in:title"               --json number,title               --jq '.[] | select(.title=="'"$TITLE"'") | .number'               | head -n 1
+            gh issue list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --search "$TITLE in:title" \
+              --json number,title \
+              --jq '[.[] | select(.title=="'"$TITLE"'") | .number][0] // empty'
           )"
 
           if [ -z "$ISSUE" ]; then
