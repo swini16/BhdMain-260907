@@ -550,6 +550,17 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
   await expect(addToCart, 'product: Add to Cart must be visible').toBeVisible();
   await expect(addToCart, 'product: Add to Cart must be enabled').toBeEnabled();
 
+  const purchaseBeforeFlavourVote = await page.evaluate(() => {
+    const add = document.querySelector('form[action*="/cart/add"] button[name="add"]');
+    const vote = document.querySelector('[data-bhd-flavour-vote]');
+    if (!add || !vote) return null;
+    return Boolean(add.compareDocumentPosition(vote) & Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+  expect(
+    purchaseBeforeFlavourVote,
+    'product: flavour-vote module must stay below the primary Add to Cart action'
+  ).toBe(true);
+
   expect(firstPartyFailures, 'product: first-party network failures').toEqual([]);
   expect(pageErrors, 'product: uncaught JavaScript errors').toEqual([]);
 });
