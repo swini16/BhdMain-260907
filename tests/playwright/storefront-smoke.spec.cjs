@@ -119,6 +119,7 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
         const response = await fetch('/cart.js', {
           headers: { Accept: 'application/json' },
           credentials: 'same-origin',
+          cache: 'no-store',
         });
 
         if (response.ok) return response.json();
@@ -149,15 +150,16 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
     await expect(checkout).toBeVisible();
     await expect(checkout).toBeEnabled();
 
-    await checkout.click();
-
-    await page.waitForURL(
-      (url) =>
-        /\/checkouts?\//i.test(url.pathname) ||
-        /checkout/i.test(url.hostname) ||
-        /checkout/i.test(url.pathname),
-      { timeout: 45000, waitUntil: 'domcontentloaded' }
-    );
+    await Promise.all([
+      page.waitForURL(
+        (url) =>
+          /\/checkouts?\//i.test(url.pathname) ||
+          /checkout/i.test(url.hostname) ||
+          /checkout/i.test(url.pathname),
+        { timeout: 45000, waitUntil: 'domcontentloaded' }
+      ),
+      checkout.click(),
+    ]);
 
     expect(page.url()).toMatch(/checkout/i);
   });
