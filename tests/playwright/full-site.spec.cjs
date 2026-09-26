@@ -399,14 +399,6 @@ test('full public storefront passes robotic QA', async ({ browser, request }, te
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Full-site crawl runs once per PR.');
   test.setTimeout(15 * 60 * 1000);
 
-  await context.route('**/*', async (route) => {
-    if (isAnalyticsUrl(route.request().url())) {
-      await route.abort();
-      return;
-    }
-    await route.continue();
-  });
-
   const paths = await discoverPublicPaths(request);
   expect(paths.length, 'sitemap should expose public storefront routes').toBeGreaterThan(0);
 
