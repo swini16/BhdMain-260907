@@ -151,6 +151,177 @@ async function assertAccessibility(page, label) {
   expect(serious, `${label}: serious/critical accessibility violations`).toEqual([]);
 }
 
+
+async function assertVisualLayout(page, label, testInfo) {
+  await page.addStyleTag({
+    content: `
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    `,
+  });
+
+  await smoothScrollToBottom(page);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(120);
+
+  const audit = await page.evaluate(() => {
+    const isVisible = (element) => {
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        Number(style.opacity || 1) !== 0 &&
+        rect.width > 2 &&
+        rect.height > 2
+      );
+    };
+
+    const describe = (element) => {
+      if (!element) return '[missing]';
+      if (element.id) return '#' + element.id;
+      const classes = [...element.classList].slice(0, 3).join('.');
+      return element.tagName.toLowerCase() + (classes ? '.' + classes : '');
+    };
+
+    const viewportWidth = document.documentElement.clientWidth;
+
+    const isThirdPartyUi = (element) =>
+      Boolean(
+        element.closest(
+          '#trustreviewsCardsFrame,[id^="rich-text-"],[class*="kl-private-reset-css"]'
+        )
+      );
+
+    const isInsideHorizontalClip = (element) => {
+      let parent = element.parentElement;
+      while (parent && parent !== document.body) {
+        const style = getComputedStyle(parent);
+        const overflowX = style.overflowX;
+        if (
+          ['auto', 'scroll', 'hidden', 'clip'].includes(overflowX) &&
+          parent.scrollWidth > parent.clientWidth + 3
+        ) {
+          return true;
+        }
+        parent = parent.parentElement;
+      }
+      return false;
+    };
+
+    const visibleTextLength = (element) => {
+      const clone = element.cloneNode(true);
+      clone.querySelectorAll?.('.visually-hidden,[aria-hidden="true"],svg').forEach((node) => node.remove());
+      return (clone.textContent || '').replace(/\s+/g, ' ').trim().length;
+    };
+
+    const horizontalEscape = [...document.querySelectorAll(
+      'h1,h2,h3,button,summary,input,select,textarea,.button,[class*="bhd-"] a,.product__info-wrapper a,.product__info-wrapper button'
+    )]
+      .filter(isVisible)
+      .filter((element) => !element.classList.contains('visually-hidden'))
+      .filter((element) => !isThirdPartyUi(element))
+      .filter((element) => !isInsideHorizontalClip(element))
+      .map((element) => ({ element, rect: element.getBoundingClientRect() }))
+      .filter(({ rect }) => rect.left < -3 || rect.right > viewportWidth + 3)
+      .slice(0, 12)
+      .map(({ element, rect }) => ({
+        element: describe(element),
+        left: Math.round(rect.left),
+        right: Math.round(rect.right),
+        viewportWidth,
+      }));
+
+    const clippedContent = [...document.querySelectorAll(
+      'h1,h2,h3,button,summary,.button,.bhd-hero-v4__button,.bhd-phase__proof span,.bhd-product-story__copy'
+    )]
+      .filter(isVisible)
+      .filter((element) => !element.classList.contains('visually-hidden'))
+      .filter((element) => !isThirdPartyUi(element))
+      .filter((element) => visibleTextLength(element) > 0)
+      .filter((element) =>
+        element.scrollWidth > element.clientWidth + 4 ||
+        element.scrollHeight > element.clientHeight + 8
+      )
+      .slice(0, 12)
+      .map((element) => ({
+        element: describe(element),
+        clientWidth: element.clientWidth,
+        scrollWidth: element.scrollWidth,
+        clientHeight: element.clientHeight,
+        scrollHeight: element.scrollHeight,
+      }));
+
+    const pairs = [
+      ['.bhd-hero-v4__copy', '.bhd-hero-v4__visual'],
+      ['.bhd-product-story__visual', '.bhd-product-story__copy'],
+      ['.product__media-wrapper', '.product__info-wrapper'],
+    ];
+
+    const overlaps = [];
+    for (const [aSelector, bSelector] of pairs) {
+      const a = document.querySelector(aSelector);
+      const b = document.querySelector(bSelector);
+      if (!a || !b || !isVisible(a) || !isVisible(b)) continue;
+
+      const ar = a.getBoundingClientRect();
+      const br = b.getBoundingClientRect();
+      const overlapWidth = Math.min(ar.right, br.right) - Math.max(ar.left, br.left);
+      const overlapHeight = Math.min(ar.bottom, br.bottom) - Math.max(ar.top, br.top);
+      if (overlapWidth > 4 && overlapHeight > 4) {
+        overlaps.push({
+          a: aSelector,
+          b: bSelector,
+          overlapWidth: Math.round(overlapWidth),
+          overlapHeight: Math.round(overlapHeight),
+        });
+      }
+    }
+
+    const oversizedFixed = [...document.querySelectorAll('*')]
+      .filter(isVisible)
+      .filter((element) => !isThirdPartyUi(element))
+      .filter((element) => {
+        const style = getComputedStyle(element);
+        return style.position === 'fixed' && style.pointerEvents !== 'none';
+      })
+      .map((element) => ({ element, rect: element.getBoundingClientRect() }))
+      .filter(({ rect }) => rect.height > innerHeight * 0.38 || rect.width > innerWidth + 4)
+      .slice(0, 8)
+      .map(({ element, rect }) => ({
+        element: describe(element),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+        viewportWidth: innerWidth,
+        viewportHeight: innerHeight,
+      }));
+
+    return { horizontalEscape, clippedContent, overlaps, oversizedFixed };
+  });
+
+  await testInfo.attach(`visual-layout-${label}.json`, {
+    body: Buffer.from(JSON.stringify(audit, null, 2)),
+    contentType: 'application/json',
+  });
+
+  await page.screenshot({
+    path: testInfo.outputPath(`visual-${label}-${testInfo.project.name}.jpg`),
+    type: 'jpeg',
+    quality: 68,
+    fullPage: true,
+    animations: 'disabled',
+  });
+
+  expect(audit.horizontalEscape, `${label}: no critical content should escape horizontally`).toEqual([]);
+  expect(audit.clippedContent, `${label}: critical text/controls should not be clipped`).toEqual([]);
+  expect(audit.overlaps, `${label}: critical layout regions should not overlap`).toEqual([]);
+  expect(audit.oversizedFixed, `${label}: fixed UI should not obscure the storefront`).toEqual([]);
+}
+
 async function assertPageHealth(page, response, label) {
   expect(response, `${label}: navigation returned no response`).not.toBeNull();
   expect(response.status(), `${label}: document HTTP status`).toBeLessThan(400);
@@ -205,7 +376,7 @@ test.beforeEach(async ({ context }) => {
 });
 
 for (const target of KEY_PAGES) {
-  test(`${target.name} page passes robotic rendering and runtime checks`, async ({ page }) => {
+  test(`${target.name} page passes robotic rendering and runtime checks`, async ({ page }, testInfo) => {
     const firstPartyFailures = [];
     const pageErrors = [];
 
@@ -240,6 +411,7 @@ for (const target of KEY_PAGES) {
 
     await assertPageHealth(page, response, target.name);
     await assertAccessibility(page, target.name);
+    await assertVisualLayout(page, target.name, testInfo);
 
     const productCta = page.locator('a[href*="/products/"]:visible').first();
     await expect(productCta, `${target.name}: visible product CTA/link`).toBeVisible();
@@ -249,7 +421,7 @@ for (const target of KEY_PAGES) {
   });
 }
 
-test('Lemonade product page passes robotic validation', async ({ page }) => {
+test('Lemonade product page passes robotic validation', async ({ page }, testInfo) => {
   const firstPartyFailures = [];
   const pageErrors = [];
 
@@ -280,6 +452,7 @@ test('Lemonade product page passes robotic validation', async ({ page }) => {
 
   await assertPageHealth(page, response, 'product');
   await assertAccessibility(page, 'product');
+  await assertVisualLayout(page, 'product', testInfo);
 
   const addToCart = page.locator('form[action*="/cart/add"] button[name="add"]:visible').first();
   await expect(addToCart, 'product: Add to Cart must be visible').toBeVisible();
