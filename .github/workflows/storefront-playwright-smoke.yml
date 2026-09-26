@@ -80,11 +80,11 @@ jobs:
           fi
 
           ARTIFACT_ID="$(
-            gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$BASELINE_RUN_ID/artifacts?per_page=100"               --jq '.artifacts[] | select(.name | startswith("playwright-report-")) | .id'               | head -n 1
+            gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$BASELINE_RUN_ID/artifacts?per_page=100"               --jq '.artifacts[] | select(.name | startswith("visual-regression-")) | .id'               | head -n 1
           )"
 
           if [ -z "$ARTIFACT_ID" ]; then
-            echo "Prior successful run has no Playwright artifact. Bootstrapping baseline."
+            echo "Prior successful run has no visual-regression artifact. Bootstrapping baseline."
             exit 0
           fi
 
