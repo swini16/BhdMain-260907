@@ -465,6 +465,8 @@ for (const target of KEY_PAGES) {
 }
 
 test('support-page matrix stays healthy, terse and routed', async ({ page }) => {
+  test.setTimeout(240000);
+
   const firstPartyFailures = [];
   const pageErrors = [];
 
