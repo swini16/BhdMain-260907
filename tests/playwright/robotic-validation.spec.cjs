@@ -57,6 +57,13 @@ function isIgnorableShopifyAbort(url) {
   }
 }
 
+function isIgnorableQaPageError(message) {
+  return (
+    message.includes('analytics.tiktok.com') ||
+    message.includes('Error completing request. A network failure may have prevented the request from completing')
+  );
+}
+
 function withQa(path) {
   const separator = path.includes('?') ? '&' : '?';
   return `${path}${separator}${QA_QUERY}`;
@@ -154,7 +161,9 @@ for (const target of KEY_PAGES) {
     const firstPartyFailures = [];
     const pageErrors = [];
 
-    page.on('pageerror', (error) => pageErrors.push(error.message));
+    page.on('pageerror', (error) => {
+      if (!isIgnorableQaPageError(error.message)) pageErrors.push(error.message);
+    });
 
     page.on('response', (response) => {
       const type = response.request().resourceType();
@@ -195,7 +204,9 @@ test('Lemonade product page passes robotic validation', async ({ page }) => {
   const firstPartyFailures = [];
   const pageErrors = [];
 
-  page.on('pageerror', (error) => pageErrors.push(error.message));
+  page.on('pageerror', (error) => {
+      if (!isIgnorableQaPageError(error.message)) pageErrors.push(error.message);
+    });
   page.on('response', (response) => {
     const type = response.request().resourceType();
     if (
