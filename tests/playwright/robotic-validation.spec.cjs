@@ -161,6 +161,11 @@ async function assertVisualLayout(page, label, testInfo) {
         transition-duration: 0.001ms !important;
         scroll-behavior: auto !important;
       }
+      #trustreviewsCardsFrame,
+      [id^="rich-text-"],
+      [class*="kl-private-reset-css"] {
+        visibility: hidden !important;
+      }
     `,
   });
 
