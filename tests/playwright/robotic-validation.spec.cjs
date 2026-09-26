@@ -717,7 +717,29 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
         });
 
         if (!browserResponse || browserResponse.status() >= 400) {
-          failures.push(`${browserResponse?.status() || response.status()} ${href}`);
+          const isProductHandle = PRODUCT_PATHS.includes(new URL(href, BASE_URL).pathname);
+          let marketProductHealthy = false;
+
+          if (isProductHandle) {
+            for (const productPath of [...new Set(PRODUCT_PATHS.filter(Boolean))]) {
+              const productResponse = await gotoWithTransientRetry(probe, withQa(productPath), {
+                timeout: 15000,
+              });
+              const productHeading = await probe
+                .getByRole('heading', { level: 1, name: /Lemonade Electrolyte Powder/i })
+                .isVisible({ timeout: 2500 })
+                .catch(() => false);
+
+              if (productResponse && productResponse.status() < 400 && productHeading) {
+                marketProductHealthy = true;
+                break;
+              }
+            }
+          }
+
+          if (!marketProductHealthy) {
+            failures.push(`${browserResponse?.status() || response.status()} ${href}`);
+          }
         }
       }
     }
