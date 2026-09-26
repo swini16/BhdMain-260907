@@ -3,18 +3,6 @@ name: Shopify PR preview gate
 on:
   pull_request:
     branches: [main]
-    paths:
-      - 'assets/**'
-      - 'blocks/**'
-      - 'config/**'
-      - 'layout/**'
-      - 'locales/**'
-      - 'sections/**'
-      - 'snippets/**'
-      - 'templates/**'
-      - 'tests/playwright/**'
-      - 'playwright.config.cjs'
-      - '.github/workflows/shopify-pr-preview-gate.yml'
 
 permissions:
   contents: read
@@ -41,7 +29,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Detect Shopify preview scope
+        id: scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" > /tmp/pr-changed-files.txt
+
+          if grep -Eq '^(assets/|blocks/|config/|layout/|locales/|sections/|snippets/|templates/|tests/playwright/|playwright\.config\.cjs$|\.github/workflows/shopify-pr-preview-gate\.yml$)' /tmp/pr-changed-files.txt; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Relevant Shopify/theme/QA changes detected. Running full rendered preview gate."
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No Shopify/theme/QA changes detected. Required gate reports success without creating preview themes."
+          fi
+
       - name: Verify Shopify preview credential
+        if: steps.scope.outputs.relevant == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -51,16 +55,19 @@ jobs:
           fi
 
       - name: Set up Node
+        if: steps.scope.outputs.relevant == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
       - name: Install Shopify CLI and Playwright
+        if: steps.scope.outputs.relevant == 'true'
         run: |
           npm install --no-save @shopify/cli@latest @playwright/test@latest @axe-core/playwright@latest
           npx playwright install --with-deps chromium
 
       - name: Build proposed and baseline theme packages
+        if: steps.scope.outputs.relevant == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -81,6 +88,7 @@ jobs:
           test -f /tmp/bhd-theme-base/config/settings_schema.json
 
       - name: Create rendered baseline development theme
+        if: steps.scope.outputs.relevant == 'true'
         id: baseline
         shell: bash
         run: |
@@ -110,6 +118,7 @@ jobs:
           fi
 
       - name: Create proposed Shopify development theme
+        if: steps.scope.outputs.relevant == 'true'
         id: preview
         shell: bash
         run: |
@@ -159,6 +168,7 @@ jobs:
           fi
 
       - name: Verify both rendered themes respond
+        if: steps.scope.outputs.relevant == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -180,10 +190,11 @@ jobs:
           done
 
       - name: Run Playwright against proposed and baseline previews
+        if: steps.scope.outputs.relevant == 'true'
         run: npx playwright test --config=playwright.config.cjs
 
       - name: Upload preview QA diagnostics
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.scope.outputs.relevant == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: shopify-pr-preview-${{ github.run_id }}
@@ -196,7 +207,7 @@ jobs:
           retention-days: 7
 
       - name: Delete proposed development preview
-        if: ${{ always() && steps.preview.outputs.theme_id != '' }}
+        if: ${{ always() && steps.scope.outputs.relevant == 'true' && steps.preview.outputs.theme_id != '' }}
         shell: bash
         run: |
           npx shopify theme delete \
@@ -206,7 +217,7 @@ jobs:
             --force
 
       - name: Delete baseline development preview
-        if: ${{ always() && steps.baseline.outputs.theme_id != '' }}
+        if: ${{ always() && steps.scope.outputs.relevant == 'true' && steps.baseline.outputs.theme_id != '' }}
         shell: bash
         run: |
           npx shopify theme delete \
