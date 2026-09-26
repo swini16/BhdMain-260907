@@ -21,6 +21,7 @@ const ANALYTICS_ENDPOINTS = [
   'analytics.tiktok.com',
   'business-api.tiktok.com',
   'bat.bing.com',
+  'web-pixels@',
 ];
 
 const CORE_EXTRA_PATHS = [
@@ -152,7 +153,9 @@ async function scrollForLazyAssets(page) {
   await page.waitForTimeout(80);
 }
 
-async function auditPage(context, path, { themeId = PREVIEW_THEME_ID } = {}) {
+async function auditPage(browser, path, { themeId = PREVIEW_THEME_ID } = {}) {
+  const context = await browser.newContext();
+
   const page = await context.newPage();
   const firstPartyFailures = [];
   const pageErrors = [];
@@ -190,9 +193,14 @@ async function auditPage(context, path, { themeId = PREVIEW_THEME_ID } = {}) {
       pageErrors.length = 0;
 
       response = await page.goto(withQa(path, { themeId }), {
-        waitUntil: 'domcontentloaded',
+        waitUntil: 'load',
         timeout: 30000,
       });
+
+      await page.evaluate(async () => {
+        if (document.fonts?.ready) await document.fonts.ready;
+      }).catch(() => {});
+      await page.waitForTimeout(180);
 
       if (!transientStatuses.has(response?.status() || 0)) break;
       await page.waitForTimeout(attempt * 750);
@@ -216,9 +224,14 @@ async function auditPage(context, path, { themeId = PREVIEW_THEME_ID } = {}) {
       firstPartyFailures.length = 0;
       pageErrors.length = 0;
       response = await page.goto(withQa(finalPath, { themeId }), {
-        waitUntil: 'domcontentloaded',
+        waitUntil: 'load',
         timeout: 30000,
       });
+
+      await page.evaluate(async () => {
+        if (document.fonts?.ready) await document.fonts.ready;
+      }).catch(() => {});
+      await page.waitForTimeout(180);
       finalPath = new URL(page.url()).pathname;
     }
 
@@ -297,7 +310,7 @@ async function auditPage(context, path, { themeId = PREVIEW_THEME_ID } = {}) {
       a11y: [],
     };
   } finally {
-    await page.close();
+    await context.close();
   }
 }
 
@@ -382,7 +395,7 @@ function compareAgainstBaseline(preview, baseline) {
   };
 }
 
-test('full public storefront passes robotic QA', async ({ context, request }, testInfo) => {
+test('full public storefront passes robotic QA', async ({ browser, request }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Full-site crawl runs once per PR.');
   test.setTimeout(15 * 60 * 1000);
 
@@ -405,7 +418,7 @@ test('full public storefront passes robotic QA', async ({ context, request }, te
     while (true) {
       const index = cursor++;
       if (index >= paths.length) return;
-      results[index] = await auditPage(context, paths[index]);
+      results[index] = await auditPage(browser, paths[index]);
     }
   }
 
@@ -436,7 +449,7 @@ test('full public storefront passes robotic QA', async ({ context, request }, te
         const index = baselineCursor++;
         if (index >= previewFailures.length) return;
         const preview = previewFailures[index];
-        const baseline = await auditPage(context, preview.path, { themeId: BASELINE_PREVIEW_THEME_ID });
+        const baseline = await auditPage(browser, preview.path, { themeId: BASELINE_PREVIEW_THEME_ID });
         comparisons[index] = compareAgainstBaseline(preview, baseline);
       }
     }
