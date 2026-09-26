@@ -32,7 +32,7 @@ jobs:
       SHOPIFY_FLAG_STORE: best-hydrate.myshopify.com
       SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN || secrets.SHOPIFY_THEME_ACCESS_TOKEN || secrets.SHOPIFY_ADMIN_API_TOKEN || secrets.SHOPIFY_ACCESS_TOKEN }}
       SHOPIFY_FLAG_FORCE: '1'
-      BASE_URL: https://best-hydrate.myshopify.com
+      BASE_URL: https://besthydrate.com
       PRODUCT_PATH: /products/lemonade-best-hydrate
 
     steps:
@@ -126,7 +126,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          URL="https://best-hydrate.myshopify.com/?preview_theme_id=${PREVIEW_THEME_ID}&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
+          URL="https://besthydrate.com/?preview_theme_id=${PREVIEW_THEME_ID}&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
           for attempt in {1..12}; do
             code="$(curl -L -sS -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
             if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && grep -qi '<html' /tmp/preview-home.html; then
