@@ -269,6 +269,7 @@ async function auditPage(context, path, { themeId = PREVIEW_THEME_ID } = {}) {
       .map((violation) => ({
         id: violation.id,
         impact: violation.impact,
+        nodeCount: violation.nodes.length,
         nodes: violation.nodes.slice(0, 3).map((node) => node.target.join(' > ')),
       }));
 
@@ -331,14 +332,17 @@ function defectSet(result) {
     set.add(`overflow:${result.horizontalOverflow}`);
   }
 
-  for (const violation of result.a11y || []) {
-    const nodes = violation.nodes?.length ? violation.nodes : ['[unknown-node]'];
-    for (const node of nodes) {
-      set.add(`a11y:${violation.id}:${violation.impact}:${node}`);
-    }
-  }
-
   return set;
+}
+
+function a11yCountMap(result) {
+  const counts = new Map();
+  for (const violation of result.a11y || []) {
+    const key = `${violation.id}:${violation.impact}`;
+    const count = Number(violation.nodeCount || violation.nodes?.length || 1);
+    counts.set(key, (counts.get(key) || 0) + count);
+  }
+  return counts;
 }
 
 function compareAgainstBaseline(preview, baseline) {
@@ -349,6 +353,18 @@ function compareAgainstBaseline(preview, baseline) {
   for (const defect of previewDefects) {
     if (defect.startsWith('overflow:')) continue;
     if (!baselineDefects.has(defect)) regressions.push(defect);
+  }
+
+  // Axe selectors can drift between otherwise identical rendered themes due to
+  // dynamic Shopify/app markup. Compare accessibility severity/rule node counts
+  // instead of exact CSS selectors. Deep key-page tests remain selector-exact.
+  const previewA11y = a11yCountMap(preview);
+  const baselineA11y = a11yCountMap(baseline);
+  for (const [key, count] of previewA11y) {
+    const baselineCount = baselineA11y.get(key) || 0;
+    if (count > baselineCount) {
+      regressions.push(`a11y:${key}:nodes:${count} (baseline ${baselineCount})`);
+    }
   }
 
   const previewOverflow = preview.horizontalOverflow || 0;
