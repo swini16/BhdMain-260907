@@ -78,11 +78,9 @@
 
 <script>
   (() => {
-    const root = document.currentScript && document.currentScript.previousElementSibling;
-    const shell = document.querySelector('[data-bhd-lp-close]');
-    if (!shell || shell.dataset.trackingReady) return;
-    shell.dataset.trackingReady = 'true';
-    shell.addEventListener('click', (event) => {
+    if (document.documentElement.dataset.bhdLpTrackingReady === 'true') return;
+    document.documentElement.dataset.bhdLpTrackingReady = 'true';
+    document.addEventListener('click', (event) => {
       const cta = event.target.closest('[data-lp-cta]');
       if (!cta) return;
       const props = {page_handle: '{{ lp_handle | escape }}', lp_context: '{{ lp_context | escape }}', cta: cta.dataset.lpCta};
