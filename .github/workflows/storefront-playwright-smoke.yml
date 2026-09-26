@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: storefront-smoke-${{ github.ref }}
@@ -44,6 +45,75 @@ jobs:
 
       - name: Run storefront Playwright validation
         run: npx playwright test --config=playwright.config.cjs
+
+      - name: Prepare stable visual captures
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p visual-current
+          find test-results -type f -name 'visual-*.jpg' -print0 | while IFS= read -r -d '' f; do
+            cp "$f" "visual-current/$(basename "$f")"
+          done
+          echo 'bhd-visual-v2' > visual-current/baseline-version.txt
+          test "$(find visual-current -maxdepth 1 -name 'visual-*.jpg' | wc -l)" -ge 10
+
+      - name: Compare screenshots with last approved main run
+        if: ${{ github.event_name == 'push' && !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VISUAL_PIXEL_THRESHOLD: '0.12'
+          VISUAL_MAX_DIFF_RATIO: '0.015'
+          VISUAL_MAX_DIMENSION_DRIFT_RATIO: '0.02'
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save sharp@latest pixelmatch@latest
+
+          BASELINE_RUN_ID="$(
+            gh api "/repos/$GITHUB_REPOSITORY/actions/workflows/storefront-playwright-smoke.yml/runs?branch=main&status=success&event=push&per_page=20"               --jq '.workflow_runs[] | select((.id|tostring) != env.GITHUB_RUN_ID) | .id'               | head -n 1
+          )"
+
+          if [ -z "$BASELINE_RUN_ID" ]; then
+            echo "No prior successful main visual run exists. Bootstrapping baseline."
+            exit 0
+          fi
+
+          ARTIFACT_ID="$(
+            gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$BASELINE_RUN_ID/artifacts?per_page=100"               --jq '.artifacts[] | select(.name | startswith("playwright-report-")) | .id'               | head -n 1
+          )"
+
+          if [ -z "$ARTIFACT_ID" ]; then
+            echo "Prior successful run has no Playwright artifact. Bootstrapping baseline."
+            exit 0
+          fi
+
+          mkdir -p /tmp/visual-baseline-extract visual-baseline visual-diff
+          gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > /tmp/visual-baseline.zip
+          unzip -q /tmp/visual-baseline.zip -d /tmp/visual-baseline-extract
+
+          BASELINE_VERSION="$(find /tmp/visual-baseline-extract -type f -name 'baseline-version.txt' -print -quit || true)"
+          if [ -z "$BASELINE_VERSION" ] || [ "$(cat "$BASELINE_VERSION")" != "bhd-visual-v2" ]; then
+            echo "Prior artifact uses an older visual-capture format. Bootstrapping bhd-visual-v2 baseline."
+            exit 0
+          fi
+
+          find /tmp/visual-baseline-extract -type f -name 'visual-*.jpg' -print0 | while IFS= read -r -d '' f; do
+            cp "$f" "visual-baseline/$(basename "$f")"
+          done
+
+          node scripts/visual-regression-compare.mjs visual-baseline visual-current visual-diff
+
+      - name: Upload visual regression evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-${{ github.run_id }}
+          path: |
+            visual-current/
+            visual-diff/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Upload Playwright diagnostics
         if: ${{ !cancelled() }}
