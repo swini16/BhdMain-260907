@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 
 const BASE_URL = process.env.BASE_URL || 'https://besthydrate.com';
+const PREVIEW_THEME_ID = process.env.PREVIEW_THEME_ID || '';
 const QA_QUERY = 'utm_source=qa_automation&utm_medium=playwright&utm_campaign=robotic_validation';
 
 const ANALYTICS_ENDPOINTS = [
@@ -66,8 +67,11 @@ function isIgnorableQaPageError(message) {
 }
 
 function withQa(path) {
-  const separator = path.includes('?') ? '&' : '?';
-  return `${path}${separator}${QA_QUERY}`;
+  const url = new URL(path, BASE_URL);
+  const qa = new URLSearchParams(QA_QUERY);
+  for (const [key, value] of qa) url.searchParams.set(key, value);
+  if (PREVIEW_THEME_ID) url.searchParams.set('preview_theme_id', PREVIEW_THEME_ID);
+  return url.toString();
 }
 
 async function smoothScrollToBottom(page) {
@@ -499,7 +503,7 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
   const failures = [];
 
   for (const href of [...discovered].slice(0, 80)) {
-    const response = await request.get(new URL(href, BASE_URL).toString(), {
+    const response = await request.get(withQa(href), {
       failOnStatusCode: false,
       timeout: 15000,
       maxRedirects: 5,
