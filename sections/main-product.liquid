@@ -31,6 +31,121 @@
       padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
     }
 
+    .bhd-mobile-product-intro {
+      display: none;
+    }
+
+    @media screen and (max-width: 749px) {
+      .section-{{ section.id }}-padding {
+        padding-top: 10px;
+      }
+
+      .section-{{ section.id }}-padding .bhd-mobile-product-intro {
+        display: block;
+        margin: 0 0 0.8rem;
+      }
+
+      .section-{{ section.id }}-padding .bhd-mobile-product-intro h1 {
+        margin: 0 0 0.25rem;
+        color: #0b2d67;
+        font-size: clamp(2.2rem, 7vw, 2.8rem);
+        line-height: 1.05;
+      }
+
+      .section-{{ section.id }}-padding .bhd-mobile-product-intro__price {
+        margin: 0 0 0.45rem;
+      }
+
+      .section-{{ section.id }}-padding .bhd-mobile-product-intro__signals {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem 0.45rem;
+        margin: 0 0 0.35rem;
+      }
+
+      .section-{{ section.id }}-padding .bhd-mobile-product-intro__signals span {
+        display: inline-block;
+        padding: 0.38rem 0.6rem;
+        border: 1px solid #d7e3f1;
+        border-radius: 999px;
+        background: #f7fbff;
+        color: #52657a;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .section-{{ section.id }}-padding .bhd-mobile-product-intro__lead {
+        margin: 0 0 0.2rem;
+        color: #0b2d67;
+        font-size: 1.15rem;
+        font-weight: 850;
+        line-height: 1.25;
+      }
+
+      .section-{{ section.id }}-padding .bhd-mobile-product-intro__taste {
+        margin: 0;
+        color: #52657a;
+        font-size: 1.08rem;
+        line-height: 1.35;
+      }
+
+      .section-{{ section.id }}-padding .product__info-container {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .section-{{ section.id }}-padding .product__info-container > .product__title,
+      .section-{{ section.id }}-padding .product__info-container > [id^='price-'],
+      .section-{{ section.id }}-padding .product__info-container > .bhd-product-value {
+        display: none;
+      }
+
+      .section-{{ section.id }}-padding .product__info-container > .rating-wrapper {
+        order: 5;
+      }
+
+      .section-{{ section.id }}-padding #Quantity-Form-{{ section.id }} {
+        order: 10;
+      }
+
+      .section-{{ section.id }}-padding .product__info-container > div:has(> product-form.product-form) {
+        order: 20;
+      }
+
+      .section-{{ section.id }}-padding .bhd-free-shipping {
+        order: 30;
+      }
+
+      .section-{{ section.id }}-padding .bhd-purchase-reassurance {
+        order: 40;
+      }
+
+      .section-{{ section.id }}-padding .bhd-purchase-choice {
+        order: 50;
+      }
+
+      .section-{{ section.id }}-padding .bhd-trust-strip {
+        order: 60;
+      }
+
+      .section-{{ section.id }}-padding .product__description {
+        order: 70;
+      }
+
+      .section-{{ section.id }}-padding .bhd-marketplace-links {
+        order: 80;
+      }
+
+      .section-{{ section.id }}-padding .bhd-flavour-vote {
+        order: 90;
+      }
+
+      .section-{{ section.id }}-padding share-button {
+        order: 100;
+      }
+    }
+
     @media screen and (min-width: 750px) {
       .section-{{ section.id }}-padding {
         padding-top: {{ section.settings.padding_top }}px;
@@ -75,6 +190,27 @@
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
   <product-component view-event-payload="{{ product | standard_event_data: 'view', context: 'page' | escape }}">
     <div class="page-width">
+      {%- if product.handle contains 'lemonade' -%}
+        <div class="bhd-mobile-product-intro">
+          <h1>{{ product.title | escape }}</h1>
+          <div class="bhd-mobile-product-intro__price" role="status">
+            {%- render 'price',
+              product: product,
+              use_variant: true,
+              show_badges: true,
+              price_class: 'price--large'
+            -%}
+          </div>
+          <p class="bhd-mobile-product-intro__lead">{{ 'products.product.mobile_intro_low_sugar' | t }}</p>
+          <div class="bhd-mobile-product-intro__signals" aria-label="{{ 'products.product.mobile_intro_value_label' | t | escape }}">
+            <span>{{ 'products.product.mobile_intro_sugar' | t }}</span>
+            <span>{{ 'products.product.mobile_intro_electrolytes' | t }}</span>
+            <span>{{ 'products.product.mobile_intro_servings' | t }}</span>
+            <span>{{ 'products.product.mobile_intro_value' | t }}</span>
+          </div>
+          <p class="bhd-mobile-product-intro__taste">{{ 'products.product.mobile_intro_taste' | t }}</p>
+        </div>
+      {%- endif -%}
       <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
         <div class="grid__item product__media-wrapper">
           {% render 'product-media-gallery', variant_images: variant_images %}

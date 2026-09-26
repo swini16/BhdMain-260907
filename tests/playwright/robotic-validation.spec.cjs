@@ -27,6 +27,27 @@ const KEY_PAGES = [
   { name: 'recover', path: '/pages/recover' },
 ];
 
+const SUPPORT_PAGES = [
+  { name: 'meet-us', path: '/pages/our-story', terse: false },
+  { name: 'mission-values', path: '/pages/mission-values', terse: true },
+  { name: 'why-best-hydrate', path: '/pages/why-best-hydrate', terse: true },
+  { name: 'jobs-careers', path: '/pages/jobs-careers', terse: true },
+  { name: 'partnerships', path: '/pages/partnerships', terse: true },
+  { name: 'research-partnerships', path: '/pages/research-partnerships', terse: true },
+  { name: 'retail-distribution', path: '/pages/retail-distribution', terse: true },
+  { name: 'humanitarian-partnerships', path: '/pages/humanitarian-partnerships', terse: true },
+  { name: 'investor-relations', path: '/pages/investor-relations', terse: true },
+  { name: 'investor-overview', path: '/pages/investor-overview', terse: true },
+  { name: 'active-living', path: '/pages/active-living', terse: true },
+  { name: 'everyday-wellness', path: '/pages/everyday-wellness', terse: true },
+  { name: 'travel-hydration', path: '/pages/travel-hydration', terse: true },
+  { name: 'work-long-shifts', path: '/pages/work-long-shifts', terse: true },
+  { name: 'eco-humanitarian', path: '/pages/eco-humanitarian', terse: true },
+  { name: 'research-impact', path: '/pages/research-impact', terse: true },
+  { name: 'publications', path: '/pages/publications', terse: true },
+  { name: 'research-publications', path: '/pages/research-publications', terse: true },
+];
+
 const PRODUCT_PATHS = [
   process.env.PRODUCT_PATH || '/products/lemonade-best-hydrate',
   process.env.PRODUCT_PATH_FALLBACK || '/products/lemonade-electrolyte-best-hydrate',
@@ -442,6 +463,67 @@ for (const target of KEY_PAGES) {
     expect(pageErrors, `${target.name}: uncaught JavaScript errors`).toEqual([]);
   });
 }
+
+test('support-page matrix stays healthy, terse and routed', async ({ page }) => {
+  const firstPartyFailures = [];
+  const pageErrors = [];
+
+  page.on('pageerror', (error) => {
+    if (!isIgnorableQaPageError(error.message)) pageErrors.push(error.message);
+  });
+
+  page.on('response', (response) => {
+    const type = response.request().resourceType();
+    if (
+      isFirstParty(response.url()) &&
+      ['document', 'script', 'stylesheet', 'image', 'font'].includes(type) &&
+      response.status() >= 400
+    ) {
+      firstPartyFailures.push(`${response.status()} ${type} ${response.url()}`);
+    }
+  });
+
+  page.on('requestfailed', (request) => {
+    const url = request.url();
+    if (!isAnalyticsUrl(url) && !isIgnorableShopifyAbort(url) && isFirstParty(url)) {
+      firstPartyFailures.push(
+        `FAILED ${request.resourceType()} ${url} :: ${request.failure()?.errorText || 'unknown'}`
+      );
+    }
+  });
+
+  for (const target of SUPPORT_PAGES) {
+    firstPartyFailures.length = 0;
+    pageErrors.length = 0;
+
+    const response = await page.goto(withQa(target.path), { waitUntil: 'domcontentloaded' });
+    expect(new URL(page.url()).pathname, `${target.name}: unexpected redirect`).toBe(target.path);
+
+    await assertPageHealth(page, response, target.name);
+
+    const h1 = page.locator('h1:visible').first();
+    await expect(h1, `${target.name}: visible H1`).toBeVisible();
+    await expect(h1, `${target.name}: non-empty H1`).not.toHaveText(/^\s*$/);
+
+    const nextAction = page.locator('.bhd-page__brand-actions a:visible').first();
+    await expect(nextAction, `${target.name}: visible next-step CTA`).toBeVisible();
+
+    if (target.terse) {
+      await expect(
+        page.locator('.bhd-page__keypoints:visible'),
+        `${target.name}: terse key-points foundation`
+      ).toBeVisible();
+
+      expect(
+        await page.locator('.bhd-enrichment').count(),
+        `${target.name}: generic enrichment must stay suppressed`
+      ).toBe(0);
+    }
+
+    expect(firstPartyFailures, `${target.name}: first-party network failures`).toEqual([]);
+    expect(pageErrors, `${target.name}: uncaught JavaScript errors`).toEqual([]);
+  }
+});
 
 test('Lemonade product page passes robotic validation', async ({ page }, testInfo) => {
   const firstPartyFailures = [];
