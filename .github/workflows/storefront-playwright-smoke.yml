@@ -2,6 +2,8 @@ name: Storefront Playwright validation
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
   pull_request:
     branches: [main]
   push:
