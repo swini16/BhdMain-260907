@@ -39,6 +39,8 @@ jobs:
     steps:
       - name: Checkout proposed PR code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Verify Shopify preview credential
         shell: bash
@@ -87,6 +89,25 @@ jobs:
             --json > /tmp/shopify-preview.json
 
           cat /tmp/shopify-preview.json
+
+          # Legacy theme debt should not make every PR red, but any upload error
+          # in a file changed by this PR is a hard failure.
+          git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" > /tmp/pr-changed-files.txt
+          jq -r '.theme.errors // {} | keys[]' /tmp/shopify-preview.json > /tmp/theme-error-files.txt || true
+          if [ -s /tmp/theme-error-files.txt ]; then
+            echo "::warning::Shopify reported baseline upload errors:"
+            cat /tmp/theme-error-files.txt
+            while IFS= read -r error_file; do
+              if grep -Fxq "$error_file" /tmp/pr-changed-files.txt; then
+                echo "::error::Changed file failed Shopify upload: $error_file"
+                exit 1
+              fi
+            done < /tmp/theme-error-files.txt
+          fi
+
+          mkdir -p artifacts
+          cp /tmp/shopify-preview.json artifacts/shopify-preview.json
+
           THEME_ID="$(jq -er '.theme.id | tostring' /tmp/shopify-preview.json)"
           PREVIEW_URL="$(jq -er '.theme.preview_url' /tmp/shopify-preview.json)"
           ROLE="$(jq -er '.theme.role' /tmp/shopify-preview.json)"
@@ -125,7 +146,7 @@ jobs:
           path: |
             playwright-report/
             test-results/
-            /tmp/shopify-preview.json
+            artifacts/shopify-preview.json
           if-no-files-found: ignore
           retention-days: 14
 
