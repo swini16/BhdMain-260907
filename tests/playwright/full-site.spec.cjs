@@ -236,6 +236,7 @@ async function auditPage(browser, path, { themeId = PREVIEW_THEME_ID } = {}) {
     }
 
     const status = response?.status() || 0;
+    const contentType = response?.headers()?.['content-type'] || '';
     const title = (await page.title()).trim();
 
     await scrollForLazyAssets(page);
@@ -290,6 +291,7 @@ async function auditPage(browser, path, { themeId = PREVIEW_THEME_ID } = {}) {
       path,
       finalPath,
       status,
+      contentType,
       title,
       firstPartyFailures,
       pageErrors,
@@ -301,6 +303,7 @@ async function auditPage(browser, path, { themeId = PREVIEW_THEME_ID } = {}) {
     return {
       path,
       status: 0,
+      contentType: '',
       title: '',
       fatal: error.message,
       firstPartyFailures,
@@ -408,7 +411,7 @@ test('full public storefront passes robotic QA', async ({ browser, request }, te
     result.fatal ||
     result.status >= 400 ||
     result.status === 0 ||
-    !result.title ||
+    ((result.contentType || '').includes('text/html') && !result.title) ||
     result.firstPartyFailures.length ||
     result.pageErrors.length ||
     result.brokenImages.length ||
@@ -454,6 +457,19 @@ test('full public storefront passes robotic QA', async ({ browser, request }, te
     ? comparisons.filter((item) => !item.regressions.length).map((item) => item.path)
     : hardFailures.map((item) => item.path);
 
+  const hardFailureDetails = hardFailures.map((result) => ({
+    path: result.path,
+    finalPath: result.finalPath || result.path,
+    status: result.status,
+    contentType: result.contentType || '',
+    title: result.title || '',
+    fatal: result.fatal || null,
+    firstPartyFailures: result.firstPartyFailures || [],
+    pageErrors: result.pageErrors || [],
+    brokenImages: result.brokenImages || [],
+    horizontalOverflow: result.horizontalOverflow || 0,
+  }));
+
   const summary = {
     discoveredPages: paths.length,
     hardPassingPages: results.length - hardFailures.length,
@@ -462,6 +478,7 @@ test('full public storefront passes robotic QA', async ({ browser, request }, te
     knownBaselinePages: knownBaselinePages.length,
     accessibilityPagesWithFindings: accessibilityInventory.length,
     accessibilityInventory,
+    hardFailureDetails,
     mode: PREVIEW_THEME_ID ? 'preview-regression-gate' : 'live-baseline-inventory',
     regressions,
     knownBaselinePaths: knownBaselinePages,
@@ -476,6 +493,9 @@ test('full public storefront passes robotic QA', async ({ browser, request }, te
     `Full-site QA: ${paths.length} routes, ${hardFailures.length} hard defects, ` +
     `${knownBaselinePages.length} known-baseline pages, ${regressions.length} regression pages.`
   );
+  if (hardFailureDetails.length) {
+    console.log(`Full-site known defects: ${JSON.stringify(hardFailureDetails)}`);
+  }
 
   expect(regressions, `new/worsened full-site regressions across ${paths.length} public routes`).toEqual([]);
 });
