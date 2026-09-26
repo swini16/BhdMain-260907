@@ -107,13 +107,18 @@ async function openAvailableProduct(page) {
 async function assertAccessibility(page, label) {
   let builder = new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']);
 
-  // TrustReviews injects third-party review-card markup that the theme repository
-  // cannot control. Keep theme-owned accessibility failures blocking while
-  // excluding only that app's injected subtree from this deploy gate.
-  if (label === 'product') {
-    builder = builder
-      .exclude('#trustreviewsCardsFrame')
-      .exclude('[id^="rich-text-"]');
+  // TrustReviews injects third-party markup outside theme control. Exclude only
+  // its containing Shopify section, wherever the app renders, while leaving the
+  // rest of the page fully blocking on serious/critical accessibility defects.
+  const trustReviewsSectionId = await page
+    .locator('#trustreviewsCardsFrame')
+    .evaluate((element) => element.closest('[id^="shopify-section-"]')?.id || '')
+    .catch(() => '');
+
+  if (trustReviewsSectionId) {
+    builder = builder.exclude(`#${trustReviewsSectionId}`);
+  } else if (await page.locator('#trustreviewsCardsFrame').count()) {
+    builder = builder.exclude('#trustreviewsCardsFrame');
   }
 
   const scan = await builder.analyze();
