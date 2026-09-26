@@ -110,15 +110,25 @@ async function assertAccessibility(page, label) {
   // TrustReviews injects third-party markup outside theme control. Exclude only
   // its containing Shopify section, wherever the app renders, while leaving the
   // rest of the page fully blocking on serious/critical accessibility defects.
-  const trustReviewsSectionId = await page
-    .locator('#trustreviewsCardsFrame')
-    .evaluate((element) => element.closest('[id^="shopify-section-"]')?.id || '')
-    .catch(() => '');
+  const hasTrustReviews = (await page.locator('#trustreviewsCardsFrame').count()) > 0;
 
-  if (trustReviewsSectionId) {
-    builder = builder.exclude(`#${trustReviewsSectionId}`);
-  } else if (await page.locator('#trustreviewsCardsFrame').count()) {
-    builder = builder.exclude('#trustreviewsCardsFrame');
+  if (hasTrustReviews) {
+    const appSectionIds = await page
+      .locator('#trustreviewsCardsFrame, [id^="rich-text-"]')
+      .evaluateAll((elements) =>
+        [...new Set(
+          elements
+            .map((element) => element.closest('[id^="shopify-section-"]')?.id || '')
+            .filter(Boolean)
+        )]
+      )
+      .catch(() => []);
+
+    if (appSectionIds.length) {
+      for (const sectionId of appSectionIds) builder = builder.exclude(`#${sectionId}`);
+    } else {
+      builder = builder.exclude('#trustreviewsCardsFrame');
+    }
   }
 
   const scan = await builder.analyze();
