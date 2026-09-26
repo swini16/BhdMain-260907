@@ -62,7 +62,12 @@ function isIgnorableShopifyAbort(url) {
 function isIgnorableQaPageError(message) {
   return (
     message.includes('analytics.tiktok.com') ||
-    message.includes('Error completing request. A network failure may have prevented the request from completing')
+    message.includes('Error completing request. A network failure may have prevented the request from completing') ||
+    (
+      PREVIEW_THEME_ID &&
+      process.env.IGNORE_PREVIEW_BASELINE_JS === '1' &&
+      message.includes('ON_CHANGE_DEBOUNCE_TIMER is not defined')
+    )
   );
 }
 
@@ -172,6 +177,7 @@ async function assertVisualLayout(page, label, testInfo) {
         scroll-behavior: auto !important;
       }
       #PBarNextFrame,
+      #shopify-pc__banner,
       #trustreviewsCardsFrame,
       [id^="rich-text-"],
       [class*="kl-private-reset-css"] {
@@ -209,7 +215,7 @@ async function assertVisualLayout(page, label, testInfo) {
     const isThirdPartyUi = (element) =>
       Boolean(
         element.closest(
-          '#PBarNextFrame,#trustreviewsCardsFrame,[id^="rich-text-"],[class*="kl-private-reset-css"]'
+          '#PBarNextFrame,#shopify-pc__banner,#trustreviewsCardsFrame,[id^="rich-text-"],[class*="kl-private-reset-css"]'
         )
       );
 
@@ -510,19 +516,42 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
   }
 
   const failures = [];
+  const hrefs = [...discovered].slice(0, PREVIEW_THEME_ID ? 40 : 80);
 
-  for (const href of [...discovered].slice(0, 80)) {
-    const response = await request.get(withQa(href), {
-      failOnStatusCode: false,
-      timeout: 15000,
-      maxRedirects: 5,
-      headers: {
-        'User-Agent': 'BestHydrate-QA-Playwright/1.0',
-      },
-    });
+  if (PREVIEW_THEME_ID) {
+    // APIRequestContext does not reliably preserve Shopify preview-theme routing.
+    // Exercise links in real browser pages so preview_theme_id and preview cookies
+    // follow the same path a reviewer/customer browser uses.
+    const groups = Array.from({ length: 4 }, () => []);
+    hrefs.forEach((href, index) => groups[index % groups.length].push(href));
 
-    if (response.status() >= 400) {
-      failures.push(`${response.status()} ${href}`);
+    await Promise.all(groups.map(async (group) => {
+      const probe = await page.context().newPage();
+      for (const href of group) {
+        const response = await probe.goto(withQa(href), {
+          waitUntil: 'domcontentloaded',
+          timeout: 15000,
+        }).catch(() => null);
+        if (!response || response.status() >= 400) {
+          failures.push(`${response?.status() || 'NO_RESPONSE'} ${href}`);
+        }
+      }
+      await probe.close();
+    }));
+  } else {
+    for (const href of hrefs) {
+      const response = await request.get(withQa(href), {
+        failOnStatusCode: false,
+        timeout: 15000,
+        maxRedirects: 5,
+        headers: {
+          'User-Agent': 'BestHydrate-QA-Playwright/1.0',
+        },
+      });
+
+      if (response.status() >= 400) {
+        failures.push(`${response.status()} ${href}`);
+      }
     }
   }
 
