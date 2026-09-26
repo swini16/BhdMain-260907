@@ -166,7 +166,8 @@ jobs:
         with: { node-version: '22' }
       - run: |
           npm init -y >/dev/null 2>&1; npm install --save-dev playwright; npx playwright install --with-deps chromium
-          cat > /tmp/live.mjs <<'EOF'
+          mkdir -p tests
+          cat > tests/lp-live-contract.mjs <<'EOF'
           import { chromium } from 'playwright';
           const b=await chromium.launch(); const p=await b.newPage({viewport:{width:390,height:844}});
           await p.goto('https://besthydrate.com/pages/lp-01-hydration-is-more-than-water',{waitUntil:'domcontentloaded',timeout:45000});
@@ -177,4 +178,4 @@ jobs:
           await cta.scrollIntoViewIfNeeded(); if(!(await cta.isVisible())) throw new Error('Final CTA not visible');
           await b.close();
           EOF
-          node /tmp/live.mjs
+          node tests/lp-live-contract.mjs
