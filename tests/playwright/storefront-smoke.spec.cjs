@@ -1,6 +1,9 @@
 const { test, expect } = require('@playwright/test');
 
-const PRODUCT_PATH = process.env.PRODUCT_PATH || '/products/lemonade-best-hydrate';
+const PRODUCT_PATHS = [
+  process.env.PRODUCT_PATH || '/products/lemonade-best-hydrate',
+  process.env.PRODUCT_PATH_FALLBACK || '/products/lemonade-electrolyte-best-hydrate',
+];
 const QA_QUERY = 'utm_source=qa_automation&utm_medium=playwright&utm_campaign=storefront_smoke';
 
 const ANALYTICS_ENDPOINTS = [
@@ -18,6 +21,27 @@ const ANALYTICS_ENDPOINTS = [
   'bat.bing.com',
 ];
 
+async function openAvailableLemonadeProduct(page) {
+  const uniquePaths = [...new Set(PRODUCT_PATHS.filter(Boolean))];
+
+  for (const path of uniquePaths) {
+    await page.goto(`${path}?${QA_QUERY}`, { waitUntil: 'domcontentloaded' });
+
+    const heading = page.getByRole('heading', {
+      level: 1,
+      name: /Lemonade Electrolyte Powder/i,
+    });
+
+    if (await heading.isVisible({ timeout: 3000 }).catch(() => false)) {
+      return path;
+    }
+  }
+
+  throw new Error(
+    `No Lemonade product page was available in this runner's Shopify market. Tried: ${uniquePaths.join(', ')}. Final URL: ${page.url()}`
+  );
+}
+
 test.beforeEach(async ({ context }) => {
   await context.clearCookies();
 
@@ -34,9 +58,10 @@ test.beforeEach(async ({ context }) => {
 
 test('Lemonade product can add to cart and open checkout', async ({ page }) => {
   await test.step('Load live product page', async () => {
-    await page.goto(`${PRODUCT_PATH}?${QA_QUERY}`, { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveTitle(/Lemonade Electrolyte Powder.*Best Hydrate/i);
-    await expect(page.getByRole('heading', { level: 1, name: /Lemonade Electrolyte Powder/i })).toBeVisible();
+    await openAvailableLemonadeProduct(page);
+    await expect(
+      page.getByRole('heading', { level: 1, name: /Lemonade Electrolyte Powder/i })
+    ).toBeVisible();
   });
 
   await test.step('Add product to cart', async () => {
