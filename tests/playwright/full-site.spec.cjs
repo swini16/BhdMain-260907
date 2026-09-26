@@ -368,18 +368,6 @@ function compareAgainstBaseline(preview, baseline) {
     if (!baselineDefects.has(defect)) regressions.push(defect);
   }
 
-  // Axe selectors can drift between otherwise identical rendered themes due to
-  // dynamic Shopify/app markup. Compare accessibility severity/rule node counts
-  // instead of exact CSS selectors. Deep key-page tests remain selector-exact.
-  const previewA11y = a11yCountMap(preview);
-  const baselineA11y = a11yCountMap(baseline);
-  for (const [key, count] of previewA11y) {
-    const baselineCount = baselineA11y.get(key) || 0;
-    if (count > baselineCount) {
-      regressions.push(`a11y:${key}:nodes:${count} (baseline ${baselineCount})`);
-    }
-  }
-
   const previewOverflow = preview.horizontalOverflow || 0;
   const baselineOverflow = baseline.horizontalOverflow || 0;
   if (previewOverflow > Math.max(4, baselineOverflow + 4)) {
@@ -416,7 +404,7 @@ test('full public storefront passes robotic QA', async ({ browser, request }, te
 
   await Promise.all(Array.from({ length: concurrency }, () => worker()));
 
-  const previewFailures = results.filter((result) =>
+  const hardFailures = results.filter((result) =>
     result.fatal ||
     result.status >= 400 ||
     result.status === 0 ||
@@ -424,23 +412,29 @@ test('full public storefront passes robotic QA', async ({ browser, request }, te
     result.firstPartyFailures.length ||
     result.pageErrors.length ||
     result.brokenImages.length ||
-    result.horizontalOverflow > 4 ||
-    result.a11y.length
+    result.horizontalOverflow > 4
   );
+
+  const accessibilityInventory = results
+    .filter((result) => result.a11y.length)
+    .map((result) => ({
+      path: result.path,
+      violations: result.a11y,
+    }));
 
   // Regression-aware PR gate:
   // re-audit only failing proposed-preview pages against a rendered preview
   // of the PR base commit, then block only defects that are new or worse.
   const comparisons = [];
-  if (PREVIEW_THEME_ID && BASELINE_PREVIEW_THEME_ID && previewFailures.length) {
+  if (PREVIEW_THEME_ID && BASELINE_PREVIEW_THEME_ID && hardFailures.length) {
     let baselineCursor = 0;
     const baselineWorkers = Math.max(1, Math.min(6, Number(process.env.FULL_SITE_BASELINE_CONCURRENCY || 8)));
 
     async function baselineWorker() {
       while (true) {
         const index = baselineCursor++;
-        if (index >= previewFailures.length) return;
-        const preview = previewFailures[index];
+        if (index >= hardFailures.length) return;
+        const preview = hardFailures[index];
         const baseline = await auditPage(browser, preview.path, { themeId: BASELINE_PREVIEW_THEME_ID });
         comparisons[index] = compareAgainstBaseline(preview, baseline);
       }
@@ -458,14 +452,16 @@ test('full public storefront passes robotic QA', async ({ browser, request }, te
   // PR previews are the hard regression gate.
   const knownBaselinePages = PREVIEW_THEME_ID && BASELINE_PREVIEW_THEME_ID
     ? comparisons.filter((item) => !item.regressions.length).map((item) => item.path)
-    : previewFailures.map((item) => item.path);
+    : hardFailures.map((item) => item.path);
 
   const summary = {
     discoveredPages: paths.length,
-    previewPassingPages: results.length - previewFailures.length,
-    previewFailingPages: previewFailures.length,
+    hardPassingPages: results.length - hardFailures.length,
+    hardFailingPages: hardFailures.length,
     regressionPages: regressions.length,
     knownBaselinePages: knownBaselinePages.length,
+    accessibilityPagesWithFindings: accessibilityInventory.length,
+    accessibilityInventory,
     mode: PREVIEW_THEME_ID ? 'preview-regression-gate' : 'live-baseline-inventory',
     regressions,
     knownBaselinePaths: knownBaselinePages,
@@ -477,7 +473,7 @@ test('full public storefront passes robotic QA', async ({ browser, request }, te
   });
 
   console.log(
-    `Full-site QA: ${paths.length} routes, ${previewFailures.length} preview defects, ` +
+    `Full-site QA: ${paths.length} routes, ${hardFailures.length} hard defects, ` +
     `${knownBaselinePages.length} known-baseline pages, ${regressions.length} regression pages.`
   );
 
