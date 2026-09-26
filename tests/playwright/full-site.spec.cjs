@@ -67,11 +67,11 @@ function isIgnorableQaPageError(message) {
   );
 }
 
-function withQa(path) {
+function withQa(path, { preview = true } = {}) {
   const url = new URL(path, BASE_URL);
   const qa = new URLSearchParams(QA_QUERY);
   for (const [key, value] of qa) url.searchParams.set(key, value);
-  if (PREVIEW_THEME_ID) url.searchParams.set('preview_theme_id', PREVIEW_THEME_ID);
+  if (preview && PREVIEW_THEME_ID) url.searchParams.set('preview_theme_id', PREVIEW_THEME_ID);
   return url.toString();
 }
 
@@ -149,7 +149,7 @@ async function scrollForLazyAssets(page) {
   await page.waitForTimeout(80);
 }
 
-async function auditPage(context, path) {
+async function auditPage(context, path, { preview = true } = {}) {
   const page = await context.newPage();
   const firstPartyFailures = [];
   const pageErrors = [];
@@ -179,7 +179,7 @@ async function auditPage(context, path) {
   });
 
   try {
-    const response = await page.goto(withQa(path), {
+    const response = await page.goto(withQa(path, { preview }), {
       waitUntil: 'domcontentloaded',
       timeout: 30000,
     });
@@ -255,6 +255,72 @@ async function auditPage(context, path) {
   }
 }
 
+
+function normalizeUrlish(value) {
+  return String(value || '')
+    .replace(/([?&])preview_theme_id=[^&\s]+/g, '$1')
+    .replace(/[?&]$/, '')
+    .replace('https://best-hydrate.myshopify.com', 'https://besthydrate.com');
+}
+
+function defectSet(result) {
+  const set = new Set();
+
+  if (result.fatal) set.add(`fatal:${result.fatal}`);
+  if (result.status >= 400 || result.status === 0) set.add(`status:${result.status}`);
+  if (!result.title) set.add('title:empty');
+
+  for (const item of result.firstPartyFailures || []) {
+    set.add(`network:${normalizeUrlish(item)}`);
+  }
+
+  for (const item of result.pageErrors || []) {
+    set.add(`js:${item}`);
+  }
+
+  for (const item of result.brokenImages || []) {
+    set.add(`image:${normalizeUrlish(item)}`);
+  }
+
+  if ((result.horizontalOverflow || 0) > 4) {
+    set.add(`overflow:${result.horizontalOverflow}`);
+  }
+
+  for (const violation of result.a11y || []) {
+    const nodes = violation.nodes?.length ? violation.nodes : ['[unknown-node]'];
+    for (const node of nodes) {
+      set.add(`a11y:${violation.id}:${violation.impact}:${node}`);
+    }
+  }
+
+  return set;
+}
+
+function compareAgainstLive(preview, live) {
+  const previewDefects = defectSet(preview);
+  const liveDefects = defectSet(live);
+  const regressions = [];
+
+  for (const defect of previewDefects) {
+    if (defect.startsWith('overflow:')) continue;
+    if (!liveDefects.has(defect)) regressions.push(defect);
+  }
+
+  const previewOverflow = preview.horizontalOverflow || 0;
+  const liveOverflow = live.horizontalOverflow || 0;
+  if (previewOverflow > Math.max(4, liveOverflow + 4)) {
+    regressions.push(`overflow:${previewOverflow} (live ${liveOverflow})`);
+  }
+
+  return {
+    path: preview.path,
+    preview,
+    live,
+    regressions,
+    baselineOnly: [...liveDefects],
+  };
+}
+
 test('full public storefront passes robotic QA', async ({ context, request }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Full-site crawl runs once per PR.');
   test.setTimeout(15 * 60 * 1000);
@@ -284,7 +350,7 @@ test('full public storefront passes robotic QA', async ({ context, request }, te
 
   await Promise.all(Array.from({ length: concurrency }, () => worker()));
 
-  const failures = results.filter((result) =>
+  const previewFailures = results.filter((result) =>
     result.fatal ||
     result.status >= 400 ||
     result.status === 0 ||
@@ -296,11 +362,48 @@ test('full public storefront passes robotic QA', async ({ context, request }, te
     result.a11y.length
   );
 
+  // Regression-aware PR gate:
+  // re-audit only failing preview pages on the current live theme, then block
+  // only defects that are new or worse than today's production baseline.
+  const comparisons = [];
+  if (PREVIEW_THEME_ID && previewFailures.length) {
+    let baselineCursor = 0;
+    const baselineWorkers = Math.max(1, Math.min(6, Number(process.env.FULL_SITE_BASELINE_CONCURRENCY || 6)));
+
+    async function baselineWorker() {
+      while (true) {
+        const index = baselineCursor++;
+        if (index >= previewFailures.length) return;
+        const preview = previewFailures[index];
+        const live = await auditPage(context, preview.path, { preview: false });
+        comparisons[index] = compareAgainstLive(preview, live);
+      }
+    }
+
+    await Promise.all(Array.from({ length: baselineWorkers }, () => baselineWorker()));
+  }
+
+  const regressions = PREVIEW_THEME_ID
+    ? comparisons.filter((item) => item.regressions.length)
+    : previewFailures.map((preview) => ({
+        path: preview.path,
+        preview,
+        live: null,
+        regressions: [...defectSet(preview)],
+      }));
+
+  const knownBaselinePages = PREVIEW_THEME_ID
+    ? comparisons.filter((item) => !item.regressions.length).map((item) => item.path)
+    : [];
+
   const summary = {
     discoveredPages: paths.length,
-    passedPages: results.length - failures.length,
-    failedPages: failures.length,
-    failures,
+    previewPassingPages: results.length - previewFailures.length,
+    previewFailingPages: previewFailures.length,
+    regressionPages: regressions.length,
+    knownBaselinePages: knownBaselinePages.length,
+    regressions,
+    knownBaselinePaths: knownBaselinePages,
   };
 
   await testInfo.attach('full-site-qa.json', {
@@ -308,5 +411,10 @@ test('full public storefront passes robotic QA', async ({ context, request }, te
     contentType: 'application/json',
   });
 
-  expect(failures, `full-site QA failures across ${paths.length} public routes`).toEqual([]);
+  console.log(
+    `Full-site QA: ${paths.length} routes, ${previewFailures.length} preview defects, ` +
+    `${knownBaselinePages.length} known-baseline pages, ${regressions.length} regression pages.`
+  );
+
+  expect(regressions, `new/worsened full-site regressions across ${paths.length} public routes`).toEqual([]);
 });
