@@ -63,7 +63,7 @@
         "purchase_value": {
           "type": "custom_liquid",
           "settings": {
-            "custom_liquid": "<div class=\"bhd-product-value\" aria-label=\"Best Hydrate value\"><strong>LOW SUGAR, ON PURPOSE.</strong><span>1 g sugar / 100 mL prepared</span><span>5 electrolytes</span><span>32 servings</span><span>~C$1.25/serving</span><p class=\"bhd-product-taste\"><strong>Tastes great.</strong> Light and balanced, not too sweet, without the heavy sweetness or palate fatigue, so it’s easy to keep drinking and stay on top of hydration.</p></div><style>.bhd-product-value{display:flex;flex-wrap:wrap;gap:.45rem .6rem;align-items:center;margin:.55rem 0 .25rem}.bhd-product-value>strong{flex-basis:100%;color:#0b2d67;font-size:1.32rem}.bhd-product-value>span{display:inline-block;padding:.45rem .7rem;border:1px solid #d7e3f1;border-radius:999px;background:#f7fbff;color:#52657a;font-size:1.08rem;font-weight:700;line-height:1.2}.bhd-product-taste{flex-basis:100%;margin:.35rem 0 0;color:#52657a;font-size:1.18rem;line-height:1.4}.bhd-product-taste strong{color:#0b2d67}</style>"
+            "custom_liquid": "<div class=\"bhd-product-value\" aria-label=\"Best Hydrate value\"><strong>LOW SUGAR, ON PURPOSE.</strong><span>1 g sugar / 100 mL prepared</span><span>5 electrolytes</span><span>32 servings</span><span>~C$1.25/serving</span><p class=\"bhd-product-taste\"><strong>Tastes great.</strong> Light, balanced, not too sweet.</p></div><style>.bhd-product-value{display:flex;flex-wrap:wrap;gap:.45rem .6rem;align-items:center;margin:.45rem 0 .35rem}.bhd-product-value>strong{flex-basis:100%;color:#0b2d67;font-size:1.32rem}.bhd-product-value>span{display:inline-block;padding:.45rem .7rem;border:1px solid #d7e3f1;border-radius:999px;background:#f7fbff;color:#52657a;font-size:1.08rem;font-weight:700;line-height:1.2}.bhd-product-taste{flex-basis:100%;margin:.2rem 0 0;color:#52657a;font-size:1.18rem;line-height:1.35}.bhd-product-taste strong{color:#0b2d67}@media screen and (max-width:749px){.bhd-product-value{gap:.35rem .45rem;margin:.35rem 0 .45rem}.bhd-product-value>strong{font-size:1.2rem}.bhd-product-value>span{padding:.38rem .6rem;font-size:1rem}.bhd-product-taste{font-size:1.08rem}}</style>"
           }
         },
         "purchase_choice": {
@@ -96,17 +96,17 @@
         "rating",
         "price",
         "purchase_value",
-        "flavour_vote",
-        "free_shipping",
-        "purchase_choice",
         "quantity_selector",
         "buy_buttons",
-        "subscription_guard",
-        "mobile_sticky",
+        "free_shipping",
         "purchase_reassurance",
+        "purchase_choice",
         "trust_strip",
         "description",
         "marketplaces",
+        "flavour_vote",
+        "subscription_guard",
+        "mobile_sticky",
         "share"
       ],
       "settings": {
