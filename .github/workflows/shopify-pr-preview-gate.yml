@@ -27,7 +27,7 @@ jobs:
   preview-gate:
     name: Shopify preview + Playwright gate
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       SHOPIFY_FLAG_STORE: best-hydrate.myshopify.com
       SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN || secrets.SHOPIFY_THEME_ACCESS_TOKEN || secrets.SHOPIFY_ADMIN_API_TOKEN || secrets.SHOPIFY_ACCESS_TOKEN }}
@@ -60,23 +60,61 @@ jobs:
           npm install --no-save @shopify/cli@latest @playwright/test@latest @axe-core/playwright@latest
           npx playwright install --with-deps chromium
 
-      - name: Build isolated Shopify theme package
+      - name: Build proposed and baseline theme packages
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/bhd-theme artifacts
+          mkdir -p /tmp/bhd-theme /tmp/bhd-theme-base artifacts
+
           for dir in assets blocks config layout locales sections snippets templates; do
             if [ -d "$dir" ]; then cp -R "$dir" /tmp/bhd-theme/; fi
           done
+
+          git worktree add --detach /tmp/bhd-base "${{ github.event.pull_request.base.sha }}"
+          for dir in assets blocks config layout locales sections snippets templates; do
+            if [ -d "/tmp/bhd-base/$dir" ]; then cp -R "/tmp/bhd-base/$dir" /tmp/bhd-theme-base/; fi
+          done
+
           test -f /tmp/bhd-theme/layout/theme.liquid
           test -f /tmp/bhd-theme/config/settings_schema.json
+          test -f /tmp/bhd-theme-base/layout/theme.liquid
+          test -f /tmp/bhd-theme-base/config/settings_schema.json
 
-      - name: Create Shopify development preview theme
+      - name: Create rendered baseline development theme
+        id: baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEV_CONTEXT="pr-${{ github.event.pull_request.number }}-base"
+
+          npx shopify theme push \
+            --path /tmp/bhd-theme-base \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --password "$SHOPIFY_CLI_THEME_TOKEN" \
+            --development \
+            --development-context "$DEV_CONTEXT" \
+            --json > /tmp/shopify-baseline.json
+
+          cat /tmp/shopify-baseline.json
+          cp /tmp/shopify-baseline.json artifacts/shopify-baseline.json
+
+          THEME_ID="$(jq -er '.theme.id | tostring' /tmp/shopify-baseline.json)"
+          ROLE="$(jq -er '.theme.role' /tmp/shopify-baseline.json)"
+
+          echo "theme_id=$THEME_ID" >> "$GITHUB_OUTPUT"
+          echo "BASELINE_PREVIEW_THEME_ID=$THEME_ID" >> "$GITHUB_ENV"
+
+          if [ "$ROLE" != "development" ]; then
+            echo "::error::Expected baseline development theme, got role=$ROLE"
+            exit 1
+          fi
+
+      - name: Create proposed Shopify development theme
         id: preview
         shell: bash
         run: |
           set -euo pipefail
-          DEV_CONTEXT="pr-${{ github.event.pull_request.number }}"
+          DEV_CONTEXT="pr-${{ github.event.pull_request.number }}-proposed"
 
           npx shopify theme push \
             --path /tmp/bhd-theme \
@@ -90,15 +128,13 @@ jobs:
           cp /tmp/shopify-preview.json artifacts/shopify-preview.json
 
           THEME_ID="$(jq -er '.theme.id | tostring' /tmp/shopify-preview.json)"
-          PREVIEW_URL="$(jq -er '.theme.preview_url' /tmp/shopify-preview.json)"
           ROLE="$(jq -er '.theme.role' /tmp/shopify-preview.json)"
 
           echo "theme_id=$THEME_ID" >> "$GITHUB_OUTPUT"
-          echo "preview_url=$PREVIEW_URL" >> "$GITHUB_OUTPUT"
           echo "PREVIEW_THEME_ID=$THEME_ID" >> "$GITHUB_ENV"
 
           if [ "$ROLE" != "development" ]; then
-            echo "::error::Expected a development theme, got role=$ROLE"
+            echo "::error::Expected proposed development theme, got role=$ROLE"
             exit 1
           fi
 
@@ -122,23 +158,28 @@ jobs:
             done < /tmp/theme-error-files.txt
           fi
 
-      - name: Verify preview theme responds
+      - name: Verify both rendered themes respond
         shell: bash
         run: |
           set -euo pipefail
-          URL="https://besthydrate.com/?preview_theme_id=${PREVIEW_THEME_ID}&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
-          for attempt in {1..12}; do
-            code="$(curl -L -sS -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
-            if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && grep -qi '<html' /tmp/preview-home.html; then
-              echo "Preview theme is responding."
-              exit 0
+          for THEME_ID in "$BASELINE_PREVIEW_THEME_ID" "$PREVIEW_THEME_ID"; do
+            URL="https://besthydrate.com/?preview_theme_id=${THEME_ID}&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
+            ready=0
+            for attempt in {1..12}; do
+              code="$(curl -L -sS -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
+              if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && grep -qi '<html' /tmp/preview-home.html; then
+                ready=1
+                break
+              fi
+              sleep 5
+            done
+            if [ "$ready" -ne 1 ]; then
+              echo "::error::Shopify rendered theme $THEME_ID did not become ready."
+              exit 1
             fi
-            sleep 5
           done
-          echo "::error::Shopify preview theme did not become ready."
-          exit 1
 
-      - name: Run Playwright against proposed Shopify preview
+      - name: Run Playwright against proposed and baseline previews
         run: npx playwright test --config=playwright.config.cjs
 
       - name: Upload preview QA diagnostics
@@ -150,10 +191,11 @@ jobs:
             playwright-report/
             test-results/
             artifacts/shopify-preview.json
+            artifacts/shopify-baseline.json
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 7
 
-      - name: Delete temporary development preview
+      - name: Delete proposed development preview
         if: ${{ always() && steps.preview.outputs.theme_id != '' }}
         shell: bash
         run: |
@@ -161,4 +203,14 @@ jobs:
             --store "$SHOPIFY_FLAG_STORE" \
             --password "$SHOPIFY_CLI_THEME_TOKEN" \
             --theme "${{ steps.preview.outputs.theme_id }}" \
+            --force
+
+      - name: Delete baseline development preview
+        if: ${{ always() && steps.baseline.outputs.theme_id != '' }}
+        shell: bash
+        run: |
+          npx shopify theme delete \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --password "$SHOPIFY_CLI_THEME_TOKEN" \
+            --theme "${{ steps.baseline.outputs.theme_id }}" \
             --force
