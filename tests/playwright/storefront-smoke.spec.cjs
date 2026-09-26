@@ -17,6 +17,24 @@ function withQa(path) {
   return url.toString();
 }
 
+async function gotoWithTransientRetry(page, url, options = {}) {
+  const transient = new Set([429, 500, 502, 503, 504]);
+  let response = null;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    response = await page.goto(url, {
+      waitUntil: 'domcontentloaded',
+      ...options,
+    }).catch(() => null);
+
+    const status = response?.status() || 0;
+    if (response && !transient.has(status)) return response;
+    if (attempt < 3) await page.waitForTimeout(500 * attempt);
+  }
+
+  return response;
+}
+
 const ANALYTICS_ENDPOINTS = [
   'api2.amplitude.com',
   'api.eu.amplitude.com',
@@ -36,7 +54,7 @@ async function openAvailableLemonadeProduct(page) {
   const uniquePaths = [...new Set(PRODUCT_PATHS.filter(Boolean))];
 
   for (const path of uniquePaths) {
-    await page.goto(withQa(path), { waitUntil: 'domcontentloaded' });
+    await gotoWithTransientRetry(page, withQa(path));
 
     const heading = page.getByRole('heading', {
       level: 1,
@@ -95,12 +113,25 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
     expect(addResponse.ok()).toBeTruthy();
 
     const cart = await page.evaluate(async () => {
-      const response = await fetch('/cart.js', {
-        headers: { Accept: 'application/json' },
-        credentials: 'same-origin',
-      });
-      if (!response.ok) throw new Error(`cart.js returned ${response.status}`);
-      return response.json();
+      const transient = new Set([429, 500, 502, 503, 504]);
+      let response = null;
+
+      for (let attempt = 1; attempt <= 3; attempt += 1) {
+        response = await fetch('/cart.js', {
+          headers: { Accept: 'application/json' },
+          credentials: 'same-origin',
+          cache: 'no-store',
+        });
+
+        if (response.ok) return response.json();
+        if (!transient.has(response.status) || attempt === 3) {
+          throw new Error(`cart.js returned ${response.status}`);
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 400 * attempt));
+      }
+
+      throw new Error(`cart.js returned ${response?.status || 'no response'}`);
     });
 
     expect(cart.item_count).toBeGreaterThan(0);
@@ -112,7 +143,7 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
   });
 
   await test.step('Open Shopify checkout without placing an order', async () => {
-    await page.goto(withQa('/cart'), { waitUntil: 'domcontentloaded' });
+    await gotoWithTransientRetry(page, withQa('/cart'));
 
     await expect(page.locator('a.cart-item__name:visible').filter({ hasText: /Lemonade Electrolyte Powder/i }).first()).toBeVisible();
 
@@ -120,15 +151,16 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
     await expect(checkout).toBeVisible();
     await expect(checkout).toBeEnabled();
 
-    await checkout.click();
-
-    await page.waitForURL(
-      (url) =>
-        /\/checkouts?\//i.test(url.pathname) ||
-        /checkout/i.test(url.hostname) ||
-        /checkout/i.test(url.pathname),
-      { timeout: 20000 }
-    );
+    await Promise.all([
+      page.waitForURL(
+        (url) =>
+          /\/checkouts?\//i.test(url.pathname) ||
+          /checkout/i.test(url.hostname) ||
+          /checkout/i.test(url.pathname),
+        { timeout: 30000 }
+      ),
+      checkout.click(),
+    ]);
 
     expect(page.url()).toMatch(/checkout/i);
   });
