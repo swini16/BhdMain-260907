@@ -1,0 +1,120 @@
+name: LP Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/*.liquid'
+      - 'assets/**'
+      - 'templates/**'
+      - 'config/**'
+      - '.github/workflows/lp-quality-gate.yml'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  liquid-theme-check:
+    name: Liquid / Shopify Theme Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: false
+      - name: Install Shopify Theme Check
+        run: gem install theme-check
+      - name: Validate Liquid theme
+        run: theme-check . --fail-level error
+
+  lp-contracts:
+    name: LP UX / tracking contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate LP conversion contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          file='snippets/bhd-lp-conversion-shell.liquid'
+          dispatch='snippets/bhd-page-dispatch.liquid'
+          test -f "$file"
+          test -f "$dispatch"
+
+          # Rendering contract
+          grep -Fq "render 'bhd-lp-conversion-shell'" "$dispatch"
+          grep -Fq "page.handle contains 'lp-'" "$dispatch"
+
+          # Conversion UX contract
+          grep -Fq 'data-bhd-lp-close' "$file"
+          grep -Fq 'data-lp-section="taste"' "$file"
+          grep -Fq 'data-lp-section="why"' "$file"
+          grep -Fq 'data-lp-section="compare"' "$file"
+          grep -Fq 'data-lp-section="faq"' "$file"
+          grep -Fq 'data-lp-section="offer"' "$file"
+          grep -Fq 'data-lp-cta="final"' "$file"
+          grep -Fq 'Shop Best Hydrate' "$file"
+          grep -Fq 'Free &amp; Fast Delivery' "$file"
+          grep -Fq 'Tastes great. Not too sweet.' "$file"
+          grep -Fq 'Low sugar, on purpose.' "$file"
+          grep -Fq 'Prepare. Perform. Recover.' "$file"
+
+          # Mobile/tap-target contract
+          grep -Fq '@media(max-width:749px)' "$file"
+          grep -Fq 'min-height:5.2rem' "$file"
+          grep -Fq 'width:100%' "$file"
+
+          # Analytics contract: both Amplitude and GTM/dataLayer fallback
+          grep -Fq "window.amplitude.track('LP CTA Clicked'" "$file"
+          grep -Fq "event:'lp_cta_clicked'" "$file"
+          grep -Fq 'page_handle:' "$file"
+          grep -Fq 'lp_context:' "$file"
+
+          # Guardrails: no external scripts or inline core-asset substitutions in shell
+          ! grep -Eq '<script[^>]+src=' "$file"
+          ! grep -Eqi '(logo|jar|packaging).*(base64|data:image)' "$file"
+
+      - name: JavaScript syntax smoke test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('snippets/bhd-lp-conversion-shell.liquid').read_text()
+          scripts=re.findall(r'<script>(.*?)</script>',p,re.S)
+          assert scripts, 'No inline tracking script found'
+          js=scripts[-1]
+          # Replace Liquid output tokens with harmless JS strings before Node parses it.
+          js=re.sub(r"'\{\{.*?\}\}'", "'liquid-value'", js, flags=re.S)
+          Path('/tmp/lp-tracking.js').write_text(js)
+          PY
+          node --check /tmp/lp-tracking.js
+
+  static-safety:
+    name: LP static safety checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect common merge and markup hazards
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -RInE '^(<<<<<<<|=======|>>>>>>>)' snippets sections templates assets --include='*.liquid' --include='*.js' --include='*.css'
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('snippets/bhd-lp-conversion-shell.liquid').read_text()
+          for tag in ['section','div','article','details','style','script']:
+              opens=p.count('<'+tag) - p.count('<'+tag+'/')
+              closes=p.count('</'+tag+'>')
+              assert opens == closes, f'Unbalanced <{tag}> tags: {opens} opens / {closes} closes'
+          assert p.count('data-bhd-lp-close') >= 1
+          assert p.count('data-lp-cta="final"') == 1
+          print('LP static safety checks passed')
+          PY
