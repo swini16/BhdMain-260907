@@ -1,0 +1,216 @@
+name: Shopify PR preview gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'assets/**'
+      - 'blocks/**'
+      - 'config/**'
+      - 'layout/**'
+      - 'locales/**'
+      - 'sections/**'
+      - 'snippets/**'
+      - 'templates/**'
+      - 'tests/playwright/**'
+      - 'playwright.config.cjs'
+      - '.github/workflows/shopify-pr-preview-gate.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shopify-pr-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview-gate:
+    name: Shopify preview + Playwright gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      SHOPIFY_FLAG_STORE: best-hydrate.myshopify.com
+      SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN || secrets.SHOPIFY_THEME_ACCESS_TOKEN || secrets.SHOPIFY_ADMIN_API_TOKEN || secrets.SHOPIFY_ACCESS_TOKEN }}
+      SHOPIFY_FLAG_FORCE: '1'
+      BASE_URL: https://besthydrate.com
+      PRODUCT_PATH: /products/lemonade-best-hydrate
+
+    steps:
+      - name: Checkout proposed PR code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify Shopify preview credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${SHOPIFY_CLI_THEME_TOKEN:-}" ]; then
+            echo "::error::Missing Shopify theme credential. Add SHOPIFY_CLI_THEME_TOKEN as an Actions repository secret."
+            exit 1
+          fi
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install Shopify CLI and Playwright
+        run: |
+          npm install --no-save @shopify/cli@latest @playwright/test@latest @axe-core/playwright@latest
+          npx playwright install --with-deps chromium
+
+      - name: Build proposed and baseline theme packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/bhd-theme /tmp/bhd-theme-base artifacts
+
+          for dir in assets blocks config layout locales sections snippets templates; do
+            if [ -d "$dir" ]; then cp -R "$dir" /tmp/bhd-theme/; fi
+          done
+
+          git worktree add --detach /tmp/bhd-base "${{ github.event.pull_request.base.sha }}"
+          for dir in assets blocks config layout locales sections snippets templates; do
+            if [ -d "/tmp/bhd-base/$dir" ]; then cp -R "/tmp/bhd-base/$dir" /tmp/bhd-theme-base/; fi
+          done
+
+          test -f /tmp/bhd-theme/layout/theme.liquid
+          test -f /tmp/bhd-theme/config/settings_schema.json
+          test -f /tmp/bhd-theme-base/layout/theme.liquid
+          test -f /tmp/bhd-theme-base/config/settings_schema.json
+
+      - name: Create rendered baseline development theme
+        id: baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEV_CONTEXT="pr-${{ github.event.pull_request.number }}-base"
+
+          npx shopify theme push \
+            --path /tmp/bhd-theme-base \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --password "$SHOPIFY_CLI_THEME_TOKEN" \
+            --development \
+            --development-context "$DEV_CONTEXT" \
+            --json > /tmp/shopify-baseline.json
+
+          cat /tmp/shopify-baseline.json
+          cp /tmp/shopify-baseline.json artifacts/shopify-baseline.json
+
+          THEME_ID="$(jq -er '.theme.id | tostring' /tmp/shopify-baseline.json)"
+          ROLE="$(jq -er '.theme.role' /tmp/shopify-baseline.json)"
+
+          echo "theme_id=$THEME_ID" >> "$GITHUB_OUTPUT"
+          echo "BASELINE_PREVIEW_THEME_ID=$THEME_ID" >> "$GITHUB_ENV"
+
+          if [ "$ROLE" != "development" ]; then
+            echo "::error::Expected baseline development theme, got role=$ROLE"
+            exit 1
+          fi
+
+      - name: Create proposed Shopify development theme
+        id: preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEV_CONTEXT="pr-${{ github.event.pull_request.number }}-proposed"
+
+          npx shopify theme push \
+            --path /tmp/bhd-theme \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --password "$SHOPIFY_CLI_THEME_TOKEN" \
+            --development \
+            --development-context "$DEV_CONTEXT" \
+            --json > /tmp/shopify-preview.json
+
+          cat /tmp/shopify-preview.json
+          cp /tmp/shopify-preview.json artifacts/shopify-preview.json
+
+          THEME_ID="$(jq -er '.theme.id | tostring' /tmp/shopify-preview.json)"
+          ROLE="$(jq -er '.theme.role' /tmp/shopify-preview.json)"
+
+          echo "theme_id=$THEME_ID" >> "$GITHUB_OUTPUT"
+          echo "PREVIEW_THEME_ID=$THEME_ID" >> "$GITHUB_ENV"
+
+          if [ "$ROLE" != "development" ]; then
+            echo "::error::Expected proposed development theme, got role=$ROLE"
+            exit 1
+          fi
+
+          git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" > /tmp/pr-changed-files.txt
+
+          if grep -Eq '^(assets/(constants|cart|quick-add-bulk|quantity-popover|price-per-item|quick-order-list)\.js|snippets/cart-drawer\.liquid|layout/theme\.liquid)$' /tmp/pr-changed-files.txt; then
+            echo "IGNORE_PREVIEW_BASELINE_JS=0" >> "$GITHUB_ENV"
+          else
+            echo "IGNORE_PREVIEW_BASELINE_JS=1" >> "$GITHUB_ENV"
+          fi
+
+          jq -r '.theme.errors // {} | keys[]' /tmp/shopify-preview.json > /tmp/theme-error-files.txt || true
+          if [ -s /tmp/theme-error-files.txt ]; then
+            echo "::warning::Shopify reported pre-existing upload errors:"
+            cat /tmp/theme-error-files.txt
+            while IFS= read -r error_file; do
+              if grep -Fxq "$error_file" /tmp/pr-changed-files.txt; then
+                echo "::error::Changed file failed Shopify upload: $error_file"
+                exit 1
+              fi
+            done < /tmp/theme-error-files.txt
+          fi
+
+      - name: Verify both rendered themes respond
+        shell: bash
+        run: |
+          set -euo pipefail
+          for THEME_ID in "$BASELINE_PREVIEW_THEME_ID" "$PREVIEW_THEME_ID"; do
+            URL="https://besthydrate.com/?preview_theme_id=${THEME_ID}&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
+            ready=0
+            for attempt in {1..12}; do
+              code="$(curl -L -sS -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
+              if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && grep -qi '<html' /tmp/preview-home.html; then
+                ready=1
+                break
+              fi
+              sleep 5
+            done
+            if [ "$ready" -ne 1 ]; then
+              echo "::error::Shopify rendered theme $THEME_ID did not become ready."
+              exit 1
+            fi
+          done
+
+      - name: Run Playwright against proposed and baseline previews
+        run: npx playwright test --config=playwright.config.cjs
+
+      - name: Upload preview QA diagnostics
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: shopify-pr-preview-${{ github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
+            artifacts/shopify-preview.json
+            artifacts/shopify-baseline.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Delete proposed development preview
+        if: ${{ always() && steps.preview.outputs.theme_id != '' }}
+        shell: bash
+        run: |
+          npx shopify theme delete \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --password "$SHOPIFY_CLI_THEME_TOKEN" \
+            --theme "${{ steps.preview.outputs.theme_id }}" \
+            --force
+
+      - name: Delete baseline development preview
+        if: ${{ always() && steps.baseline.outputs.theme_id != '' }}
+        shell: bash
+        run: |
+          npx shopify theme delete \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --password "$SHOPIFY_CLI_THEME_TOKEN" \
+            --theme "${{ steps.baseline.outputs.theme_id }}" \
+            --force

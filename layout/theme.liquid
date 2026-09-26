@@ -65,6 +65,17 @@
     <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'standard-actions-override.js' | asset_url }}" defer="defer"></script>
 
+    {%- liquid
+      assign bhd_market_buy_url = '/products/lemonade-best-hydrate'
+      if localization.country.iso_code == 'US'
+        assign bhd_market_buy_url = '/products/lemonade-electrolyte-best-hydrate'
+      endif
+    -%}
+    <script>
+      window.BHD_MARKET_BUY_URL = {{ bhd_market_buy_url | json }};
+    </script>
+    <script src="{{ 'bhd-go-links.js' | asset_url }}" defer="defer"></script>
+
     {%- if settings.animations_reveal_on_scroll -%}
       <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
