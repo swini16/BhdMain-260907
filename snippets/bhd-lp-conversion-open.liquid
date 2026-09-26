@@ -1,0 +1,68 @@
+{% doc %}
+  Early direct-response bridge for consumer landing pages.
+  Keeps the customer/problem first, surfaces proof quickly, and sends the user
+  to the market-appropriate product without replacing the page's educational body.
+{% enddoc %}
+
+{% liquid
+  assign lp_handle = page.handle | default: ''
+  assign product_url = '/products/lemonade-best-hydrate'
+  if localization.country.iso_code == 'US'
+    assign product_url = '/products/lemonade-electrolyte-best-hydrate'
+  endif
+
+  assign lp_context = 'everyday'
+  assign lp_kicker = 'LOW-SUGAR HYDRATION'
+  assign lp_lead = 'When your day calls for more than plain water alone, keep the next step simple: a low-sugar electrolyte mix that is easy to understand and easy to keep on hand.'
+
+  if lp_handle contains 'session' or lp_handle contains 'heat-sweat'
+    assign lp_context = 'performance'
+    assign lp_kicker = 'PREP → PERFORM → RECOVER'
+    assign lp_lead = 'Your hydration routine should fit the session. Keep a low-sugar, not-too-sweet option ready before, during and after demanding activity.'
+  elsif lp_handle contains 'workday' or lp_handle contains 'workdays'
+    assign lp_context = 'work'
+    assign lp_kicker = 'BUILT FOR LONG DAYS'
+    assign lp_lead = 'Long shifts make hydration easy to postpone. Keep a portable, low-sugar option within reach when heat, effort or limited breaks raise the practical demand.'
+  elsif lp_handle contains 'cold' or lp_handle contains 'winter'
+    assign lp_context = 'winter'
+    assign lp_kicker = 'COLD DAYS STILL COUNT'
+    assign lp_lead = 'Cold weather can make hydration easier to forget. Keep the routine visible, portable and simple enough to follow through the whole day.'
+  elsif lp_handle contains 'summer' or lp_handle contains 'hot-days'
+    assign lp_context = 'summer'
+    assign lp_kicker = 'HOT DAYS CHANGE THE ROUTINE'
+    assign lp_lead = 'Heat and long periods outside make hydration harder to leave to chance. Plan access early and keep a practical electrolyte option ready when it fits the day.'
+  elsif lp_handle contains 'six-ingredients' or lp_handle contains 'different' or lp_handle contains 'what-to-look-for'
+    assign lp_context = 'formula'
+    assign lp_kicker = 'SIMPLE FORMULA. CLEAR PURPOSE.'
+    assign lp_lead = 'You should be able to understand what is in your hydration mix and why it is there. Best Hydrate keeps the formula focused and the sugar low.'
+  endif
+%}
+
+<section class="bhd-lp-open" data-bhd-lp-open data-lp-context="{{ lp_context }}">
+  <p class="bhd-lp-open__eyebrow">{{ lp_kicker }}</p>
+  <p class="bhd-lp-open__lead"><strong>{{ lp_lead }}</strong></p>
+
+  <div class="bhd-lp-open__proofs" aria-label="Best Hydrate highlights">
+    <span>Low sugar, on purpose.</span>
+    <span>Tastes great. Not too sweet.</span>
+    <span>32 servings.</span>
+    <span>Free &amp; Fast Delivery.</span>
+  </div>
+
+  <div class="bhd-lp-open__actions">
+    <a class="bhd-lp-open__button" href="{{ product_url }}" data-lp-cta="early">Shop Best Hydrate</a>
+    <a class="bhd-lp-open__link" href="/pages/lp-02f-hydration-thats-not-too-sweet" data-lp-cta="low-sugar">Why low sugar?</a>
+  </div>
+</section>
+
+<style>
+  .bhd-lp-open{margin:1rem 0 1.8rem;padding:clamp(1.4rem,3vw,2rem);border:1px solid rgba(11,45,103,.14);border-radius:1.5rem;background:linear-gradient(145deg,#f9fcff,#fff)}
+  .bhd-lp-open__eyebrow{margin:0 0 .55rem!important;color:#078ee7!important;font-size:.82rem!important;font-weight:850;letter-spacing:.11em;text-transform:uppercase}
+  .bhd-lp-open__lead{max-width:68rem;margin:0;color:#173c72;font-size:clamp(1.05rem,1.8vw,1.28rem);line-height:1.45}
+  .bhd-lp-open__proofs{display:flex;flex-wrap:wrap;gap:.55rem;margin:1rem 0}
+  .bhd-lp-open__proofs span{display:inline-flex;padding:.45rem .72rem;border-radius:999px;background:#edf7ff;color:#0b2d67;font-size:.85rem;font-weight:800}
+  .bhd-lp-open__actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+  .bhd-lp-open__button{display:inline-flex;align-items:center;justify-content:center;min-height:3rem;padding:.75rem 1.2rem;border-radius:999px;background:#0f63cc;color:#fff!important;text-decoration:none;font-weight:850}
+  .bhd-lp-open__link{color:#0f63cc!important;font-weight:800}
+  @media(max-width:749px){.bhd-lp-open__proofs{display:grid;grid-template-columns:1fr 1fr}.bhd-lp-open__actions{align-items:stretch;flex-direction:column}.bhd-lp-open__button{width:100%}.bhd-lp-open__link{text-align:center}}
+</style>
