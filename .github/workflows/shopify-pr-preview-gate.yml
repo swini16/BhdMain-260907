@@ -1,0 +1,131 @@
+name: Shopify PR preview gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'assets/**'
+      - 'blocks/**'
+      - 'config/**'
+      - 'layout/**'
+      - 'locales/**'
+      - 'sections/**'
+      - 'snippets/**'
+      - 'templates/**'
+      - 'tests/playwright/**'
+      - 'playwright.config.cjs'
+      - '.github/workflows/shopify-pr-preview-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shopify-pr-preview-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview-gate:
+    name: Shopify preview + Playwright gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SHOPIFY_FLAG_STORE: best-hydrate.myshopify.com
+      SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+      SHOPIFY_FLAG_FORCE: '1'
+      BASE_URL: https://best-hydrate.myshopify.com
+      PRODUCT_PATH: /products/lemonade-best-hydrate
+
+    steps:
+      - name: Checkout proposed PR code
+        uses: actions/checkout@v4
+
+      - name: Verify Shopify preview credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${SHOPIFY_CLI_THEME_TOKEN:-}" ]; then
+            echo "::error::Missing repository secret SHOPIFY_CLI_THEME_TOKEN. Add a Shopify Theme Access password or Admin API token with read_themes/write_themes."
+            exit 1
+          fi
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install Shopify CLI and Playwright
+        run: |
+          npm install --no-save @shopify/cli@latest @playwright/test@latest @axe-core/playwright@latest
+          npx playwright install --with-deps chromium
+
+      - name: Build isolated Shopify theme package
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/bhd-theme
+          for dir in assets blocks config layout locales sections snippets templates; do
+            if [ -d "$dir" ]; then cp -R "$dir" /tmp/bhd-theme/; fi
+          done
+          test -f /tmp/bhd-theme/layout/theme.liquid
+          test -f /tmp/bhd-theme/config/settings_schema.json
+
+      - name: Create unpublished Shopify preview theme
+        id: preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          PR_NUMBER="${{ github.event.pull_request.number || 0 }}"
+          SHORT_SHA="${GITHUB_SHA:0:8}"
+          THEME_NAME="QA PR-${PR_NUMBER} ${SHORT_SHA}"
+
+          npx shopify theme push             --path /tmp/bhd-theme             --store "$SHOPIFY_FLAG_STORE"             --password "$SHOPIFY_CLI_THEME_TOKEN"             --unpublished             --theme "$THEME_NAME"             --json > /tmp/shopify-preview.json
+
+          cat /tmp/shopify-preview.json
+          THEME_ID="$(jq -er '.theme.id | tostring' /tmp/shopify-preview.json)"
+          PREVIEW_URL="$(jq -er '.theme.preview_url' /tmp/shopify-preview.json)"
+          ROLE="$(jq -er '.theme.role' /tmp/shopify-preview.json)"
+
+          test "$ROLE" = "unpublished"
+          echo "theme_id=$THEME_ID" >> "$GITHUB_OUTPUT"
+          echo "preview_url=$PREVIEW_URL" >> "$GITHUB_OUTPUT"
+          echo "PREVIEW_THEME_ID=$THEME_ID" >> "$GITHUB_ENV"
+
+      - name: Verify preview theme responds
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://best-hydrate.myshopify.com/?preview_theme_id=${PREVIEW_THEME_ID}&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
+          for attempt in {1..12}; do
+            code="$(curl -L -sS -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
+            if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && grep -qi '<html' /tmp/preview-home.html; then
+              echo "Preview theme is responding."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::Shopify preview theme did not become ready."
+          exit 1
+
+      - name: Run Playwright against proposed Shopify preview
+        env:
+          PREVIEW_THEME_ID: ${{ env.PREVIEW_THEME_ID }}
+        run: npx playwright test --config=playwright.config.cjs
+
+      - name: Upload preview QA diagnostics
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: shopify-pr-preview-${{ github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
+            /tmp/shopify-preview.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Delete temporary unpublished preview
+        if: ${{ always() && steps.preview.outputs.theme_id != '' }}
+        shell: bash
+        run: |
+          npx shopify theme delete             --store "$SHOPIFY_FLAG_STORE"             --password "$SHOPIFY_CLI_THEME_TOKEN"             --theme "${{ steps.preview.outputs.theme_id }}"             --force
