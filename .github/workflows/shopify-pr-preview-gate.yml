@@ -70,7 +70,7 @@ jobs:
           test -f /tmp/bhd-theme/layout/theme.liquid
           test -f /tmp/bhd-theme/config/settings_schema.json
 
-      - name: Create unpublished Shopify preview theme
+      - name: Create Shopify development preview theme
         id: preview
         shell: bash
         run: |
@@ -86,7 +86,7 @@ jobs:
           PREVIEW_URL="$(jq -er '.theme.preview_url' /tmp/shopify-preview.json)"
           ROLE="$(jq -er '.theme.role' /tmp/shopify-preview.json)"
 
-          test "$ROLE" = "unpublished"
+          test "$ROLE" = "development"
           echo "theme_id=$THEME_ID" >> "$GITHUB_OUTPUT"
           echo "preview_url=$PREVIEW_URL" >> "$GITHUB_OUTPUT"
           echo "PREVIEW_THEME_ID=$THEME_ID" >> "$GITHUB_ENV"
@@ -124,7 +124,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-      - name: Delete temporary unpublished preview
+      - name: Delete temporary development preview
         if: ${{ always() && steps.preview.outputs.theme_id != '' }}
         shell: bash
         run: |
