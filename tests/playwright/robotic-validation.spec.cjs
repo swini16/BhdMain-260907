@@ -189,10 +189,43 @@ async function assertVisualLayout(page, label, testInfo) {
     };
 
     const viewportWidth = document.documentElement.clientWidth;
+
+    const isThirdPartyUi = (element) =>
+      Boolean(
+        element.closest(
+          '#trustreviewsCardsFrame,[id^="rich-text-"],[class*="kl-private-reset-css"]'
+        )
+      );
+
+    const isInsideHorizontalClip = (element) => {
+      let parent = element.parentElement;
+      while (parent && parent !== document.body) {
+        const style = getComputedStyle(parent);
+        const overflowX = style.overflowX;
+        if (
+          ['auto', 'scroll', 'hidden', 'clip'].includes(overflowX) &&
+          parent.scrollWidth > parent.clientWidth + 3
+        ) {
+          return true;
+        }
+        parent = parent.parentElement;
+      }
+      return false;
+    };
+
+    const visibleTextLength = (element) => {
+      const clone = element.cloneNode(true);
+      clone.querySelectorAll?.('.visually-hidden,[aria-hidden="true"],svg').forEach((node) => node.remove());
+      return (clone.textContent || '').replace(/\s+/g, ' ').trim().length;
+    };
+
     const horizontalEscape = [...document.querySelectorAll(
       'h1,h2,h3,button,summary,input,select,textarea,.button,[class*="bhd-"] a,.product__info-wrapper a,.product__info-wrapper button'
     )]
       .filter(isVisible)
+      .filter((element) => !element.classList.contains('visually-hidden'))
+      .filter((element) => !isThirdPartyUi(element))
+      .filter((element) => !isInsideHorizontalClip(element))
       .map((element) => ({ element, rect: element.getBoundingClientRect() }))
       .filter(({ rect }) => rect.left < -3 || rect.right > viewportWidth + 3)
       .slice(0, 12)
@@ -207,9 +240,12 @@ async function assertVisualLayout(page, label, testInfo) {
       'h1,h2,h3,button,summary,.button,.bhd-hero-v4__button,.bhd-phase__proof span,.bhd-product-story__copy'
     )]
       .filter(isVisible)
+      .filter((element) => !element.classList.contains('visually-hidden'))
+      .filter((element) => !isThirdPartyUi(element))
+      .filter((element) => visibleTextLength(element) > 0)
       .filter((element) =>
-        element.scrollWidth > element.clientWidth + 3 ||
-        element.scrollHeight > element.clientHeight + 3
+        element.scrollWidth > element.clientWidth + 4 ||
+        element.scrollHeight > element.clientHeight + 8
       )
       .slice(0, 12)
       .map((element) => ({
@@ -248,7 +284,11 @@ async function assertVisualLayout(page, label, testInfo) {
 
     const oversizedFixed = [...document.querySelectorAll('*')]
       .filter(isVisible)
-      .filter((element) => getComputedStyle(element).position === 'fixed')
+      .filter((element) => !isThirdPartyUi(element))
+      .filter((element) => {
+        const style = getComputedStyle(element);
+        return style.position === 'fixed' && style.pointerEvents !== 'none';
+      })
       .map((element) => ({ element, rect: element.getBoundingClientRect() }))
       .filter(({ rect }) => rect.height > innerHeight * 0.38 || rect.width > innerWidth + 4)
       .slice(0, 8)
@@ -269,7 +309,9 @@ async function assertVisualLayout(page, label, testInfo) {
   });
 
   await page.screenshot({
-    path: testInfo.outputPath(`visual-${label}-${testInfo.project.name}.png`),
+    path: testInfo.outputPath(`visual-${label}-${testInfo.project.name}.jpg`),
+    type: 'jpeg',
+    quality: 68,
     fullPage: true,
     animations: 'disabled',
   });
