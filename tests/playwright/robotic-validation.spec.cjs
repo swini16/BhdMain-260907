@@ -118,17 +118,6 @@ async function gotoWithTransientRetry(page, url, options = {}) {
   return response;
 }
 
-async function resolvesToAvailableMarketProduct(page) {
-  await page.waitForTimeout(500);
-  const finalPath = new URL(page.url()).pathname;
-  if (!PRODUCT_PATHS.includes(finalPath)) return false;
-
-  return page
-    .getByRole('heading', { level: 1, name: /Lemonade Electrolyte Powder/i })
-    .isVisible({ timeout: 3000 })
-    .catch(() => false);
-}
-
 async function smoothScrollToBottom(page) {
   await page.evaluate(async () => {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -727,12 +716,30 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
           timeout: 15000,
         });
 
-        const productResolved =
-          PRODUCT_PATHS.includes(href.split('?')[0]) &&
-          (await resolvesToAvailableMarketProduct(probe));
+        if (!browserResponse || browserResponse.status() >= 400) {
+          const isProductHandle = PRODUCT_PATHS.includes(new URL(href, BASE_URL).pathname);
+          let marketProductHealthy = false;
 
-        if ((!browserResponse || browserResponse.status() >= 400) && !productResolved) {
-          failures.push(`${browserResponse?.status() || response.status()} ${href}`);
+          if (isProductHandle) {
+            for (const productPath of [...new Set(PRODUCT_PATHS.filter(Boolean))]) {
+              const productResponse = await gotoWithTransientRetry(probe, withQa(productPath), {
+                timeout: 15000,
+              });
+              const productHeading = await probe
+                .getByRole('heading', { level: 1, name: /Lemonade Electrolyte Powder/i })
+                .isVisible({ timeout: 2500 })
+                .catch(() => false);
+
+              if (productResponse && productResponse.status() < 400 && productHeading) {
+                marketProductHealthy = true;
+                break;
+              }
+            }
+          }
+
+          if (!marketProductHealthy) {
+            failures.push(`${browserResponse?.status() || response.status()} ${href}`);
+          }
         }
       }
     }

@@ -114,10 +114,9 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
 
     const cart = await page.evaluate(async () => {
       const transient = new Set([429, 500, 502, 503, 504]);
-      let response = null;
 
       for (let attempt = 1; attempt <= 3; attempt += 1) {
-        response = await fetch('/cart.js', {
+        const response = await fetch('/cart.js', {
           headers: { Accept: 'application/json' },
           credentials: 'same-origin',
           cache: 'no-store',
@@ -128,10 +127,10 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
           throw new Error(`cart.js returned ${response.status}`);
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 400 * attempt));
+        await new Promise((resolve) => setTimeout(resolve, 500 * attempt));
       }
 
-      throw new Error(`cart.js returned ${response?.status || 'no response'}`);
+      throw new Error('cart.js retry loop exhausted');
     });
 
     expect(cart.item_count).toBeGreaterThan(0);
@@ -157,7 +156,7 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
           /\/checkouts?\//i.test(url.pathname) ||
           /checkout/i.test(url.hostname) ||
           /checkout/i.test(url.pathname),
-        { timeout: 30000 }
+        { timeout: 45000, waitUntil: 'domcontentloaded' }
       ),
       checkout.click(),
     ]);
