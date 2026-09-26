@@ -341,9 +341,9 @@ function defectSet(result) {
   return set;
 }
 
-function compareAgainstBaseline(preview, live) {
+function compareAgainstBaseline(preview, baseline) {
   const previewDefects = defectSet(preview);
-  const baselineDefects = defectSet(live);
+  const baselineDefects = defectSet(baseline);
   const regressions = [];
 
   for (const defect of previewDefects) {
@@ -352,15 +352,15 @@ function compareAgainstBaseline(preview, live) {
   }
 
   const previewOverflow = preview.horizontalOverflow || 0;
-  const baselineOverflow = live.horizontalOverflow || 0;
+  const baselineOverflow = baseline.horizontalOverflow || 0;
   if (previewOverflow > Math.max(4, baselineOverflow + 4)) {
-    regressions.push(`overflow:${previewOverflow} (live ${baselineOverflow})`);
+    regressions.push(`overflow:${previewOverflow} (baseline ${baselineOverflow})`);
   }
 
   return {
     path: preview.path,
     preview,
-    live,
+    baseline,
     regressions,
     baselineOnly: [...baselineDefects],
   };
