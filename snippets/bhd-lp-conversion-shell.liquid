@@ -1,0 +1,94 @@
+{% doc %}
+  Shared direct-response conversion layer for Best Hydrate landing pages.
+  Keeps the page's existing persona/message content, then closes with a focused
+  objection-handling and commerce sequence. Core product assets are never redrawn.
+{% enddoc %}
+
+{% liquid
+  assign lp_handle = page.handle | default: ''
+  assign product_url = '/products/lemonade-best-hydrate'
+  assign lp_context = 'performance'
+  if lp_handle contains 'run' or lp_handle contains 'marathon' or lp_handle contains 'endurance'
+    assign lp_context = 'endurance'
+  elsif lp_handle contains 'work' or lp_handle contains 'shift'
+    assign lp_context = 'work'
+  elsif lp_handle contains 'travel'
+    assign lp_context = 'travel'
+  elsif lp_handle contains 'recover'
+    assign lp_context = 'recovery'
+  elsif lp_handle contains 'everyday' or lp_handle contains 'wellness'
+    assign lp_context = 'everyday'
+  endif
+%}
+
+<section class="bhd-lp-close" data-bhd-lp-close data-lp-context="{{ lp_context }}">
+  <div class="bhd-lp-close__proof" data-lp-section="taste">
+    <p class="bhd-lp-close__eyebrow">MADE TO KEEP DRINKING</p>
+    <h2>Tastes great. Not too sweet.</h2>
+    <p>A lighter-tasting hydration mix designed to be easy to keep drinking before, during and after your day.</p>
+  </div>
+
+  <div class="bhd-lp-close__grid" data-lp-section="why">
+    <article><strong>Low sugar, on purpose.</strong><span>Not zero. Not overloaded. Best Hydrate includes glucose alongside electrolytes as part of its hydration formula.</span></article>
+    <article><strong>Six purposeful ingredients.</strong><span>Sodium chloride, potassium chloride, sodium bicarbonate, glucose and citric acid in a simple powdered format.</span></article>
+    <article><strong>Prepare. Perform. Recover.</strong><span>One hydration routine that can move with the session instead of becoming another complicated step.</span></article>
+  </div>
+
+  <div class="bhd-lp-close__compare" data-lp-section="compare">
+    <p class="bhd-lp-close__eyebrow">THE HYDRATION MIDDLE</p>
+    <h2>Not zero sugar. Not a heavy sugar load.</h2>
+    <p>Zero-sugar products leave glucose out. Traditional sports drinks can bring much more sweetness and sugar. Best Hydrate takes a purposeful middle approach.</p>
+  </div>
+
+  <div class="bhd-lp-close__faq" data-lp-section="faq">
+    <h2>Quick answers</h2>
+    <details><summary>Is it very sweet?</summary><p>No. Best Hydrate is designed to taste great without the heavy sweetness of many traditional sports drinks.</p></details>
+    <details><summary>When can I use it?</summary><p>Use it around the moments hydration matters to you: prepare, perform and recover.</p></details>
+    <details><summary>Is the container portable?</summary><p>Yes. The compact powder container is easy to keep in your bag so your hydration routine can travel with you.</p></details>
+  </div>
+
+  <div class="bhd-lp-close__offer" data-lp-section="offer">
+    <p class="bhd-lp-close__eyebrow">READY FOR YOUR BEST DAY?</p>
+    <h2>Hydrate for YOUR Best Day!</h2>
+    <p>32 servings per container. Free &amp; Fast Delivery where available.</p>
+    <a class="bhd-lp-close__button" href="{{ product_url }}" data-lp-cta="final">Shop Best Hydrate</a>
+  </div>
+</section>
+
+<style>
+  .bhd-lp-close{max-width:95rem;margin:4rem auto 0;display:grid;gap:2.2rem}
+  .bhd-lp-close__proof,.bhd-lp-close__compare,.bhd-lp-close__faq,.bhd-lp-close__offer{padding:clamp(2.4rem,5vw,4.5rem);border:1px solid rgba(11,45,103,.12);border-radius:2rem;background:#fff}
+  .bhd-lp-close__eyebrow{margin:0 0 .8rem!important;color:#078ee7!important;font-size:1.2rem!important;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+  .bhd-lp-close h2{margin:0 0 1.2rem}
+  .bhd-lp-close__proof>p:last-child,.bhd-lp-close__compare>p:last-child,.bhd-lp-close__offer>p{max-width:72rem;color:#465774}
+  .bhd-lp-close__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2rem}
+  .bhd-lp-close__grid article{padding:2rem;border:1px solid rgba(11,45,103,.12);border-radius:1.5rem;background:#f8fcff}
+  .bhd-lp-close__grid strong,.bhd-lp-close__grid span{display:block}
+  .bhd-lp-close__grid strong{margin-bottom:.6rem;color:#0b2d67;font-size:1.65rem}
+  .bhd-lp-close__grid span{color:#5b6b82;font-size:1.38rem;line-height:1.5}
+  .bhd-lp-close__faq details{padding:1.35rem 0;border-top:1px solid rgba(11,45,103,.12)}
+  .bhd-lp-close__faq summary{cursor:pointer;color:#0b2d67;font-size:1.55rem;font-weight:800}
+  .bhd-lp-close__faq details p{margin:.8rem 0 0;color:#5b6b82}
+  .bhd-lp-close__offer{text-align:center;background:linear-gradient(145deg,#0b2d67,#0f5092);color:#fff}
+  .bhd-lp-close__offer h2,.bhd-lp-close__offer p{color:#fff!important;margin-left:auto;margin-right:auto}
+  .bhd-lp-close__offer .bhd-lp-close__eyebrow{color:#75d5ff!important}
+  .bhd-lp-close__button{display:inline-flex;align-items:center;justify-content:center;min-height:5.2rem;margin-top:1rem;padding:1.2rem 2.4rem;border-radius:999px;background:#fff;color:#0b2d67!important;font-size:1.65rem;font-weight:800;text-decoration:none}
+  @media(max-width:749px){.bhd-lp-close{gap:1.4rem;margin-top:2.5rem}.bhd-lp-close__grid{grid-template-columns:1fr}.bhd-lp-close__proof,.bhd-lp-close__compare,.bhd-lp-close__faq,.bhd-lp-close__offer{padding:2.2rem 1.8rem}.bhd-lp-close__button{width:100%}}
+</style>
+
+<script>
+  (() => {
+    const root = document.currentScript && document.currentScript.previousElementSibling;
+    const shell = document.querySelector('[data-bhd-lp-close]');
+    if (!shell || shell.dataset.trackingReady) return;
+    shell.dataset.trackingReady = 'true';
+    shell.addEventListener('click', (event) => {
+      const cta = event.target.closest('[data-lp-cta]');
+      if (!cta) return;
+      const props = {page_handle: '{{ lp_handle | escape }}', lp_context: '{{ lp_context | escape }}', cta: cta.dataset.lpCta};
+      if (window.amplitude && typeof window.amplitude.track === 'function') window.amplitude.track('LP CTA Clicked', props);
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({event:'lp_cta_clicked', ...props});
+    });
+  })();
+</script>

@@ -1,0 +1,180 @@
+name: LP Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ['**/*.liquid','assets/**','templates/**','config/**','.github/workflows/lp-quality-gate.yml']
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  liquid-theme-check:
+    name: Liquid / Shopify Theme Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: ruby/setup-ruby@v1
+        with: { ruby-version: '3.3', bundler-cache: false }
+      - run: gem install theme-check
+      - name: Validate changed Liquid without legacy-theme noise
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin "${{ github.base_ref }}" --depth=1
+            BASE="origin/${{ github.base_ref }}"
+          else
+            BASE="${{ github.event.before }}"
+          fi
+          git diff --name-only "$BASE" HEAD -- '*.liquid' > /tmp/changed-liquid.txt || true
+          NO_COLOR=1 theme-check . --fail-level error > /tmp/theme-check.txt 2>&1 || true
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          changed={x.strip() for x in Path('/tmp/changed-liquid.txt').read_text().splitlines() if x.strip()}
+          text=Path('/tmp/theme-check.txt').read_text(errors='replace')
+          bad=[]
+          rx=re.compile(r'^([^:\\n]+\\.liquid):(\\d+)(?::\\d+)?:\\s+error:', re.I|re.M)
+          for m in rx.finditer(text):
+              if m.group(1) in changed:
+                  bad.append(m.group(0))
+          print('Changed Liquid files:', ', '.join(sorted(changed)) or 'none')
+          if bad:
+              print('Theme Check errors in changed files:')
+              print('\\n'.join(bad))
+              raise SystemExit(1)
+          print('No Theme Check error-level offenses in changed Liquid files.')
+          PY
+
+  lp-contracts:
+    name: LP UX / tracking contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Validate conversion, responsive and analytics contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          f='snippets/bhd-lp-conversion-shell.liquid'; d='snippets/bhd-page-dispatch.liquid'
+          test -f "$f"; test -f "$d"
+          grep -Fq "render 'bhd-lp-conversion-shell'" "$d"
+          grep -Fq "page.handle contains 'lp-'" "$d"
+          for x in 'data-bhd-lp-close' 'data-lp-section="taste"' 'data-lp-section="why"' 'data-lp-section="compare"' 'data-lp-section="faq"' 'data-lp-section="offer"' 'data-lp-cta="final"' 'Shop Best Hydrate' 'Free &amp; Fast Delivery' 'Tastes great. Not too sweet.' 'Low sugar, on purpose.' 'Prepare. Perform. Recover.' '@media(max-width:749px)' 'min-height:5.2rem' "window.amplitude.track('LP CTA Clicked'" "event:'lp_cta_clicked'" 'page_handle:' 'lp_context:'; do grep -Fq "$x" "$f"; done
+          ! grep -Eq '<script[^>]+src=' "$f"
+          ! grep -Eqi '(logo|jar|packaging).*(base64|data:image)' "$f"
+      - name: JavaScript syntax smoke test
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('snippets/bhd-lp-conversion-shell.liquid').read_text(); s=re.findall(r'<script>(.*?)</script>',p,re.S); assert s
+          js=re.sub(r"'\{\{.*?\}\}'", "'liquid-value'", s[-1], flags=re.S); Path('/tmp/lp.js').write_text(js)
+          PY
+          node --check /tmp/lp.js
+
+  static-safety:
+    name: LP static safety checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          set -euo pipefail
+          ! grep -RInE '^(<<<<<<<|=======|>>>>>>>)' snippets sections templates assets --include='*.liquid' --include='*.js' --include='*.css'
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('snippets/bhd-lp-conversion-shell.liquid').read_text()
+          for t in ['section','div','article','details','style','script']:
+            assert p.count('<'+t)-p.count('<'+t+'/') == p.count('</'+t+'>'), f'Unbalanced {t}'
+          assert p.count('data-lp-cta="final"') == 1
+          PY
+
+  rendered-browser-smoke:
+    name: Rendered browser smoke - isolated live baseline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install Playwright Chromium
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --save-dev playwright @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Create rendered smoke test
+        run: |
+          mkdir -p tests artifacts/lp-smoke
+          cat > tests/lp-smoke.mjs <<'EOF'
+          import { chromium } from 'playwright';
+          import AxeBuilder from '@axe-core/playwright';
+          import fs from 'node:fs';
+          const base='https://besthydrate.com';
+          const paths=['/pages/lp-01-hydration-is-more-than-water','/pages/lp-02-six-ingredients','/pages/lp-04-hydration-follows-the-session','/pages/lp-10-eps-half-marathon-edmonton','/pages/lp-11-nashville-heat'];
+          const devices=[['mobile',390,844],['tablet',820,1180],['desktop',1440,1000]];
+          const browser=await chromium.launch(); let failures=[];
+          const blocked=['google-analytics.com','googletagmanager.com','api.amplitude.com','api2.amplitude.com','amplitude.com','connect.facebook.net','facebook.com/tr','analytics.tiktok.com','hotjar.com','clarity.ms','segment.io','doubleclick.net','monorail-edge.shopifysvc.com'];
+          for (const [device,width,height] of devices) for (const path of paths) {
+            const context=await browser.newContext({viewport:{width,height},extraHTTPHeaders:{'DNT':'1','X-BHD-Automation':'1'}});
+            await context.addCookies([{name:'bhd_automation',value:'1',domain:'besthydrate.com',path:'/',sameSite:'Lax'}]);
+            await context.route('**/*',route=>blocked.some(x=>route.request().url().includes(x))?route.abort():route.continue());
+            const page=await context.newPage(); const errors=[];
+            page.on('pageerror',e=>errors.push('pageerror: '+e.message));
+            page.on('console',m=>{if(m.type()==='error') errors.push('console: '+m.text())});
+            const res=await page.goto(base+path,{waitUntil:'domcontentloaded',timeout:45000});
+            await page.waitForTimeout(1200);
+            if(!res || res.status()>=400) failures.push(`${device} ${path}: HTTP ${res?.status()}`);
+            const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+2);
+            if(overflow) failures.push(`${device} ${path}: horizontal overflow`);
+            const h1=await page.locator('h1:visible').count(); if(h1!==1) failures.push(`${device} ${path}: visible H1 count ${h1}`);
+            const links=page.locator('a:visible'); const n=Math.min(await links.count(),80);
+            for(let i=0;i<n;i++){const href=await links.nth(i).getAttribute('href'); if(href==='#'||href==='') failures.push(`${device} ${path}: empty/# visible link`)}
+            const tiny=await page.locator('a:visible,button:visible,summary:visible').evaluateAll(els=>els.filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&(r.height<40||r.width<40)}).length);
+            if(tiny) failures.push(`${device} ${path}: ${tiny} undersized interactive target(s)`);
+            const axe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa']).analyze();
+            const serious=axe.violations.filter(v=>['serious','critical'].includes(v.impact)); if(serious.length) failures.push(`${device} ${path}: ${serious.length} serious/critical accessibility violation type(s)`);
+            if(errors.length) failures.push(`${device} ${path}: ${errors.slice(0,3).join(' | ')}`);
+            await page.screenshot({path:`artifacts/lp-smoke/${device}-${path.split('/').pop()}.png`,fullPage:true});
+            await context.close();
+          }
+          await browser.close(); fs.writeFileSync('artifacts/lp-smoke/results.txt',failures.length?failures.join('\n'):'PASS');
+          if(failures.length){console.error(failures.join('\n'));process.exit(1)}
+          EOF
+      - name: Run rendered smoke tests
+        continue-on-error: true
+        run: node tests/lp-smoke.mjs
+      - name: Upload screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lp-smoke-screenshots
+          path: artifacts/lp-smoke
+          retention-days: 14
+
+  post-merge-live-contract:
+    name: Post-merge live LP conversion contract
+    if: github.event_name == 'push'
+    needs: [liquid-theme-check, lp-contracts, static-safety]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: |
+          npm init -y >/dev/null 2>&1; npm install --save-dev playwright; npx playwright install --with-deps chromium
+          cat > /tmp/live.mjs <<'EOF'
+          import { chromium } from 'playwright';
+          const b=await chromium.launch(); const p=await b.newPage({viewport:{width:390,height:844}});
+          await p.goto('https://besthydrate.com/pages/lp-01-hydration-is-more-than-water',{waitUntil:'domcontentloaded',timeout:45000});
+          await p.waitForTimeout(1500);
+          const shell=p.locator('[data-bhd-lp-close]'); if(await shell.count()!==1) throw new Error('LP conversion shell not live');
+          const cta=p.locator('[data-lp-cta="final"]'); if(await cta.count()!==1) throw new Error('Final LP CTA missing');
+          const href=await cta.getAttribute('href'); if(!href?.includes('/products/')) throw new Error('Final CTA does not target product');
+          await cta.scrollIntoViewIfNeeded(); if(!(await cta.isVisible())) throw new Error('Final CTA not visible');
+          await b.close();
+          EOF
+          node /tmp/live.mjs
