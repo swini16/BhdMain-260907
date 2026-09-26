@@ -179,7 +179,14 @@
       "taxes_included": "Taxes included.",
       "duties_included": "Duties included.",
       "duties_and_taxes_included": "Duties and taxes included.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Shipping</a> calculated at checkout."
+      "shipping_policy_html": "<a href=\"{{ link }}\">Shipping</a> calculated at checkout.",
+      "mobile_intro_low_sugar": "LOW SUGAR, ON PURPOSE.",
+      "mobile_intro_value_label": "Product value",
+      "mobile_intro_sugar": "1 g sugar / 100 mL prepared",
+      "mobile_intro_electrolytes": "5 electrolytes",
+      "mobile_intro_servings": "32 servings",
+      "mobile_intro_value": "~C$1.25/serving",
+      "mobile_intro_taste": "Tastes great. Light, balanced, not too sweet."
     },
     "modal": {
       "label": "Media gallery"
