@@ -35,7 +35,7 @@ jobs:
 
       - name: Install Playwright
         run: |
-          npm install --no-save @playwright/test@latest
+          npm install --no-save @playwright/test@latest @axe-core/playwright@latest
           npx playwright install --with-deps chromium
 
       - name: Allow live Shopify sync after main push
