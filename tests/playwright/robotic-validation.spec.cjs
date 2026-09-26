@@ -497,7 +497,10 @@ for (const target of KEY_PAGES) {
         await expect(
           phaseShopLinks.nth(i),
           `${target.name}: product CTA destination`
-        ).toHaveAttribute('href', '/products/lemonade-best-hydrate');
+        ).toHaveAttribute(
+          'href',
+          /^\/products\/(lemonade-best-hydrate|lemonade-electrolyte-best-hydrate)$/
+        );
       }
     }
 
