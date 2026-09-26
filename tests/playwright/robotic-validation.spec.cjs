@@ -552,6 +552,8 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
       await probe.close();
     }));
   } else {
+    const probe = await page.context().newPage();
+
     for (const href of hrefs) {
       const response = await request.get(withQa(href), {
         failOnStatusCode: false,
@@ -563,9 +565,21 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
       });
 
       if (response.status() >= 400) {
-        failures.push(`${response.status()} ${href}`);
+        // Shopify market routing can make APIRequestContext disagree with a
+        // real storefront browser. Confirm any apparent failure in Chromium
+        // before calling the customer-facing link broken.
+        const browserResponse = await probe.goto(withQa(href), {
+          waitUntil: 'domcontentloaded',
+          timeout: 15000,
+        }).catch(() => null);
+
+        if (!browserResponse || browserResponse.status() >= 400) {
+          failures.push(`${browserResponse?.status() || response.status()} ${href}`);
+        }
       }
     }
+
+    await probe.close();
   }
 
   expect(discovered.size, 'critical link crawl should discover internal links').toBeGreaterThan(0);
