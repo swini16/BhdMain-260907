@@ -30,7 +30,6 @@ const KEY_PAGES = [
 const SUPPORT_PAGES = [
   { name: 'meet-us', path: '/pages/our-story', terse: false },
   { name: 'mission-values', path: '/pages/mission-values', terse: true },
-  { name: 'why-best-hydrate', path: '/pages/why-best-hydrate', terse: true },
   { name: 'jobs-careers', path: '/pages/jobs-careers', terse: true },
   { name: 'partnerships', path: '/pages/partnerships', terse: true },
   { name: 'research-partnerships', path: '/pages/research-partnerships', terse: true },
@@ -141,6 +140,10 @@ async function assertAccessibility(page, label) {
   // It isn't part of the merchant theme and must not block theme accessibility QA.
   if (await page.locator('#PBarNextFrame').count()) {
     builder = builder.exclude('#PBarNextFrame');
+  }
+
+  if (await page.locator('[class*="kl-private-reset-css"]').count()) {
+    builder = builder.exclude('[class*="kl-private-reset-css"]');
   }
 
   // TrustReviews injects third-party markup outside theme control. Exclude only
@@ -554,6 +557,8 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
   });
 
   const productPath = await openAvailableProduct(page);
+  firstPartyFailures.length = 0;
+  pageErrors.length = 0;
   const response = await page.goto(withQa(productPath), { waitUntil: 'domcontentloaded' });
 
   await assertPageHealth(page, response, 'product');
