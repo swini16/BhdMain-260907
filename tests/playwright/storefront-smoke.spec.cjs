@@ -105,7 +105,7 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
 
     await expect(page.locator('a.cart-item__name:visible').filter({ hasText: /Lemonade Electrolyte Powder/i }).first()).toBeVisible();
 
-    const checkout = page.locator('button[name="checkout"], input[name="checkout"]').first();
+    const checkout = page.locator('button[name="checkout"]:visible, input[name="checkout"]:visible').first();
     await expect(checkout).toBeVisible();
     await expect(checkout).toBeEnabled();
 
