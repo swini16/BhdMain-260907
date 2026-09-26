@@ -64,13 +64,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          f='snippets/bhd-lp-conversion-shell.liquid'; d='snippets/bhd-page-dispatch.liquid'
-          test -f "$f"; test -f "$d"
+          f='snippets/bhd-lp-conversion-shell.liquid'; o='snippets/bhd-lp-conversion-open.liquid'; d='snippets/bhd-page-dispatch.liquid'
+          test -f "$f"; test -f "$o"; test -f "$d"
+          grep -Fq "render 'bhd-lp-conversion-open'" "$d"
           grep -Fq "render 'bhd-lp-conversion-shell'" "$d"
-          grep -Fq "page.handle contains 'lp-'" "$d"
-          for x in 'data-bhd-lp-close' 'data-lp-section="taste"' 'data-lp-section="why"' 'data-lp-section="compare"' 'data-lp-section="faq"' 'data-lp-section="offer"' 'data-lp-cta="final"' 'Shop Best Hydrate' 'Free &amp; Fast Delivery' 'Tastes great. Not too sweet.' 'Low sugar, on purpose.' 'Prepare. Perform. Recover.' '@media(max-width:749px)' 'min-height:5.2rem' "window.amplitude.track('LP CTA Clicked'" "event:'lp_cta_clicked'" 'page_handle:' 'lp_context:'; do grep -Fq "$x" "$f"; done
-          ! grep -Eq '<script[^>]+src=' "$f"
-          ! grep -Eqi '(logo|jar|packaging).*(base64|data:image)' "$f"
+          grep -Fq 'is_consumer_conversion_lp' "$d"
+          grep -Fq 'show_lp_sales_close' "$d"
+          for excluded in 'lp-03-research-milestone' 'lp-06-clinical-hydration-context' 'lp-08-hydration-access' 'lp-02f-hydration-thats-not-too-sweet' 'lp-10-eps-half-marathon-edmonton' 'lp-11-nashville-heat'; do grep -Fq "$excluded" "$d"; done
+          for x in 'data-bhd-lp-open' 'data-lp-cta="early"' 'data-lp-cta="low-sugar"' 'Shop Best Hydrate' 'Low sugar, on purpose.' 'Tastes great. Not too sweet.' '32 servings.' 'Free &amp; Fast Delivery.' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate' '@media(max-width:749px)'; do grep -Fq "$x" "$o"; done
+          for x in 'data-bhd-lp-close' 'data-lp-section="taste"' 'data-lp-section="why"' 'data-lp-section="cycle"' 'data-lp-section="compare"' 'data-lp-section="faq"' 'data-lp-section="offer"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Shop Best Hydrate' 'Free &amp; Fast Delivery' 'Tastes great. Not too sweet.' 'Low sugar, on purpose.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.' 'Glucose has a job.' 'Bicarb Bonus™' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate' '@media(max-width:749px)' "window.amplitude.track('LP CTA Clicked'" "event:'lp_cta_clicked'" 'page_handle:' 'lp_context:'; do grep -Fq "$x" "$f"; done
+          ! grep -Eq '<script[^>]+src=' "$f" "$o"
+          ! grep -Eqi '(logo|jar|packaging).*(base64|data:image)' "$f" "$o"
       - name: JavaScript syntax smoke test
         run: |
           python3 - <<'PY'
@@ -92,10 +96,14 @@ jobs:
           ! grep -RInE '^(<<<<<<<|=======|>>>>>>>)' snippets sections templates assets --include='*.liquid' --include='*.js' --include='*.css'
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('snippets/bhd-lp-conversion-shell.liquid').read_text()
-          for t in ['section','div','article','details','style','script']:
-            assert p.count('<'+t)-p.count('<'+t+'/') == p.count('</'+t+'>'), f'Unbalanced {t}'
-          assert p.count('data-lp-cta="final"') == 1
+          for file in ['snippets/bhd-lp-conversion-shell.liquid','snippets/bhd-lp-conversion-open.liquid']:
+            p=Path(file).read_text()
+            for t in ['section','div','article','details','style','script']:
+              assert p.count('<'+t)-p.count('<'+t+'/') == p.count('</'+t+'>'), f'{file}: unbalanced {t}'
+          shell=Path('snippets/bhd-lp-conversion-shell.liquid').read_text()
+          opener=Path('snippets/bhd-lp-conversion-open.liquid').read_text()
+          assert shell.count('data-lp-cta="final"') == 1
+          assert opener.count('data-lp-cta="early"') == 1
           PY
 
   rendered-browser-smoke:
@@ -176,6 +184,9 @@ jobs:
           const b=await chromium.launch(); const p=await b.newPage({viewport:{width:390,height:844}});
           await p.goto('https://besthydrate.com/pages/lp-01-hydration-is-more-than-water',{waitUntil:'domcontentloaded',timeout:45000});
           await p.waitForTimeout(1500);
+          const opener=p.locator('[data-bhd-lp-open]'); if(await opener.count()!==1) throw new Error('Early LP conversion bridge not live');
+          const early=p.locator('[data-lp-cta="early"]'); if(await early.count()!==1) throw new Error('Early LP CTA missing');
+          const earlyHref=await early.getAttribute('href'); if(!earlyHref?.includes('/products/')) throw new Error('Early CTA does not target product');
           const shell=p.locator('[data-bhd-lp-close]'); if(await shell.count()!==1) throw new Error('LP conversion shell not live');
           const cta=p.locator('[data-lp-cta="final"]'); if(await cta.count()!==1) throw new Error('Final LP CTA missing');
           const href=await cta.getAttribute('href'); if(!href?.includes('/products/')) throw new Error('Final CTA does not target product');
