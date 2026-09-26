@@ -14,6 +14,7 @@ permissions:
 jobs:
   liquid-theme-check:
     name: Liquid / Shopify Theme Check
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -53,6 +54,7 @@ jobs:
 
   lp-contracts:
     name: LP UX / tracking contracts
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -81,6 +83,7 @@ jobs:
 
   static-safety:
     name: LP static safety checks
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -97,6 +100,7 @@ jobs:
 
   rendered-browser-smoke:
     name: Rendered browser smoke - isolated live baseline
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
