@@ -7,18 +7,6 @@
     "team": {
       "type": "bhd-team",
       "blocks": {
-        "spencer": {
-          "type": "profile",
-          "settings": {
-            "image": "shopify://shop_images/260202_Dr.-Spencer-Proctor.jpg",
-            "image_position": "object-position: 50% 18%;",
-            "name": "Dr. Spencer Proctor",
-            "role": "Professor & Department Chair, University of Alberta",
-            "bio": "<p>Nutritional scientist, athlete and coach contributing scientific perspective across performance, nutrition and hydration research.</p>",
-            "link_label": "University of Alberta Profile",
-            "link": "https://mcvd.ualberta.ca/research/dr-spencer-proctor/"
-          }
-        },
         "austin": {
           "type": "profile",
           "settings": {
@@ -27,9 +15,21 @@
             "image_position": "object-position: 50% 50%;",
             "name": "Austin Swiniarski",
             "role": "Founder, CEO",
-            "bio": "<p>Founder and Power Engineer who began developing Best Hydrate after a serious health experience reshaped how he viewed hydration, product design and practical access.</p>",
+            "bio": "<p>Power Engineer who founded Best Hydrate after a serious health experience changed how he thought about hydration.</p>",
             "link_label": "",
             "link": ""
+          }
+        },
+        "spencer": {
+          "type": "profile",
+          "settings": {
+            "image": "shopify://shop_images/260202_Dr.-Spencer-Proctor.jpg",
+            "image_position": "object-position: 50% 18%;",
+            "name": "Dr. Spencer Proctor",
+            "role": "Chief Scientific Officer",
+            "bio": "<p>University of Alberta professor bringing nutrition and hydration research expertise to Best Hydrate.</p>",
+            "link_label": "University of Alberta Profile",
+            "link": "https://mcvd.ualberta.ca/research/dr-spencer-proctor/"
           }
         },
         "simone": {
@@ -39,20 +39,20 @@
             "image_position": "object-position: 50% 20%;",
             "name": "Simone",
             "role": "Co-Founder, Registered Nurse",
-            "bio": "<p>Registered Nurse bringing long-standing research and management experience to practical hydration, health communication and company development.</p>",
+            "bio": "<p>Registered Nurse contributing health-care and management experience.</p>",
             "link_label": "",
             "link": ""
           }
         }
       },
-      "block_order": ["spencer", "austin", "simone"],
+      "block_order": ["austin", "spencer", "simone"],
       "settings": {
         "heading": "People Behind Best Hydrate",
-        "heading_size": "h1",
-        "text": "<p>Three perspectives represented publicly today: nutrition science, founder-led product development and nursing experience.</p>",
+        "heading_size": "h2",
+        "text": "<p>A small team building the product, science and company.</p>",
         "color_scheme": "scheme-2",
-        "padding_top": 24,
-        "padding_bottom": 64
+        "padding_top": 16,
+        "padding_bottom": 48
       }
     }
   },
