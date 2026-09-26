@@ -103,7 +103,7 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
   await test.step('Open Shopify checkout without placing an order', async () => {
     await page.goto(`/cart?${QA_QUERY}`, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByText(/Lemonade Electrolyte Powder/i).first()).toBeVisible();
+    await expect(page.locator('a.cart-item__name:visible').filter({ hasText: /Lemonade Electrolyte Powder/i }).first()).toBeVisible();
 
     const checkout = page.locator('button[name="checkout"], input[name="checkout"]').first();
     await expect(checkout).toBeVisible();
