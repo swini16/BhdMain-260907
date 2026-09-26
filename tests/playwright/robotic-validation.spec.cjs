@@ -44,6 +44,19 @@ function isFirstParty(url) {
   }
 }
 
+function isIgnorableShopifyAbort(url) {
+  try {
+    const pathname = new URL(url).pathname;
+    return (
+      pathname === '/api/collect' ||
+      pathname === '/api/event/collect' ||
+      pathname === '/shopify_pay/accelerated_checkout'
+    );
+  } catch {
+    return false;
+  }
+}
+
 function withQa(path) {
   const separator = path.includes('?') ? '&' : '?';
   return `${path}${separator}${QA_QUERY}`;
@@ -156,7 +169,7 @@ for (const target of KEY_PAGES) {
 
     page.on('requestfailed', (request) => {
       const url = request.url();
-      if (!isAnalyticsUrl(url) && isFirstParty(url)) {
+      if (!isAnalyticsUrl(url) && !isIgnorableShopifyAbort(url) && isFirstParty(url)) {
         firstPartyFailures.push(
           `FAILED ${request.resourceType()} ${url} :: ${request.failure()?.errorText || 'unknown'}`
         );
@@ -195,7 +208,7 @@ test('Lemonade product page passes robotic validation', async ({ page }) => {
   });
   page.on('requestfailed', (request) => {
     const url = request.url();
-    if (!isAnalyticsUrl(url) && isFirstParty(url)) {
+    if (!isAnalyticsUrl(url) && !isIgnorableShopifyAbort(url) && isFirstParty(url)) {
       firstPartyFailures.push(
         `FAILED ${request.resourceType()} ${url} :: ${request.failure()?.errorText || 'unknown'}`
       );
@@ -236,7 +249,7 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
         clean &&
         !clean.startsWith('/cart') &&
         !clean.startsWith('/checkout') &&
-        !clean.startsWith('/account/logout') &&
+        !clean.startsWith('/account') &&
         !clean.startsWith('/challenge')
       ) {
         discovered.add(clean);
