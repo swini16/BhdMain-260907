@@ -1,3 +1,20 @@
+{% liquid
+  assign is_consumer_conversion_lp = false
+  case page.handle
+    when 'lp-01-hydration-is-more-than-water', 'lp-02-six-ingredients', 'lp-04-hydration-follows-the-session', 'lp-04a-heat-sweat-hydration', 'lp-04b-sweat-rate-changes-the-plan', 'lp-05-cold-dry-air', 'lp-05a-winter-hydration', 'lp-05b-long-winter-workdays', 'lp-07-hydration-for-long-workdays', 'lp-07a-when-electrolytes-make-sense', 'lp-02c-everyday-hydration', 'lp-02d-what-makes-best-hydrate-different', 'lp-02e-electrolyte-drink-mix-what-to-look-for', 'lp-09-summer-hydration', 'lp-09a-hot-days-hydration'
+      assign is_consumer_conversion_lp = true
+  endcase
+
+  assign show_lp_sales_close = false
+  if page.handle contains 'lp-'
+    assign show_lp_sales_close = true
+  endif
+  case page.handle
+    when 'lp-03-research-milestone', 'lp-03a-what-the-review-means', 'lp-03b-from-review-to-direct-study', 'lp-06-clinical-hydration-context', 'lp-06a-when-context-changes-hydration', 'lp-06b-oral-hydration-care-plan', 'lp-08-hydration-access', 'lp-02f-hydration-thats-not-too-sweet', 'lp-10-eps-half-marathon-edmonton', 'lp-11-nashville-heat'
+      assign show_lp_sales_close = false
+  endcase
+%}
+
 {% case page.handle %}
   {% when 'hydration-science', 'how-hydration-works', 'electrolytes', 'glucose-water-absorption', 'our-formula', 'five-essential-electrolytes', 'ingredient-rationale', 'why-bicarbonate', 'clinical-development', 'clinical-program', 'pilot-studies', 'healthcare-applications', 'clinical-hydration', 'recovery-rehabilitation', 'active-aging' %}
     {% render 'bhd-page-concise-science-medical' %}
@@ -46,16 +63,10 @@
       {% assign guide_label_parts = rendered_page_content | split: '</small></p>' %}
       {% assign rendered_page_content = guide_label_parts | slice: 1, 999 | join: '</small></p>' %}
     {% endif %}
-    <div class="bhd-page-fallback__content">
+    <div class="bhd-page-fallback__content{% if is_consumer_conversion_lp %} bhd-page-fallback__content--consumer-lp{% endif %}">
       <h1>{{ page.title }}</h1>
-      {% if page.handle == 'lp-04-hydration-follows-the-session' %}
-        <div class="bhd-lp-early-buy" data-bhd-lp-early-buy>
-          <div>
-            <strong>PREP → PERFORM → RECOVER</strong>
-            <span>Hydrate before, during &amp; after • 32 servings • Free &amp; Fast Delivery</span>
-          </div>
-          <a href="/products/lemonade-best-hydrate" data-lp-cta="early">Shop Best Hydrate →</a>
-        </div>
+      {% if is_consumer_conversion_lp %}
+        {% render 'bhd-lp-conversion-open' %}
       {% endif %}
       <div class="rte">{{ rendered_page_content }}</div>
     </div>
@@ -101,7 +112,7 @@
   {% render 'bhd-page-enrichment' %}
 {% endif %}
 
-{% if page.handle contains 'lp-' %}
+{% if show_lp_sales_close %}
   {% render 'bhd-lp-conversion-shell' %}
 {% endif %}
 
@@ -111,13 +122,10 @@
 
 {% if page.handle contains 'lp-' %}
   <style>
-    .bhd-lp-early-buy{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:1rem 0 1.6rem;padding:1rem 1.2rem;border:1px solid #d7e3f1;border-radius:1.2rem;background:#f8fbff}
-    .bhd-lp-early-buy div{display:grid;gap:.25rem}.bhd-lp-early-buy strong{color:#0b2d67}.bhd-lp-early-buy span{color:#52657a;font-size:.95rem}
-    .bhd-lp-early-buy a{flex:0 0 auto;padding:.85rem 1.15rem;border-radius:999px;background:#0f63cc;color:#fff!important;text-decoration:none;font-weight:850}
+    .bhd-page-fallback__content--consumer-lp .rte .bhd-hso > h1:first-child{display:none!important}
     .bhd-guide__buy { gap: 8px; }
     .bhd-guide__shipping { margin-top: 0; }
     @media (max-width: 640px) {
-      .bhd-lp-early-buy{display:block}.bhd-lp-early-buy a{display:inline-flex;margin-top:.8rem}
       .bhd-guide__cta {
         display: flex;
         flex-direction: column;

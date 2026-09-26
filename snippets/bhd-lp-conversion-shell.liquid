@@ -1,23 +1,29 @@
 {% doc %}
-  Shared direct-response conversion layer for Best Hydrate landing pages.
-  Keeps the page's existing persona/message content, then closes with a focused
-  objection-handling and commerce sequence. Core product assets are never redrawn.
+  Shared direct-response close for consumer Best Hydrate landing pages.
+  The educational body establishes context; this layer resolves the buying
+  question with taste, differentiation, mechanism, objections and a clear offer.
 {% enddoc %}
 
 {% liquid
   assign lp_handle = page.handle | default: ''
   assign product_url = '/products/lemonade-best-hydrate'
-  assign lp_context = 'performance'
-  if lp_handle contains 'run' or lp_handle contains 'marathon' or lp_handle contains 'endurance'
-    assign lp_context = 'endurance'
+  if localization.country.iso_code == 'US'
+    assign product_url = '/products/lemonade-electrolyte-best-hydrate'
+  endif
+
+  assign lp_context = 'everyday'
+  if lp_handle contains 'run' or lp_handle contains 'marathon' or lp_handle contains 'endurance' or lp_handle contains 'session'
+    assign lp_context = 'performance'
   elsif lp_handle contains 'work' or lp_handle contains 'shift'
     assign lp_context = 'work'
   elsif lp_handle contains 'travel'
     assign lp_context = 'travel'
   elsif lp_handle contains 'recover'
     assign lp_context = 'recovery'
-  elsif lp_handle contains 'everyday' or lp_handle contains 'wellness'
-    assign lp_context = 'everyday'
+  elsif lp_handle contains 'cold' or lp_handle contains 'winter'
+    assign lp_context = 'winter'
+  elsif lp_handle contains 'summer' or lp_handle contains 'hot-days'
+    assign lp_context = 'summer'
   endif
 %}
 
@@ -25,25 +31,46 @@
   <div class="bhd-lp-close__proof" data-lp-section="taste">
     <p class="bhd-lp-close__eyebrow">MADE TO KEEP DRINKING</p>
     <h2>Tastes great. Not too sweet.</h2>
-    <p>A lighter-tasting hydration mix designed to be easy to keep drinking before, during and after your day.</p>
+    <p>A lighter-tasting electrolyte mix for the moments when a prepared hydration option fits your day.</p>
   </div>
 
   <div class="bhd-lp-close__grid" data-lp-section="why">
-    <article><strong>Low sugar, on purpose.</strong><span>Not zero. Not overloaded. Best Hydrate includes glucose alongside electrolytes as part of its hydration formula.</span></article>
-    <article><strong>Six purposeful ingredients.</strong><span>Sodium chloride, potassium chloride, sodium bicarbonate, glucose and citric acid in a simple powdered format.</span></article>
-    <article><strong>Prepare. Perform. Recover.</strong><span>One hydration routine that can move with the session instead of becoming another complicated step.</span></article>
+    <article>
+      <strong>Low sugar, on purpose.</strong>
+      <span>Zero sugar leaves helpful glucose out. Traditional sports drinks bring a heavy sugar load. Best Hydrate hits the hydration middle.</span>
+    </article>
+    <article>
+      <strong>Glucose has a job.</strong>
+      <span>Sodium and glucose can be transported together in the small intestine. The goal is purposeful glucose, not maximum sugar.</span>
+    </article>
+    <article>
+      <strong>Bicarb Bonus™</strong>
+      <span>Sodium bicarbonate contributes sodium + bicarbonate to the electrolyte profile. It is a secondary formulation advantage, not the whole story.</span>
+    </article>
+  </div>
+
+  <div class="bhd-lp-close__cycle" data-lp-section="cycle" aria-label="Prepare perform recover">
+    <span><strong>PREP</strong><small>Start with a plan that fits the day.</small></span>
+    <b>→</b>
+    <span><strong>PERFORM</strong><small>Keep fluid access practical.</small></span>
+    <b>→</b>
+    <span><strong>RECOVER</strong><small>Return to your normal routine.</small></span>
   </div>
 
   <div class="bhd-lp-close__compare" data-lp-section="compare">
     <p class="bhd-lp-close__eyebrow">THE HYDRATION MIDDLE</p>
-    <h2>Not zero sugar. Not a heavy sugar load.</h2>
-    <p>Zero-sugar products leave glucose out. Traditional sports drinks can bring much more sweetness and sugar. Best Hydrate takes a purposeful middle approach.</p>
+    <h2>Not zero. Not overloaded.</h2>
+    <div class="bhd-lp-close__compare-grid">
+      <article><strong>Zero sugar</strong><span>Leaves glucose out of the formula.</span></article>
+      <article class="is-best"><strong>Best Hydrate</strong><span>Keeps purposeful glucose while total sugar stays low.</span></article>
+      <article><strong>Heavy sugar load</strong><span>Can bring much more sugar and sweetness than you want from hydration.</span></article>
+    </div>
   </div>
 
   <div class="bhd-lp-close__faq" data-lp-section="faq">
     <h2>Quick answers</h2>
     <details><summary>Is it very sweet?</summary><p>No. Best Hydrate is designed to taste great without the heavy sweetness of many traditional sports drinks.</p></details>
-    <details><summary>When can I use it?</summary><p>Use it around the moments hydration matters to you: prepare, perform and recover.</p></details>
+    <details><summary>When can I use it?</summary><p>Use it when a prepared electrolyte drink fits the activity, conditions and routine. PREP → PERFORM → RECOVER is the simple framework.</p></details>
     <details><summary>Is the container portable?</summary><p>Yes. The compact powder container is easy to keep in your bag so your hydration routine can travel with you.</p></details>
   </div>
 
@@ -53,27 +80,42 @@
     <p>32 servings per container. Free &amp; Fast Delivery where available.</p>
     <a class="bhd-lp-close__button" href="{{ product_url }}" data-lp-cta="final">Shop Best Hydrate</a>
   </div>
+
+  <a class="bhd-lp-close__mobile-buy" href="{{ product_url }}" data-lp-cta="sticky">Shop Best Hydrate</a>
 </section>
 
 <style>
-  .bhd-lp-close{max-width:95rem;margin:4rem auto 0;display:grid;gap:2.2rem}
-  .bhd-lp-close__proof,.bhd-lp-close__compare,.bhd-lp-close__faq,.bhd-lp-close__offer{padding:clamp(2.4rem,5vw,4.5rem);border:1px solid rgba(11,45,103,.12);border-radius:2rem;background:#fff}
-  .bhd-lp-close__eyebrow{margin:0 0 .8rem!important;color:#078ee7!important;font-size:1.2rem!important;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
-  .bhd-lp-close h2{margin:0 0 1.2rem}
-  .bhd-lp-close__proof>p:last-child,.bhd-lp-close__compare>p:last-child,.bhd-lp-close__offer>p{max-width:72rem;color:#465774}
-  .bhd-lp-close__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2rem}
-  .bhd-lp-close__grid article{padding:2rem;border:1px solid rgba(11,45,103,.12);border-radius:1.5rem;background:#f8fcff}
-  .bhd-lp-close__grid strong,.bhd-lp-close__grid span{display:block}
-  .bhd-lp-close__grid strong{margin-bottom:.6rem;color:#0b2d67;font-size:1.65rem}
-  .bhd-lp-close__grid span{color:#5b6b82;font-size:1.38rem;line-height:1.5}
-  .bhd-lp-close__faq details{padding:1.35rem 0;border-top:1px solid rgba(11,45,103,.12)}
-  .bhd-lp-close__faq summary{cursor:pointer;color:#0b2d67;font-size:1.55rem;font-weight:800}
-  .bhd-lp-close__faq details p{margin:.8rem 0 0;color:#5b6b82}
+  .bhd-lp-close{max-width:95rem;margin:3rem auto 0;display:grid;gap:1.6rem}
+  .bhd-lp-close__proof,.bhd-lp-close__compare,.bhd-lp-close__faq,.bhd-lp-close__offer{padding:clamp(2rem,4vw,3.6rem);border:1px solid rgba(11,45,103,.12);border-radius:1.7rem;background:#fff}
+  .bhd-lp-close__eyebrow{margin:0 0 .7rem!important;color:#078ee7!important;font-size:.82rem!important;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+  .bhd-lp-close h2{margin:0 0 1rem}
+  .bhd-lp-close__proof>p:last-child,.bhd-lp-close__offer>p{max-width:70rem;color:#465774}
+  .bhd-lp-close__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+  .bhd-lp-close__grid article,.bhd-lp-close__compare-grid article{padding:1.5rem;border:1px solid rgba(11,45,103,.12);border-radius:1.25rem;background:#f8fcff}
+  .bhd-lp-close__grid strong,.bhd-lp-close__grid span,.bhd-lp-close__compare-grid strong,.bhd-lp-close__compare-grid span{display:block}
+  .bhd-lp-close__grid strong,.bhd-lp-close__compare-grid strong{margin-bottom:.45rem;color:#0b2d67;font-size:1.1rem}
+  .bhd-lp-close__grid span,.bhd-lp-close__compare-grid span{color:#5b6b82;line-height:1.5}
+  .bhd-lp-close__cycle{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:.75rem;padding:1.4rem;border-radius:1.4rem;background:#eef7ff;color:#0b2d67;text-align:center}
+  .bhd-lp-close__cycle span,.bhd-lp-close__cycle strong,.bhd-lp-close__cycle small{display:block}
+  .bhd-lp-close__cycle strong{font-size:1.05rem}.bhd-lp-close__cycle small{margin-top:.25rem;color:#52657a}.bhd-lp-close__cycle b{color:#078ee7;font-size:1.4rem}
+  .bhd-lp-close__compare-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.2rem}
+  .bhd-lp-close__compare-grid .is-best{border-color:#078ee7;background:#eef8ff}
+  .bhd-lp-close__faq details{padding:1.1rem 0;border-top:1px solid rgba(11,45,103,.12)}
+  .bhd-lp-close__faq summary{cursor:pointer;color:#0b2d67;font-size:1rem;font-weight:850}
+  .bhd-lp-close__faq details p{margin:.65rem 0 0;color:#5b6b82}
   .bhd-lp-close__offer{text-align:center;background:linear-gradient(145deg,#0b2d67,#0f5092);color:#fff}
   .bhd-lp-close__offer h2,.bhd-lp-close__offer p{color:#fff!important;margin-left:auto;margin-right:auto}
   .bhd-lp-close__offer .bhd-lp-close__eyebrow{color:#75d5ff!important}
-  .bhd-lp-close__button{display:inline-flex;align-items:center;justify-content:center;min-height:5.2rem;margin-top:1rem;padding:1.2rem 2.4rem;border-radius:999px;background:#fff;color:#0b2d67!important;font-size:1.65rem;font-weight:800;text-decoration:none}
-  @media(max-width:749px){.bhd-lp-close{gap:1.4rem;margin-top:2.5rem}.bhd-lp-close__grid{grid-template-columns:1fr}.bhd-lp-close__proof,.bhd-lp-close__compare,.bhd-lp-close__faq,.bhd-lp-close__offer{padding:2.2rem 1.8rem}.bhd-lp-close__button{width:100%}}
+  .bhd-lp-close__button{display:inline-flex;align-items:center;justify-content:center;min-height:3.25rem;margin-top:.7rem;padding:.8rem 1.5rem;border-radius:999px;background:#fff;color:#0b2d67!important;font-weight:850;text-decoration:none}
+  .bhd-lp-close__mobile-buy{display:none}
+  @media(max-width:749px){
+    .bhd-lp-close{gap:1rem;margin-top:2rem;padding-bottom:5rem}
+    .bhd-lp-close__grid,.bhd-lp-close__compare-grid{grid-template-columns:1fr}
+    .bhd-lp-close__cycle{grid-template-columns:1fr}.bhd-lp-close__cycle b{transform:rotate(90deg)}
+    .bhd-lp-close__proof,.bhd-lp-close__compare,.bhd-lp-close__faq,.bhd-lp-close__offer{padding:1.6rem 1.3rem}
+    .bhd-lp-close__button{width:100%}
+    .bhd-lp-close__mobile-buy{display:block;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:40;padding:.9rem 1rem;border-radius:999px;background:#0b2d67;color:#fff!important;text-align:center;text-decoration:none;font-weight:850;box-shadow:0 4px 18px rgba(0,0,0,.22)}
+  }
 </style>
 
 <script>
@@ -90,4 +132,4 @@
     });
   })();
 </script>
-{% comment %}Approved funnel CRO visual baseline 2026-09-26{% endcomment %}
+{% comment %}Consumer direct-response close revised for Convert Like Crazy pass 1, 2026-09-26.{% endcomment %}
