@@ -48,7 +48,7 @@ The enrichment copy maintains the current site boundaries:
 
 - no magnesium is introduced
 - current formula references glucose, sodium chloride, potassium chloride, sodium bicarbonate, citric acid and lemon powder
-- water and regular meals remain the ordinary everyday baseline
+- everyday hydration is framed by context and preference without anti-conversion plain-water/default-baseline copy
 - performance pages avoid universal performance-enhancement claims
 - clinical pages distinguish consumer hydration from individualized medical care and therapeutic oral rehydration
 - humanitarian pages prioritize safe water, local systems, appropriate therapeutic oral rehydration and local implementation
