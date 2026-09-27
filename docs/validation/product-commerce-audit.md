@@ -39,7 +39,7 @@ The new description:
 - keeps preparation controlled by the current package label
 - identifies NPN 80118664 without treating the NPN as blanket clinical proof
 - frames activity, heat, sweating, work, travel and preference as contexts rather than universal needs
-- keeps water and normal meals as the everyday baseline
+- frames hydration needs by context without using anti-conversion copy that tells consumers plain water or meals are the preferred default
 - explicitly separates the consumer product from medical care and therapeutic oral rehydration solution
 - cross-links Product Details, Directions, Our Formula and Hydration Science
 - removes a fixed shipping-time promise from the product description
