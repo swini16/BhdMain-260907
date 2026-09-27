@@ -65,8 +65,8 @@ jobs:
         run: |
           set -euo pipefail
           f='snippets/bhd-lp-conversion-shell.liquid'; o='snippets/bhd-lp-conversion-open.liquid'; d='snippets/bhd-page-dispatch.liquid'
-          l='snippets/bhd-page-lp-low-sugar.liquid'; r='snippets/bhd-page-lp-run-the-river-edmonton.liquid'
-          test -f "$f"; test -f "$o"; test -f "$d"; test -f "$l"; test -f "$r"
+          l='snippets/bhd-page-lp-low-sugar.liquid'; r='snippets/bhd-page-lp-run-the-river-edmonton.liquid'; t='snippets/bhd-lp-tracking.liquid'
+          test -f "$f"; test -f "$o"; test -f "$d"; test -f "$l"; test -f "$r"; test -f "$t"
           grep -Fq "render 'bhd-lp-conversion-open'" "$d"
           grep -Fq "render 'bhd-lp-conversion-shell'" "$d"
           grep -Fq 'is_consumer_conversion_lp' "$d"
@@ -74,11 +74,16 @@ jobs:
           grep -Fq "render 'bhd-page-lp-low-sugar'" "$d"
           grep -Fq "render 'bhd-page-lp-run-the-river-edmonton'" "$d"
           grep -Fq 'is_dedicated_paid_lp' "$d"
+          grep -Fq "render 'bhd-lp-tracking'" "$d"
           for excluded in 'lp-03-research-milestone' 'lp-06-clinical-hydration-context' 'lp-08-hydration-access' 'lp-02f-hydration-thats-not-too-sweet' 'lp-10-eps-half-marathon-edmonton' 'lp-10-run-the-river-edmonton' 'lp-11-nashville-heat'; do grep -Fq "$excluded" "$d"; done
           for x in 'data-bhd-lp-open' 'data-lp-cta="early"' 'data-lp-cta="low-sugar"' 'Shop Best Hydrate' 'Low sugar, on purpose.' 'Tastes great. Not too sweet.' '32 servings.' 'Free &amp; Fast Delivery.' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate' '@media(max-width:749px)'; do grep -Fq "$x" "$o"; done
-          for x in 'data-bhd-lp-close' 'data-lp-section="taste"' 'data-lp-section="why"' 'data-lp-section="cycle"' 'data-lp-section="compare"' 'data-lp-section="faq"' 'data-lp-section="offer"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Shop Best Hydrate' 'Free &amp; Fast Delivery' 'Tastes great. Not too sweet.' 'Low sugar, on purpose.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.' 'Glucose has a job.' 'Bicarb Bonus™' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate' '@media(max-width:749px)' "window.amplitude.track('LP CTA Clicked'" "event:'lp_cta_clicked'" 'page_handle:' 'lp_context:'; do grep -Fq "$x" "$f"; done
+          for x in 'data-bhd-lp-close' 'data-lp-section="taste"' 'data-lp-section="why"' 'data-lp-section="cycle"' 'data-lp-section="compare"' 'data-lp-section="faq"' 'data-lp-section="offer"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Shop Best Hydrate' 'Free &amp; Fast Delivery' 'Tastes great. Not too sweet.' 'Low sugar, on purpose.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.' 'Glucose has a job.' 'Bicarb Bonus™' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate' '@media(max-width:749px)'; do grep -Fq "$x" "$f"; done
           for x in 'LOW SUGAR, ON PURPOSE. NOT ZERO. NOT OVERLOADED.' 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Tastes great. Not too sweet.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.' 'Glucose has a job.' 'Bicarb Bonus™' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate'; do grep -Fq "$x" "$l"; done
           for x in 'Race tomorrow? Don’t reinvent hydration tonight.' 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Tastes great. Not too sweet.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.' 'PREP → PERFORM → RECOVER'; do grep -Fq "$x" "$r"; done
+          for x in "window.amplitude.track(name, props)" "LP CTA Clicked" "LP Section Viewed" "event: dataLayerEvent" "lp_cta_clicked" "lp_section_viewed" "page_handle:" "lp_context:" "[data-lp-cta]" "[data-lp-section]"; do grep -Fq "$x" "$t"; done
+          grep -Fq 'data-lp-section="open"' "$o"
+          grep -Fq 'data-lp-cta="early-amazon"' "$r"
+          grep -Fq 'data-lp-cta="final-amazon"' "$r"
           ! grep -Eq '<script[^>]+src=' "$f" "$o"
           ! grep -Eqi '(logo|jar|packaging).*(base64|data:image)' "$f" "$o"
       - name: JavaScript syntax smoke test
@@ -86,7 +91,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
-          p=Path('snippets/bhd-lp-conversion-shell.liquid').read_text(); s=re.findall(r'<script>(.*?)</script>',p,re.S); assert s
+          p=Path('snippets/bhd-lp-tracking.liquid').read_text(); s=re.findall(r'<script>(.*?)</script>',p,re.S); assert s
           js=re.sub(r"'\{\{.*?\}\}'", "'liquid-value'", s[-1], flags=re.S); Path('/tmp/lp.js').write_text(js)
           PY
           node --check /tmp/lp.js
@@ -102,7 +107,7 @@ jobs:
           ! grep -RInE '^(<<<<<<<|=======|>>>>>>>)' snippets sections templates assets --include='*.liquid' --include='*.js' --include='*.css'
           python3 - <<'PY'
           from pathlib import Path
-          for file in ['snippets/bhd-lp-conversion-shell.liquid','snippets/bhd-lp-conversion-open.liquid','snippets/bhd-page-lp-low-sugar.liquid','snippets/bhd-page-lp-run-the-river-edmonton.liquid']:
+          for file in ['snippets/bhd-lp-conversion-shell.liquid','snippets/bhd-lp-conversion-open.liquid','snippets/bhd-page-lp-low-sugar.liquid','snippets/bhd-page-lp-run-the-river-edmonton.liquid','snippets/bhd-lp-tracking.liquid']:
             p=Path(file).read_text()
             for t in ['section','div','article','details','style','script']:
               assert p.count('<'+t)-p.count('<'+t+'/') == p.count('</'+t+'>'), f'{file}: unbalanced {t}'
@@ -208,6 +213,17 @@ jobs:
             if(await p.locator('.bhd-guide-variants').count()) throw new Error(path+': generic guide variants leaked into dedicated paid LP');
             const finalHref=await dedicatedFinal.getAttribute('href');
             if(!finalHref?.includes('/products/')) throw new Error(path+': final CTA does not target product');
+
+            await p.evaluate(() => {
+              window.dataLayer = [];
+              const early = document.querySelector('[data-lp-cta="early"]');
+              early?.addEventListener('click', (event) => event.preventDefault(), { once: true });
+            });
+            await dedicatedEarly.click();
+            const tracked = await p.evaluate(() =>
+              window.dataLayer.some((entry) => entry.event === 'lp_cta_clicked' && entry.cta === 'early')
+            );
+            if(!tracked) throw new Error(path+': early CTA did not emit lp_cta_clicked');
           }
 
           await b.close();

@@ -1,0 +1,75 @@
+{% liquid
+  assign lp_handle = page.handle | default: ''
+  assign lp_context = 'everyday'
+  if lp_handle contains 'run' or lp_handle contains 'marathon' or lp_handle contains 'session' or lp_handle contains 'heat-sweat' or lp_handle contains 'lp-10'
+    assign lp_context = 'performance'
+  elsif lp_handle contains 'work' or lp_handle contains 'shift' or lp_handle contains 'lp-07'
+    assign lp_context = 'work'
+  elsif lp_handle contains 'cold' or lp_handle contains 'winter' or lp_handle contains 'lp-05'
+    assign lp_context = 'winter'
+  elsif lp_handle contains 'summer' or lp_handle contains 'hot-days' or lp_handle contains 'lp-09'
+    assign lp_context = 'summer'
+  elsif lp_handle contains 'lp-02'
+    assign lp_context = 'formula'
+  endif
+%}
+
+<script>
+  (() => {
+    const root = document.documentElement;
+    if (root.dataset.bhdLpTrackingReady === 'true') return;
+    root.dataset.bhdLpTrackingReady = 'true';
+
+    const pageHandle = '{{ lp_handle | escape }}';
+    const lpContext = '{{ lp_context | escape }}';
+
+    const emit = (name, props, dataLayerEvent) => {
+      if (window.amplitude && typeof window.amplitude.track === 'function') {
+        window.amplitude.track(name, props);
+      }
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: dataLayerEvent, ...props });
+    };
+
+    document.addEventListener('click', (event) => {
+      const cta = event.target.closest('[data-lp-cta]');
+      if (!cta) return;
+      const href = cta.getAttribute('href') || '';
+      emit('LP CTA Clicked', {
+        page_handle: pageHandle,
+        lp_context: lpContext,
+        cta: cta.dataset.lpCta || 'unknown',
+        destination: href.includes('amazon') ? 'amazon' : 'direct'
+      }, 'lp_cta_clicked');
+    });
+
+    const seen = new Set();
+    const sections = [...document.querySelectorAll('[data-lp-section]')];
+
+    const recordSection = (element) => {
+      const section = element.dataset.lpSection || 'unknown';
+      if (seen.has(section)) return;
+      seen.add(section);
+      emit('LP Section Viewed', {
+        page_handle: pageHandle,
+        lp_context: lpContext,
+        section,
+        section_index: sections.indexOf(element) + 1
+      }, 'lp_section_viewed');
+    };
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+            recordSection(entry.target);
+            observer.unobserve(entry.target);
+          }
+        }
+      }, { threshold: [0.25] });
+      sections.forEach((section) => observer.observe(section));
+    } else {
+      sections.forEach(recordSection);
+    }
+  })();
+</script>
