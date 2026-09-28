@@ -71,9 +71,16 @@
         background: #f7fbff;
         color: #52657a;
         font-size: 1rem;
-        font-weight: 700;
+        font-weight: 800;
         line-height: 1.2;
       }
+
+      .section-{{ section.id }}-padding .bhd-pill--sugar { background:#fff4d9; border-color:#e9c86f; color:#664a00; }
+      .section-{{ section.id }}-padding .bhd-pill--electrolytes { background:#eaf3ff; border-color:#9ec2ee; color:#174f83; }
+      .section-{{ section.id }}-padding .bhd-pill--servings { background:#f3edff; border-color:#cbb8ef; color:#59427d; }
+      .section-{{ section.id }}-padding .bhd-pill--value { background:#e9f8ef; border-color:#9bd1ae; color:#215b3d; }
+      .section-{{ section.id }}-padding .bhd-pill--bicarb { background:#e7f8f5; border-color:#92d3c8; color:#155f56; }
+      .section-{{ section.id }}-padding .bhd-pill--shipping { background:#e4f6ec; border-color:#83c69e; color:#174f38; }
 
       .section-{{ section.id }}-padding .bhd-mobile-product-intro__lead {
         margin: 0 0 0.2rem;
@@ -203,10 +210,12 @@
           </div>
           <p class="bhd-mobile-product-intro__lead">{{ 'products.product.mobile_intro_low_sugar' | t }}</p>
           <div class="bhd-mobile-product-intro__signals" aria-label="{{ 'products.product.mobile_intro_value_label' | t | escape }}">
-            <span>{{ 'products.product.mobile_intro_sugar' | t }}</span>
-            <span>{{ 'products.product.mobile_intro_electrolytes' | t }}</span>
-            <span>{{ 'products.product.mobile_intro_servings' | t }}</span>
-            <span>{{ 'products.product.mobile_intro_value' | t }}</span>
+            <span class="bhd-pill--sugar">{{ 'products.product.mobile_intro_sugar' | t }}</span>
+            <span class="bhd-pill--electrolytes">{{ 'products.product.mobile_intro_electrolytes' | t }}</span>
+            <span class="bhd-pill--servings">{{ 'products.product.mobile_intro_servings' | t }}</span>
+            <span class="bhd-pill--value">{{ 'products.product.mobile_intro_value' | t }}</span>
+            <span class="bhd-pill--bicarb">Bicarbonate buffer</span>
+            <span class="bhd-pill--shipping">✓ Free &amp; Fast Delivery</span>
           </div>
           <p class="bhd-mobile-product-intro__taste">{{ 'products.product.mobile_intro_taste' | t }}</p>
         </div>
@@ -215,7 +224,7 @@
         <div class="grid__item product__media-wrapper">
           {% render 'product-media-gallery', variant_images: variant_images %}
         </div>
-        <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}">
           <section
             id="ProductInfo-{{ section.id }}"
             class="product__info-container{% if section.settings.enable_sticky_info %} product__column-sticky{% endif %}"
