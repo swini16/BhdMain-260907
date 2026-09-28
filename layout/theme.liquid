@@ -190,6 +190,18 @@
       })();
     </script>
 
+
+    {%- comment -%} BHD signup modal layout hotfix 2026-09-28 {%- endcomment -%}
+    <style id="bhd-klaviyo-signup-hotfix">
+      form[data-testid^="klaviyo-form-"], form.klaviyo-form{width:min(92vw,54rem)!important;max-width:54rem!important;min-width:0!important;box-sizing:border-box!important;border-radius:1.8rem!important;overflow:hidden!important}
+      form[data-testid^="klaviyo-form-"] [data-testid="form-row"], form.klaviyo-form [data-testid="form-row"]{display:block!important;width:100%!important;min-width:0!important}
+      form[data-testid^="klaviyo-form-"] [data-testid="form-component"], form.klaviyo-form [data-testid="form-component"]{width:100%!important;max-width:none!important;min-width:0!important;flex:0 0 100%!important;box-sizing:border-box!important}
+      form[data-testid^="klaviyo-form-"] [data-testid*="image"], form.klaviyo-form [data-testid*="image"]{display:none!important}
+      form[data-testid^="klaviyo-form-"] input[type="email"], form.klaviyo-form input[type="email"]{width:100%!important;min-width:0!important;min-height:4.8rem!important;box-sizing:border-box!important;border-radius:999px!important}
+      form[data-testid^="klaviyo-form-"] button, form.klaviyo-form button{width:100%!important;min-height:4.8rem!important;box-sizing:border-box!important;border-radius:999px!important;white-space:normal!important}
+      @media screen and (max-width:749px){form[data-testid^="klaviyo-form-"],form.klaviyo-form{width:calc(100vw - 2.4rem)!important;max-width:calc(100vw - 2.4rem)!important;border-radius:1.4rem!important}}
+    </style>
+
     {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
       assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
