@@ -627,6 +627,14 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
   await expect(addToCart, 'product: Add to Cart must be visible').toBeVisible();
   await expect(addToCart, 'product: Add to Cart must be enabled').toBeEnabled();
 
+  const sellingPlanSelected = await page.locator('input[name="selling_plan"]:checked, select[name="selling_plan"]').evaluateAll((els) =>
+    els.some((el) => Boolean(el.value))
+  );
+  if (!sellingPlanSelected) {
+    const recurringPolicy = page.getByText('This item is a deferred, subscription, or recurring purchase.', { exact: false });
+    await expect(recurringPolicy, 'product: recurring-purchase policy must stay hidden for one-time purchase').toBeHidden();
+  }
+
   const purchaseBeforeFlavourVote = await page.evaluate(() => {
     const add = document.querySelector('form[action*="/cart/add"] button[name="add"]');
     const vote = document.querySelector('[data-bhd-flavour-vote]');
@@ -637,6 +645,12 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
     purchaseBeforeFlavourVote,
     'product: flavour-vote module must stay below the primary Add to Cart action'
   ).toBe(true);
+
+  await addToCart.click();
+  const cartDrawer = page.locator('cart-drawer');
+  await expect(cartDrawer, 'product: add-to-cart should open the cart drawer').toHaveClass(/active/, { timeout: 15_000 });
+  await expect(cartDrawer, 'product: cart drawer should contain the added item').not.toHaveClass(/is-empty/);
+  await expect(page.locator('.cart-count-bubble').first(), 'product: cart count should update after add-to-cart').toBeVisible();
 
   expect(firstPartyFailures, 'product: first-party network failures').toEqual([]);
   expect(pageErrors, 'product: uncaught JavaScript errors').toEqual([]);
