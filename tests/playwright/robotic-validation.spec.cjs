@@ -584,8 +584,12 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
   if (testInfo.project.name.includes('desktop')) {
     const productInfo = page.locator('.product__info-wrapper').first();
     await expect(productInfo, 'product: desktop purchase content must render').toBeVisible();
-    await page.waitForTimeout(1500);
-    await expect(productInfo, 'product: desktop purchase content must remain visible after page settles').toBeVisible();
+    await page.waitForTimeout(6000);
+    await expect(productInfo, 'product: desktop purchase content must remain visible after delayed scripts settle').toBeVisible();
+    await expect(page.locator('.product__title h1').first(), 'product: desktop title must remain visible').toBeVisible();
+    await expect(page.locator('[id^="price-"]').first(), 'product: desktop price must remain visible').toBeVisible();
+    await expect(page.locator('.bhd-product-value').first(), 'product: desktop value pills must remain visible').toBeVisible();
+    await expect(page.locator('form[action*="/cart/add"] button[name="add"]:visible').first(), 'product: desktop Add to Cart must remain visible').toBeVisible();
     const settled = await productInfo.evaluate((el) => {
       const style = getComputedStyle(el);
       const rect = el.getBoundingClientRect();
