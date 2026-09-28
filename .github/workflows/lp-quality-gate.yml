@@ -40,14 +40,14 @@ jobs:
           changed={x.strip() for x in Path('/tmp/changed-liquid.txt').read_text().splitlines() if x.strip()}
           text=Path('/tmp/theme-check.txt').read_text(errors='replace')
           bad=[]
-          rx=re.compile(r'^([^:\\n]+\\.liquid):(\\d+)(?::\\d+)?:\\s+error:', re.I|re.M)
+          rx=re.compile(r'^([^:\n]+\.liquid):(\d+)(?::\d+)?:\s+error:', re.I|re.M)
           for m in rx.finditer(text):
               if m.group(1) in changed:
                   bad.append(m.group(0))
           print('Changed Liquid files:', ', '.join(sorted(changed)) or 'none')
           if bad:
               print('Theme Check errors in changed files:')
-              print('\\n'.join(bad))
+              print('\n'.join(bad))
               raise SystemExit(1)
           print('No Theme Check error-level offenses in changed Liquid files.')
           PY
@@ -79,7 +79,8 @@ jobs:
           for x in 'data-bhd-lp-open' 'data-lp-cta="early"' 'data-lp-cta="low-sugar"' 'Shop Best Hydrate' 'Low sugar, on purpose.' 'Tastes great. Not too sweet.' '32 servings.' 'Free &amp; Fast Delivery.' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate' '@media(max-width:749px)'; do grep -Fq "$x" "$o"; done
           for x in 'data-bhd-lp-close' 'data-lp-section="taste"' 'data-lp-section="why"' 'data-lp-section="cycle"' 'data-lp-section="compare"' 'data-lp-section="faq"' 'data-lp-section="offer"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Shop Best Hydrate' 'Free &amp; Fast Delivery' 'Tastes great. Not too sweet.' 'Low sugar, on purpose.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.' 'Glucose has a job.' 'Bicarb Bonus™' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate' '@media(max-width:749px)'; do grep -Fq "$x" "$f"; done
           for x in 'LOW SUGAR, ON PURPOSE. NOT ZERO. NOT OVERLOADED.' 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Tastes great. Not too sweet.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.' 'Glucose has a job.' 'Bicarb Bonus™' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate'; do grep -Fq "$x" "$l"; done
-          for x in 'Race tomorrow? Don’t reinvent hydration tonight.' 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Tastes great. Not too sweet.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.' 'PREP → PERFORM → RECOVER'; do grep -Fq "$x" "$r"; done
+          for x in 'Finished the race. Build what comes next.' 'RECOVER → RESET → REPEAT' 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Tastes great. Not too sweet.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.'; do grep -Fq "$x" "$r"; done
+          ! grep -Fq 'Race tomorrow? Don’t reinvent hydration tonight.' "$r"
           for x in "window.amplitude.track(name, props)" "LP CTA Clicked" "LP Section Viewed" "event: dataLayerEvent" "lp_cta_clicked" "lp_section_viewed" "page_handle:" "lp_context:" "[data-lp-cta]" "[data-lp-section]"; do grep -Fq "$x" "$t"; done
           grep -Fq 'data-lp-section="open"' "$o"
           grep -Fq 'data-lp-cta="early-amazon"' "$r"
