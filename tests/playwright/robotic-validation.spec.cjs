@@ -40,6 +40,7 @@ const SUPPORT_PAGES = [
   { name: 'investor-relations', path: '/pages/investor-relations', terse: true },
   { name: 'investor-overview', path: '/pages/investor-overview', terse: true },
   { name: 'press', path: '/pages/press', terse: true },
+  { name: 'contact', path: '/pages/contact', terse: false },
   { name: 'active-living', path: '/pages/active-living', terse: true },
   { name: 'everyday-wellness', path: '/pages/everyday-wellness', terse: true },
   { name: 'travel-hydration', path: '/pages/travel-hydration', terse: true },
@@ -545,6 +546,17 @@ test('support-page matrix stays healthy, terse and routed', async ({ page }) => 
         await page.locator('.bhd-enrichment').count(),
         `${target.name}: generic enrichment must stay suppressed`
       ).toBe(0);
+    }
+
+    if (target.name === 'press') {
+      await expect(page.getByText('New peer-reviewed publication', { exact: true }), 'press: publication milestone').toBeVisible();
+      await expect(page.getByRole('button', { name: /Send Media Inquiry/i }), 'press: media inquiry form').toBeVisible();
+      await expect(page.getByText('Press resources are still growing', { exact: false }), 'press: stale startup placeholder copy removed').toHaveCount(0);
+    }
+
+    if (target.name === 'contact') {
+      await expect(page.getByRole('button', { name: /^Send$/i }), 'contact: primary contact form').toBeVisible();
+      await expect(page.getByText('Press & media', { exact: true }), 'contact: media routing option').toBeVisible();
     }
 
     expect(firstPartyFailures, `${target.name}: first-party network failures`).toEqual([]);
