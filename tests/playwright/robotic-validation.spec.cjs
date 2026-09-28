@@ -556,7 +556,7 @@ test('support-page matrix stays healthy, terse and routed', async ({ page }) => 
 
     if (target.name === 'contact') {
       await expect(page.getByRole('button', { name: /^Send$/i }), 'contact: primary contact form').toBeVisible();
-      await expect(page.getByText('Press & media', { exact: true }), 'contact: media routing option').toBeVisible();
+      await expect(page.getByText('Press & media', { exact: true }).first(), 'contact: media routing option').toBeVisible();
     }
 
     expect(firstPartyFailures, `${target.name}: first-party network failures`).toEqual([]);
@@ -643,7 +643,7 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
     els.some((el) => Boolean(el.value))
   );
   if (!sellingPlanSelected) {
-    const recurringPolicy = page.getByText('This item is a deferred, subscription, or recurring purchase.', { exact: false });
+    const recurringPolicy = page.getByText('This item is a deferred, subscription, or recurring purchase.', { exact: false }).first();
     await expect(recurringPolicy, 'product: recurring-purchase policy must stay hidden for one-time purchase').toBeHidden();
   }
 
