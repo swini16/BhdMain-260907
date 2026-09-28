@@ -608,6 +608,24 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
     expect(settled.textLength, 'product: desktop purchase content text after settle').toBeGreaterThan(40);
   }
 
+  const desktopDescription = page.locator('.bhd-full-product-description');
+  const inlineDescription = page.locator('.bhd-inline-product-description');
+
+  if (testInfo.project.name.includes('desktop') || testInfo.project.name.includes('tablet')) {
+    await expect(desktopDescription, 'product: wide layouts must use full-width description below product grid').toBeVisible();
+    await expect(inlineDescription, 'product: wide layouts must not duplicate inline description').toBeHidden();
+    const descBelowGrid = await page.evaluate(() => {
+      const grid = document.querySelector('.product.grid');
+      const desc = document.querySelector('.bhd-full-product-description');
+      if (!grid || !desc) return false;
+      return desc.getBoundingClientRect().top >= grid.getBoundingClientRect().bottom - 2;
+    });
+    expect(descBelowGrid, 'product: full description must sit below product grid').toBe(true);
+  } else if (testInfo.project.name.includes('mobile')) {
+    await expect(inlineDescription, 'product: mobile keeps inline description').toBeVisible();
+    await expect(desktopDescription, 'product: mobile hides desktop description duplicate').toBeHidden();
+  }
+
   const addToCart = page.locator('form[action*="/cart/add"] button[name="add"]:visible').first();
   await expect(addToCart, 'product: Add to Cart must be visible').toBeVisible();
   await expect(addToCart, 'product: Add to Cart must be enabled').toBeEnabled();
