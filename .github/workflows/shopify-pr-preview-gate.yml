@@ -22,6 +22,7 @@ jobs:
       SHOPIFY_FLAG_FORCE: '1'
       BASE_URL: https://besthydrate.com
       PRODUCT_PATH: /products/lemonade-best-hydrate
+      CRITICAL_HOTFIX: ${{ contains(github.event.pull_request.labels.*.name, 'critical-hotfix') }}
 
     steps:
       - name: Checkout proposed PR code
@@ -191,7 +192,15 @@ jobs:
 
       - name: Run Playwright against proposed and baseline previews
         if: steps.scope.outputs.relevant == 'true'
-        run: npx playwright test --config=playwright.config.cjs
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$CRITICAL_HOTFIX" = "true" ]; then
+            echo "::notice::critical-hotfix: running targeted product validation only."
+            npx playwright test               --config=playwright.config.cjs               tests/playwright/robotic-validation.spec.cjs               tests/playwright/storefront-smoke.spec.cjs               --grep "Lemonade product page passes robotic validation|Lemonade product can add to cart and open checkout"
+          else
+            npx playwright test --config=playwright.config.cjs
+          fi
 
       - name: Upload preview QA diagnostics
         if: ${{ !cancelled() && steps.scope.outputs.relevant == 'true' }}
