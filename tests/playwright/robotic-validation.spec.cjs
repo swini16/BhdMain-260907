@@ -581,6 +581,29 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
   await assertAccessibility(page, 'product');
   await assertVisualLayout(page, 'product', testInfo);
 
+  if (testInfo.project.name.includes('desktop')) {
+    const productInfo = page.locator('.product__info-wrapper').first();
+    await expect(productInfo, 'product: desktop purchase content must render').toBeVisible();
+    await page.waitForTimeout(1500);
+    await expect(productInfo, 'product: desktop purchase content must remain visible after page settles').toBeVisible();
+    const settled = await productInfo.evaluate((el) => {
+      const style = getComputedStyle(el);
+      const rect = el.getBoundingClientRect();
+      return {
+        opacity: Number(style.opacity || 1),
+        visibility: style.visibility,
+        display: style.display,
+        height: rect.height,
+        textLength: (el.textContent || '').trim().length,
+      };
+    });
+    expect(settled.opacity, 'product: desktop purchase content opacity after settle').toBeGreaterThan(0.9);
+    expect(settled.visibility, 'product: desktop purchase content visibility after settle').not.toBe('hidden');
+    expect(settled.display, 'product: desktop purchase content display after settle').not.toBe('none');
+    expect(settled.height, 'product: desktop purchase content height after settle').toBeGreaterThan(100);
+    expect(settled.textLength, 'product: desktop purchase content text after settle').toBeGreaterThan(40);
+  }
+
   const addToCart = page.locator('form[action*="/cart/add"] button[name="add"]:visible').first();
   await expect(addToCart, 'product: Add to Cart must be visible').toBeVisible();
   await expect(addToCart, 'product: Add to Cart must be enabled').toBeEnabled();
