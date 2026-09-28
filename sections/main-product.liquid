@@ -35,6 +35,46 @@
       display: none;
     }
 
+    .bhd-full-product-description {
+      display: none;
+    }
+
+    @media screen and (min-width: 750px) {
+      .section-{{ section.id }}-padding .bhd-inline-product-description {
+        display: none;
+      }
+
+      .section-{{ section.id }}-padding .bhd-full-product-description {
+        display: block;
+        width: 100%;
+        margin: 2.4rem 0 0;
+        padding: 2.4rem clamp(2rem, 4vw, 5rem);
+        border: 1px solid #dfe8f2;
+        border-radius: 1.6rem;
+        background: #fff;
+        box-shadow: 0 1rem 3rem rgba(32,65,105,.05);
+      }
+
+      .section-{{ section.id }}-padding .bhd-full-product-description > :first-child {
+        margin-top: 0;
+      }
+
+      .section-{{ section.id }}-padding .bhd-full-product-description > :last-child {
+        margin-bottom: 0;
+      }
+
+      .section-{{ section.id }}-padding .bhd-full-product-description h2,
+      .section-{{ section.id }}-padding .bhd-full-product-description h3 {
+        color: #0b2d67;
+      }
+
+      .section-{{ section.id }}-padding .bhd-full-product-description p,
+      .section-{{ section.id }}-padding .bhd-full-product-description li {
+        color: #52657a;
+        line-height: 1.55;
+      }
+    }
+
     @media screen and (max-width: 749px) {
       .section-{{ section.id }}-padding {
         padding-top: 10px;
@@ -64,7 +104,11 @@
       }
 
       .section-{{ section.id }}-padding .bhd-mobile-product-intro__signals span {
-        display: inline-block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1 1 9.5rem;
+        min-width: 0;
         padding: 0.38rem 0.6rem;
         border: 1px solid #d7e3f1;
         border-radius: 999px;
@@ -73,6 +117,7 @@
         font-size: 1rem;
         font-weight: 800;
         line-height: 1.2;
+        text-align: center;
       }
 
       .section-{{ section.id }}-padding .bhd-pill--sugar { background:#fff4d9; border-color:#e9c86f; color:#664a00; }
@@ -339,7 +384,7 @@
                   </p>
                 {%- when 'description' -%}
                   {%- if product.description != blank -%}
-                    <div class="product__description rte quick-add-hidden" {{ block.shopify_attributes }}>
+                    <div class="product__description bhd-inline-product-description rte quick-add-hidden" {{ block.shopify_attributes }}>
                       {{ product.description }}
                     </div>
                   {%- endif -%}
@@ -843,6 +888,12 @@
           </section>
         </div>
       </div>
+
+      {%- if product.description != blank -%}
+        <div class="bhd-full-product-description rte" aria-label="Product details">
+          {{ product.description }}
+        </div>
+      {%- endif -%}
 
       {% render 'product-media-modal', variant_images: variant_images %}
 
