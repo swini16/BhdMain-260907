@@ -348,7 +348,17 @@ jobs:
             body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/c/[A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
             body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
             body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
-            [ -n "$body_chat_name" ] && chat_name="$body_chat_name"
+            body_chat_verified="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title-Verified:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | tr '[:upper:]' '[:lower:]')"
+            body_chat_source="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title-Source:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | tr '[:upper:]' '[:lower:]')"
+            normalized_pr="$(printf '%s' "$pr_title" | sed -E 's/^[[:space:]]*\[CI[1-5]\][[:space:]]*//' | tr '[:upper:]' '[:lower:]')"
+            normalized_chat="$(printf '%s' "$body_chat_name" | tr '[:upper:]' '[:lower:]')"
+            source_ok="false"
+            case "$body_chat_source" in chat-ui|user-confirmed|history-exact) source_ok="true" ;; esac
+            if [ -n "$body_chat_name" ] && [ "$body_chat_verified" = "exact" ] && [ "$source_ok" = "true" ] &&
+               [ "$normalized_chat" != "$normalized_pr" ] &&
+               ! printf '%s' "$body_chat_name" | grep -Eqi '^[[:space:]]*(PR[[:space:]]*#?[0-9]+|\[?CI[1-5]\]?\b)'; then
+              chat_name="$body_chat_name"
+            fi
             if [ -n "$body_chat" ]; then chat_url="$body_chat";
             elif [ -n "$body_chat_id" ]; then chat_url="https://chatgpt.com/c/$body_chat_id";
             fi
