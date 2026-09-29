@@ -408,12 +408,16 @@
     }
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__visual{
       order:1;
-      min-height:0;
+      min-height:340px;
       height:auto;
-      aspect-ratio:3 / 2;
+      aspect-ratio:16 / 10;
+      background:#d8ecfb;
     }
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__scene{
-      object-fit:contain;
+      display:block!important;
+      visibility:visible!important;
+      opacity:1!important;
+      object-fit:cover;
       object-position:center center;
     }
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__visual::before{display:none}
@@ -444,8 +448,8 @@
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__secondary small{font-size:.8rem;font-weight:900}
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__proof{
       width:min(100%,720px);
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:.55rem;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:.6rem;
       margin-top:.9rem;
     }
     #BhdHeroV4-{{ section.id }} .bhd-hero-v4__proof-card{
