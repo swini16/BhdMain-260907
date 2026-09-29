@@ -281,12 +281,50 @@ jobs:
           const performanceToggle=home.getByRole('button',{name:/Open Performance submenu/i}).first();
           if(!(await performanceToggle.isVisible())) throw new Error('Performance submenu not live');
           await performanceToggle.click();
-          const athleticsLink=home.getByRole('link',{name:'Athletics',exact:true}).first();
-          const diannaMenuLink=home.getByRole('link',{name:'Dianna Proctor',exact:true}).first();
-          if(!(await athleticsLink.isVisible())) throw new Error('Performance > Athletics link not live');
+          const performanceBranch=home.locator('header.bhd-header .bhd-header__dropdown-child').filter({has:home.locator('.bhd-header__tier2-link[href="/pages/performance-hydration"]')}).first();
+          const athleticsFromPerformance=performanceBranch.locator('a[href="/pages/athletes-ambassadors"]').first();
+          const diannaMenuLink=performanceBranch.locator('a[href="/pages/dianna-proctor"]').first();
+          if(!(await athleticsFromPerformance.isVisible())) throw new Error('Performance > Athletics link not live');
           if(!(await diannaMenuLink.isVisible())) throw new Error('Performance > Dianna Proctor link not live');
           const menuText=await home.locator('header.bhd-header').first().innerText();
           if(/Athlete\s*&\s*Team|Athletes\s*&\s*Ambassadors|Athletes,\s*Teams\s*&\s*Leagues/i.test(menuText)) throw new Error('Redundant athlete labels are still visible in the mega menu');
+
+          await athleticsFromPerformance.click();
+          await home.waitForURL(/\/pages\/athletes-ambassadors/, {timeout:15000});
+          await home.waitForTimeout(700);
+          let currentMain=await home.locator('header.bhd-header [data-main-item].bhd-current-main .bhd-header__main-link').allTextContents();
+          let currentTier2=await home.locator('header.bhd-header [data-main-item].bhd-current-main .bhd-header__dropdown-child.bhd-current-tier2 .bhd-header__tier2-link').allTextContents();
+          let arrival=await home.locator('header.bhd-header').first().getAttribute('data-bhd-arrival-context');
+          if(currentMain.map(x=>x.trim()).join('|')!=='Solutions') throw new Error('Performance arrival did not highlight Solutions only: '+currentMain.join('|'));
+          if(currentTier2.map(x=>x.trim()).join('|')!=='Performance') throw new Error('Performance arrival did not highlight Performance only: '+currentTier2.join('|'));
+          if(arrival!=='Solutions > Performance') throw new Error('Performance arrival context was not preserved: '+arrival);
+
+          await home.goto('https://besthydrate.com/?bhd_live_verify=partnerships-'+Date.now(),{waitUntil:'domcontentloaded',timeout:45000});
+          await home.waitForTimeout(900);
+          const connectToggle=home.getByRole('button',{name:/Open Connect menu/i}).first();
+          await connectToggle.click();
+          const partnershipsToggle=home.getByRole('button',{name:/Open Partnerships submenu/i}).first();
+          if(!(await partnershipsToggle.isVisible())) throw new Error('Partnerships submenu not live');
+          await partnershipsToggle.click();
+          const partnershipsBranch=home.locator('header.bhd-header .bhd-header__dropdown-child').filter({has:home.locator('.bhd-header__tier2-link[href="/pages/partnerships"]')}).first();
+          const athleticsFromPartnerships=partnershipsBranch.locator('a[href="/pages/athletes-ambassadors"]').first();
+          if(!(await athleticsFromPartnerships.isVisible())) throw new Error('Partnerships > Athletics link not live');
+          await athleticsFromPartnerships.click();
+          await home.waitForURL(/\/pages\/athletes-ambassadors/, {timeout:15000});
+          await home.waitForTimeout(700);
+          currentMain=await home.locator('header.bhd-header [data-main-item].bhd-current-main .bhd-header__main-link').allTextContents();
+          currentTier2=await home.locator('header.bhd-header [data-main-item].bhd-current-main .bhd-header__dropdown-child.bhd-current-tier2 .bhd-header__tier2-link').allTextContents();
+          arrival=await home.locator('header.bhd-header').first().getAttribute('data-bhd-arrival-context');
+          if(currentMain.map(x=>x.trim()).join('|')!=='Connect') throw new Error('Partnerships arrival did not highlight Connect only: '+currentMain.join('|'));
+          if(currentTier2.map(x=>x.trim()).join('|')!=='Partnerships') throw new Error('Partnerships arrival did not highlight Partnerships only: '+currentTier2.join('|'));
+          if(arrival!=='Connect > Partnerships') throw new Error('Partnerships arrival context was not preserved: '+arrival);
+
+          await home.goto('https://besthydrate.com/pages/athletes-ambassadors?bhd_live_verify=direct-'+Date.now(),{waitUntil:'domcontentloaded',timeout:45000});
+          await home.waitForTimeout(700);
+          currentMain=await home.locator('header.bhd-header [data-main-item].bhd-current-main .bhd-header__main-link').allTextContents();
+          currentTier2=await home.locator('header.bhd-header [data-main-item].bhd-current-main .bhd-header__dropdown-child.bhd-current-tier2 .bhd-header__tier2-link').allTextContents();
+          if(currentMain.map(x=>x.trim()).join('|')!=='Solutions') throw new Error('Direct Athletics visit did not use canonical Solutions fallback: '+currentMain.join('|'));
+          if(currentTier2.map(x=>x.trim()).join('|')!=='Performance') throw new Error('Direct Athletics visit did not use canonical Performance fallback: '+currentTier2.join('|'));
           await home.close();
 
           for (const path of ['/pages/performance-hydration','/pages/heat-high-sweat','/pages/dianna-proctor']) {
