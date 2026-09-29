@@ -10,7 +10,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
 
 jobs:
   liquid-theme-check:
@@ -66,20 +65,22 @@ jobs:
         run: |
           set -euo pipefail
           f='snippets/bhd-lp-conversion-shell.liquid'; o='snippets/bhd-lp-conversion-open.liquid'; d='snippets/bhd-page-dispatch.liquid'
-          l='snippets/bhd-page-lp-low-sugar.liquid'; r='snippets/bhd-page-lp-run-the-river-edmonton.liquid'; t='snippets/bhd-lp-tracking.liquid'
-          test -f "$f"; test -f "$o"; test -f "$d"; test -f "$l"; test -f "$r"; test -f "$t"
+          l='snippets/bhd-page-lp-low-sugar.liquid'; r='snippets/bhd-page-lp-run-the-river-edmonton.liquid'; b='snippets/bhd-page-lp-bicarb-bonus.liquid'; t='snippets/bhd-lp-tracking.liquid'
+          test -f "$f"; test -f "$o"; test -f "$d"; test -f "$l"; test -f "$r"; test -f "$b"; test -f "$t"
           grep -Fq "render 'bhd-lp-conversion-open'" "$d"
           grep -Fq "render 'bhd-lp-conversion-shell'" "$d"
           grep -Fq 'is_consumer_conversion_lp' "$d"
           grep -Fq 'show_lp_sales_close' "$d"
           grep -Fq "render 'bhd-page-lp-low-sugar'" "$d"
           grep -Fq "render 'bhd-page-lp-run-the-river-edmonton'" "$d"
+          grep -Fq "render 'bhd-page-lp-bicarb-bonus'" "$d"
           grep -Fq 'is_dedicated_paid_lp' "$d"
           grep -Fq "render 'bhd-lp-tracking'" "$d"
-          for excluded in 'lp-03-research-milestone' 'lp-06-clinical-hydration-context' 'lp-08-hydration-access' 'lp-02f-hydration-thats-not-too-sweet' 'lp-10-eps-half-marathon-edmonton' 'lp-10-run-the-river-edmonton' 'lp-11-nashville-heat'; do grep -Fq "$excluded" "$d"; done
+          for excluded in 'lp-03-research-milestone' 'lp-06-clinical-hydration-context' 'lp-08-hydration-access' 'lp-02f-hydration-thats-not-too-sweet' 'lp-10-eps-half-marathon-edmonton' 'lp-10-run-the-river-edmonton' 'lp-11-nashville-heat' 'lp-12-bicarb-bonus'; do grep -Fq "$excluded" "$d"; done
           for x in 'data-bhd-lp-open' 'data-lp-cta="early"' 'data-lp-cta="low-sugar"' 'Shop Best Hydrate' 'Low sugar, on purpose.' 'Tastes great. Not too sweet.' '32 servings.' 'Free &amp; Fast Delivery.' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate' '@media(max-width:749px)'; do grep -Fq "$x" "$o"; done
           for x in 'data-bhd-lp-close' 'data-lp-section="taste"' 'data-lp-section="why"' 'data-lp-section="cycle"' 'data-lp-section="compare"' 'data-lp-section="faq"' 'data-lp-section="offer"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Shop Best Hydrate' 'Free &amp; Fast Delivery' 'Tastes great. Not too sweet.' 'Low sugar, on purpose.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.' 'Glucose has a job.' 'Bicarb Bonus™' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate' '@media(max-width:749px)'; do grep -Fq "$x" "$f"; done
           for x in 'LOW SUGAR, ON PURPOSE. NOT ZERO. NOT OVERLOADED.' 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Tastes great. Not too sweet.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.' 'Glucose has a job.' 'Bicarb Bonus™' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate'; do grep -Fq "$x" "$l"; done
+          for x in 'Bicarb Bonus™ hydration, but not a megadose.' 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'high-dose bicarbonate-loading' 'Bicarb Bonus™' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate'; do grep -Fq "$x" "$b"; done
           for x in 'Finished the race. Build what comes next.' 'RECOVER → RESET → REPEAT' 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Tastes great. Not too sweet.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.'; do grep -Fq "$x" "$r"; done
           ! grep -Fq 'Race tomorrow? Don’t reinvent hydration tonight.' "$r"
           for x in "window.amplitude.track(name, props)" "LP CTA Clicked" "LP Section Viewed" "event: dataLayerEvent" "lp_cta_clicked" "lp_section_viewed" "page_handle:" "lp_context:" "[data-lp-cta]" "[data-lp-section]"; do grep -Fq "$x" "$t"; done
@@ -109,7 +110,7 @@ jobs:
           ! grep -RInE '^(<<<<<<<|=======|>>>>>>>)' snippets sections templates assets --include='*.liquid' --include='*.js' --include='*.css'
           python3 - <<'PY'
           from pathlib import Path
-          for file in ['snippets/bhd-lp-conversion-shell.liquid','snippets/bhd-lp-conversion-open.liquid','snippets/bhd-page-lp-low-sugar.liquid','snippets/bhd-page-lp-run-the-river-edmonton.liquid','snippets/bhd-lp-tracking.liquid']:
+          for file in ['snippets/bhd-lp-conversion-shell.liquid','snippets/bhd-lp-conversion-open.liquid','snippets/bhd-page-lp-low-sugar.liquid','snippets/bhd-page-lp-run-the-river-edmonton.liquid','snippets/bhd-page-lp-bicarb-bonus.liquid','snippets/bhd-lp-tracking.liquid']:
             p=Path(file).read_text()
             for t in ['section','div','article','details','style','script']:
               assert p.count('<'+t)-p.count('<'+t+'/') == p.count('</'+t+'>'), f'{file}: unbalanced {t}'
@@ -140,7 +141,7 @@ jobs:
           import AxeBuilder from '@axe-core/playwright';
           import fs from 'node:fs';
           const base='https://besthydrate.com';
-          const paths=['/pages/lp-01-hydration-is-more-than-water','/pages/lp-02-six-ingredients','/pages/lp-04-hydration-follows-the-session','/pages/lp-02f-hydration-thats-not-too-sweet','/pages/lp-10-run-the-river-edmonton','/pages/lp-11-nashville-heat'];
+          const paths=['/pages/lp-01-hydration-is-more-than-water','/pages/lp-02-six-ingredients','/pages/lp-04-hydration-follows-the-session','/pages/lp-02f-hydration-thats-not-too-sweet','/pages/lp-10-run-the-river-edmonton','/pages/lp-11-nashville-heat','/pages/lp-12-bicarb-bonus'];
           const devices=[['mobile',390,844],['tablet',820,1180],['desktop',1440,1000]];
           const browser=await chromium.launch(); let failures=[];
           const blocked=['google-analytics.com','googletagmanager.com','api.amplitude.com','api2.amplitude.com','amplitude.com','connect.facebook.net','facebook.com/tr','analytics.tiktok.com','hotjar.com','clarity.ms','segment.io','doubleclick.net','monorail-edge.shopifysvc.com'];
@@ -207,7 +208,7 @@ jobs:
           const href=await cta.getAttribute('href'); if(!href?.includes('/products/')) throw new Error('Final CTA does not target product');
           await cta.scrollIntoViewIfNeeded(); if(!(await cta.isVisible())) throw new Error('Final CTA not visible');
 
-          for (const path of ['/pages/lp-02f-hydration-thats-not-too-sweet','/pages/lp-10-run-the-river-edmonton']) {
+          for (const path of ['/pages/lp-02f-hydration-thats-not-too-sweet','/pages/lp-10-run-the-river-edmonton','/pages/lp-12-bicarb-bonus']) {
             await p.goto('https://besthydrate.com'+path+'?utm_source=qa_automation&utm_medium=playwright&utm_campaign=lp_live_contract',{waitUntil:'domcontentloaded',timeout:45000});
             await p.waitForTimeout(1200);
             const dedicatedEarly=p.locator('[data-lp-cta="early"]');
@@ -233,71 +234,3 @@ jobs:
           await b.close();
           EOF
           node tests/lp-live-contract.mjs
-
-  notify-production:
-    name: Telegram production status
-    if: ${{ always() && github.event_name == 'push' }}
-    needs: [liquid-theme-check, lp-contracts, static-safety, rendered-browser-smoke, post-merge-live-contract]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Notify Telegram after eHP live verification
-        continue-on-error: true
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          CHATGPT_URL_SECRET: ${{ secrets.CHATGPT_BHD_IHP_PLUS_URL }}
-          CHATGPT_URL_VAR: ${{ vars.CHATGPT_BHD_IHP_PLUS_URL }}
-          GH_TOKEN: ${{ github.token }}
-          LIQUID_RESULT: ${{ needs.liquid-theme-check.result }}
-          CONTRACT_RESULT: ${{ needs.lp-contracts.result }}
-          SAFETY_RESULT: ${{ needs.static-safety.result }}
-          BROWSER_RESULT: ${{ needs.rendered-browser-smoke.result }}
-          LIVE_RESULT: ${{ needs.post-merge-live-contract.result }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -n "${TELEGRAM_BOT_TOKEN:-}"
-          test -n "${TELEGRAM_CHAT_ID:-}"
-
-          overall="success"
-          for result in "$LIQUID_RESULT" "$CONTRACT_RESULT" "$SAFETY_RESULT" "$BROWSER_RESULT" "$LIVE_RESULT"; do
-            [ "$result" = "success" ] || overall="failure"
-          done
-
-          short="${GITHUB_SHA:0:8}"
-          pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
-          ref="$short"
-          pr_url=""
-          chat_url="${CHATGPT_URL_SECRET:-${CHATGPT_URL_VAR:-}}"
-
-          if [ -n "$pr" ]; then
-            ref="PR #$pr • $short"
-            pr_url="https://github.com/$GITHUB_REPOSITORY/pull/$pr"
-            body="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" --jq '.body // ""' 2>/dev/null || true)"
-            body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/[^[:space:]]+).*$#\1#p' | head -n1)"
-            body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]+).*$#\1#p' | head -n1)"
-            if [ -n "$body_chat" ]; then
-              chat_url="$body_chat"
-            elif [ -n "$body_chat_id" ]; then
-              chat_url="https://chatgpt.com/c/$body_chat_id"
-            fi
-          fi
-
-          if [ "$overall" = "success" ]; then
-            text="🟢 eHP LIVE • $ref • verified"
-          else
-            text="🔴 eHP LIVE VERIFY FAILED • $ref"
-          fi
-          [ -n "$pr_url" ] && text="$text
-$pr_url"
-          [ -n "$chat_url" ] && text="$text
-ChatGPT: $chat_url"
-          text="$text
-https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-
-          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
-            --data-urlencode "text=${text}")"
-          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
-          echo "eHP Telegram notification acknowledged by Telegram."
-

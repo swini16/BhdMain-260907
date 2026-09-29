@@ -1,7 +1,7 @@
 {% liquid
   assign is_dedicated_paid_lp = false
   case page.handle
-    when 'lp-02f-hydration-thats-not-too-sweet', 'lp-10-eps-half-marathon-edmonton', 'lp-10-run-the-river-edmonton', 'lp-11-nashville-heat'
+    when 'lp-02f-hydration-thats-not-too-sweet', 'lp-10-eps-half-marathon-edmonton', 'lp-10-run-the-river-edmonton', 'lp-11-nashville-heat', 'lp-12-bicarb-bonus'
       assign is_dedicated_paid_lp = true
   endcase
 
@@ -16,7 +16,7 @@
     assign show_lp_sales_close = true
   endif
   case page.handle
-    when 'lp-03-research-milestone', 'lp-03a-what-the-review-means', 'lp-03b-from-review-to-direct-study', 'lp-06-clinical-hydration-context', 'lp-06a-when-context-changes-hydration', 'lp-06b-oral-hydration-care-plan', 'lp-08-hydration-access', 'lp-02f-hydration-thats-not-too-sweet', 'lp-10-eps-half-marathon-edmonton', 'lp-10-run-the-river-edmonton', 'lp-11-nashville-heat'
+    when 'lp-03-research-milestone', 'lp-03a-what-the-review-means', 'lp-03b-from-review-to-direct-study', 'lp-06-clinical-hydration-context', 'lp-06a-when-context-changes-hydration', 'lp-06b-oral-hydration-care-plan', 'lp-08-hydration-access', 'lp-02f-hydration-thats-not-too-sweet', 'lp-10-eps-half-marathon-edmonton', 'lp-10-run-the-river-edmonton', 'lp-11-nashville-heat', 'lp-12-bicarb-bonus'
       assign show_lp_sales_close = false
   endcase
 %}
@@ -39,6 +39,7 @@
   {% when 'lp-10-eps-half-marathon-edmonton' %}{% render 'bhd-page-lp-eps-half-marathon-edmonton' %}
   {% when 'lp-10-run-the-river-edmonton' %}{% render 'bhd-page-lp-run-the-river-edmonton' %}
   {% when 'lp-11-nashville-heat' %}{% render 'bhd-page-lp-nashville-heat' %}
+  {% when 'lp-12-bicarb-bonus' %}{% render 'bhd-page-lp-bicarb-bonus' %}
   {% when 'recovery-hydration' %}{% render 'bhd-page-recovery' %}
   {% when 'everyday-wellness' %}{% render 'bhd-page-everyday-wellness' %}
   {% when 'work-long-shifts' %}{% render 'bhd-page-work-long-shifts' %}

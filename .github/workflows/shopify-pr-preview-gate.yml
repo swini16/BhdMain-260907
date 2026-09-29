@@ -37,13 +37,46 @@ jobs:
           set -euo pipefail
           git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" > /tmp/pr-changed-files.txt
 
-          if grep -Eq '^(assets/|blocks/|config/|layout/|locales/|sections/|snippets/|templates/|tests/playwright/|playwright\.config\.cjs$|\.github/workflows/shopify-pr-preview-gate\.yml$)' /tmp/pr-changed-files.txt; then
+          if [[ "${{ github.event.pull_request.title }}" == "[CI1]"* ]]; then
+            echo "ci1=true" >> "$GITHUB_OUTPUT"
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::CI1 selected: run fast static sanity and skip rendered Shopify preview."
+          elif grep -Eq '^(assets/|blocks/|config/|layout/|locales/|sections/|snippets/|templates/|tests/playwright/|playwright\.config\.cjs$|\.github/workflows/shopify-pr-preview-gate\.yml$)' /tmp/pr-changed-files.txt; then
+            echo "ci1=false" >> "$GITHUB_OUTPUT"
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             echo "::notice::Relevant Shopify/theme/QA changes detected. Running full rendered preview gate."
           else
+            echo "ci1=false" >> "$GITHUB_OUTPUT"
             echo "relevant=false" >> "$GITHUB_OUTPUT"
             echo "::notice::No Shopify/theme/QA changes detected. Required gate reports success without creating preview themes."
           fi
+
+      - name: CI1 static sanity gate
+        if: steps.scope.outputs.ci1 == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          git diff --check "$BASE" "$HEAD"
+          python3 - <<'PY'
+          import json, pathlib, re, subprocess
+          base="${{ github.event.pull_request.base.sha }}"
+          head="${{ github.event.pull_request.head.sha }}"
+          changed=subprocess.check_output(["git","diff","--name-only",base,head], text=True).splitlines()
+          for name in changed:
+              p=pathlib.Path(name)
+              if not p.exists() or not p.is_file():
+                  continue
+              text=p.read_text(errors="replace")
+              if re.search(r"(?m)^(<<<<<<<|=======|>>>>>>>)", text):
+                  raise SystemExit(f"{name}: merge-conflict marker")
+              if name.endswith(".json"):
+                  # Shopify JSON templates can contain a leading /* ... */ generated-file comment.
+                  payload=re.sub(r"^\ufeff?\s*/\*.*?\*/\s*", "", text, count=1, flags=re.S)
+                  json.loads(payload)
+          print(f"CI1 static sanity passed for {len(changed)} changed files")
+          PY
 
       - name: Verify Shopify preview credential
         if: steps.scope.outputs.relevant == 'true'
