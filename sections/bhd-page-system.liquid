@@ -7,6 +7,8 @@
 <style>
   #BhdPage-{{ section.id }}{--bhd-navy:#0b2d67;--bhd-blue:#078ee7;--bhd-ink:#1d3151;--bhd-muted:#5b6b82;--bhd-line:rgba(11,45,103,.12);--bhd-pale:#eef8fd;background:linear-gradient(180deg,#f9fcff 0%,#fff 24%,#f7fbff 100%);color:var(--bhd-ink);padding:2.4rem 0 6.5rem}
   #BhdPage-{{ section.id }} *{box-sizing:border-box}
+  #BhdPage-{{ section.id }} .bhd-page__inner,#BhdPage-{{ section.id }} .bhd-page__inner *{min-width:0}
+  #BhdPage-{{ section.id }} h1,#BhdPage-{{ section.id }} h2,#BhdPage-{{ section.id }} h3,#BhdPage-{{ section.id }} p,#BhdPage-{{ section.id }} li,#BhdPage-{{ section.id }} a,#BhdPage-{{ section.id }} span{overflow-wrap:anywhere;word-break:normal}
   #BhdPage-{{ section.id }} .bhd-breadcrumbs{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;margin:0 0 2rem;font-size:1.28rem;color:#66758a}
   #BhdPage-{{ section.id }} .bhd-breadcrumbs a{color:var(--bhd-navy);text-decoration:none}
   #BhdPage-{{ section.id }} .bhd-breadcrumbs a:hover{text-decoration:underline}
@@ -91,7 +93,7 @@
     #BhdPage-{{ section.id }} .bhd-page__cards--4,#BhdPage-{{ section.id }} .bhd-page__related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
     #BhdPage-{{ section.id }} .bhd-page__cards--3{grid-template-columns:1fr}
     #BhdPage-{{ section.id }} .bhd-page__brand-context{grid-template-columns:1fr}
-    #BhdPage-{{ section.id }} .bhd-page__brand-actions{flex-direction:row;flex-wrap:wrap;min-width:0}
+    #BhdPage-{{ section.id }} .bhd-page__brand-actions{flex-direction:row;flex-wrap:wrap;min-width:0;align-items:stretch}
   }
   @media screen and (max-width:749px){
     #BhdPage-{{ section.id }}{padding-top:1.4rem;padding-bottom:4.5rem}
@@ -106,7 +108,12 @@
     #BhdPage-{{ section.id }} .bhd-page__split-media{aspect-ratio:1.4/1}
     #BhdPage-{{ section.id }} .bhd-page__cards--4,#BhdPage-{{ section.id }} .bhd-page__related-grid{grid-template-columns:1fr}
     #BhdPage-{{ section.id }} .bhd-page__brand-context{padding:2rem}
-    #BhdPage-{{ section.id }} .bhd-page__brand-actions{flex-direction:column}
+    #BhdPage-{{ section.id }} .bhd-page__brand-actions{flex-direction:column;align-items:stretch}
+    #BhdPage-{{ section.id }} .bhd-page__brand-actions .bhd-page__button{width:100%;margin-top:.7rem;text-align:center}
+    #BhdPage-{{ section.id }} h1{font-size:clamp(3.1rem,10vw,4rem);line-height:1.02}
+    #BhdPage-{{ section.id }} h2{font-size:clamp(2.35rem,8vw,3.2rem);line-height:1.08}
+    #BhdPage-{{ section.id }} .bhd-page__feature{padding:2.2rem 1.6rem}
+    #BhdPage-{{ section.id }} .bhd-page__cards article,#BhdPage-{{ section.id }} .bhd-page__keypoints>div{padding:1.65rem}
   }
 </style>
 
