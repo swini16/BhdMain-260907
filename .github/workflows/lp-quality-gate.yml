@@ -285,7 +285,7 @@ jobs:
           const diannaMenuLink=home.getByRole('link',{name:'Dianna Proctor',exact:true}).first();
           if(!(await athleticsLink.isVisible())) throw new Error('Performance > Athletics link not live');
           if(!(await diannaMenuLink.isVisible())) throw new Error('Performance > Dianna Proctor link not live');
-          const menuText=await home.locator('header').innerText();
+          const menuText=await home.locator('header.bhd-header').first().innerText();
           if(/Athlete\s*&\s*Team|Athletes\s*&\s*Ambassadors|Athletes,\s*Teams\s*&\s*Leagues/i.test(menuText)) throw new Error('Redundant athlete labels are still visible in the mega menu');
           await home.close();
 
