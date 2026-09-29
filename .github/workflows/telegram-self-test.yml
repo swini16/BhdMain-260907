@@ -1,0 +1,42 @@
+name: Telegram deploy alert self-test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/telegram-self-test.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  telegram-self-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Telegram secrets and send test
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CHATGPT_BHD_IHP_PLUS_URL: ${{ vars.CHATGPT_BHD_IHP_PLUS_URL }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$TELEGRAM_BOT_TOKEN"
+          test -n "$TELEGRAM_CHAT_ID"
+
+          text="🧪 eHP Telegram deploy alerts connected ✅"
+          if [ -n "$CHATGPT_BHD_IHP_PLUS_URL" ]; then
+            text="$text
+ChatGPT: $CHATGPT_BHD_IHP_PLUS_URL"
+          fi
+          text="$text
+https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+
+          ok="$(printf '%s' "$response" | jq -r '.ok // false')"
+          test "$ok" = "true"
+          echo "eHP Telegram self-test delivered successfully."
