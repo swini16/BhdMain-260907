@@ -1,0 +1,1 @@
+Intentional disposable probe: PR must fail without ChatGPT linkage metadata.
