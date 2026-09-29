@@ -109,6 +109,14 @@ jobs:
       - run: |
           set -euo pipefail
           ! grep -RInE '^(<<<<<<<|=======|>>>>>>>)' snippets sections templates assets --include='*.liquid' --include='*.js' --include='*.css'
+          if grep -RIniE 'personalized|personalised|personalization|personalisation|individualized|individualised|proprietary|scientific testing|sweat testing|sweat sodium test|unique sweat profile|permanent personal number' snippets sections templates assets config layout locales --include='*.liquid' --include='*.json' --include='*.js' --include='*.css'; then
+            echo "::error::Public storefront copy contains banned personalization/testing/proprietary language."
+            exit 1
+          fi
+          if grep -RIniE '3771085|4148942|260202_DiannaProctor-1\.jpg|260202_DiannaProctor\.jpg' snippets sections templates assets config layout locales --include='*.liquid' --include='*.json' --include='*.js' --include='*.css'; then
+            echo "::error::Rejected/low-quality storefront imagery was reintroduced."
+            exit 1
+          fi
           python3 - <<'PY'
           from pathlib import Path
           for file in ['snippets/bhd-lp-conversion-shell.liquid','snippets/bhd-lp-conversion-open.liquid','snippets/bhd-page-lp-low-sugar.liquid','snippets/bhd-page-lp-run-the-river-edmonton.liquid','snippets/bhd-page-lp-bicarb-bonus.liquid','snippets/bhd-lp-tracking.liquid']:
