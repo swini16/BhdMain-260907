@@ -305,20 +305,14 @@ jobs:
           pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
           ref="$short"
           pr_url=""
-          chat_url=""
-          chat_name="⚠️ UNLINKED CHAT"
+          chat_name="⚠️ MISSING CHAT TITLE"
 
           if [ -n "$pr" ]; then
             ref="PR #$pr • $short"
             pr_url="https://github.com/$GITHUB_REPOSITORY/pull/$pr"
             body="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" --jq '.body // ""' 2>/dev/null || true)"
-            body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/[^[:space:]]+).*$#\1#p' | head -n1)"
-            body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]+).*$#\1#p' | head -n1)"
-            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-Name:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-80)"
+            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-Name:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
             [ -n "$body_chat_name" ] && chat_name="$body_chat_name"
-            if [ -n "$body_chat" ]; then chat_url="$body_chat";
-            elif [ -n "$body_chat_id" ]; then chat_url="https://chatgpt.com/c/$body_chat_id";
-            fi
           fi
 
           if [ "$overall" = "success" ]; then
@@ -327,7 +321,6 @@ jobs:
             text="🔴 eHP LIVE VERIFY FAILED • $chat_name • $ref"
           fi
           if [ -n "$pr_url" ]; then text="$(printf '%s\n%s' "$text" "$pr_url")"; fi
-          if [ -n "$chat_url" ]; then text="$(printf '%s\n%s' "$text" "ChatGPT: $chat_url")"; fi
           text="$(printf '%s\n%s' "$text" "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")"
 
           response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
