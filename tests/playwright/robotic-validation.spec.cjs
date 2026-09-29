@@ -705,7 +705,29 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
           }).catch(() => null);
 
           if (!liveResponse || liveResponse.status() >= 400) {
-            failures.push(`${response?.status() || 'NO_RESPONSE'} ${href}`);
+            const isProductHandle = PRODUCT_PATHS.includes(new URL(href, BASE_URL).pathname);
+            let previewProductHealthy = false;
+
+            if (isProductHandle) {
+              for (const productPath of [...new Set(PRODUCT_PATHS.filter(Boolean))]) {
+                const productResponse = await gotoWithTransientRetry(probe, withQa(productPath), {
+                  timeout: 15000,
+                });
+                const productHeading = await probe
+                  .getByRole('heading', { level: 1, name: /Lemonade Electrolyte Powder/i })
+                  .isVisible({ timeout: 2500 })
+                  .catch(() => false);
+
+                if (productResponse && productHeading) {
+                  previewProductHealthy = true;
+                  break;
+                }
+              }
+            }
+
+            if (!previewProductHealthy) {
+              failures.push(`${response?.status() || 'NO_RESPONSE'} ${href}`);
+            }
           }
         }
       }

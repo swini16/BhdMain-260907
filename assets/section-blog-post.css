@@ -9,8 +9,17 @@
 }
 
 .article-template__hero-container {
-  max-width: 130rem;
+  max-width: 84rem;
   margin: 0 auto;
+  padding: 0 2rem;
+}
+.article-template__hero-container .media {
+  overflow: hidden;
+  border-radius: 1.4rem;
+  background: rgba(var(--color-foreground), .035);
+}
+.article-template__hero-container img {
+  object-fit: contain;
 }
 
 .article-template__hero-small {
@@ -173,3 +182,9 @@
 .article-template__back:last-child {
   margin-bottom: 3.2rem;
 }
+
+.article-template__content{font-size:1.62rem;line-height:1.7}
+.article-template__content h2{margin-top:3.2rem;line-height:1.15}
+.article-template__content figure{max-width:58rem;margin:2.6rem auto}
+.article-template__content figure img{width:100%;height:auto}
+@media screen and (max-width:749px){.article-template__hero-container{padding:0 1.5rem}.article-template__content{font-size:1.5rem;line-height:1.65}}

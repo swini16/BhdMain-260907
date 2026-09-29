@@ -247,6 +247,28 @@ async function auditPage(browser, path, { themeId = PREVIEW_THEME_ID } = {}) {
       finalPath = new URL(page.url()).pathname;
     }
 
+    // Shopify can occasionally surface a transient 429/5xx from a background
+    // storefront request even when the document itself loaded normally. Retry
+    // the page once rather than converting a one-off backend blip into a PR
+    // regression. Persistent errors remain in pageErrors and still fail.
+    const transientClientError = pageErrors.some((message) =>
+      /^Request failed with status code (429|5\\d\\d)$/.test(String(message).trim())
+    );
+
+    if (transientClientError && response && response.status() < 400) {
+      firstPartyFailures.length = 0;
+      pageErrors.length = 0;
+      response = await page.reload({
+        waitUntil: 'load',
+        timeout: 30000,
+      });
+      await page.evaluate(async () => {
+        if (document.fonts?.ready) await document.fonts.ready;
+      }).catch(() => {});
+      await page.waitForTimeout(300);
+      finalPath = new URL(page.url()).pathname;
+    }
+
     const status = response?.status() || 0;
     const contentType = response?.headers()?.['content-type'] || '';
     const title = (await page.title()).trim();
