@@ -183,10 +183,187 @@ jobs:
           path: artifacts/lp-smoke
           retention-days: 14
 
+  shopify-main-sync:
+    name: Shopify MAIN sync
+    if: github.event_name == 'push'
+    needs: [liquid-theme-check, lp-contracts, static-safety]
+    runs-on: ubuntu-latest
+    env:
+      SHOPIFY_FLAG_STORE: best-hydrate.myshopify.com
+      SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN || secrets.SHOPIFY_THEME_ACCESS_TOKEN || secrets.SHOPIFY_ADMIN_API_TOKEN || secrets.SHOPIFY_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Push changed theme files to Shopify MAIN
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${SHOPIFY_CLI_THEME_TOKEN:-}"
+          npm install -g @shopify/cli@latest >/dev/null
+          BEFORE="${{ github.event.before }}"
+          if [ -z "$BEFORE" ] || [[ "$BEFORE" =~ ^0+$ ]] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            BEFORE="HEAD^"
+          fi
+          git diff --name-only "$BEFORE" "$GITHUB_SHA" -- \
+            assets blocks config layout locales sections snippets templates \
+            | grep -Ev '(^|/)(settings_data\.json)    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: |
+          npm init -y >/dev/null 2>&1; npm install --save-dev playwright; npx playwright install --with-deps chromium
+          mkdir -p tests
+          cat > tests/lp-live-contract.mjs <<'EOF'
+          import { chromium } from 'playwright';
+          const b=await chromium.launch(); const p=await b.newPage({viewport:{width:390,height:844}});
+          const blocked=['google-analytics.com','googletagmanager.com','api.amplitude.com','api2.amplitude.com','amplitude.com','connect.facebook.net','facebook.com/tr','analytics.tiktok.com','hotjar.com','clarity.ms','segment.io','doubleclick.net','monorail-edge.shopifysvc.com','analytics.shopify.com','a.klaviyo.com','events-api.klaviyo.com'];
+          await p.route('**/*',route=>blocked.some(x=>route.request().url().includes(x))?route.abort():route.continue());
+
+          // Verify the actual homepage changes deployed before calling eHP live.
+          const home=await b.newPage({viewport:{width:1440,height:1000}});
+          await home.route('**/*',route=>blocked.some(x=>route.request().url().includes(x))?route.abort():route.continue());
+          await home.goto('https://besthydrate.com/?bhd_live_verify='+Date.now(),{waitUntil:'domcontentloaded',timeout:45000});
+          await home.waitForTimeout(1200);
+          const dianna=home.locator('a[href="/pages/dianna-proctor"] img[alt*="Dianna Proctor"]');
+          if(await dianna.count()<1) throw new Error('Homepage Dianna performance card not live');
+          const scienceToggle=home.getByRole('button',{name:/Open Science menu/i}).first();
+          await scienceToggle.click();
+          const hydrationToggle=home.getByRole('button',{name:/Open Hydration Science submenu/i}).first();
+          if(!(await hydrationToggle.isVisible())) throw new Error('Desktop mega-menu tier 2 toggle not live');
+          await hydrationToggle.click();
+          const deepLink=home.getByRole('link',{name:'How Hydration Works'}).first();
+          if(!(await deepLink.isVisible())) throw new Error('Desktop mega-menu tier 3 not live');
+          await home.close();
+          await p.goto('https://besthydrate.com/pages/lp-01-hydration-is-more-than-water?utm_source=qa_automation&utm_medium=playwright&utm_campaign=lp_live_contract',{waitUntil:'domcontentloaded',timeout:45000});
+          await p.waitForTimeout(1500);
+          const opener=p.locator('[data-bhd-lp-open]'); if(await opener.count()!==1) throw new Error('Early LP conversion bridge not live');
+          const early=p.locator('[data-lp-cta="early"]'); if(await early.count()!==1) throw new Error('Early LP CTA missing');
+          const earlyHref=await early.getAttribute('href'); if(!earlyHref?.includes('/products/')) throw new Error('Early CTA does not target product');
+          const shell=p.locator('[data-bhd-lp-close]'); if(await shell.count()!==1) throw new Error('LP conversion shell not live');
+          const cta=p.locator('[data-lp-cta="final"]'); if(await cta.count()!==1) throw new Error('Final LP CTA missing');
+          const href=await cta.getAttribute('href'); if(!href?.includes('/products/')) throw new Error('Final CTA does not target product');
+          await cta.scrollIntoViewIfNeeded(); if(!(await cta.isVisible())) throw new Error('Final CTA not visible');
+
+          for (const path of ['/pages/lp-02f-hydration-thats-not-too-sweet','/pages/lp-10-run-the-river-edmonton','/pages/lp-12-bicarb-bonus']) {
+            await p.goto('https://besthydrate.com'+path+'?utm_source=qa_automation&utm_medium=playwright&utm_campaign=lp_live_contract',{waitUntil:'domcontentloaded',timeout:45000});
+            await p.waitForTimeout(1200);
+            const dedicatedEarly=p.locator('[data-lp-cta="early"]');
+            const dedicatedFinal=p.locator('[data-lp-cta="final"]');
+            if(await dedicatedEarly.count()!==1) throw new Error(path+': dedicated early CTA missing');
+            if(await dedicatedFinal.count()!==1) throw new Error(path+': dedicated final CTA missing');
+            if(await p.locator('.bhd-guide-variants').count()) throw new Error(path+': generic guide variants leaked into dedicated paid LP');
+            const finalHref=await dedicatedFinal.getAttribute('href');
+            if(!finalHref?.includes('/products/')) throw new Error(path+': final CTA does not target product');
+
+            await p.evaluate(() => {
+              window.dataLayer = [];
+              const early = document.querySelector('[data-lp-cta="early"]');
+              early?.addEventListener('click', (event) => event.preventDefault(), { once: true });
+            });
+            await dedicatedEarly.click();
+            const tracked = await p.evaluate(() =>
+              window.dataLayer.some((entry) => entry.event === 'lp_cta_clicked' && entry.cta === 'early')
+            );
+            if(!tracked) throw new Error(path+': early CTA did not emit lp_cta_clicked');
+          }
+
+          await b.close();
+          EOF
+          node tests/lp-live-contract.mjs
+
+  notify-production:
+    name: Telegram production status
+    if: ${{ always() && github.event_name == 'push' }}
+    needs: [liquid-theme-check, lp-contracts, static-safety, shopify-main-sync, rendered-browser-smoke, post-merge-live-contract]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Telegram after eHP live verification
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GH_TOKEN: ${{ github.token }}
+          LIQUID_RESULT: ${{ needs['liquid-theme-check'].result }}
+          CONTRACT_RESULT: ${{ needs['lp-contracts'].result }}
+          SAFETY_RESULT: ${{ needs['static-safety'].result }}
+          BROWSER_RESULT: ${{ needs['rendered-browser-smoke'].result }}
+          LIVE_RESULT: ${{ needs['post-merge-live-contract'].result }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${TELEGRAM_BOT_TOKEN:-}"
+          test -n "${TELEGRAM_CHAT_ID:-}"
+
+          overall="success"
+          for result in "$LIQUID_RESULT" "$CONTRACT_RESULT" "$SAFETY_RESULT" "$BROWSER_RESULT" "$LIVE_RESULT"; do
+            [ "$result" = "success" ] || overall="failure"
+          done
+
+          short="${GITHUB_SHA:0:8}"
+          pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
+          ref="$short"
+          pr_url=""
+          chat_url=""
+          chat_name="⚠️ UNLINKED CHAT"
+
+          if [ -n "$pr" ]; then
+            ref="PR #$pr • $short"
+            pr_url="https://github.com/$GITHUB_REPOSITORY/pull/$pr"
+            body="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" --jq '.body // ""' 2>/dev/null || true)"
+            body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/[^[:space:]]+).*$#\1#p' | head -n1)"
+            body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]+).*$#\1#p' | head -n1)"
+            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-Name:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-80)"
+            [ -n "$body_chat_name" ] && chat_name="$body_chat_name"
+            if [ -n "$body_chat" ]; then chat_url="$body_chat";
+            elif [ -n "$body_chat_id" ]; then chat_url="https://chatgpt.com/c/$body_chat_id";
+            fi
+          fi
+
+          if [ "$overall" = "success" ]; then
+            text="🟢 eHP LIVE • $chat_name • $ref • verified"
+          else
+            text="🔴 eHP LIVE VERIFY FAILED • $chat_name • $ref"
+          fi
+          if [ -n "$pr_url" ]; then text="$(printf '%s\n%s' "$text" "$pr_url")"; fi
+          if [ -n "$chat_url" ]; then text="$(printf '%s\n%s' "$text" "ChatGPT: $chat_url")"; fi
+          text="$(printf '%s\n%s' "$text" "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+ \
+            > /tmp/theme-files.txt || true
+
+          mapfile -t files < <(while IFS= read -r file; do [ -f "$file" ] && printf '%s\n' "$file"; done < /tmp/theme-files.txt)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No changed deployable theme files."
+            exit 0
+          fi
+
+          args=()
+          for file in "${files[@]}"; do
+            echo "Deploying $file"
+            args+=(--only "$file")
+          done
+
+          shopify theme push \
+            --path . \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --password "$SHOPIFY_CLI_THEME_TOKEN" \
+            --live \
+            --allow-live \
+            --nodelete \
+            "${args[@]}" \
+            --json
+
   post-merge-live-contract:
     name: Post-merge live LP conversion contract
     if: github.event_name == 'push'
-    needs: [liquid-theme-check, lp-contracts, static-safety]
+    needs: [liquid-theme-check, lp-contracts, static-safety, shopify-main-sync]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v4
