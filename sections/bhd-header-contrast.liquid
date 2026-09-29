@@ -314,6 +314,74 @@
     };
     const samePath=(link,path)=>Boolean(link&&normalizedPath(link.getAttribute('href'))===path);
     const textOf=(node)=>node?.textContent?.replace(/\s+/g,' ').trim()||'';
+    const NAV_CONTEXT_KEY='bhd-nav-context-v1';
+    const CONTEXT_TTL_MS=30*60*1000;
+
+    const canonicalContextForPath=(path)=>{
+      if(path==='/pages/athletes-ambassadors')return{path,main:'Solutions',tier2:'Performance',source:'canonical'};
+      return null;
+    };
+
+    const contextFromHeaderLink=(link,path)=>{
+      const desktopMain=link.closest('[data-main-item]');
+      if(desktopMain){
+        const main=textOf(desktopMain.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link'));
+        const child=link.closest('.bhd-header__dropdown-child');
+        const tier2=textOf(child?.querySelector(':scope > .bhd-header__tier2-split .bhd-header__tier2-link'));
+        return main?{path,main,tier2,source:'header',ts:Date.now()}:null;
+      }
+      const mobileMain=link.closest('[data-mobile-main]');
+      if(mobileMain){
+        const main=textOf(mobileMain.querySelector(':scope > .bhd-header__mobile-main-row > a'));
+        const child=link.closest('.bhd-header__mobile-tier2');
+        const tier2=textOf(child?.querySelector(':scope > .bhd-header__mobile-tier2-split .bhd-header__mobile-tier2-link'));
+        return main?{path,main,tier2,source:'header',ts:Date.now()}:null;
+      }
+      return null;
+    };
+
+    const contextFromSourcePage=(path)=>{
+      const source=normalizedPath(location.pathname);
+      if(path!=='/pages/athletes-ambassadors')return null;
+      const connectPaths=new Set(['/pages/partnerships','/pages/research-partnerships','/pages/retail-distribution','/pages/humanitarian-partnerships']);
+      const performancePaths=new Set(['/pages/performance-hydration','/pages/endurance-hydration','/pages/heat-high-sweat','/pages/recovery-hydration','/pages/dianna-proctor']);
+      if(connectPaths.has(source))return{path,main:'Connect',tier2:'Partnerships',source:'page',ts:Date.now()};
+      if(performancePaths.has(source))return{path,main:'Solutions',tier2:'Performance',source:'page',ts:Date.now()};
+      return null;
+    };
+
+    const persistPendingContext=(context)=>{
+      if(!context)return;
+      try{sessionStorage.setItem(NAV_CONTEXT_KEY,JSON.stringify(context))}catch(_){}
+    };
+
+    const resolveArrivalContext=(path)=>{
+      const stateContext=history.state?.bhdNavContext;
+      if(stateContext?.path===path)return stateContext;
+      try{
+        const raw=sessionStorage.getItem(NAV_CONTEXT_KEY);
+        const pending=raw?JSON.parse(raw):null;
+        sessionStorage.removeItem(NAV_CONTEXT_KEY);
+        if(pending?.path===path&&Date.now()-(pending.ts||0)<CONTEXT_TTL_MS){
+          const context={...pending,ts:pending.ts||Date.now()};
+          history.replaceState({...history.state,bhdNavContext:context},'',location.href);
+          return context;
+        }
+      }catch(_){}
+      const canonical=canonicalContextForPath(path);
+      if(canonical){
+        history.replaceState({...history.state,bhdNavContext:canonical},'',location.href);
+        return canonical;
+      }
+      return null;
+    };
+
+    const branchAllows=(mainLabel,tier2Label,context,path)=>{
+      if(!context||context.path!==path)return true;
+      if(context.main&&context.main!==mainLabel)return false;
+      if(context.tier2&&context.tier2!==tier2Label)return false;
+      return true;
+    };
 
     const clearCurrentClasses=(header)=>{
       header.querySelectorAll('.bhd-current-main,.bhd-current-tier2,.bhd-current-tier3,.bhd-current-exact,.bhd-current-blog,.bhd-current-shop').forEach(node=>{
@@ -322,7 +390,7 @@
       });
     };
 
-    const markDesktopPath=(header,path,isBlog)=>{
+    const markDesktopPath=(header,path,isBlog,arrivalContext)=>{
       header.querySelectorAll('[data-main-item]').forEach(main=>{
         const mainLink=main.querySelector(':scope > .bhd-header__split-button .bhd-header__main-link');
         const mainLabel=textOf(mainLink);
@@ -337,7 +405,8 @@
           child.querySelectorAll(':scope > .bhd-header__tier3 > a').forEach(leaf=>{
             const leafExact=samePath(leaf,path);
             const blogLeaf=isBlog&&normalizedPath(leaf.getAttribute('href'))==='/blogs/news';
-            if(leafExact||blogLeaf){
+            const allowed=branchAllows(mainLabel,textOf(tier2Link),arrivalContext,path);
+            if((leafExact||blogLeaf)&&allowed){
               leaf.classList.add('bhd-current-tier3');
               leaf.setAttribute('aria-current',leafExact?'page':'location');
               tier2Match=true;
@@ -368,7 +437,7 @@
       if(shop&&samePath(shop,path)){shop.classList.add('bhd-current-shop');shop.setAttribute('aria-current','page')}
     };
 
-    const markMobilePath=(header,path,isBlog)=>{
+    const markMobilePath=(header,path,isBlog,arrivalContext)=>{
       header.querySelectorAll('[data-mobile-main]').forEach(main=>{
         const mainLink=main.querySelector(':scope > .bhd-header__mobile-main-row > a');
         const mainLabel=textOf(mainLink);
@@ -383,7 +452,8 @@
           child.querySelectorAll(':scope > .bhd-header__mobile-tier3 > a').forEach(leaf=>{
             const leafExact=samePath(leaf,path);
             const blogLeaf=isBlog&&normalizedPath(leaf.getAttribute('href'))==='/blogs/news';
-            if(leafExact||blogLeaf){
+            const allowed=branchAllows(mainLabel,textOf(tier2Link),arrivalContext,path);
+            if((leafExact||blogLeaf)&&allowed){
               leaf.classList.add('bhd-current-tier3');
               leaf.setAttribute('aria-current',leafExact?'page':'location');
               tier2Match=true;
@@ -419,9 +489,11 @@
       header.querySelectorAll('.bhd-hover-open').forEach(node=>node.classList.remove('bhd-hover-open'));
       const path=normalizedPath(location.pathname);
       const isBlog=path==='/blogs/news'||path.startsWith('/blogs/news/');
-      markDesktopPath(header,path,isBlog);
-      markMobilePath(header,path,isBlog);
+      const arrivalContext=resolveArrivalContext(path);
+      markDesktopPath(header,path,isBlog,arrivalContext);
+      markMobilePath(header,path,isBlog,arrivalContext);
       header.dataset.bhdCurrentContext=isBlog?'Blog':textOf(header.querySelector('[data-main-item].bhd-current-main .bhd-header__main-link'))||'None';
+      header.dataset.bhdArrivalContext=arrivalContext?[arrivalContext.main,arrivalContext.tier2].filter(Boolean).join(' > '):'';
     };
 
     const breadcrumbNode=(tag,label,href=null,current=false)=>{
@@ -451,6 +523,19 @@
     };
 
     const bind=()=>{
+      if(!window.__bhdNavContextTrackingBound){
+        window.__bhdNavContextTrackingBound=true;
+        document.addEventListener('click',event=>{
+          const link=event.target?.closest?.('a[href]');
+          if(!link)return;
+          let parsed;
+          try{parsed=new URL(link.getAttribute('href'),location.origin)}catch(_){return}
+          if(parsed.origin!==location.origin)return;
+          const path=normalizedPath(parsed.pathname);
+          const context=contextFromHeaderLink(link,path)||contextFromSourcePage(path);
+          if(context)persistPendingContext(context);
+        },true);
+      }
       document.querySelectorAll('.bhd-header').forEach(header=>{
         markCurrentLocation(header);
         if(header.dataset.bhdContextObserverBound==='1')return;
