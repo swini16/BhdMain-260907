@@ -1,16 +1,16 @@
-## ChatGPT tab attribution (best effort, non-blocking)
+## ChatGPT conversation attribution (best effort, non-blocking)
 
-ChatGPT-Tab-Title:
+ChatGPT-Conversation-Title:
 ChatGPT-Chat-ID:
 ChatGPT-Chat:
 
 <!--
-COPY THE ACTUAL CHATGPT TAB / SIDEBAR TITLE VERBATIM.
+COPY THE EXACT TITLE SHOWN FOR THE ORIGINATING CHATGPT CONVERSATION IN THE SIDEBAR/TAB.
 Do not invent a task/watch label. Do not copy the PR title.
-Legacy ChatGPT-Chat-Name is intentionally ignored for Telegram tab labeling.
+Legacy ChatGPT-Tab-Title and ChatGPT-Chat-Name are ignored for Telegram conversation attribution.
 
-This metadata never blocks CI or merge.
-Telegram uses ChatGPT-Tab-Title for the header.
-If it is missing, Telegram says "TAB TITLE UNKNOWN".
+This metadata NEVER blocks CI or merge.
+Telegram uses ChatGPT-Conversation-Title for the header.
+If it is missing, Telegram says "CONVERSATION TITLE UNKNOWN".
 ChatGPT-Chat-ID / ChatGPT-Chat are optional and only add a clickable chat link.
 -->
