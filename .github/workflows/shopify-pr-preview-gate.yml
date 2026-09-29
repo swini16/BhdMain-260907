@@ -40,38 +40,44 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import os, re
+          import os,re
           body=os.environ.get("PR_BODY","")
           pr_title=os.environ.get("PR_TITLE","").strip()
-          field="ChatGPT-Conversation-Title"
-          titles=re.findall(r"(?mi)^\s*ChatGPT-Conversation-Title:\s*(\S(?:.*\S)?)\s*$", body)
-          legacy=re.findall(r"(?mi)^\s*ChatGPT-(?:Tab-Title|Chat-Name):\s*(\S(?:.*\S)?)\s*$", body)
-          warnings=[]
+
+          def vals(key):
+              rx=re.compile(rf"^\s*{re.escape(key)}\s*:\s*(.*?)\s*$",re.I|re.M)
+              return [x.strip() for x in rx.findall(body)]
 
           def norm(s):
               s=re.sub(r"^\s*\[CI[1-5]\]\s*","",s or "",flags=re.I)
               return re.sub(r"\s+"," ",s).strip().lower()
 
-          if not titles:
-              warnings.append(f"{field} missing. Telegram will show CONVERSATION TITLE UNKNOWN; CI continues.")
-          else:
-              title=titles[0].strip()
-              if len(titles)>1:
-                  warnings.append(f"Multiple {field} values found; Telegram uses the first.")
-              if len(title)>120:
-                  warnings.append(f"{field} is over 120 characters and Telegram truncates it.")
-              if norm(pr_title) and norm(title)==norm(pr_title):
-                  warnings.append(f"{field} matches the PR/task title. Use the exact ChatGPT sidebar conversation title instead.")
-              if re.match(r"^\s*(PR\s*#?\d+|\[?CI[1-5]\]?\b)", title, re.I):
-                  warnings.append(f"{field} looks like CI/PR metadata, not a ChatGPT conversation title.")
+          title=(vals("ChatGPT-Conversation-Title") or [""])[0]
+          confidence_raw=(vals("ChatGPT-Conversation-Title-Confidence") or [""])[0]
+          source=(vals("ChatGPT-Conversation-Title-Source") or [""])[0].lower()
+          verified=(vals("ChatGPT-Conversation-Title-Verified") or [""])[0].lower()
+          legacy=vals("ChatGPT-Tab-Title")+vals("ChatGPT-Chat-Name")
 
-          if legacy:
-              warnings.append("Legacy ChatGPT-Tab-Title / ChatGPT-Chat-Name is ignored for Telegram conversation attribution.")
+          allowed={"chat-ui","user-confirmed","history-exact","history-likely","context-inferred","legacy-mapped"}
+          direct={"chat-ui","user-confirmed","history-exact"}
+          try:
+              confidence=int(confidence_raw) if confidence_raw else (100 if verified=="exact" and source in direct else 0)
+          except ValueError:
+              confidence=-1
 
-          for msg in warnings:
-              print(f"::warning::{msg}")
-          if titles and not warnings:
-              print(f"ChatGPT conversation title metadata looks good: {titles[0]}")
+          same=bool(title and norm(title)==norm(pr_title))
+          looks_ci=bool(title and re.match(r"^\s*(PR\s*#?\d+|\[?CI[1-5]\]?\b)",title,re.I))
+          display=bool(title and 75<=confidence<=100 and source in allowed and not looks_ci
+                       and (not same or (confidence>=95 and source in direct)))
+
+          if not title: print("::warning::ChatGPT conversation title missing.")
+          if confidence<0 or confidence>100: print("::warning::Conversation-title confidence must be 0-100.")
+          elif title and confidence<75: print(f"::warning::Conversation-title confidence {confidence}% is below display threshold 75%.")
+          if title and source not in allowed: print("::warning::Conversation-title source missing/unrecognized.")
+          if same and not (confidence>=95 and source in direct): print("::warning::Conversation title matches PR/task title without high-confidence direct evidence.")
+          if looks_ci: print("::warning::Conversation title looks like PR/CI metadata.")
+          if legacy: print("::warning::Legacy ChatGPT title fields are ignored unless mapped into canonical confidence metadata.")
+          print(f"ChatGPT conversation attribution: {'DISPLAY' if display else 'UNKNOWN'} confidence={max(confidence,0)}% source={source or 'none'}")
           PY
 
       - name: Detect Shopify preview scope
