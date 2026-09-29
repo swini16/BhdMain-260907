@@ -336,7 +336,7 @@ jobs:
           ref="$short"
           pr_url=""
           chat_url=""
-          chat_name="⚠️ TAB TITLE UNKNOWN"
+          chat_name="⚠️ CONVERSATION TITLE UNKNOWN"
           pr_title=""
 
           if [ -n "$pr" ]; then
@@ -347,7 +347,7 @@ jobs:
             pr_title="$(printf '%s' "$pr_json" | jq -r '.title // ""' 2>/dev/null || true)"
             body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/c/[A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
             body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
-            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Tab-Title:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
+            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
             [ -n "$body_chat_name" ] && chat_name="$body_chat_name"
             if [ -n "$body_chat" ]; then chat_url="$body_chat";
             elif [ -n "$body_chat_id" ]; then chat_url="https://chatgpt.com/c/$body_chat_id";
@@ -355,9 +355,9 @@ jobs:
           fi
 
           if [ "$overall" = "success" ]; then
-            text="🟢 eHP LIVE • Tab: $chat_name • $ref • verified"
+            text="🟢 eHP LIVE • Chat: $chat_name • $ref • verified"
           else
-            text="🔴 eHP LIVE VERIFY FAILED • Tab: $chat_name • $ref"
+            text="🔴 eHP LIVE VERIFY FAILED • Chat: $chat_name • $ref"
           fi
           if [ -n "$pr_title" ]; then text="$(printf '%s\n%s' "$text" "Task: $pr_title")"; fi
           if [ -n "$pr_url" ]; then text="$(printf '%s\n%s' "$text" "$pr_url")"; fi
