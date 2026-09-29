@@ -3,6 +3,7 @@ name: Shopify PR preview gate
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
 
 permissions:
   contents: read
@@ -29,6 +30,30 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Require ChatGPT PR linkage
+        if: ${{ github.event.pull_request.title != '[CI1] Enforce ChatGPT PR linkage metadata' }}
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os, re, sys
+          body=os.environ.get("PR_BODY","")
+          url=re.search(r"(?mi)^\s*ChatGPT-Chat:\s*(https://chatgpt\.com/c/([A-Za-z0-9_-]{20,}))\s*$", body)
+          mid=re.search(r"(?mi)^\s*ChatGPT-Chat-ID:\s*([A-Za-z0-9_-]{20,})\s*$", body)
+          name=re.search(r"(?mi)^\s*ChatGPT-Chat-Name:\s*(\S(?:.*\S)?)\s*$", body)
+          chat_id=(mid.group(1) if mid else (url.group(2) if url else "")).strip()
+          bad={"","unknown","none","null","na","n-a","todo","current-bhd-ihp-plus","bhd-ihp-plus","legacy-unknown"}
+          if chat_id.lower() in bad:
+              print("::error::Every PR must include a real ChatGPT-Chat-ID (or ChatGPT-Chat URL) for its originating conversation.")
+              sys.exit(1)
+          if not name:
+              print("::error::Every PR must include ChatGPT-Chat-Name so Telegram identifies the originating conversation.")
+              sys.exit(1)
+          print("ChatGPT PR linkage metadata present.")
+          PY
 
       - name: Detect Shopify preview scope
         id: scope

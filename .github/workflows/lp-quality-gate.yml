@@ -247,8 +247,6 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          CHATGPT_URL_SECRET: ${{ secrets.CHATGPT_BHD_IHP_PLUS_URL }}
-          CHATGPT_URL_VAR: ${{ vars.CHATGPT_BHD_IHP_PLUS_URL }}
           GH_TOKEN: ${{ github.token }}
           LIQUID_RESULT: ${{ needs['liquid-theme-check'].result }}
           CONTRACT_RESULT: ${{ needs['lp-contracts'].result }}
@@ -270,8 +268,8 @@ jobs:
           pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
           ref="$short"
           pr_url=""
-          chat_url="${CHATGPT_URL_SECRET:-${CHATGPT_URL_VAR:-}}"
-          chat_name="BHD iHP+"
+          chat_url=""
+          chat_name="⚠️ UNLINKED CHAT"
 
           if [ -n "$pr" ]; then
             ref="PR #$pr • $short"
