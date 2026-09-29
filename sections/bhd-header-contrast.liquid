@@ -482,7 +482,7 @@ Sync marker: unified-blue-context-plus-minus-20260910.
     .bhd-header__compact-shop-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto;margin:0 .2rem;line-height:1}
     .bhd-header__compact-shop{display:inline-flex;align-items:center;justify-content:center;min-height:3.55rem;padding:0 1.15rem;border-radius:999px;background:rgb(var(--color-button));color:rgb(var(--color-button-text))!important;font-size:1.2rem;font-weight:800;line-height:1;text-decoration:none!important;white-space:nowrap;box-shadow:0 .25rem .8rem rgba(11,45,103,.14)}
     .bhd-header__compact-shop:hover{filter:brightness(.96)}
-    .bhd-header__compact-shop-shipping{display:block;margin-top:.22rem;color:#2c6b46;font-size:.76rem;font-weight:750;line-height:1;white-space:nowrap}
+    .bhd-header__compact-shop-shipping{display:none}
   }
   @media screen and (max-width:600px){
     .bhd-header .bhd-header__actions>a[aria-label="Account"]{display:none}
@@ -494,6 +494,17 @@ Sync marker: unified-blue-context-plus-minus-20260910.
     .bhd-header__compact-shop-shipping{font-size:.64rem}
     .bhd-header .bhd-header__actions{gap:0}
     .bhd-header .bhd-header__icon-button{width:3.35rem;height:3.35rem}
+  }
+
+  @media screen and (max-width:989px){
+    .bhd-header .bhd-header__mobile-toggle span,
+    .bhd-header .bhd-header__mobile-tier2-toggle span{display:grid!important;place-items:center!important;width:100%!important;height:100%!important;border:0!important;transform:none!important;font-size:0!important;line-height:1!important}
+    .bhd-header .bhd-header__mobile-toggle span::before,
+    .bhd-header .bhd-header__mobile-tier2-toggle span::before{content:'+';display:block;font-size:1.9rem;font-weight:800;line-height:1;transform:none}
+    .bhd-header .bhd-header__mobile-main.is-open>.bhd-header__mobile-main-row .bhd-header__mobile-toggle span::before,
+    .bhd-header .bhd-header__mobile-tier2.is-tier2-open>.bhd-header__mobile-tier2-split .bhd-header__mobile-tier2-toggle span::before{content:'−'}
+    .bhd-header .bhd-header__mobile-toggle,
+    .bhd-header .bhd-header__mobile-tier2-toggle{min-width:4.4rem;min-height:4.4rem}
   }
 </style>
 
