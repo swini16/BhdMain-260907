@@ -39,40 +39,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          import os, re
-          body=os.environ.get("PR_BODY","")
-          pr_title=os.environ.get("PR_TITLE","").strip()
-          field="ChatGPT-Conversation-Title"
-          titles=re.findall(r"(?mi)^\s*ChatGPT-Conversation-Title:\s*(\S(?:.*\S)?)\s*$", body)
-          legacy=re.findall(r"(?mi)^\s*ChatGPT-(?:Tab-Title|Chat-Name):\s*(\S(?:.*\S)?)\s*$", body)
-          warnings=[]
-
-          def norm(s):
-              s=re.sub(r"^\s*\[CI[1-5]\]\s*","",s or "",flags=re.I)
-              return re.sub(r"\s+"," ",s).strip().lower()
-
-          if not titles:
-              warnings.append(f"{field} missing. Telegram will show CONVERSATION TITLE UNKNOWN; CI continues.")
-          else:
-              title=titles[0].strip()
-              if len(titles)>1:
-                  warnings.append(f"Multiple {field} values found; Telegram uses the first.")
-              if len(title)>120:
-                  warnings.append(f"{field} is over 120 characters and Telegram truncates it.")
-              if norm(pr_title) and norm(title)==norm(pr_title):
-                  warnings.append(f"{field} matches the PR/task title. Use the exact ChatGPT sidebar conversation title instead.")
-              if re.match(r"^\s*(PR\s*#?\d+|\[?CI[1-5]\]?\b)", title, re.I):
-                  warnings.append(f"{field} looks like CI/PR metadata, not a ChatGPT conversation title.")
-
-          if legacy:
-              warnings.append("Legacy ChatGPT-Tab-Title / ChatGPT-Chat-Name is ignored for Telegram conversation attribution.")
-
-          for msg in warnings:
-              print(f"::warning::{msg}")
-          if titles and not warnings:
-              print(f"ChatGPT conversation title metadata looks good: {titles[0]}")
-          PY
+          attribution="$(python3 .github/scripts/chat_title_attribution.py)"
+          title="$(printf '%s' "$attribution" | jq -r '.title // ""')"
+          rule="$(printf '%s' "$attribution" | jq -r '.rule // "none"')"
+          if [ -n "$title" ]; then
+            echo "ChatGPT conversation attribution candidate: $title [$rule]"
+          else
+            echo "::warning::No usable ChatGPT conversation title candidate found; Telegram may show UNKNOWN."
+          fi
 
       - name: Detect Shopify preview scope
         id: scope
