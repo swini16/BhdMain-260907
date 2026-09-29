@@ -271,6 +271,7 @@ jobs:
           ref="$short"
           pr_url=""
           chat_url="${CHATGPT_URL_SECRET:-${CHATGPT_URL_VAR:-}}"
+          chat_name="BHD iHP+"
 
           if [ -n "$pr" ]; then
             ref="PR #$pr • $short"
@@ -278,15 +279,17 @@ jobs:
             body="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" --jq '.body // ""' 2>/dev/null || true)"
             body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/[^[:space:]]+).*$#\1#p' | head -n1)"
             body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]+).*$#\1#p' | head -n1)"
+            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-Name:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-80)"
+            [ -n "$body_chat_name" ] && chat_name="$body_chat_name"
             if [ -n "$body_chat" ]; then chat_url="$body_chat";
             elif [ -n "$body_chat_id" ]; then chat_url="https://chatgpt.com/c/$body_chat_id";
             fi
           fi
 
           if [ "$overall" = "success" ]; then
-            text="🟢 eHP LIVE • $ref • verified"
+            text="🟢 eHP LIVE • $chat_name • $ref • verified"
           else
-            text="🔴 eHP LIVE VERIFY FAILED • $ref"
+            text="🔴 eHP LIVE VERIFY FAILED • $chat_name • $ref"
           fi
           if [ -n "$pr_url" ]; then text="$(printf '%s\n%s' "$text" "$pr_url")"; fi
           if [ -n "$chat_url" ]; then text="$(printf '%s\n%s' "$text" "ChatGPT: $chat_url")"; fi
