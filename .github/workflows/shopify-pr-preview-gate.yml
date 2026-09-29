@@ -31,8 +31,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Require ChatGPT PR linkage
-        if: ${{ github.event.pull_request.title != '[CI1] Enforce ChatGPT PR linkage metadata' }}
+      - name: Require ChatGPT chat title
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
         shell: bash
@@ -41,18 +40,16 @@ jobs:
           python3 - <<'PY'
           import os, re, sys
           body=os.environ.get("PR_BODY","")
-          url=re.search(r"(?mi)^\s*ChatGPT-Chat:\s*(https://chatgpt\.com/c/([A-Za-z0-9_-]{20,}))\s*$", body)
-          mid=re.search(r"(?mi)^\s*ChatGPT-Chat-ID:\s*([A-Za-z0-9_-]{20,})\s*$", body)
-          name=re.search(r"(?mi)^\s*ChatGPT-Chat-Name:\s*(\S(?:.*\S)?)\s*$", body)
-          chat_id=(mid.group(1) if mid else (url.group(2) if url else "")).strip()
-          bad={"","unknown","none","null","na","n-a","todo","current-bhd-ihp-plus","bhd-ihp-plus","legacy-unknown"}
-          if chat_id.lower() in bad:
-              print("::error::Every PR must include a real ChatGPT-Chat-ID (or ChatGPT-Chat URL) for its originating conversation.")
+          match=re.search(r"(?mi)^\s*ChatGPT-Chat-Name:\s*(\S(?:.*\S)?)\s*$", body)
+          title=(match.group(1).strip() if match else "")
+          bad={"","unknown","none","null","na","n-a","todo","unlinked chat","legacy-unknown"}
+          if title.lower() in bad:
+              print("::error::Every PR must include ChatGPT-Chat-Name with the originating ChatGPT conversation title.")
               sys.exit(1)
-          if not name:
-              print("::error::Every PR must include ChatGPT-Chat-Name so Telegram identifies the originating conversation.")
+          if len(title) > 120:
+              print("::error::ChatGPT-Chat-Name must be 120 characters or fewer.")
               sys.exit(1)
-          print("ChatGPT PR linkage metadata present.")
+          print(f"ChatGPT chat title present: {title}")
           PY
 
       - name: Detect Shopify preview scope
