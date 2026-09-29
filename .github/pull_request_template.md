@@ -2,9 +2,11 @@
 
 ChatGPT-Chat-ID:
 ChatGPT-Chat-Name:
+ChatGPT-Chat:
 
 <!--
-Use the real originating ChatGPT conversation ID. Alternatively provide:
-ChatGPT-Chat: https://chatgpt.com/c/<conversation-id>
-PRs without real linkage metadata fail the required gate.
+All PRs require the real originating ChatGPT conversation ID and conversation name.
+ChatGPT-Chat is optional, but if supplied it must be:
+https://chatgpt.com/c/<same ChatGPT-Chat-ID>
+Generic names such as "BHD iHP+" are rejected.
 -->
