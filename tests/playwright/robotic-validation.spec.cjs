@@ -787,7 +787,7 @@ test('public lead and signup forms keep non-destructive Shopify submission contr
 
   await assertPostForm('/pages/contact', '#ContactForm', 'general contact');
   await expect(page.locator('#ContactForm input[name="contact[email]"]')).toHaveCount(1);
-  await expect(page.locator('#ContactForm textarea[name="contact[body]"]')).toHaveCount(1);
+  await expect(page.locator('#ContactForm #ContactForm-body')).toHaveCount(1);
 
   await assertPostForm('/pages/investor-contact', '#BhdInvestorInterest', 'investor contact');
   await expect(page.locator('#BhdInvestorInterest input[name="contact[email]"]')).toHaveCount(1);
