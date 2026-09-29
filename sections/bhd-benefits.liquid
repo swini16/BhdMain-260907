@@ -1,9 +1,9 @@
 <section id="BhdBenefits-{{ section.id }}" class="bhd-benefits color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width bhd-benefits__grid">
-    <div class="bhd-benefit"><span class="bhd-benefit__icon">◉</span><span>Science-informed formula</span></div>
-    <div class="bhd-benefit"><span class="bhd-benefit__icon">✦</span><span>5 electrolytes</span></div>
-    <div class="bhd-benefit"><span class="bhd-benefit__icon">⌁</span><span>Built for real life</span></div>
-    <div class="bhd-benefit"><span class="bhd-benefit__icon">♡</span><span>For work, activity &amp; travel</span></div>
+    <div class="bhd-benefit"><span class="bhd-benefit__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v5l-5 9a3 3 0 0 0 2.6 4.5h8.8A3 3 0 0 0 19 17l-5-9V3"/><path d="M7.5 15h9"/></svg></span><span>Science-informed formula</span></div>
+    <div class="bhd-benefit"><span class="bhd-benefit__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="7"/></svg></span><span>5 electrolytes</span></div>
+    <div class="bhd-benefit"><span class="bhd-benefit__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17c3-6 6-9 10-9 2.5 0 4.5 1.2 6 3"/><path d="M15 5h5v5"/></svg></span><span>Built for real life</span></div>
+    <div class="bhd-benefit"><span class="bhd-benefit__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 13h4l2-6 4 12 2-6h4"/></svg></span><span>For work, activity &amp; travel</span></div>
   </div>
 </section>
 
@@ -11,11 +11,13 @@
   #BhdBenefits-{{ section.id }} { border-top:1px solid rgba(var(--color-foreground),.08); border-bottom:1px solid rgba(var(--color-foreground),.08); }
   #BhdBenefits-{{ section.id }} .bhd-benefits__grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; padding-top:2rem; padding-bottom:2rem; }
   #BhdBenefits-{{ section.id }} .bhd-benefit { display:flex; align-items:center; justify-content:center; gap:.9rem; font-weight:650; line-height:1.25; text-align:left; }
-  #BhdBenefits-{{ section.id }} .bhd-benefit__icon { width:3.2rem; height:3.2rem; display:grid; place-items:center; border-radius:999px; background:rgba(var(--color-foreground),.055); font-size:1.8rem; flex:0 0 auto; }
+  #BhdBenefits-{{ section.id }} .bhd-benefit__icon { width:3.2rem; height:3.2rem; display:grid; place-items:center; border-radius:999px; background:rgba(var(--color-foreground),.055); color:#0b2d67; flex:0 0 auto; }
+  #BhdBenefits-{{ section.id }} .bhd-benefit__icon svg{width:1.7rem;height:1.7rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   @media screen and (max-width:749px){
     #BhdBenefits-{{ section.id }} .bhd-benefits__grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.1rem .8rem; padding-top:1.5rem; padding-bottom:1.5rem; }
     #BhdBenefits-{{ section.id }} .bhd-benefit { justify-content:flex-start; font-size:1.2rem; }
-    #BhdBenefits-{{ section.id }} .bhd-benefit__icon { width:2.8rem; height:2.8rem; font-size:1.5rem; }
+    #BhdBenefits-{{ section.id }} .bhd-benefit__icon { width:2.8rem; height:2.8rem; }
+    #BhdBenefits-{{ section.id }} .bhd-benefit__icon svg{width:1.55rem;height:1.55rem}
   }
 </style>
 
