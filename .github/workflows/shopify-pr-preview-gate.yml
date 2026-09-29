@@ -43,20 +43,20 @@ jobs:
           import os, re
           body=os.environ.get("PR_BODY","")
           pr_title=os.environ.get("PR_TITLE","").strip()
-          matches=re.findall(r"(?mi)^\s*ChatGPT-Tab-Title:\s*(\S(?:.*\S)?)\s*$", body)
+          matches=re.findall(r"(?mi)^\s*ChatGPT-Conversation-Title:\s*(\S(?:.*\S)?)\s*$", body)
           if not matches:
-              print("::warning::ChatGPT-Tab-Title missing. Telegram will show TAB TITLE UNKNOWN; CI continues.")
+              print("::warning::ChatGPT-Conversation-Title missing. Telegram will show CONVERSATION TITLE UNKNOWN; CI continues.")
           else:
               title=matches[0].strip()
               norm_pr=re.sub(r"^\s*\[CI[1-5]\]\s*","",pr_title,flags=re.I).strip().lower()
               if len(matches)>1:
-                  print("::warning::Multiple ChatGPT-Tab-Title values found; Telegram uses the first.")
+                  print("::warning::Multiple ChatGPT-Conversation-Title values found; Telegram uses the first.")
               if len(title)>120:
-                  print("::warning::ChatGPT-Tab-Title is over 120 characters and will be truncated.")
+                  print("::warning::ChatGPT-Conversation-Title is over 120 characters and will be truncated.")
               if norm_pr and title.lower()==norm_pr:
-                  print("::warning::ChatGPT-Tab-Title matches the PR/task title. Copy the actual ChatGPT tab/sidebar conversation title instead.")
+                  print("::warning::ChatGPT-Conversation-Title matches the PR/task title. Copy the actual ChatGPT sidebar conversation title instead.")
               else:
-                  print(f"ChatGPT tab title metadata: {title}")
+                  print(f"ChatGPT conversation title metadata: {title}")
           PY
 
       - name: Detect Shopify preview scope
