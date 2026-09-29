@@ -275,6 +275,18 @@ jobs:
           if(!(await hydrationToggle.isVisible())) throw new Error('Desktop mega-menu tier 2 toggle not live');
           await hydrationToggle.click();
           if(!(await home.getByRole('link',{name:'How Hydration Works'}).first().isVisible())) throw new Error('Desktop mega-menu tier 3 not live');
+
+          const solutionsToggle=home.getByRole('button',{name:/Open Solutions menu/i}).first();
+          await solutionsToggle.click();
+          const performanceToggle=home.getByRole('button',{name:/Open Performance submenu/i}).first();
+          if(!(await performanceToggle.isVisible())) throw new Error('Performance submenu not live');
+          await performanceToggle.click();
+          const athleticsLink=home.getByRole('link',{name:'Athletics',exact:true}).first();
+          const diannaMenuLink=home.getByRole('link',{name:'Dianna Proctor',exact:true}).first();
+          if(!(await athleticsLink.isVisible())) throw new Error('Performance > Athletics link not live');
+          if(!(await diannaMenuLink.isVisible())) throw new Error('Performance > Dianna Proctor link not live');
+          const menuText=await home.locator('header').innerText();
+          if(/Athlete\s*&\s*Team|Athletes\s*&\s*Ambassadors|Athletes,\s*Teams\s*&\s*Leagues/i.test(menuText)) throw new Error('Redundant athlete labels are still visible in the mega menu');
           await home.close();
 
           for (const path of ['/pages/performance-hydration','/pages/heat-high-sweat','/pages/dianna-proctor']) {
@@ -367,7 +379,10 @@ jobs:
             pr_title="$(printf '%s' "$pr_json" | jq -r '.title // ""' 2>/dev/null || true)"
             body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/c/[A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
             body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
-            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
+            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-Name:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
+            if [ -z "$body_chat_name" ]; then
+              body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
+            fi
             [ -n "$body_chat_name" ] && chat_name="$body_chat_name"
             if [ -n "$body_chat" ]; then chat_url="$body_chat";
             elif [ -n "$body_chat_id" ]; then chat_url="https://chatgpt.com/c/$body_chat_id";

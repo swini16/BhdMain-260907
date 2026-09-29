@@ -101,11 +101,13 @@
                   <a class="bhd-header__mobile-tier2-link" href="{{ second_link.url }}">{{ second_link.title | escape }}</a>
                   {% if second_link.links.size > 0 %}<button type="button" class="bhd-header__mobile-tier2-toggle" aria-expanded="false" aria-label="Open {{ second_link.title | escape }} submenu"><span aria-hidden="true"></span></button>{% endif %}
                 </div>
-                {% if second_link.links.size > 0 or top_link.title == 'Connect' and second_link.title == 'Partnerships' %}
+                {% if second_link.links.size > 0 or top_link.title == 'Connect' and second_link.title == 'Partnerships' or top_link.title == 'Solutions' and second_link.title == 'Performance' %}
                   <div class="bhd-header__mobile-tier3">
                     {% for third_link in second_link.links %}<a href="{{ third_link.url }}">{{ third_link.title | escape }}</a>{% endfor %}
                     {% if top_link.title == 'Connect' and second_link.title == 'Partnerships' %}
-                      <a href="/pages/athlete-team">Athlete &amp; Team</a><a href="/pages/athletes-ambassadors">Athletes &amp; Ambassadors</a><a href="/pages/dianna-proctor">Dianna Proctor</a>
+                      <a href="/pages/athletes-ambassadors">Athletics</a>
+                    {% elsif top_link.title == 'Solutions' and second_link.title == 'Performance' %}
+                      <a href="/pages/dianna-proctor">Dianna Proctor</a><a href="/pages/athletes-ambassadors">Athletics</a>
                     {% endif %}
                   </div>
                 {% endif %}
@@ -131,11 +133,13 @@
             {% for second_link in top_link.links %}
               <div class="bhd-header__dropdown-child">
                 <div class="bhd-header__tier2-split"><a class="bhd-header__tier2-link" href="{{ second_link.url }}">{{ second_link.title | escape }}</a>{% if second_link.links.size > 0 %}<button type="button" class="bhd-header__tier2-toggle" aria-expanded="false" aria-label="Open {{ second_link.title | escape }} submenu"><span aria-hidden="true"></span></button>{% endif %}</div>
-                {% if second_link.links.size > 0 or top_link.title == 'Connect' and second_link.title == 'Partnerships' %}
+                {% if second_link.links.size > 0 or top_link.title == 'Connect' and second_link.title == 'Partnerships' or top_link.title == 'Solutions' and second_link.title == 'Performance' %}
                   <div class="bhd-header__tier3">
                     {% for third_link in second_link.links %}<a href="{{ third_link.url }}">{{ third_link.title | escape }}</a>{% endfor %}
                     {% if top_link.title == 'Connect' and second_link.title == 'Partnerships' %}
-                      <a href="/pages/athlete-team">Athlete &amp; Team</a><a href="/pages/athletes-ambassadors">Athletes &amp; Ambassadors</a><a href="/pages/dianna-proctor">Dianna Proctor</a>
+                      <a href="/pages/athletes-ambassadors">Athletics</a>
+                    {% elsif top_link.title == 'Solutions' and second_link.title == 'Performance' %}
+                      <a href="/pages/dianna-proctor">Dianna Proctor</a><a href="/pages/athletes-ambassadors">Athletics</a>
                     {% endif %}
                   </div>
                 {% endif %}
