@@ -13,6 +13,7 @@ permissions:
   contents: read
   actions: read
   issues: write
+  pull-requests: read
 
 concurrency:
   group: storefront-smoke-${{ github.ref }}
@@ -251,3 +252,44 @@ jobs:
 
           gh issue edit "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file /tmp/storefront-qa-recovered.md
           gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason completed
+
+
+      - name: Notify Telegram: eHP live
+        if: ${{ success() && github.event_name == 'push' }}
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          short="${GITHUB_SHA:0:8}"
+          pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
+          ref="$short"
+          if [ -n "$pr" ]; then ref="PR #$pr • $short"; fi
+          text="🟢 eHP LIVE • $ref • verified
+          https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}" >/dev/null
+
+      - name: Notify Telegram: eHP live verification failed
+        if: ${{ failure() && github.event_name == 'push' }}
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          short="${GITHUB_SHA:0:8}"
+          pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
+          ref="$short"
+          if [ -n "$pr" ]; then ref="PR #$pr • $short"; fi
+          text="🔴 eHP LIVE VERIFY FAILED • $ref
+          https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}" >/dev/null
