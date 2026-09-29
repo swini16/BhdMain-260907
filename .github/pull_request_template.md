@@ -1,7 +1,7 @@
 ## ChatGPT linkage (required)
 
-ChatGPT-Chat-ID: 
-ChatGPT-Chat-Name: 
+ChatGPT-Chat-ID:
+ChatGPT-Chat-Name:
 
 <!--
 Use the real originating ChatGPT conversation ID. Alternatively provide:
