@@ -122,6 +122,20 @@ jobs:
           print(f"CI1 static sanity passed for {len(changed)} changed files")
           PY
 
+      - name: Block banned personalization copy and rejected imagery
+        if: steps.scope.outputs.relevant == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RIniE 'personalized|personalised|personalization|personalisation|individualized|individualised|proprietary|scientific testing|sweat testing|sweat sodium test|unique sweat profile|permanent personal number' snippets sections templates assets config layout locales --include='*.liquid' --include='*.json' --include='*.js' --include='*.css'; then
+            echo "::error::Public storefront contains banned personalization/testing/proprietary language."
+            exit 1
+          fi
+          if grep -RIniE '3771085|4148942|260202_DiannaProctor-1\.jpg|260202_DiannaProctor\.jpg' snippets sections templates assets config layout locales --include='*.liquid' --include='*.json' --include='*.js' --include='*.css'; then
+            echo "::error::Rejected or low-quality storefront imagery was reintroduced."
+            exit 1
+          fi
+
       - name: Verify Shopify preview credential
         if: steps.scope.outputs.relevant == 'true'
         shell: bash
