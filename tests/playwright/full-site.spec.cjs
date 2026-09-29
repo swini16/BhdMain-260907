@@ -154,7 +154,19 @@ async function scrollForLazyAssets(page) {
 }
 
 async function auditPage(browser, path, { themeId = PREVIEW_THEME_ID } = {}) {
-  const context = await browser.newContext();
+  const context = await browser.newContext({
+    extraHTTPHeaders: { 'DNT': '1', 'X-BHD-Automation': '1' },
+  });
+
+  // The full-site crawler is intentionally synthetic. Never let it emit
+  // customer analytics or pollute marketing/funnel reporting.
+  await context.route('**/*', async (route) => {
+    if (isAnalyticsUrl(route.request().url())) {
+      await route.abort();
+      return;
+    }
+    await route.continue();
+  });
 
   const page = await context.newPage();
   const firstPartyFailures = [];
