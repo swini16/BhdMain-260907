@@ -1,3 +1,4 @@
+# self-test-trigger: 3
 name: Telegram deploy alert self-test
 
 on:
