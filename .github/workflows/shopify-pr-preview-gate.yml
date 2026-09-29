@@ -40,38 +40,32 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import os, re
+          import os,re
           body=os.environ.get("PR_BODY","")
           pr_title=os.environ.get("PR_TITLE","").strip()
-          field="ChatGPT-Conversation-Title"
-          titles=re.findall(r"(?mi)^\s*ChatGPT-Conversation-Title:\s*(\S(?:.*\S)?)\s*$", body)
-          legacy=re.findall(r"(?mi)^\s*ChatGPT-(?:Tab-Title|Chat-Name):\s*(\S(?:.*\S)?)\s*$", body)
-          warnings=[]
-
+          def vals(key):
+              rx=re.compile(rf"^\s*{re.escape(key)}\s*:\s*(.*?)\s*$",re.I|re.M)
+              return [x.strip() for x in rx.findall(body)]
           def norm(s):
               s=re.sub(r"^\s*\[CI[1-5]\]\s*","",s or "",flags=re.I)
               return re.sub(r"\s+"," ",s).strip().lower()
-
-          if not titles:
-              warnings.append(f"{field} missing. Telegram will show CONVERSATION TITLE UNKNOWN; CI continues.")
-          else:
-              title=titles[0].strip()
-              if len(titles)>1:
-                  warnings.append(f"Multiple {field} values found; Telegram uses the first.")
-              if len(title)>120:
-                  warnings.append(f"{field} is over 120 characters and Telegram truncates it.")
-              if norm(pr_title) and norm(title)==norm(pr_title):
-                  warnings.append(f"{field} matches the PR/task title. Use the exact ChatGPT sidebar conversation title instead.")
-              if re.match(r"^\s*(PR\s*#?\d+|\[?CI[1-5]\]?\b)", title, re.I):
-                  warnings.append(f"{field} looks like CI/PR metadata, not a ChatGPT conversation title.")
-
-          if legacy:
-              warnings.append("Legacy ChatGPT-Tab-Title / ChatGPT-Chat-Name is ignored for Telegram conversation attribution.")
-
-          for msg in warnings:
-              print(f"::warning::{msg}")
-          if titles and not warnings:
-              print(f"ChatGPT conversation title metadata looks good: {titles[0]}")
+          titles=vals("ChatGPT-Conversation-Title")
+          verified=vals("ChatGPT-Conversation-Title-Verified")
+          sources=vals("ChatGPT-Conversation-Title-Source")
+          legacy=vals("ChatGPT-Tab-Title")+vals("ChatGPT-Chat-Name")
+          title=titles[0] if titles else ""
+          proof=(verified[0].lower() if verified else "")
+          source=(sources[0].lower() if sources else "")
+          ok_sources={"chat-ui","user-confirmed","history-exact"}
+          trusted=bool(title and len(titles)==1 and len(title)<=120 and proof=="exact" and source in ok_sources
+                       and norm(title)!=norm(pr_title)
+                       and not re.match(r"^\s*(PR\s*#?\d+|\[?CI[1-5]\]?\b)",title,re.I))
+          if not title: print("::warning::ChatGPT-Conversation-Title missing; Telegram remains unlabeled.")
+          if title and proof!="exact": print("::warning::Conversation title is not explicitly verified exact; Telegram remains unlabeled.")
+          if title and source not in ok_sources: print("::warning::Conversation title lacks accepted exact-title provenance; Telegram remains unlabeled.")
+          if title and norm(title)==norm(pr_title): print("::warning::Conversation title matches PR/task title; Telegram remains unlabeled.")
+          if legacy: print("::warning::Legacy ChatGPT title fields are ignored.")
+          print("ChatGPT conversation-title trust: "+("TRUSTED" if trusted else "UNLABELED"))
           PY
 
       - name: Detect Shopify preview scope
