@@ -254,12 +254,14 @@ jobs:
           gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason completed
 
 
+
       - name: Notify Telegram: eHP live
         if: ${{ success() && github.event_name == 'push' }}
         continue-on-error: true
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CHATGPT_BHD_IHP_PLUS_URL: ${{ secrets.CHATGPT_BHD_IHP_PLUS_URL }}
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
@@ -268,27 +270,41 @@ jobs:
           pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
           ref="$short"
           pr_url=""
+          chat_url="${CHATGPT_BHD_IHP_PLUS_URL:-}"
+
           if [ -n "$pr" ]; then
             ref="PR #$pr • $short"
             pr_url="https://github.com/$GITHUB_REPOSITORY/pull/$pr"
+            pr_json="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" 2>/dev/null || true)"
+            body="$(printf '%s' "$pr_json" | jq -r '.body // ""' 2>/dev/null || true)"
+            body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/[^[:space:]]+).*$#\1#p' | head -n1)"
+            body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]+).*$#\1#p' | head -n1)"
+            if [ -n "$body_chat" ]; then
+              chat_url="$body_chat"
+            elif [ -n "$body_chat_id" ]; then
+              chat_url="https://chatgpt.com/c/$body_chat_id"
+            fi
           fi
+
           text="🟢 eHP LIVE • $ref • verified"
           [ -n "$pr_url" ] && text="$text
 $pr_url"
-          [ -n "${{ vars.CHATGPT_BHD_IHP_PLUS_URL }}" ] && text="$text
-ChatGPT: ${{ vars.CHATGPT_BHD_IHP_PLUS_URL }}"
+          [ -n "$chat_url" ] && text="$text
+ChatGPT: $chat_url"
           text="$text
 https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
           curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
             --data-urlencode "text=${text}" >/dev/null
 
-      - name: Notify Telegram: eHP live verification failed
+      - name: Notify Telegram: eHP failure
         if: ${{ failure() && github.event_name == 'push' }}
         continue-on-error: true
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CHATGPT_BHD_IHP_PLUS_URL: ${{ secrets.CHATGPT_BHD_IHP_PLUS_URL }}
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
@@ -297,17 +313,30 @@ https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
           ref="$short"
           pr_url=""
+          chat_url="${CHATGPT_BHD_IHP_PLUS_URL:-}"
+
           if [ -n "$pr" ]; then
             ref="PR #$pr • $short"
             pr_url="https://github.com/$GITHUB_REPOSITORY/pull/$pr"
+            pr_json="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" 2>/dev/null || true)"
+            body="$(printf '%s' "$pr_json" | jq -r '.body // ""' 2>/dev/null || true)"
+            body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/[^[:space:]]+).*$#\1#p' | head -n1)"
+            body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]+).*$#\1#p' | head -n1)"
+            if [ -n "$body_chat" ]; then
+              chat_url="$body_chat"
+            elif [ -n "$body_chat_id" ]; then
+              chat_url="https://chatgpt.com/c/$body_chat_id"
+            fi
           fi
+
           text="🔴 eHP LIVE VERIFY FAILED • $ref"
           [ -n "$pr_url" ] && text="$text
 $pr_url"
-          [ -n "${{ vars.CHATGPT_BHD_IHP_PLUS_URL }}" ] && text="$text
-ChatGPT: ${{ vars.CHATGPT_BHD_IHP_PLUS_URL }}"
+          [ -n "$chat_url" ] && text="$text
+ChatGPT: $chat_url"
           text="$text
 https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
           curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
             --data-urlencode "text=${text}" >/dev/null
