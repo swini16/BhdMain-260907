@@ -1,10 +1,9 @@
-## ChatGPT linkage (required)
+## ChatGPT source (required)
 
-ChatGPT-Chat-ID:
 ChatGPT-Chat-Name:
 
 <!--
-Use the real originating ChatGPT conversation ID. Alternatively provide:
-ChatGPT-Chat: https://chatgpt.com/c/<conversation-id>
-PRs without real linkage metadata fail the required gate.
+Use the exact originating ChatGPT conversation title.
+This title is included in Telegram PR/deploy status messages.
+ChatGPT conversation ID/URL is optional and not required by CI.
 -->
