@@ -379,11 +379,41 @@ jobs:
             pr_title="$(printf '%s' "$pr_json" | jq -r '.title // ""' 2>/dev/null || true)"
             body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/c/[A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
             body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
-            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-Name:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
-            if [ -z "$body_chat_name" ]; then
-              body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
+            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
+            body_chat_confidence="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title-Confidence:[[:space:]]*([0-9]{1,3})[[:space:]]*$#\1#p' | head -n1)"
+            body_chat_verified="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title-Verified:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | tr '[:upper:]' '[:lower:]')"
+            body_chat_source="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Conversation-Title-Source:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | tr '[:upper:]' '[:lower:]')"
+
+            if [ -z "$body_chat_confidence" ] && [ "$body_chat_verified" = "exact" ]; then
+              body_chat_confidence="100"
             fi
-            [ -n "$body_chat_name" ] && chat_name="$body_chat_name"
+            case "$body_chat_confidence" in ''|*[!0-9]*) body_chat_confidence="0" ;; esac
+            if [ "$body_chat_confidence" -gt 100 ] 2>/dev/null; then body_chat_confidence="0"; fi
+
+            normalized_pr="$(printf '%s' "$pr_title" | sed -E 's/^[[:space:]]*\[CI[1-5]\][[:space:]]*//' | tr '[:upper:]' '[:lower:]')"
+            normalized_chat="$(printf '%s' "$body_chat_name" | tr '[:upper:]' '[:lower:]')"
+            source_ok="false"
+            direct_source="false"
+            case "$body_chat_source" in
+              chat-ui|user-confirmed|history-exact) source_ok="true"; direct_source="true" ;;
+              history-likely|context-inferred|legacy-mapped) source_ok="true" ;;
+            esac
+
+            title_ok="false"
+            if [ -n "$body_chat_name" ] && [ "$source_ok" = "true" ] && [ "$body_chat_confidence" -ge 75 ] 2>/dev/null &&
+               ! printf '%s' "$body_chat_name" | grep -Eqi '^[[:space:]]*(PR[[:space:]]*#?[0-9]+|\[?CI[1-5]\]?\b)'; then
+              if [ "$normalized_chat" != "$normalized_pr" ] || { [ "$direct_source" = "true" ] && [ "$body_chat_confidence" -ge 95 ]; }; then
+                title_ok="true"
+              fi
+            fi
+
+            if [ "$title_ok" = "true" ]; then
+              if [ "$body_chat_confidence" -ge 95 ]; then
+                chat_name="$body_chat_name"
+              else
+                chat_name="$body_chat_name ($body_chat_confidence% likely)"
+              fi
+            fi
             if [ -n "$body_chat" ]; then chat_url="$body_chat";
             elif [ -n "$body_chat_id" ]; then chat_url="https://chatgpt.com/c/$body_chat_id";
             fi
