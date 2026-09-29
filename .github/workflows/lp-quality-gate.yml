@@ -288,12 +288,193 @@ jobs:
           else
             text="🔴 eHP LIVE VERIFY FAILED • $ref"
           fi
-          [ -n "$pr_url" ] && text="$text
-$pr_url"
+          [ -n "$pr_url" ] && text="${text}"
+          [ -n "$chat_url" ] && text="${text}"
+          text="${text}"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"$pr_url"
           [ -n "$chat_url" ] && text="$text
 ChatGPT: $chat_url"
           text="$text
 https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"ChatGPT: $chat_url"
+          text="$text
+https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"$pr_url"
+          [ -n "$chat_url" ] && text="${text}"
+          text="$text
+https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"ChatGPT: $chat_url"
+          text="$text
+https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"$pr_url"
+          [ -n "$chat_url" ] && text="$text
+ChatGPT: $chat_url"
+          text="${text}"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"ChatGPT: $chat_url"
+          text="$text
+https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"$pr_url"
+          [ -n "$chat_url" ] && text="${text}"
+          text="$text
+https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"ChatGPT: $chat_url"
+          text="$text
+https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"ChatGPT: $chat_url"
+          text="${text}"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"$pr_url"
+          [ -n "$chat_url" ] && text="${text}"
+          text="$text
+https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"ChatGPT: $chat_url"
+          text="$text
+https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"$pr_url"
+          [ -n "$chat_url" ] && text="${text}"
+          text="${text}"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"ChatGPT: $chat_url"
+          text="$text
+https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"ChatGPT: $chat_url"
+          text="${text}"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
+\n'"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
 
           response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
