@@ -109,6 +109,14 @@ jobs:
       - run: |
           set -euo pipefail
           ! grep -RInE '^(<<<<<<<|=======|>>>>>>>)' snippets sections templates assets --include='*.liquid' --include='*.js' --include='*.css'
+          if grep -RIniE 'personalized|personalised|personalization|personalisation|individualized|individualised|proprietary|scientific testing|sweat testing|sweat sodium test|unique sweat profile|permanent personal number' snippets sections templates assets config layout locales --include='*.liquid' --include='*.json' --include='*.js' --include='*.css'; then
+            echo "::error::Public storefront copy contains banned personalization/testing/proprietary language."
+            exit 1
+          fi
+          if grep -RIniE '3771085|4148942|260202_DiannaProctor-1\.jpg|260202_DiannaProctor\.jpg' snippets sections templates assets config layout locales --include='*.liquid' --include='*.json' --include='*.js' --include='*.css'; then
+            echo "::error::Rejected/low-quality storefront imagery was reintroduced."
+            exit 1
+          fi
           python3 - <<'PY'
           from pathlib import Path
           for file in ['snippets/bhd-lp-conversion-shell.liquid','snippets/bhd-lp-conversion-open.liquid','snippets/bhd-page-lp-low-sugar.liquid','snippets/bhd-page-lp-run-the-river-edmonton.liquid','snippets/bhd-page-lp-bicarb-bonus.liquid','snippets/bhd-lp-tracking.liquid']:
@@ -257,7 +265,10 @@ jobs:
           await home.route('**/*',route=>blocked.some(x=>route.request().url().includes(x))?route.abort():route.continue());
           await home.goto('https://besthydrate.com/?bhd_live_verify='+Date.now(),{waitUntil:'domcontentloaded',timeout:45000});
           await home.waitForTimeout(1200);
-          if(await home.locator('a[href="/pages/dianna-proctor"] img[alt*="Dianna Proctor"]').count()<1) throw new Error('Homepage Dianna performance card not live');
+          const diannaCard=home.locator('a[href="/pages/dianna-proctor"] img[alt*="Dianna Proctor"]').first();
+          if(await diannaCard.count()<1) throw new Error('Homepage Dianna performance card not live');
+          const diannaSrc=await diannaCard.getAttribute('src');
+          if(!diannaSrc?.includes('DiannaP_2606-_color_balanced.jpg')) throw new Error('Homepage Dianna card is not using the approved high-resolution color-balanced asset');
           const scienceToggle=home.getByRole('button',{name:/Open Science menu/i}).first();
           await scienceToggle.click();
           const hydrationToggle=home.getByRole('button',{name:/Open Hydration Science submenu/i}).first();
@@ -265,6 +276,15 @@ jobs:
           await hydrationToggle.click();
           if(!(await home.getByRole('link',{name:'How Hydration Works'}).first().isVisible())) throw new Error('Desktop mega-menu tier 3 not live');
           await home.close();
+
+          for (const path of ['/pages/performance-hydration','/pages/heat-high-sweat','/pages/dianna-proctor']) {
+            await p.goto('https://besthydrate.com'+path+'?bhd_live_verify='+Date.now(),{waitUntil:'domcontentloaded',timeout:45000});
+            await p.waitForTimeout(900);
+            const body=(await p.locator('body').innerText()).toLowerCase();
+            if(/personalized|personalised|personalization|personalisation|individualized|individualised|proprietary|scientific testing|sweat testing|sweat sodium test|unique sweat profile/.test(body)) throw new Error(path+': banned personalization/testing/proprietary copy is live');
+            const html=await p.content();
+            if(/3771085|4148942|260202_DiannaProctor-1\.jpg|260202_DiannaProctor\.jpg/.test(html)) throw new Error(path+': rejected/low-quality imagery is live');
+          }
 
           await p.goto('https://besthydrate.com/pages/lp-01-hydration-is-more-than-water?utm_source=qa_automation&utm_medium=playwright&utm_campaign=lp_live_contract',{waitUntil:'domcontentloaded',timeout:45000});
           await p.waitForTimeout(1500);
