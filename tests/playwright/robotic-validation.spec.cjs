@@ -766,3 +766,43 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
   expect(discovered.size, 'critical link crawl should discover internal links').toBeGreaterThan(0);
   expect(failures, 'critical internal links returning HTTP errors').toEqual([]);
 });
+
+test('public lead and signup forms keep non-destructive Shopify submission contracts', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium', 'Form contract only needs one browser project.');
+
+  const assertPostForm = async (path, selector, label) => {
+    const response = await gotoWithTransientRetry(page, withQa(path));
+    expect(response, `${label}: navigation returned no response`).not.toBeNull();
+    expect(response.status(), `${label}: document HTTP status`).toBeLessThan(400);
+
+    const form = page.locator(selector).first();
+    await expect(form, `${label}: form must render`).toBeVisible();
+    const contract = await form.evaluate((node) => ({
+      method: (node.getAttribute('method') || '').toLowerCase(),
+      action: node.getAttribute('action') || '',
+    }));
+    expect(contract.method, `${label}: form method`).toBe('post');
+    expect(contract.action, `${label}: form action must be present`).not.toBe('');
+  };
+
+  await assertPostForm('/pages/contact', '#ContactForm', 'general contact');
+  await expect(page.locator('#ContactForm input[name="contact[email]"]')).toHaveCount(1);
+  await expect(page.locator('#ContactForm textarea[name="contact[body]"]')).toHaveCount(1);
+
+  await assertPostForm('/pages/investor-contact', '#BhdInvestorInterest', 'investor contact');
+  await expect(page.locator('#BhdInvestorInterest input[name="contact[email]"]')).toHaveCount(1);
+  await expect(page.locator('#BhdInvestorInterest textarea[name="contact[body]"]')).toHaveCount(1);
+
+  const homeResponse = await gotoWithTransientRetry(page, withQa('/'));
+  expect(homeResponse, 'newsletter: navigation returned no response').not.toBeNull();
+  expect(homeResponse.status(), 'newsletter: document HTTP status').toBeLessThan(400);
+  const newsletter = page.locator(
+    '#ContactFooter, form.newsletter-form, form[data-testid^="klaviyo-form-"], form.klaviyo-form'
+  ).filter({ has: page.locator('input[type="email"]') }).first();
+  await expect(newsletter, 'newsletter: an email signup form must render').toBeVisible();
+  await expect(newsletter.locator('input[type="email"]').first(), 'newsletter: email field').toBeVisible();
+
+  // This test intentionally does not submit. It validates the live customer-facing
+  // contract without creating fake support, investor or subscriber records.
+});
+
