@@ -117,10 +117,10 @@
       assign canonical_trail = '3::Connect::/pages/connect-overview::News & Contact::/pages/news-contact::Contact Us'
     when 'shop-overview'
       assign canonical_trail = '1::Shop::/pages/shop-overview::_::_::Shop'
-    when 'athletes-ambassadors'
-      assign canonical_trail = '3::Connect::/pages/connect-overview::Company & People::/pages/company-people::Athletes & Ambassadors'
+    when 'athlete-team', 'athletes-ambassadors'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Performance::/pages/performance-hydration::Athletics'
     when 'dianna-proctor'
-      assign canonical_trail = '3::Connect::/pages/connect-overview::Company & People::/pages/company-people::Dianna Proctor'
+      assign canonical_trail = '3::Solutions::/pages/solutions-overview::Performance::/pages/performance-hydration::Dianna Proctor'
   endcase
 
   assign menu_depth = 0
