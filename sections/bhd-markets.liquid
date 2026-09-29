@@ -13,7 +13,7 @@
           </a>
         </div>
         <div class="bhd-market-card__body">
-          <div class="bhd-market-card__icon">↗</div>
+          <div class="bhd-market-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20v-5h3v5H4Zm6 0V9h3v11h-3Zm6 0V4h3v16h-3Z"/></svg></div>
           <h3><a href="/pages/performance-hydration">{{ section.settings.athlete_label }}</a></h3>
           <p class="bhd-market-card__tag">Train. Perform. Recover.</p>
           <p>{{ section.settings.athlete_intro }}</p>
@@ -32,7 +32,7 @@
           </a>
         </div>
         <div class="bhd-market-card__body">
-          <div class="bhd-market-card__icon">⌁</div>
+          <div class="bhd-market-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17c3-6 6-9 10-9 2.5 0 4.5 1.2 6 3"/><path d="M15 5h5v5"/></svg></div>
           <h3><a href="/pages/everyday-wellness">{{ section.settings.daily_label }}</a></h3>
           <p class="bhd-market-card__tag">Hydration for what you do.</p>
           <p>{{ section.settings.daily_intro }}</p>
@@ -51,7 +51,7 @@
           </a>
         </div>
         <div class="bhd-market-card__body">
-          <div class="bhd-market-card__icon">+</div>
+          <div class="bhd-market-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 4h6v5h5v6h-5v5H9v-5H4V9h5V4Z"/></svg></div>
           <h3><a href="/pages/clinical-hydration">{{ section.settings.medical_label }}</a></h3>
           <p class="bhd-market-card__tag">When hydration needs more attention.</p>
           <p>{{ section.settings.medical_intro }}</p>
@@ -70,7 +70,7 @@
           </a>
         </div>
         <div class="bhd-market-card__body">
-          <div class="bhd-market-card__icon">◎</div>
+          <div class="bhd-market-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M3.5 12h17M12 3c2.2 2.5 3.3 5.5 3.3 9S14.2 18.5 12 21M12 3c-2.2 2.5-3.3 5.5-3.3 9S9.8 18.5 12 21"/></svg></div>
           <h3><a href="/pages/eco-humanitarian">{{ section.settings.humanitarian_label }}</a></h3>
           <p class="bhd-market-card__tag">ORS for a brighter tomorrow.</p>
           <p>{{ section.settings.humanitarian_intro }}</p>
@@ -107,11 +107,12 @@
   #BhdMarkets-{{ section.id }} .bhd-market-card--humanitarian .bhd-market-card__media img { object-position:center 50%; }
   #BhdMarkets-{{ section.id }} .bhd-market-card:hover .bhd-market-card__media img { transform:scale(1.025); }
   #BhdMarkets-{{ section.id }} .bhd-market-card__body { position:relative; padding:3rem 1.55rem 2rem; text-align:center; flex:1; }
-  #BhdMarkets-{{ section.id }} .bhd-market-card__icon { position:absolute; top:-2.15rem; left:50%; transform:translateX(-50%); width:4.6rem; height:4.6rem; border-radius:999px; display:grid; place-items:center; color:#fff; font-size:2rem; font-weight:800; border:4px solid #fff; box-shadow:0 .6rem 1.8rem rgba(17,47,86,.12); }
+  #BhdMarkets-{{ section.id }} .bhd-market-card__icon { position:absolute; top:-2.15rem; left:50%; transform:translateX(-50%); width:4.6rem; height:4.6rem; border-radius:999px; display:grid; place-items:center; color:#fff; border:4px solid #fff; box-shadow:0 .6rem 1.8rem rgba(17,47,86,.12); }
   #BhdMarkets-{{ section.id }} .bhd-market-card--athlete .bhd-market-card__icon { background:#ef5d6c; }
   #BhdMarkets-{{ section.id }} .bhd-market-card--daily .bhd-market-card__icon { background:#398ee1; }
   #BhdMarkets-{{ section.id }} .bhd-market-card--medical .bhd-market-card__icon { background:#48b49e; }
   #BhdMarkets-{{ section.id }} .bhd-market-card--humanitarian .bhd-market-card__icon { background:#d8a62e; }
+  #BhdMarkets-{{ section.id }} .bhd-market-card__icon svg{width:2.15rem;height:2.15rem;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
   #BhdMarkets-{{ section.id }} h3 { margin:.2rem 0 .4rem; color:#102a61; font-size:2.55rem; line-height:1.05; letter-spacing:-.02em; }
   #BhdMarkets-{{ section.id }} h3 a { color:inherit; text-decoration:none; }
   #BhdMarkets-{{ section.id }} h3 a:hover { text-decoration:underline; text-underline-offset:.16em; }
