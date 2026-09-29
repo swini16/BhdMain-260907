@@ -336,15 +336,18 @@ jobs:
           ref="$short"
           pr_url=""
           chat_url=""
-          chat_name="⚠️ UNLINKED CHAT"
+          chat_name="⚠️ TAB TITLE UNKNOWN"
+          pr_title=""
 
           if [ -n "$pr" ]; then
             ref="PR #$pr • $short"
             pr_url="https://github.com/$GITHUB_REPOSITORY/pull/$pr"
-            body="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" --jq '.body // ""' 2>/dev/null || true)"
-            body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/[^[:space:]]+).*$#\1#p' | head -n1)"
-            body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]+).*$#\1#p' | head -n1)"
-            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-Name:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-80)"
+            pr_json="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" 2>/dev/null || true)"
+            body="$(printf '%s' "$pr_json" | jq -r '.body // ""' 2>/dev/null || true)"
+            pr_title="$(printf '%s' "$pr_json" | jq -r '.title // ""' 2>/dev/null || true)"
+            body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/c/[A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
+            body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
+            body_chat_name="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Tab-Title:[[:space:]]*(.+[^[:space:]])[[:space:]]*$#\1#p' | head -n1 | cut -c1-120)"
             [ -n "$body_chat_name" ] && chat_name="$body_chat_name"
             if [ -n "$body_chat" ]; then chat_url="$body_chat";
             elif [ -n "$body_chat_id" ]; then chat_url="https://chatgpt.com/c/$body_chat_id";
@@ -352,10 +355,11 @@ jobs:
           fi
 
           if [ "$overall" = "success" ]; then
-            text="🟢 eHP LIVE • $chat_name • $ref • verified"
+            text="🟢 eHP LIVE • Tab: $chat_name • $ref • verified"
           else
-            text="🔴 eHP LIVE VERIFY FAILED • $chat_name • $ref"
+            text="🔴 eHP LIVE VERIFY FAILED • Tab: $chat_name • $ref"
           fi
+          if [ -n "$pr_title" ]; then text="$(printf '%s\n%s' "$text" "Task: $pr_title")"; fi
           if [ -n "$pr_url" ]; then text="$(printf '%s\n%s' "$text" "$pr_url")"; fi
           if [ -n "$chat_url" ]; then text="$(printf '%s\n%s' "$text" "ChatGPT: $chat_url")"; fi
           text="$(printf '%s\n%s' "$text" "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")"
