@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   liquid-theme-check:
@@ -234,3 +235,66 @@ jobs:
           await b.close();
           EOF
           node tests/lp-live-contract.mjs
+
+  notify-production:
+    name: Telegram production status
+    if: ${{ always() && github.event_name == 'push' }}
+    needs: [liquid-theme-check, lp-contracts, static-safety, rendered-browser-smoke, post-merge-live-contract]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Telegram after eHP live verification
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CHATGPT_URL_SECRET: ${{ secrets.CHATGPT_BHD_IHP_PLUS_URL }}
+          CHATGPT_URL_VAR: ${{ vars.CHATGPT_BHD_IHP_PLUS_URL }}
+          GH_TOKEN: ${{ github.token }}
+          LIQUID_RESULT: ${{ needs['liquid-theme-check'].result }}
+          CONTRACT_RESULT: ${{ needs['lp-contracts'].result }}
+          SAFETY_RESULT: ${{ needs['static-safety'].result }}
+          BROWSER_RESULT: ${{ needs['rendered-browser-smoke'].result }}
+          LIVE_RESULT: ${{ needs['post-merge-live-contract'].result }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${TELEGRAM_BOT_TOKEN:-}"
+          test -n "${TELEGRAM_CHAT_ID:-}"
+
+          overall="success"
+          for result in "$LIQUID_RESULT" "$CONTRACT_RESULT" "$SAFETY_RESULT" "$BROWSER_RESULT" "$LIVE_RESULT"; do
+            [ "$result" = "success" ] || overall="failure"
+          done
+
+          short="${GITHUB_SHA:0:8}"
+          pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
+          ref="$short"
+          pr_url=""
+          chat_url="${CHATGPT_URL_SECRET:-${CHATGPT_URL_VAR:-}}"
+
+          if [ -n "$pr" ]; then
+            ref="PR #$pr • $short"
+            pr_url="https://github.com/$GITHUB_REPOSITORY/pull/$pr"
+            body="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" --jq '.body // ""' 2>/dev/null || true)"
+            body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/[^[:space:]]+).*$#\1#p' | head -n1)"
+            body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]+).*$#\1#p' | head -n1)"
+            if [ -n "$body_chat" ]; then chat_url="$body_chat";
+            elif [ -n "$body_chat_id" ]; then chat_url="https://chatgpt.com/c/$body_chat_id";
+            fi
+          fi
+
+          if [ "$overall" = "success" ]; then
+            text="🟢 eHP LIVE • $ref • verified"
+          else
+            text="🔴 eHP LIVE VERIFY FAILED • $ref"
+          fi
+          if [ -n "$pr_url" ]; then text="$(printf '%s\n%s' "$text" "$pr_url")"; fi
+          if [ -n "$chat_url" ]; then text="$(printf '%s\n%s' "$text" "ChatGPT: $chat_url")"; fi
+          text="$(printf '%s\n%s' "$text" "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification acknowledged by Telegram."
+
