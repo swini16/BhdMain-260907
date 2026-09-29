@@ -1,0 +1,97 @@
+name: Telegram eHP production notifier
+
+'on':
+  workflow_run:
+    workflows:
+      - "LP Quality Gate"
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+jobs:
+  notify:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.event == 'push' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send eHP production status to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CHATGPT_BHD_IHP_PLUS_URL: ${{ secrets.CHATGPT_BHD_IHP_PLUS_URL }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${TELEGRAM_BOT_TOKEN:-}"
+          test -n "${TELEGRAM_CHAT_ID:-}"
+
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            conclusion="success"
+            head_sha="$GITHUB_SHA"
+            upstream_run_id="$GITHUB_RUN_ID"
+            upstream_url="https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            manual="true"
+          else
+            conclusion="${{ github.event.workflow_run.conclusion }}"
+            head_sha="${{ github.event.workflow_run.head_sha }}"
+            upstream_run_id="${{ github.event.workflow_run.id }}"
+            upstream_url="${{ github.event.workflow_run.html_url }}"
+            manual="false"
+          fi
+
+          if [ "$conclusion" = "cancelled" ] || [ "$conclusion" = "skipped" ]; then
+            echo "Upstream run was $conclusion; suppressing notification."
+            exit 0
+          fi
+
+          verified="$(gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$upstream_run_id/jobs?filter=latest&per_page=100" --jq '[.jobs[] | select(.name=="Post-merge live LP conversion contract" and .conclusion=="success")] | length')"
+          if [ "$conclusion" = "success" ] && [ "$verified" != "1" ]; then
+            echo "Post-merge live verification job was not successful; suppressing green notification."
+            exit 0
+          fi
+
+          short="${head_sha:0:8}"
+          pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$head_sha/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
+          ref="$short"
+          pr_url=""
+          chat_url="${CHATGPT_BHD_IHP_PLUS_URL:-}"
+
+          if [ -n "$pr" ]; then
+            ref="PR #$pr • $short"
+            pr_url="https://github.com/$GITHUB_REPOSITORY/pull/$pr"
+            pr_json="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" 2>/dev/null || true)"
+            body="$(printf '%s' "$pr_json" | jq -r '.body // ""' 2>/dev/null || true)"
+            body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/[^[:space:]]+).*$#\1#p' | head -n1)"
+            body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]+).*$#\1#p' | head -n1)"
+            if [ -n "$body_chat" ]; then
+              chat_url="$body_chat"
+            elif [ -n "$body_chat_id" ]; then
+              chat_url="https://chatgpt.com/c/$body_chat_id"
+            fi
+          fi
+
+          if [ "$manual" = "true" ]; then
+            text="🧪 eHP Telegram production notifier connected ✅"
+          elif [ "$conclusion" = "success" ]; then
+            text="🟢 eHP LIVE • $ref • verified"
+          else
+            text="🔴 eHP LIVE VERIFY FAILED • $ref"
+          fi
+
+          [ -n "$pr_url" ] && text="$text
+$pr_url"
+          [ -n "$chat_url" ] && text="$text
+ChatGPT: $chat_url"
+          text="$text
+$upstream_url"
+
+          response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}")"
+          test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
+          echo "eHP Telegram notification delivered."
