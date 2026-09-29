@@ -194,7 +194,9 @@ jobs:
           cat > tests/lp-live-contract.mjs <<'EOF'
           import { chromium } from 'playwright';
           const b=await chromium.launch(); const p=await b.newPage({viewport:{width:390,height:844}});
-          await p.goto('https://besthydrate.com/pages/lp-01-hydration-is-more-than-water',{waitUntil:'domcontentloaded',timeout:45000});
+          const blocked=['google-analytics.com','googletagmanager.com','api.amplitude.com','api2.amplitude.com','amplitude.com','connect.facebook.net','facebook.com/tr','analytics.tiktok.com','hotjar.com','clarity.ms','segment.io','doubleclick.net','monorail-edge.shopifysvc.com','analytics.shopify.com','a.klaviyo.com','events-api.klaviyo.com'];
+          await p.route('**/*',route=>blocked.some(x=>route.request().url().includes(x))?route.abort():route.continue());
+          await p.goto('https://besthydrate.com/pages/lp-01-hydration-is-more-than-water?utm_source=qa_automation&utm_medium=playwright&utm_campaign=lp_live_contract',{waitUntil:'domcontentloaded',timeout:45000});
           await p.waitForTimeout(1500);
           const opener=p.locator('[data-bhd-lp-open]'); if(await opener.count()!==1) throw new Error('Early LP conversion bridge not live');
           const early=p.locator('[data-lp-cta="early"]'); if(await early.count()!==1) throw new Error('Early LP CTA missing');
@@ -205,7 +207,7 @@ jobs:
           await cta.scrollIntoViewIfNeeded(); if(!(await cta.isVisible())) throw new Error('Final CTA not visible');
 
           for (const path of ['/pages/lp-02f-hydration-thats-not-too-sweet','/pages/lp-10-run-the-river-edmonton']) {
-            await p.goto('https://besthydrate.com'+path,{waitUntil:'domcontentloaded',timeout:45000});
+            await p.goto('https://besthydrate.com'+path+'?utm_source=qa_automation&utm_medium=playwright&utm_campaign=lp_live_contract',{waitUntil:'domcontentloaded',timeout:45000});
             await p.waitForTimeout(1200);
             const dedicatedEarly=p.locator('[data-lp-cta="early"]');
             const dedicatedFinal=p.locator('[data-lp-cta="final"]');
