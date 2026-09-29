@@ -297,4 +297,3 @@ jobs:
             --data-urlencode "text=${text}")"
           test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
           echo "eHP Telegram notification acknowledged by Telegram."
-
