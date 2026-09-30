@@ -1,0 +1,16 @@
+{% doc %}
+  Governed product conversion experiment bootstrap.
+  Reuses the existing storefront experiment registry/runtime.
+  Product experiments are text-only and cannot change price, checkout, product/variant identity,
+  selling plans, inventory state, URLs, packaging, product media or payment behavior.
+  Assignment is attached to the main product line item with hidden _bhd_* properties for exact order readback.
+{% enddoc %}
+
+<script>
+  window.BHD_EXPERIMENT_CONTEXT = Object.freeze({
+    surface: 'product',
+    handle: {{ product.handle | json }}
+  });
+</script>
+{{ 'bhd-lp-experiments.js' | asset_url | script_tag }}
+{{ 'bhd-lp-experiment-runtime.js' | asset_url | script_tag }}
