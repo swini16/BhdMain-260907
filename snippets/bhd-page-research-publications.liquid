@@ -1,2 +1,68 @@
-{% render 'bhd-page-terse-support' %}
-{% comment %}Intentional support-page visual baseline approved after terse-foundation release.{% endcomment %}
+{% render 'bhd-page-header',
+  family: 'Science',
+  family_url: '/pages/hydration-science',
+  eyebrow: 'Research & Clinical',
+  title: 'Research & Impact',
+  intro: 'Published evidence, current research, collaborators and the impact of what the evidence can responsibly support.'
+%}
+
+<nav class="bhd-merged-anchor-nav" aria-label="Research & Impact sections">
+  <a href="#published-research">Published Research</a>
+  <a href="#current-research">Current Research</a>
+  <a href="#research-partners">Research Partners</a>
+  <a href="#research-impact">Research Impact</a>
+</nav>
+
+<section id="published-research" class="bhd-page__cards-section">
+  <p class="bhd-page__kicker">Published research</p>
+  <h2>Peer-reviewed work and evidence boundaries</h2>
+  <p>The evidence hub for published work, current research and the limits of what the evidence shows.</p>
+  <div class="bhd-page__cards bhd-page__cards--3">
+    <article><h3>Published</h3><p>Peer-reviewed work is identified directly.</p></article>
+    <article><h3>In progress</h3><p>Ongoing research is not presented as a result.</p></article>
+    <article><h3>Product evidence</h3><p>General hydration science is separated from Best Hydrate-specific evidence.</p></article>
+  </div>
+  <div class="bhd-page__feature"><div><p class="bhd-page__kicker">Why it matters</p><h2>What to know</h2><p>Read the systematic review and cited literature for review methods, evidence scope, findings and limitations.</p></div></div>
+</section>
+
+<section id="current-research" class="bhd-merged-section" aria-label="Current Research">
+  {% render 'bhd-page-current-research' %}
+</section>
+
+<section id="research-partners" class="bhd-merged-section" aria-label="Research Partners">
+  {% render 'bhd-page-research-partners' %}
+</section>
+
+<section id="research-impact" class="bhd-page__cards-section">
+  <p class="bhd-page__kicker">Research impact</p>
+  <h2>Useful questions, appropriate methods, transparent results</h2>
+  <p>Research should answer useful questions and make future product or health claims more precise.</p>
+  <div class="bhd-page__cards bhd-page__cards--3">
+    <article><h3>Relevant questions</h3><p>Study problems that matter outside the lab.</p></article>
+    <article><h3>Appropriate methods</h3><p>Match study design to the claim being tested.</p></article>
+    <article><h3>Transparent results</h3><p>Publish and distinguish findings from interpretation.</p></article>
+  </div>
+  <div class="bhd-page__feature"><div><p class="bhd-page__kicker">Why it matters</p><h2>What to know</h2><p>Best Hydrate’s research program is growing; completed work and future questions are kept separate.</p></div></div>
+</section>
+
+<section class="bhd-page__brand-context">
+  <div>
+    <p class="bhd-page__kicker">Next</p>
+    <h2>Continue through Research & Clinical.</h2>
+  </div>
+  <div class="bhd-page__brand-actions">
+    <a class="bhd-page__button" href="/pages/clinical-development">Clinical Development</a>
+    <a class="bhd-page__button bhd-page__button--secondary" href="/pages/contact">Research Inquiry</a>
+  </div>
+</section>
+
+<style>
+  .bhd-merged-anchor-nav{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 28px}
+  .bhd-merged-anchor-nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid rgba(8,61,119,.18);border-radius:999px;text-decoration:none}
+  .bhd-merged-section .bhd-page-hero,
+  .bhd-merged-section .bhd-page-breadcrumbs,
+  .bhd-merged-section .bhd-menu-descendants{display:none!important}
+  .bhd-merged-section{scroll-margin-top:110px}
+</style>
+
+{% comment %}Merged 2026-09-29. Former Publications, Current Research, Research Partners and Research Impact content is preserved as sections of one Level 3 page. Legacy routes dispatch here.{% endcomment %}
