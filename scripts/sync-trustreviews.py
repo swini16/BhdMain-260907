@@ -17,22 +17,22 @@ WIDGETS = {
 OUTPUT = Path("assets/bhd-reviews.json")
 
 ITEM_RE = re.compile(
-    r'<div(?=[^>]*class="[^"]*\\breviews__item\\b)(?=[^>]*data-id="([^"]+)")[^>]*>'
+    r'<div(?=[^>]*class="[^"]*\breviews__item\b)(?=[^>]*data-id="([^"]+)")[^>]*>'
     r'(.*?)'
-    r'(?=<div(?=[^>]*class="[^"]*\\breviews__item\\b)|\\Z)',
+    r'(?=<div(?=[^>]*class="[^"]*\breviews__item\b)|\Z)',
     re.S,
 )
 AUTHOR_RE = re.compile(r'<h4[^>]*id="review-author"[^>]*>(.*?)</h4>', re.S)
 BODY_RE = re.compile(r'<div[^>]*id="review-body"[^>]*>(.*?)</div>', re.S)
-SOURCE_RE = re.compile(r'<div[^>]*class="[^"]*\\bimport-by\\b[^"]*"[^>]*>.*?Imported From:\\s*([^<]+)', re.S)
-RATING_RE = re.compile(r'"name":"review-rating".*?"data":\\{"rating":([0-9]+(?:\\.[0-9]+)?)', re.S)
-COUNT_RE = re.compile(r'class="[^"]*\\btr-review-count\\b[^"]*"[^>]*>\\s*([0-9]+)', re.S)
+SOURCE_RE = re.compile(r'<div[^>]*class="[^"]*\bimport-by\b[^"]*"[^>]*>.*?Imported From:\s*([^<]+)', re.S)
+RATING_RE = re.compile(r'"name":"review-rating".*?"data":\{"rating":([0-9]+(?:\.[0-9]+)?)', re.S)
+COUNT_RE = re.compile(r'class="[^"]*\btr-review-count\b[^"]*"[^>]*>\s*([0-9]+)', re.S)
 
 
 def text_from_html(fragment: str) -> str:
-    fragment = re.sub(r"<br\\s*/?>", "\\n", fragment, flags=re.I)
+    fragment = re.sub(r"<br\s*/?>", "\n", fragment, flags=re.I)
     fragment = re.sub(r"<[^>]+>", " ", fragment)
-    return re.sub(r"\\s+", " ", html.unescape(fragment)).strip()
+    return re.sub(r"\s+", " ", html.unescape(fragment)).strip()
 
 
 def fetch(url: str) -> str:
@@ -125,7 +125,7 @@ def main() -> None:
     }
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
         f"Synced {len(payload['reviews'])} reviews for {payload['product_id']} "
         f"({payload['rating']:.1f}/5, {payload['review_count']} total) -> {OUTPUT}"
