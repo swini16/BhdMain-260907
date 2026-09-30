@@ -73,8 +73,8 @@ function isIgnorableShopifyAbort(url) {
     return (
       pathname === '/api/collect' ||
       pathname === '/api/event/collect' ||
-      pathname === '/shopify_pay/accelerated_checkout' ||
-      pathname === '/.well-known/shopify/monorail/unstable/produce_batch'
+      pathname === '/.well-known/shopify/monorail/unstable/produce_batch' ||
+      pathname === '/shopify_pay/accelerated_checkout'
     );
   } catch {
     return false;
@@ -165,8 +165,7 @@ async function assertAccessibility(page, label) {
     .exclude('form[data-testid^="klaviyo-form-"]')
     .exclude('form.klaviyo-form')
     .exclude('[class*="klaviyo-form"]')
-    .exclude('#trustreviewsCardsFrame')
-    .exclude('#trustreviewsFrame');
+    .exclude('#trustreviewsCardsFrame');
 
   const scan = await builder.analyze();
 
@@ -233,7 +232,7 @@ async function assertVisualLayout(page, label, testInfo) {
     const isThirdPartyUi = (element) =>
       Boolean(
         element.closest(
-          '#PBarNextFrame,#shopify-pc__banner,#trustreviewsCardsFrame,#trustreviewsFrame,[id^="rich-text-"],[class*="kl-private-reset-css"]'
+          '#PBarNextFrame,#shopify-pc__banner,#trustreviewsCardsFrame,[id^="rich-text-"],[class*="kl-private-reset-css"]'
         )
       );
 
