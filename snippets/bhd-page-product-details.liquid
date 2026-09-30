@@ -1,3 +1,4 @@
+{% unless embedded %}
 {% render 'bhd-page-header',
   family: 'Solutions',
   family_url: '/pages/product-details',
@@ -9,6 +10,8 @@
   hero_image: 'https://images.pexels.com/photos/416528/pexels-photo-416528.jpeg?auto=compress&cs=tinysrgb&w=1800',
   hero_alt: 'Clear drinking water being poured into a glass'
 %}
+{% endunless %}
+
 
 <div class="bhd-page__keypoints" aria-label="Best Hydrate product overview">
   <div><strong>Powdered hydration mix</strong><span>Designed to add glucose, electrolytes and lemon flavour to water.</span></div>
@@ -83,7 +86,7 @@
     <p>Our Directions page explains the preparation principles, label hierarchy and practical handling points without substituting web copy for the regulated package label.</p>
   </div>
   <div class="bhd-page__brand-actions">
-    <a class="bhd-page__button" href="/pages/directions">Directions</a>
+    <a class="bhd-page__button" href="/products/lemonade-best-hydrate#directions">Directions</a>
   </div>
   {% render 'bhd-marketplace-links', variant: 'page' %}
 </section>
@@ -92,7 +95,7 @@
   <p class="bhd-page__kicker">Related pages</p>
   <h2 id="RelatedProductDetails-{{ section.id }}">Go deeper</h2>
   <div class="bhd-page__related-grid">
-    <a href="/pages/directions"><strong>Directions</strong><span>Preparation and label-first use.</span></a>
+    <a href="/products/lemonade-best-hydrate#directions"><strong>Directions</strong><span>Preparation and label-first use.</span></a>
     <a href="/pages/our-formula"><strong>Our Formula</strong><span>How the ingredients fit together.</span></a>
     <a href="/pages/ingredient-rationale"><strong>Ingredient Rationale</strong><span>Why each ingredient is there.</span></a>
     <a href="/pages/hydration-science"><strong>Hydration Science</strong><span>The physiology behind water and electrolyte balance.</span></a>
