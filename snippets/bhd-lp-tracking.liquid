@@ -23,12 +23,22 @@
     const pageHandle = '{{ lp_handle | escape }}';
     const lpContext = '{{ lp_context | escape }}';
 
+    const experimentProps = () => {
+      const experimentId = root.dataset.bhdExperimentId || '';
+      const variantId = root.dataset.bhdExperimentVariant || '';
+      return experimentId && variantId ? {
+        experiment_id: experimentId,
+        variant_id: variantId
+      } : {};
+    };
+
     const emit = (name, props, dataLayerEvent) => {
+      const payload = { ...props, ...experimentProps() };
       if (window.amplitude && typeof window.amplitude.track === 'function') {
-        window.amplitude.track(name, props);
+        window.amplitude.track(name, payload);
       }
       window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({ event: dataLayerEvent, ...props });
+      window.dataLayer.push({ event: dataLayerEvent, ...payload });
     };
 
     document.addEventListener('click', (event) => {
