@@ -1,0 +1,55 @@
+version: 1
+threads:
+  bhd-newsjacking:
+    title: "BHD Newsjacking Watch"
+    signals: ["bicarb", "bicarbonate", "sodium bicarbonate", "newsjack", "formula buffering"]
+  navras-review:
+    title: "Review Navras Comments Phased PRs"
+    signals: ["dianna", "athletics", "athlete", "ambassador", "mega menu", "mega-menu", "personalization", "personalisation", "sweat testing", "arrival path", "supermenu highlight"]
+  ihp-control-plane:
+    title: "IHP control plane flowchart"
+    signals: ["iphone crm", "ios crm", "control plane", "communications flow", "phase provenance", "teams phone", "entra", "graph permissions"]
+  editable-task-hierarchy:
+    title: "Editable Task Hierarchy"
+    signals: ["nested summary hierarchy", "task master hierarchy", "full task master hierarchy", "task hierarchy", "hierarchy level", "hierarchy levels", "rollup", "summary hierarchy", "editable hierarchy", "skip unused"]
+  ci1-sorting-status:
+    title: "CI1 PR 218 Sorting Status"
+    signals: ["page selector", "hierarchical ihp navigation", "super menu", "supermenu", "site-wide navigation", "task master taxonomy", "column group", "column width", "sorting status"]
+  metric-report:
+    title: "Metric report inconsistency"
+    signals: ["executive decision cockpit", "ceo growth", "executive dashboard", "executive summary", "ihp home", "homepage duplicate", "homepage redundant"]
+  ihp-analytics:
+    title: "iHP Analytics Refresh"
+    signals: ["metricool", "6h", "analytics refresh", "time selector", "range integrity", "instrumentation rollup", "instrumentation rollups", "system health instrumentation"]
+  write-meeting-reply:
+    title: "Write meeting reply"
+    signals: ["task tags", "notes chronology", "project-style grouping", "assignment toggle", "assignment directory"]
+  investigate-ise-ai:
+    title: "Investigate Ise AI Model"
+    signals: ["creative intelligence", "ise ai", "creative feedback loop"]
+corrections:
+  - repo: "swini16/BhdMain-260907"
+    pr: 115
+    wrong: "Sports Event Ad Watch"
+    right: "BHD Newsjacking Watch"
+    reason: "bicarbonate/formula work belongs to the BHD Newsjacking conversation"
+  - repo: "swini16/BhdMain-260907"
+    pr: 116
+    wrong: "Best Hydrate Pastel/Navras Acceptance Review"
+    right: "Review Navras Comments Phased PRs"
+    reason: "supermenu arrival-path highlighting belongs to the Navras review conversation"
+  - repo: "swini16/work.BHD"
+    pr: 287
+    wrong: "CONVERSATION TITLE UNKNOWN"
+    right: "Editable Task Hierarchy"
+    reason: "full Task Master hierarchy follow-up"
+  - repo: "swini16/work.BHD"
+    pr: 288
+    wrong: "CONVERSATION TITLE UNKNOWN"
+    right: "Editable Task Hierarchy"
+    reason: "skip-unused hierarchy follow-up"
+  - repo: "swini16/work.BHD"
+    pr: 289
+    wrong: "CONVERSATION TITLE UNKNOWN"
+    right: "iHP Analytics Refresh"
+    reason: "instrumentation rollups/System Health analytics follow-up"
