@@ -164,9 +164,7 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
 });
 
 
-test('TrustReviews frame has mobile vertical room', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile overflow contract only.');
-
+test('TrustReviews frame has responsive vertical room', async ({ page }, testInfo) => {
   await gotoWithTransientRetry(page, withQa('/'));
   const frame = page.locator('#trustreviewsCardsFrame');
 
@@ -176,19 +174,32 @@ test('TrustReviews frame has mobile vertical room', async ({ page }, testInfo) =
   }
 
   await expect(frame).toBeVisible({ timeout: 15000 });
+  await page.waitForTimeout(2200);
+
   const box = await frame.boundingBox();
   expect(box, 'TrustReviews frame must have a rendered box').not.toBeNull();
-  expect(box.height, 'TrustReviews mobile frame must be tall enough to avoid vertical clipping').toBeGreaterThanOrEqual(670);
 
-  const cardsRoot = page.locator('#trustreviews-review-cards');
-  if (await cardsRoot.count()) {
-    const cardsBox = await cardsRoot.boundingBox();
-    expect(cardsBox, 'TrustReviews review-cards root must have a rendered box').not.toBeNull();
-    expect(cardsBox.height, 'TrustReviews review-cards root must not vertically clip long reviews').toBeGreaterThanOrEqual(670);
-  }
+  const isMobile = testInfo.project.name === 'mobile-chromium';
+  const minimumHeight = isMobile ? 740 : 540;
+  expect(
+    box.height,
+    `TrustReviews ${isMobile ? 'mobile' : 'desktop'} frame must have enough vertical room`
+  ).toBeGreaterThanOrEqual(minimumHeight);
+
+  const metrics = await frame.evaluate((el) => {
+    const style = getComputedStyle(el);
+    return {
+      width: el.getBoundingClientRect().width,
+      viewportWidth: document.documentElement.clientWidth,
+      maxHeight: style.maxHeight,
+    };
+  });
+
+  expect(metrics.width, 'TrustReviews frame must stay within viewport width').toBeLessThanOrEqual(metrics.viewportWidth + 2);
+  expect(metrics.maxHeight, 'TrustReviews frame must not have a max-height clamp').toBe('none');
 
   await page.screenshot({
-    path: testInfo.outputPath('trustreviews-mobile-overflow-contract.jpg'),
+    path: testInfo.outputPath(`trustreviews-${isMobile ? 'mobile' : 'desktop'}-overflow-contract.jpg`),
     type: 'jpeg',
     quality: 72,
     fullPage: true,
