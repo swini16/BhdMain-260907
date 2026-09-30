@@ -22,13 +22,11 @@
 %}
 
 {% case page.handle %}
-  {% when 'hydration-science', 'how-hydration-works', 'electrolytes', 'glucose-water-absorption', 'our-formula', 'five-essential-electrolytes', 'ingredient-rationale', 'why-bicarbonate', 'clinical-development', 'clinical-program', 'pilot-studies', 'healthcare-applications', 'clinical-hydration', 'recovery-rehabilitation', 'active-aging' %}
+  {% when 'hydration-science', 'how-hydration-works', 'electrolytes', 'glucose-water-absorption', 'our-formula', 'five-essential-electrolytes', 'ingredient-rationale', 'why-bicarbonate', 'clinical-hydration', 'recovery-rehabilitation', 'active-aging' %}
     {% render 'bhd-page-concise-science-medical' %}
-  {% when 'research-publications' %}{% render 'bhd-page-research-publications' %}
-  {% when 'publications' %}{% render 'bhd-page-publications' %}
-  {% when 'current-research' %}{% render 'bhd-page-current-research' %}
-  {% when 'research-partners' %}{% render 'bhd-page-research-partners' %}
-  {% when 'research-impact' %}{% render 'bhd-page-research-impact' %}
+  {% when 'clinical-development', 'clinical-program', 'pilot-studies', 'healthcare-applications' %}
+    {% render 'bhd-page-clinical-development' %}
+  {% when 'research-publications', 'publications', 'current-research', 'research-partners', 'research-impact' %}{% render 'bhd-page-research-publications' %}
   {% when 'product-details' %}{% render 'bhd-page-product-details' %}
   {% when 'directions' %}{% render 'bhd-page-directions' %}
   {% when 'q-a' %}{% render 'bhd-page-faq' %}
