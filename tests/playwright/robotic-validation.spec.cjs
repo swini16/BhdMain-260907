@@ -73,7 +73,8 @@ function isIgnorableShopifyAbort(url) {
     return (
       pathname === '/api/collect' ||
       pathname === '/api/event/collect' ||
-      pathname === '/shopify_pay/accelerated_checkout'
+      pathname === '/shopify_pay/accelerated_checkout' ||
+      pathname === '/.well-known/shopify/monorail/unstable/produce_batch'
     );
   } catch {
     return false;
