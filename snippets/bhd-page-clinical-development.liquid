@@ -79,3 +79,34 @@
   </ol>
   <p class="bhd-page__reference-note">This page describes a development approach, not an announcement that a particular Best Hydrate clinical trial has received ethics or Health Canada authorization.</p>
 </section>
+<nav class="bhd-merged-anchor-nav" aria-label="Clinical Development sections">
+  <a href="#clinical-development-overview">Clinical Development</a>
+  <a href="#clinical-program">Clinical Program</a>
+  <a href="#pilot-studies">Pilot Studies</a>
+  <a href="#healthcare-applications">Healthcare Applications</a>
+</nav>
+
+<div id="clinical-development-overview" class="bhd-merged-section-anchor" aria-hidden="true"></div>
+
+<section id="clinical-program" class="bhd-merged-section" aria-label="Clinical Program">
+  {% render 'bhd-page-clinical-program' %}
+</section>
+
+<section id="pilot-studies" class="bhd-merged-section" aria-label="Pilot Studies">
+  {% render 'bhd-page-pilot-studies' %}
+</section>
+
+<section id="healthcare-applications" class="bhd-merged-section" aria-label="Healthcare Applications">
+  {% render 'bhd-page-healthcare-applications' %}
+</section>
+
+<style>
+  .bhd-merged-anchor-nav{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 28px}
+  .bhd-merged-anchor-nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid rgba(8,61,119,.18);border-radius:999px;text-decoration:none}
+  .bhd-merged-section .bhd-page-hero,
+  .bhd-merged-section .bhd-page-breadcrumbs,
+  .bhd-merged-section .bhd-menu-descendants{display:none!important}
+  .bhd-merged-section,.bhd-merged-section-anchor{scroll-margin-top:110px}
+</style>
+
+{% comment %}Merged 2026-09-29. Former Clinical Program, Pilot Studies and Healthcare Applications pages are preserved in full as sections of Clinical Development. Legacy routes dispatch here.{% endcomment %}
