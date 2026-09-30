@@ -1,0 +1,21 @@
+name: TrustReviews fetch diagnostic
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch public TrustReviews widget
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://reviews.trustapps.co/_w/938e7cb7-8c69-47b7-976e-3082273b3445/8904882422044'
+          curl -L --fail --silent --show-error --max-time 30 "$url" -o /tmp/trustreviews.html
+          echo "bytes=$(wc -c < /tmp/trustreviews.html)"
+          echo "review-name-hits:"
+          grep -oiE 'Leah|Matt Smith|PoozybGolfs|Andy|clay hines|Best Hydrate' /tmp/trustreviews.html | sort | uniq -c || true
+          echo "body-preview:"
+          head -c 20000 /tmp/trustreviews.html
