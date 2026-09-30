@@ -15,7 +15,50 @@ jobs:
           url='https://reviews.trustapps.co/_w/938e7cb7-8c69-47b7-976e-3082273b3445/8904882422044'
           curl -L --fail --silent --show-error --max-time 30 "$url" -o /tmp/trustreviews.html
           echo "bytes=$(wc -c < /tmp/trustreviews.html)"
-          echo "review-name-hits:"
-          grep -oiE 'Leah|Matt Smith|PoozybGolfs|Andy|clay hines|Best Hydrate' /tmp/trustreviews.html | sort | uniq -c || true
-          echo "body-preview:"
-          head -c 20000 /tmp/trustreviews.html
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.depth = 0
+                  self.stack = []
+                  self.chunks = []
+                  self.capturing = False
+                  self.reviews = []
+                  self.current = None
+              def handle_starttag(self, tag, attrs):
+                  a = dict(attrs)
+                  self.stack.append(tag)
+                  if a.get("id") == "review-body":
+                      self.capturing = True
+                      self.current = []
+                  if self.capturing and self.current is not None:
+                      self.current.append(("start", tag, a))
+              def handle_data(self, data):
+                  if self.capturing and self.current is not None and data.strip():
+                      self.current.append(("text", data.strip()))
+              def handle_endtag(self, tag):
+                  if self.capturing and self.current is not None:
+                      self.current.append(("end", tag))
+                      if tag == "div":
+                          text = " ".join(x[1] for x in self.current if x[0] == "text")
+                          if text:
+                              self.reviews.append(text)
+                          self.current = None
+                          self.capturing = False
+                  if self.stack:
+                      self.stack.pop()
+
+          html = open("/tmp/trustreviews.html", encoding="utf-8").read()
+          p = P()
+          p.feed(html)
+          print("review-body-count=", len(p.reviews))
+          for idx, text in enumerate(p.reviews, 1):
+              print(f"REVIEW {idx}: {text[:1500]}")
+          for needle in ["Leah", "Matt Smith", "PoozybGolfs", "Andy", "clay hines"]:
+              i = html.lower().find(needle.lower())
+              print(f"\n--- CONTEXT {needle} @ {i} ---")
+              if i >= 0:
+                  print(html[max(0, i-2500):i+4500])
+          PY
