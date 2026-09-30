@@ -6,12 +6,19 @@
 
 {%- liquid
   comment
-    Review bodies are a verified snapshot of the current five TrustReviews/Amazon reviews.
-    Keep the visible summary pinned to the same snapshot so count/rating cannot drift from
-    app-owned metafields that are not reliably exposed in Shopify theme previews.
+    Review bodies are the verified current five TrustReviews/Amazon reviews.
+    Rating and count remain live from TrustReviews' Shopify review metafields.
   endcomment
   assign review_rating = '5.0'
   assign review_count = '5'
+  if review_product != blank
+    if review_product.metafields.reviews.rating.value != blank
+      assign review_rating = review_product.metafields.reviews.rating.value
+    endif
+    if review_product.metafields.reviews.rating_count != blank
+      assign review_count = review_product.metafields.reviews.rating_count
+    endif
+  endif
 -%}
 
 <section
