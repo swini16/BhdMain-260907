@@ -1,15 +1,15 @@
 {% assign root = scope | default: '.bhd-embedded-page' %}
 <style>
-{{ root }}{--bhd-navy:#0b2d67;--bhd-blue:#078ee7;--bhd-ink:#1d3151;--bhd-muted:#5b6b82;--bhd-line:rgba(11,45,103,.12);--bhd-pale:#eef8fd;color:var(--bhd-ink)}
+{{ root }}{--bhd-navy:#0b2d67;--bhd-blue:#005a9c;--bhd-ink:#1d3151;--bhd-muted:#5b6b82;--bhd-line:rgba(11,45,103,.12);--bhd-pale:#eef8fd;color:var(--bhd-ink)}
 {{ root }} *{box-sizing:border-box;min-width:0}
 {{ root }} h2{margin:0 0 1.4rem;color:var(--bhd-navy);font-size:clamp(2.8rem,3.4vw,4.2rem);line-height:1.04;letter-spacing:-.025em}
 {{ root }} h3{color:var(--bhd-navy)}
 {{ root }} p,{{ root }} li{font-size:1.6rem;line-height:1.6}
 {{ root }} .bhd-page__eyebrow,{{ root }} .bhd-page__kicker{margin:0 0 .7rem;color:var(--bhd-blue);font-size:1.25rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
-{{ root }} .bhd-page__keypoints{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem;margin:0 0 5.2rem}
-{{ root }} .bhd-page__keypoints>div{padding:1.8rem 1.9rem;border:1px solid var(--bhd-line);border-radius:1.4rem;background:#fff}
-{{ root }} .bhd-page__keypoints strong{display:block;margin-bottom:.5rem;color:var(--bhd-navy);font-size:1.65rem}
-{{ root }} .bhd-page__keypoints span{display:block;color:var(--bhd-muted);font-size:1.38rem;line-height:1.42}
+{{ root }} .bhd-page__keypoints,{{ root }} .bhd-page__subpoints{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem;margin:0 0 5.2rem}
+{{ root }} .bhd-page__keypoints>div,{{ root }} .bhd-page__subpoints>div{padding:1.8rem 1.9rem;border:1px solid var(--bhd-line);border-radius:1.4rem;background:#fff}
+{{ root }} .bhd-page__keypoints strong,{{ root }} .bhd-page__subpoints strong{display:block;margin-bottom:.5rem;color:var(--bhd-navy);font-size:1.65rem}
+{{ root }} .bhd-page__keypoints span,{{ root }} .bhd-page__subpoints span{display:block;color:var(--bhd-muted);font-size:1.38rem;line-height:1.42}
 {{ root }} .bhd-page__feature{margin:0 0 6rem;padding:clamp(2.6rem,5vw,5rem);border-radius:2.2rem;background:linear-gradient(135deg,#f7fcff 0%,#e7f7fd 100%);border:1px solid rgba(7,142,231,.13)}
 {{ root }} .bhd-page__feature>div{max-width:92rem;margin:0 auto;text-align:center}
 {{ root }} .bhd-page__feature p{color:#465774}
@@ -62,7 +62,7 @@
   {{ root }} .bhd-page__brand-context{grid-template-columns:1fr}
 }
 @media(max-width:749px){
-  {{ root }} .bhd-page__keypoints{grid-template-columns:1fr;margin-bottom:4rem}
+  {{ root }} .bhd-page__keypoints,{{ root }} .bhd-page__subpoints{grid-template-columns:1fr;margin-bottom:4rem}
   {{ root }} .bhd-page__cards--4,{{ root }} .bhd-page__related-grid{grid-template-columns:1fr}
   {{ root }} .bhd-page__split{padding:1.2rem}
   {{ root }} .bhd-page__split-media{aspect-ratio:1.4/1}
