@@ -611,7 +611,7 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
   const desktopDescription = page.locator('.bhd-full-product-description');
   const inlineDescription = page.locator('.bhd-inline-product-description');
 
-  if (testInfo.project.name.includes('desktop') || testInfo.project.name.includes('tablet')) {
+  if (testInfo.project.name.includes('desktop')) {
     await expect(desktopDescription, 'product: wide layouts must use full-width description below product grid').toBeVisible();
     await expect(inlineDescription, 'product: wide layouts must not duplicate inline description').toBeHidden();
     const descBelowGrid = await page.evaluate(() => {
