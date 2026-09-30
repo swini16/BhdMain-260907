@@ -90,18 +90,12 @@
       }
     },
     "reviews": {
-      "type": "apps",
-      "blocks": {
-        "trustreviews_review_cards_home": {
-          "type": "shopify://apps/trustreviews/blocks/review-cards/56d0fe1b-e701-4cff-8f84-466a26e09adb",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "trustreviews_review_cards_home"
-      ],
+      "type": "custom-liquid",
       "settings": {
-        "include_margins": true
+        "custom_liquid": "<div class=\"bhd-reviews-intro\" style=\"text-align:center\"><p style=\"margin:0;color:#3f6089;font-weight:850;text-transform:uppercase;letter-spacing:.11em\">Customer reviews</p><h2 style=\"margin:.2rem 0 1rem;color:#0b2d67\">What customers are saying</h2></div><div class=\"bhd-full-reviews\" data-bhd-trustreviews-full><iframe id=\"trustreviewsFrame\" title=\"Customer reviews\" src=\"https://reviews.trustapps.co/_w/938e7cb7-8c69-47b7-976e-3082273b3445/8904882422044?lang=&orderBy=popular&shopCustomer=\" width=\"100%\" frameborder=\"0\" scrolling=\"auto\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\"></iframe></div><style>.bhd-full-reviews{width:100%;max-width:120rem;margin:0 auto;overflow:visible}.bhd-full-reviews #trustreviewsFrame{display:block;width:100%!important;max-width:100%!important;height:80rem!important;min-height:80rem!important;border:0!important;overflow:auto!important;box-sizing:border-box}@media screen and (max-width:899px){.bhd-full-reviews #trustreviewsFrame{height:160rem!important;min-height:160rem!important}}</style>",
+        "color_scheme": "scheme-1",
+        "padding_top": 24,
+        "padding_bottom": 24
       }
     },
     "trust": {

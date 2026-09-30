@@ -165,7 +165,8 @@ async function assertAccessibility(page, label) {
     .exclude('form[data-testid^="klaviyo-form-"]')
     .exclude('form.klaviyo-form')
     .exclude('[class*="klaviyo-form"]')
-    .exclude('#trustreviewsCardsFrame');
+    .exclude('#trustreviewsCardsFrame')
+    .exclude('#trustreviewsFrame');
 
   const scan = await builder.analyze();
 
@@ -232,7 +233,7 @@ async function assertVisualLayout(page, label, testInfo) {
     const isThirdPartyUi = (element) =>
       Boolean(
         element.closest(
-          '#PBarNextFrame,#shopify-pc__banner,#trustreviewsCardsFrame,[id^="rich-text-"],[class*="kl-private-reset-css"]'
+          '#PBarNextFrame,#shopify-pc__banner,#trustreviewsCardsFrame,#trustreviewsFrame,[id^="rich-text-"],[class*="kl-private-reset-css"]'
         )
       );
 
