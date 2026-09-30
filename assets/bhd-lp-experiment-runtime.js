@@ -146,6 +146,7 @@
       setHiddenProperty(form, '_bhd_experiment', experimentId);
       setHiddenProperty(form, '_bhd_variant', chosen.id);
       setHiddenProperty(form, '_bhd_surface', 'product');
+      setHiddenProperty(form, '_bhd_context', contextHandle);
     });
   };
 
