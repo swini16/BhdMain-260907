@@ -52,7 +52,15 @@
   endif
 %}
 
-{% if directory_links != blank and directory_links.size > 0 %}
+{% liquid
+  assign suppress_directory = false
+  case current_path
+    when '/pages/research-publications', '/pages/clinical-development', '/pages/performance-hydration', '/pages/partnerships', '/pages/investor-relations'
+      assign suppress_directory = true
+  endcase
+%}
+
+{% if directory_links != blank and directory_links.size > 0 and suppress_directory == false %}
   <section class="bhd-menu-directory" data-bhd-directory-depth="{{ directory_depth }}" aria-labelledby="BhdMenuDirectory-{{ section.id }}">
     <p class="bhd-menu-directory__kicker">In this section</p>
     <h2 id="BhdMenuDirectory-{{ section.id }}">Explore {{ directory_title | escape }}</h2>
