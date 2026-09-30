@@ -202,6 +202,28 @@
       @media screen and (max-width:749px){form[data-testid^="klaviyo-form-"],form.klaviyo-form{width:calc(100vw - 2.4rem)!important;max-width:calc(100vw - 2.4rem)!important;border-radius:1.4rem!important}}
     </style>
 
+    {%- comment -%} BHD TrustReviews mobile vertical-overflow hotfix 2026-09-29 {%- endcomment -%}
+    <style id="bhd-trustreviews-mobile-hotfix">
+      @media screen and (max-width:899px){
+        #trustreviewsCardsFrame{
+          display:block!important;
+          width:100%!important;
+          height:680px!important;
+          min-height:680px!important;
+          max-height:none!important;
+          overflow:visible!important;
+        }
+        [id$="__reviews"],
+        [id$="__reviews"]>.shopify-app-block,
+        [id$="__reviews"] .shopify-app-block{
+          height:auto!important;
+          min-height:0!important;
+          max-height:none!important;
+          overflow:visible!important;
+        }
+      }
+    </style>
+
     {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
       assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'

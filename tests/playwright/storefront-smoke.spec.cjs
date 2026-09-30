@@ -162,3 +162,29 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
     expect(page.url()).toMatch(/checkout/i);
   });
 });
+
+
+test('TrustReviews frame has mobile vertical room', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile overflow contract only.');
+
+  await gotoWithTransientRetry(page, withQa('/'));
+  const frame = page.locator('#trustreviewsCardsFrame');
+
+  const present = await frame.count();
+  if (!present) {
+    test.skip(true, 'TrustReviews did not inject its iframe in this preview run.');
+  }
+
+  await expect(frame).toBeVisible({ timeout: 15000 });
+  const box = await frame.boundingBox();
+  expect(box, 'TrustReviews frame must have a rendered box').not.toBeNull();
+  expect(box.height, 'TrustReviews mobile frame must be tall enough to avoid vertical clipping').toBeGreaterThanOrEqual(670);
+
+  await page.screenshot({
+    path: testInfo.outputPath('trustreviews-mobile-overflow-contract.jpg'),
+    type: 'jpeg',
+    quality: 72,
+    fullPage: true,
+    animations: 'disabled',
+  });
+});
