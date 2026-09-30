@@ -91,7 +91,7 @@ jobs:
           for x in "BHD_EXPERIMENT_CONTEXT" "surface: 'product'" "product.handle" "_bhd_*" "bhd-lp-experiments.js" "bhd-lp-experiment-runtime.js"; do grep -Fq "$x" "$pe"; done
           grep -Fq "render 'bhd-product-experiment-runtime'" "$th"
           for x in '"schemaVersion": 1' '"experiments":'; do grep -Fq "$x" "$ec"; done
-          for x in "open.eyebrow" "open.lead" "open.earlyCta" "close.tasteHeadline" "close.offerHeadline" "close.finalCta" "product.addToCart" "product.deliveryNote" "product.purchaseChoiceTitle" "product.purchaseChoiceBody" "product.reassurance" "product.stickyCta" "product.stickyShipping" "properties[_bhd_experiment]" "properties[_bhd_variant]" "properties[_bhd_surface]" "bhd_exp" "bhd_var" "bhd_experiment_exposure" "LP Experiment Exposed" "Product Experiment Exposed" "localStorage" "textContent" "MutationObserver"; do grep -Fq "$x" "$er"; done
+          for x in "open.eyebrow" "open.lead" "open.earlyCta" "close.tasteHeadline" "close.offerHeadline" "close.finalCta" "product.addToCart" "product.deliveryNote" "product.purchaseChoiceTitle" "product.purchaseChoiceBody" "product.reassurance" "product.stickyCta" "product.stickyShipping" "properties[_bhd_experiment]" "properties[_bhd_variant]" "properties[_bhd_surface]" "properties[_bhd_context]" "bhd_exp" "bhd_var" "bhd_experiment_exposure" "LP Experiment Exposed" "Product Experiment Exposed" "localStorage" "textContent" "MutationObserver"; do grep -Fq "$x" "$er"; done
           ! grep -Fq "innerHTML" "$er"
           ! grep -Fq "href =" "$er"
           ! grep -Fq ".price" "$er"
