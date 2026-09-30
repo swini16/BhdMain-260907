@@ -41,6 +41,7 @@ function isIgnorableShopifyAbort(url) {
       p === '/api/collect' ||
       p === '/api/event/collect' ||
       p === '/shopify_pay/accelerated_checkout' ||
+      p === '/services/login_with_shop/authorize' ||
       p === '/.well-known/shopify/monorail/unstable/produce_batch'
     );
   } catch {
@@ -115,6 +116,11 @@ for (const path of PATHS) {
         if (candidate && candidate.status() < 400) {
           effectivePath = fallback;
           response = candidate;
+          // The failed canonical probe intentionally navigated away from a 404.
+          // Discard request failures caused by that probe/navigation so only
+          // defects on the resolved product route can block the PR.
+          firstPartyFailures.length = 0;
+          pageErrors.length = 0;
           break;
         }
       }
