@@ -163,119 +163,89 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
   });
 });
 
-test('full TrustReviews widget is readable on home and product', async ({ page }, testInfo) => {
-  test.skip(!PREVIEW_THEME_ID, 'Requires proposed Shopify preview theme; live main is verified after merge.');
-
+test('native reviews are responsive and never clip text', async ({ page }, testInfo) => {
   const paths = ['/', '/products/lemonade-best-hydrate'];
   const isMobile = testInfo.project.name === 'mobile-chromium';
 
   for (const path of paths) {
     await gotoWithTransientRetry(page, withQa(path));
 
-    const host = page.locator('#trustreviewsFrame').first();
-    await expect(host, `${path}: full TrustReviews iframe must render`).toBeVisible({ timeout: 20000 });
-    await expect(host, `${path}: iframe must allow scrolling as a future-content fallback`).toHaveAttribute('scrolling', 'auto');
+    const root = page.locator('[data-bhd-native-reviews]').first();
+    await expect(root, `${path}: native review section must render`).toBeVisible({ timeout: 15000 });
 
-    await page.waitForTimeout(2500);
+    const cards = root.locator('[data-bhd-review-card]');
+    await expect(cards, `${path}: five review cards must render`).toHaveCount(5);
 
-    const hostBox = await host.boundingBox();
-    expect(hostBox, `${path}: TrustReviews iframe needs a rendered box`).not.toBeNull();
+    const audit = await root.evaluate((section) => {
+      const cards = [...section.querySelectorAll('[data-bhd-review-card]')];
+      const textNodes = [...section.querySelectorAll('[data-bhd-review-text]')];
+      const rootRect = section.getBoundingClientRect();
 
-    const minimumHeight = isMobile ? 1550 : 780;
-    expect(
-      hostBox.height,
-      `${path}: TrustReviews iframe must have enough room for current full reviews`
-    ).toBeGreaterThanOrEqual(minimumHeight);
-
-    await expect(
-      host,
-      `${path}: must embed the full review widget, not the clipped carousel`
-    ).toHaveAttribute('src', /reviews\.trustapps\.co\/_w\/[^/]+\/8904882422044/i);
-
-    // The reviews iframe is intentionally lazy-loaded for storefront performance.
-    // Scroll it into view before inspecting its cross-origin document.
-    await host.scrollIntoViewIfNeeded();
-
-    await expect
-      .poll(
-        async () => {
-          const handle = await host.elementHandle();
-          const frame = handle ? await handle.contentFrame() : null;
-          return frame?.url() || '';
-        },
-        {
-          timeout: 20000,
-          message: `${path}: full TrustReviews iframe should navigate after entering the viewport`,
-        }
-      )
-      .toMatch(/reviews\.trustapps\.co\/_w\/[^/]+\/8904882422044/i);
-
-    const elementHandle = await host.elementHandle();
-    const reviewFrame = await elementHandle.contentFrame();
-    expect(reviewFrame, `${path}: TrustReviews full widget frame must be accessible to Playwright`).toBeTruthy();
-
-    await reviewFrame.locator('body').waitFor({ state: 'visible', timeout: 15000 });
-
-    const audit = await reviewFrame.locator('body').evaluate((body) => {
-      const visible = (el) => {
-        const style = getComputedStyle(el);
-        const rect = el.getBoundingClientRect();
-        return (
-          style.display !== 'none' &&
-          style.visibility !== 'hidden' &&
-          Number(style.opacity || 1) !== 0 &&
-          rect.width > 1 &&
-          rect.height > 1
-        );
-      };
-
-      const clipped = [...body.querySelectorAll('*')]
-        .filter(visible)
-        .map((el) => {
-          const style = getComputedStyle(el);
-          const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      return {
+        viewportWidth: document.documentElement.clientWidth,
+        pageScrollWidth: document.documentElement.scrollWidth,
+        root: { left: rootRect.left, right: rootRect.right, width: rootRect.width },
+        cards: cards.map((card) => {
+          const r = card.getBoundingClientRect();
           return {
-            tag: el.tagName,
-            text: text.slice(0, 160),
+            x: Math.round(r.x),
+            y: Math.round(r.y),
+            width: Math.round(r.width),
+            height: Math.round(r.height),
+          };
+        }),
+        clippedText: textNodes
+          .map((el) => ({
+            text: (el.textContent || '').trim().slice(0, 120),
             clientHeight: el.clientHeight,
             scrollHeight: el.scrollHeight,
             clientWidth: el.clientWidth,
             scrollWidth: el.scrollWidth,
-            overflowY: style.overflowY,
-            overflowX: style.overflowX,
-          };
-        })
-        .filter((x) =>
-          x.text.length > 40 &&
-          (
-            (x.scrollHeight > x.clientHeight + 3 && ['hidden', 'clip'].includes(x.overflowY)) ||
-            (x.scrollWidth > x.clientWidth + 3 && ['hidden', 'clip'].includes(x.overflowX))
-          )
-        )
-        .slice(0, 20);
-
-      return {
-        text: (body.innerText || '').replace(/\s+/g, ' ').trim(),
-        clientHeight: body.clientHeight,
-        scrollHeight: body.scrollHeight,
-        clientWidth: body.clientWidth,
-        scrollWidth: body.scrollWidth,
-        clipped,
+            overflowY: getComputedStyle(el).overflowY,
+            overflowX: getComputedStyle(el).overflowX,
+          }))
+          .filter((x) => x.scrollHeight > x.clientHeight + 2 || x.scrollWidth > x.clientWidth + 2),
       };
     });
 
-    expect(audit.text, `${path}: full widget must contain review content`).toMatch(/5 reviews/i);
-    expect(audit.text, `${path}: Andy review must be fully available`).toContain('We would highly recommend Best Hydrate.');
-    expect(audit.clipped, `${path}: review text must not be clipped`).toEqual([]);
-    expect(audit.scrollWidth, `${path}: widget must not overflow horizontally`).toBeLessThanOrEqual(audit.clientWidth + 2);
-    expect(
-      hostBox.height + 2,
-      `${path}: outer iframe must contain the full current widget body without vertical clipping`
-    ).toBeGreaterThanOrEqual(audit.scrollHeight);
+    expect(audit.pageScrollWidth, `${path}: reviews must not cause horizontal page overflow`)
+      .toBeLessThanOrEqual(audit.viewportWidth + 2);
+    expect(audit.root.right, `${path}: review section must fit viewport`)
+      .toBeLessThanOrEqual(audit.viewportWidth + 2);
+    expect(audit.root.left, `${path}: review section must not escape left edge`).toBeGreaterThanOrEqual(-2);
+    expect(audit.clippedText, `${path}: no review text may be clipped`).toEqual([]);
+
+    if (isMobile) {
+      const xs = audit.cards.map((card) => card.x);
+      expect(Math.max(...xs) - Math.min(...xs), `${path}: mobile cards must form one clean column`).toBeLessThanOrEqual(3);
+      for (let idx = 1; idx < audit.cards.length; idx += 1) {
+        expect(
+          audit.cards[idx].y,
+          `${path}: mobile review cards must stack vertically without overlap`
+        ).toBeGreaterThan(audit.cards[idx - 1].y);
+      }
+    } else {
+      expect(
+        Math.abs(audit.cards[0].y - audit.cards[1].y),
+        `${path}: desktop first row must align`
+      ).toBeLessThanOrEqual(3);
+      expect(
+        Math.abs(audit.cards[0].x - audit.cards[1].x),
+        `${path}: desktop first row must use two columns`
+      ).toBeGreaterThan(50);
+      expect(
+        audit.cards[4].width,
+        `${path}: final odd review must stay card-sized, not stretch across the page`
+      ).toBeLessThan(audit.viewportWidth * 0.7);
+    }
+
+    await expect(root).toContainText('We would highly recommend Best Hydrate.');
+    await expect(root).toContainText('5 reviews');
+    await expect(page.locator('#trustreviewsCardsFrame, #trustreviewsFrame')).toHaveCount(0);
 
     await page.screenshot({
       path: testInfo.outputPath(
-        `trustreviews-full-${path === '/' ? 'home' : 'product'}-${isMobile ? 'mobile' : 'desktop'}.jpg`
+        `native-reviews-${path === '/' ? 'home' : 'product'}-${isMobile ? 'mobile' : 'desktop'}.jpg`
       ),
       type: 'jpeg',
       quality: 72,
