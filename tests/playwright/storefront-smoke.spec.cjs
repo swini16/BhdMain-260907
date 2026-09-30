@@ -164,6 +164,11 @@ test('Lemonade product can add to cart and open checkout', async ({ page }) => {
 });
 
 test('native reviews are responsive and never clip text', async ({ page }, testInfo) => {
+  test.skip(
+    process.env.GITHUB_EVENT_NAME === 'pull_request' && !PREVIEW_THEME_ID,
+    'PR live smoke does not contain unmerged theme changes; preview gate runs this contract against the proposed theme.'
+  );
+
   const paths = ['/', '/products/lemonade-best-hydrate'];
   const isMobile = testInfo.project.name === 'mobile-chromium';
 
