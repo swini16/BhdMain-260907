@@ -64,3 +64,32 @@ test.describe('TrustReviews live plugin integrity', () => {
     expect(hostBox.width + 2, 'Outer iframe must be at least as wide as widget viewport').toBeGreaterThanOrEqual(bodyMetrics.clientWidth);
   });
 });
+
+
+test('TrustReviews full review widget route provides readable expansion', async ({ page }, testInfo) => {
+  const url = 'https://reviews.trustapps.co/_w/938e7cb7-8c69-47b7-976e-3082273b3445/8904882422044?lang=&orderBy=popular&shopCustomer=';
+  const response = await page.goto(url, { waitUntil: 'domcontentloaded' });
+  expect(response && response.status(), 'Full TrustReviews widget route must load').toBeLessThan(400);
+  await page.waitForTimeout(2500);
+
+  const bodyMetrics = await page.locator('body').evaluate((body) => ({
+    clientWidth: body.clientWidth,
+    scrollWidth: body.scrollWidth,
+    clientHeight: body.clientHeight,
+    scrollHeight: body.scrollHeight,
+  }));
+
+  const readMoreCount = await page.getByRole('button', { name: /read more/i }).count();
+  const reviewTextCount = await page.locator('p').filter({ hasText: /./ }).count();
+
+  console.log('TRUSTREVIEWS_FULL_WIDGET_METRICS', JSON.stringify({
+    project: testInfo.project.name,
+    url: page.url(),
+    bodyMetrics,
+    readMoreCount,
+    reviewTextCount,
+  }));
+
+  expect(bodyMetrics.scrollWidth, 'Full widget must not horizontally overflow its viewport').toBeLessThanOrEqual(bodyMetrics.clientWidth + 2);
+  expect(readMoreCount, 'Full widget should expose Read more controls for review access').toBeGreaterThan(0);
+});
