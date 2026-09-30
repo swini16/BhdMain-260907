@@ -263,6 +263,16 @@ jobs:
         run: |
           npx playwright test             --config=playwright.config.cjs             tests/playwright/pr-preview-gate.spec.cjs
 
+      - name: Run native review responsive contract
+        if: steps.scope.outputs.relevant == 'true'
+        run: |
+          npx playwright test \
+            --config=playwright.config.cjs \
+            tests/playwright/storefront-smoke.spec.cjs \
+            --grep "native reviews are responsive and never clip text" \
+            --project=desktop-chromium \
+            --project=mobile-chromium
+
       - name: Upload failure diagnostics
         if: ${{ failure() && steps.scope.outputs.relevant == 'true' }}
         uses: actions/upload-artifact@v4
