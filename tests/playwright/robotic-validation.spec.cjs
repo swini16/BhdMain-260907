@@ -788,3 +788,47 @@ test('critical internal links from key pages do not return 4xx/5xx', async ({ pa
   expect(discovered.size, 'critical link crawl should discover internal links').toBeGreaterThan(0);
   expect(failures, 'critical internal links returning HTTP errors').toEqual([]);
 });
+
+
+test('intermediate width inherits compact layout without a third responsive surface', async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.includes('desktop'), 'single continuity probe is enough');
+
+  await page.setViewportSize({ width: 770, height: 860 });
+  const response = await gotoWithTransientRetry(page, withQa('/'));
+  await assertPageHealth(page, response, 'home-770-continuity');
+
+  const shell = page.locator('.bhd-hero-v4__shell').first();
+  const visual = page.locator('.bhd-hero-v4__visual').first();
+  const copy = page.locator('.bhd-hero-v4__copy').first();
+  const scene = page.locator('.bhd-hero-v4__scene').first();
+
+  await expect(shell, '770px: hero shell visible').toBeVisible();
+  await expect(visual, '770px: hero visual visible').toBeVisible();
+  await expect(copy, '770px: hero copy visible').toBeVisible();
+  await expect(scene, '770px: hero image visible').toBeVisible();
+
+  const layout = await page.evaluate(() => {
+    const shell = document.querySelector('.bhd-hero-v4__shell');
+    const visual = document.querySelector('.bhd-hero-v4__visual');
+    const copy = document.querySelector('.bhd-hero-v4__copy');
+    const scene = document.querySelector('.bhd-hero-v4__scene');
+    if (!shell || !visual || !copy || !scene) return null;
+    const shellStyle = getComputedStyle(shell);
+    const vr = visual.getBoundingClientRect();
+    const cr = copy.getBoundingClientRect();
+    return {
+      display: shellStyle.display,
+      direction: shellStyle.flexDirection,
+      visualAboveCopy: vr.top <= cr.top,
+      imageLoaded: scene.complete && scene.naturalWidth > 0,
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+
+  expect(layout, '770px: hero layout must exist').not.toBeNull();
+  expect(layout.display, '770px: compact layout uses flex').toBe('flex');
+  expect(layout.direction, '770px: compact layout stacks vertically').toBe('column');
+  expect(layout.visualAboveCopy, '770px: image remains above copy').toBe(true);
+  expect(layout.imageLoaded, '770px: hero image must load').toBe(true);
+  expect(layout.overflow, '770px: no horizontal overflow').toBeLessThanOrEqual(4);
+});
