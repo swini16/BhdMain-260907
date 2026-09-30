@@ -134,6 +134,7 @@
 {% endif %}
 
 {% if page.handle contains 'lp-' %}
+  {% render 'bhd-lp-experiment-runtime' %}
   {% render 'bhd-lp-tracking' %}
   <style>
     .bhd-page-fallback__content--consumer-lp .rte .bhd-hso > h1:first-child{display:none!important}
