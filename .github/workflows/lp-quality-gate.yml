@@ -88,7 +88,7 @@ jobs:
           for x in "window.amplitude.track(name, payload)" "LP CTA Clicked" "LP Section Viewed" "event: dataLayerEvent" "lp_cta_clicked" "lp_section_viewed" "page_handle:" "lp_context:" "experiment_id" "variant_id" "[data-lp-cta]" "[data-lp-section]"; do grep -Fq "$x" "$t"; done
           for x in "render 'bhd-lp-experiment-runtime'" "render 'bhd-lp-tracking'"; do grep -Fq "$x" "$d"; done
           for x in "BHD_LP_PAGE_HANDLE" "bhd-lp-experiments.js" "bhd-lp-experiment-runtime.js"; do grep -Fq "$x" "$e"; done
-          for x in "schemaVersion: 1" "experiments: []"; do grep -Fq "$x" "$ec"; done
+          for x in '"schemaVersion": 1' '"experiments": []'; do grep -Fq "$x" "$ec"; done
           for x in "open.eyebrow" "open.lead" "open.earlyCta" "close.tasteHeadline" "close.offerHeadline" "close.finalCta" "bhd_exp" "bhd_var" "bhd_experiment_exposure" "LP Experiment Exposed" "localStorage" "textContent"; do grep -Fq "$x" "$er"; done
           ! grep -Fq "innerHTML" "$er"
           ! grep -Fq "href =" "$er"
