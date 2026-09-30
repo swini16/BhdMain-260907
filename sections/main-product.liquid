@@ -97,27 +97,28 @@
       }
 
       .section-{{ section.id }}-padding .bhd-mobile-product-intro__signals {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35rem 0.45rem;
-        margin: 0 0 0.35rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+        margin: 0 0 0.5rem;
       }
 
       .section-{{ section.id }}-padding .bhd-mobile-product-intro__signals span {
         display: flex;
         align-items: center;
         justify-content: center;
-        flex: 1 1 9.5rem;
         min-width: 0;
-        padding: 0.38rem 0.6rem;
+        min-height: 4.4rem;
+        padding: 0.55rem 0.7rem;
         border: 1px solid #d7e3f1;
-        border-radius: 999px;
+        border-radius: 1.1rem;
         background: #f7fbff;
         color: #52657a;
         font-size: 1rem;
         font-weight: 800;
         line-height: 1.2;
         text-align: center;
+        text-wrap: balance;
       }
 
       .section-{{ section.id }}-padding .bhd-pill--sugar { background:#fff4d9; border-color:#e9c86f; color:#664a00; }
@@ -310,7 +311,7 @@
                       <span>{{ 'products.product.volume_pricing.note' | t }}</span>
                     </div>
                   {%- endif -%}
-                  {%- if cart.taxes_included or cart.duties_included or shop.shipping_policy.body != blank -%}
+                  {%- if cart.taxes_included or cart.duties_included -%}
                     <div class="product__tax caption rte">
                       {%- if cart.duties_included and cart.taxes_included -%}
                         {{ 'products.product.duties_and_taxes_included' | t }}
@@ -318,9 +319,6 @@
                         {{ 'products.product.taxes_included' | t }}
                       {%- elsif cart.duties_included -%}
                         {{ 'products.product.duties_included' | t }}
-                      {%- endif -%}
-                      {%- if shop.shipping_policy.body != blank -%}
-                        {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
                       {%- endif -%}
                     </div>
                   {%- endif -%}
