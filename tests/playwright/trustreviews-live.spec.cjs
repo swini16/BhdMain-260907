@@ -66,30 +66,62 @@ test.describe('TrustReviews live plugin integrity', () => {
 });
 
 
-test('TrustReviews full review widget route provides readable expansion', async ({ page }, testInfo) => {
+test('TrustReviews full review widget route is readable', async ({ page }, testInfo) => {
   const url = 'https://reviews.trustapps.co/_w/938e7cb7-8c69-47b7-976e-3082273b3445/8904882422044?lang=&orderBy=popular&shopCustomer=';
   const response = await page.goto(url, { waitUntil: 'domcontentloaded' });
   expect(response && response.status(), 'Full TrustReviews widget route must load').toBeLessThan(400);
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(3500);
 
-  const bodyMetrics = await page.locator('body').evaluate((body) => ({
-    clientWidth: body.clientWidth,
-    scrollWidth: body.scrollWidth,
-    clientHeight: body.clientHeight,
-    scrollHeight: body.scrollHeight,
-  }));
+  const report = await page.evaluate(() => {
+    const visible = (el) => {
+      const s = getComputedStyle(el);
+      const r = el.getBoundingClientRect();
+      return s.display !== 'none' && s.visibility !== 'hidden' && r.width > 1 && r.height > 1;
+    };
 
-  const readMoreCount = await page.getByRole('button', { name: /read more/i }).count();
-  const reviewTextCount = await page.locator('p').filter({ hasText: /./ }).count();
+    const clipped = [...document.querySelectorAll('body *')]
+      .filter(visible)
+      .map((el) => {
+        const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+        const s = getComputedStyle(el);
+        return {
+          tag: el.tagName,
+          cls: typeof el.className === 'string' ? el.className : '',
+          text: text.slice(0, 180),
+          clientHeight: el.clientHeight,
+          scrollHeight: el.scrollHeight,
+          clientWidth: el.clientWidth,
+          scrollWidth: el.scrollWidth,
+          overflowY: s.overflowY,
+          overflowX: s.overflowX,
+        };
+      })
+      .filter((x) =>
+        x.text.length > 40 &&
+        (
+          (x.scrollHeight > x.clientHeight + 3 && ['hidden','clip'].includes(x.overflowY)) ||
+          (x.scrollWidth > x.clientWidth + 3 && ['hidden','clip'].includes(x.overflowX))
+        )
+      )
+      .slice(0, 30);
 
-  console.log('TRUSTREVIEWS_FULL_WIDGET_METRICS', JSON.stringify({
+    const body = document.body;
+    return {
+      bodyText: (body.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 5000),
+      clientWidth: body.clientWidth,
+      scrollWidth: body.scrollWidth,
+      clientHeight: body.clientHeight,
+      scrollHeight: body.scrollHeight,
+      clipped,
+    };
+  });
+
+  console.log('TRUSTREVIEWS_FULL_WIDGET_AUDIT', JSON.stringify({
     project: testInfo.project.name,
-    url: page.url(),
-    bodyMetrics,
-    readMoreCount,
-    reviewTextCount,
+    report,
   }));
 
-  expect(bodyMetrics.scrollWidth, 'Full widget must not horizontally overflow its viewport').toBeLessThanOrEqual(bodyMetrics.clientWidth + 2);
-  expect(readMoreCount, 'Full widget should expose Read more controls for review access').toBeGreaterThan(0);
+  expect(report.scrollWidth, 'Full widget must not horizontally overflow its viewport').toBeLessThanOrEqual(report.clientWidth + 2);
+  expect(report.bodyText, 'Full widget should include Best Hydrate review content').toMatch(/Best Hydrate|electrolytes|hydrate/i);
+  expect(report.clipped, 'Full widget should not hide readable review text').toEqual([]);
 });
