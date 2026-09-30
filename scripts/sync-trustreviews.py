@@ -62,7 +62,7 @@ def parse_reviews(document: str) -> tuple[list[dict], int | None]:
             continue
 
         rating = 5
-        rating_match = RATING_RE.search(block)
+        rating_match = RATING_RE.search(html.unescape(block))
         if rating_match:
             rating = int(float(rating_match.group(1)))
 
