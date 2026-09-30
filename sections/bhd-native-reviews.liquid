@@ -239,9 +239,6 @@
     var productId = root.dataset.bhdProductId;
     var grid = root.querySelector('[data-bhd-reviews-grid]');
     var summary = root.querySelector('[data-bhd-reviews-summary]');
-    var score = root.querySelector('[data-bhd-reviews-score]');
-    var stars = root.querySelector('[data-bhd-reviews-stars]');
-    var count = root.querySelector('[data-bhd-reviews-count]');
 
     if (!reviewsUrl || !grid) return;
 
@@ -304,22 +301,6 @@
           return review && clean(review.body) && clean(review.author);
         });
         if (!validReviews.length) return;
-
-        var liveRating = Number(payload.rating);
-        var liveCount = Number(payload.review_count);
-
-        if (score && Number.isFinite(liveRating)) score.textContent = liveRating.toFixed(1);
-        if (stars && Number.isFinite(liveRating)) stars.textContent = renderStars(liveRating);
-        if (count) count.textContent = (Number.isFinite(liveCount) ? liveCount : validReviews.length) + ' reviews';
-        if (summary) {
-          summary.setAttribute(
-            'aria-label',
-            (Number.isFinite(liveRating) ? liveRating.toFixed(1) : '0') +
-              ' out of 5 stars from ' +
-              (Number.isFinite(liveCount) ? liveCount : validReviews.length) +
-              ' reviews'
-          );
-        }
 
         var fragment = document.createDocumentFragment();
         validReviews.forEach(function (review) {
