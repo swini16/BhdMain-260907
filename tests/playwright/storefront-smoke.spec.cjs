@@ -180,6 +180,13 @@ test('TrustReviews frame has mobile vertical room', async ({ page }, testInfo) =
   expect(box, 'TrustReviews frame must have a rendered box').not.toBeNull();
   expect(box.height, 'TrustReviews mobile frame must be tall enough to avoid vertical clipping').toBeGreaterThanOrEqual(670);
 
+  const cardsRoot = page.locator('#trustreviews-review-cards');
+  if (await cardsRoot.count()) {
+    const cardsBox = await cardsRoot.boundingBox();
+    expect(cardsBox, 'TrustReviews review-cards root must have a rendered box').not.toBeNull();
+    expect(cardsBox.height, 'TrustReviews review-cards root must not vertically clip long reviews').toBeGreaterThanOrEqual(670);
+  }
+
   await page.screenshot({
     path: testInfo.outputPath('trustreviews-mobile-overflow-contract.jpg'),
     type: 'jpeg',

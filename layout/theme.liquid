@@ -205,13 +205,16 @@
     {%- comment -%} BHD TrustReviews mobile vertical-overflow hotfix 2026-09-29 {%- endcomment -%}
     <style id="bhd-trustreviews-mobile-hotfix">
       @media screen and (max-width:899px){
-        #trustreviewsCardsFrame{
+        #trustreviewsCardsFrame,
+        #trustreviews-review-cards{
           display:block!important;
           width:100%!important;
           height:680px!important;
           min-height:680px!important;
           max-height:none!important;
           overflow:visible!important;
+          overflow-wrap:anywhere!important;
+          word-break:normal!important;
         }
         [id$="__reviews"],
         [id$="__reviews"]>.shopify-app-block,
