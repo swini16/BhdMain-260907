@@ -1,0 +1,11 @@
+{% doc %}
+  Governed LP experiment bootstrap.
+  Registry is static theme data. Runtime only supports allow-listed text targets.
+  No experiment may alter logo, packaging, product media, pricing, claims, URLs or checkout behavior.
+{% enddoc %}
+
+<script>
+  window.BHD_LP_PAGE_HANDLE = {{ page.handle | json }};
+</script>
+{{ 'bhd-lp-experiments.js' | asset_url | script_tag }}
+{{ 'bhd-lp-experiment-runtime.js' | asset_url | script_tag }}

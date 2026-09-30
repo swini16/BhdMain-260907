@@ -67,7 +67,8 @@ jobs:
           set -euo pipefail
           f='snippets/bhd-lp-conversion-shell.liquid'; o='snippets/bhd-lp-conversion-open.liquid'; d='snippets/bhd-page-dispatch.liquid'
           l='snippets/bhd-page-lp-low-sugar.liquid'; r='snippets/bhd-page-lp-run-the-river-edmonton.liquid'; b='snippets/bhd-page-lp-bicarb-bonus.liquid'; t='snippets/bhd-lp-tracking.liquid'
-          test -f "$f"; test -f "$o"; test -f "$d"; test -f "$l"; test -f "$r"; test -f "$b"; test -f "$t"
+          e='snippets/bhd-lp-experiment-runtime.liquid'; ec='assets/bhd-lp-experiments.js'; er='assets/bhd-lp-experiment-runtime.js'
+          test -f "$f"; test -f "$o"; test -f "$d"; test -f "$l"; test -f "$r"; test -f "$b"; test -f "$t"; test -f "$e"; test -f "$ec"; test -f "$er"
           grep -Fq "render 'bhd-lp-conversion-open'" "$d"
           grep -Fq "render 'bhd-lp-conversion-shell'" "$d"
           grep -Fq 'is_consumer_conversion_lp' "$d"
@@ -84,7 +85,13 @@ jobs:
           for x in 'Bicarb Bonus™ hydration, without the megadose.' 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'loading protocol' 'Bicarb Bonus™' '/products/lemonade-best-hydrate' '/products/lemonade-electrolyte-best-hydrate'; do grep -Fq "$x" "$b"; done
           for x in 'Finished the race. Build what comes next.' 'RECOVER → RESET → REPEAT' 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Tastes great. Not too sweet.' 'Zero sugar leaves helpful glucose out.' 'Traditional sports drinks bring a heavy sugar load.' 'Best Hydrate hits the hydration middle.'; do grep -Fq "$x" "$r"; done
           ! grep -Fq 'Race tomorrow? Don’t reinvent hydration tonight.' "$r"
-          for x in "window.amplitude.track(name, props)" "LP CTA Clicked" "LP Section Viewed" "event: dataLayerEvent" "lp_cta_clicked" "lp_section_viewed" "page_handle:" "lp_context:" "[data-lp-cta]" "[data-lp-section]"; do grep -Fq "$x" "$t"; done
+          for x in "window.amplitude.track(name, payload)" "LP CTA Clicked" "LP Section Viewed" "event: dataLayerEvent" "lp_cta_clicked" "lp_section_viewed" "page_handle:" "lp_context:" "experiment_id" "variant_id" "[data-lp-cta]" "[data-lp-section]"; do grep -Fq "$x" "$t"; done
+          for x in "render 'bhd-lp-experiment-runtime'" "render 'bhd-lp-tracking'"; do grep -Fq "$x" "$d"; done
+          for x in "BHD_LP_PAGE_HANDLE" "bhd-lp-experiments.js" "bhd-lp-experiment-runtime.js"; do grep -Fq "$x" "$e"; done
+          for x in '"schemaVersion": 1' '"experiments": []'; do grep -Fq "$x" "$ec"; done
+          for x in "open.eyebrow" "open.lead" "open.earlyCta" "close.tasteHeadline" "close.offerHeadline" "close.finalCta" "bhd_exp" "bhd_var" "bhd_experiment_exposure" "LP Experiment Exposed" "localStorage" "textContent"; do grep -Fq "$x" "$er"; done
+          ! grep -Fq "innerHTML" "$er"
+          ! grep -Fq "href =" "$er"
           grep -Fq 'data-lp-section="open"' "$o"
           grep -Fq 'data-lp-cta="early-amazon"' "$r"
           grep -Fq 'data-lp-cta="final-amazon"' "$r"
@@ -99,6 +106,8 @@ jobs:
           js=re.sub(r"'\{\{.*?\}\}'", "'liquid-value'", s[-1], flags=re.S); Path('/tmp/lp.js').write_text(js)
           PY
           node --check /tmp/lp.js
+          node --check assets/bhd-lp-experiments.js
+          node --check assets/bhd-lp-experiment-runtime.js
 
   static-safety:
     name: LP static safety checks
