@@ -11,9 +11,11 @@
   endif
 
   comment
-    Review bodies are the verified current five TrustReviews/Amazon reviews.
+    Review cards render immediately from the current verified snapshot, then refresh
+    from a same-origin theme asset that is automatically synced from TrustReviews.
     Rating and count remain live from TrustReviews' Shopify review metafields.
   endcomment
+  assign review_asset_url = 'bhd-reviews.json' | asset_url
   assign review_rating = '5.0'
   assign review_count = '5'
   if review_product != blank
@@ -30,6 +32,8 @@
   id="BhdNativeReviews-{{ section.id }}"
   class="bhd-native-reviews color-{{ section.settings.color_scheme }} gradient"
   data-bhd-native-reviews
+  data-bhd-reviews-url="{{ review_asset_url }}"
+  data-bhd-product-id="{{ review_product.id | default: '' }}"
 >
   <div class="page-width bhd-native-reviews__inner">
     {%- if section.settings.show_heading -%}
@@ -39,13 +43,13 @@
       </header>
     {%- endif -%}
 
-    <div class="bhd-native-reviews__summary" aria-label="{{ review_rating }} out of 5 stars from {{ review_count }} reviews">
-      <span class="bhd-native-reviews__score">{{ review_rating }}</span>
-      <span class="bhd-native-reviews__stars" aria-hidden="true">★★★★★</span>
-      <span class="bhd-native-reviews__count">{{ review_count }} reviews</span>
+    <div class="bhd-native-reviews__summary" data-bhd-reviews-summary aria-label="{{ review_rating }} out of 5 stars from {{ review_count }} reviews">
+      <span class="bhd-native-reviews__score" data-bhd-reviews-score>{{ review_rating }}</span>
+      <span class="bhd-native-reviews__stars" data-bhd-reviews-stars aria-hidden="true">★★★★★</span>
+      <span class="bhd-native-reviews__count" data-bhd-reviews-count>{{ review_count }} reviews</span>
     </div>
 
-    <div class="bhd-native-reviews__grid">
+    <div class="bhd-native-reviews__grid" data-bhd-reviews-grid aria-live="polite">
       <article class="bhd-native-review-card" data-bhd-review-card>
         <div class="bhd-native-review-card__stars" aria-label="5 out of 5 stars">★★★★★</div>
         <p class="bhd-native-review-card__text" data-bhd-review-text>I am so happy to find electrolytes both my son and I love! I add it to cold tea for a homemade take on Ice Tea Lemonade and my son puts in in his water bottle before heading off to sport camp for the day. I'll be buying again soon!</p>
@@ -224,6 +228,110 @@
     }
   }
 </style>
+
+<script>
+  (function () {
+    var root = document.getElementById('BhdNativeReviews-{{ section.id }}');
+    if (!root || root.dataset.bhdReviewsInitialized === 'true') return;
+    root.dataset.bhdReviewsInitialized = 'true';
+
+    var reviewsUrl = root.dataset.bhdReviewsUrl;
+    var productId = root.dataset.bhdProductId;
+    var grid = root.querySelector('[data-bhd-reviews-grid]');
+    var summary = root.querySelector('[data-bhd-reviews-summary]');
+    var score = root.querySelector('[data-bhd-reviews-score]');
+    var stars = root.querySelector('[data-bhd-reviews-stars]');
+    var count = root.querySelector('[data-bhd-reviews-count]');
+
+    if (!reviewsUrl || !grid) return;
+
+    function clean(value) {
+      return String(value == null ? '' : value).replace(/\\s+/g, ' ').trim();
+    }
+
+    function renderStars(rating) {
+      var rounded = Math.max(0, Math.min(5, Math.round(Number(rating) || 0)));
+      return '★★★★★'.slice(0, rounded) + '☆☆☆☆☆'.slice(0, 5 - rounded);
+    }
+
+    function makeCard(review) {
+      var article = document.createElement('article');
+      article.className = 'bhd-native-review-card';
+      article.setAttribute('data-bhd-review-card', '');
+
+      var reviewRating = Number(review.rating) || 0;
+      var starText = document.createElement('div');
+      starText.className = 'bhd-native-review-card__stars';
+      starText.setAttribute('aria-label', reviewRating + ' out of 5 stars');
+      starText.textContent = renderStars(reviewRating);
+
+      var body = document.createElement('p');
+      body.className = 'bhd-native-review-card__text';
+      body.setAttribute('data-bhd-review-text', '');
+      body.textContent = clean(review.body);
+
+      var footer = document.createElement('footer');
+      footer.className = 'bhd-native-review-card__footer';
+
+      var author = document.createElement('strong');
+      author.textContent = clean(review.author);
+
+      var source = document.createElement('span');
+      source.textContent = review.source ? 'Imported from ' + clean(review.source) : 'Customer review';
+
+      footer.appendChild(author);
+      footer.appendChild(source);
+      article.appendChild(starText);
+      article.appendChild(body);
+      article.appendChild(footer);
+
+      return article;
+    }
+
+    fetch(reviewsUrl, {
+      credentials: 'same-origin',
+      cache: 'no-cache'
+    })
+      .then(function (response) {
+        if (!response.ok) throw new Error('Review asset request failed');
+        return response.json();
+      })
+      .then(function (payload) {
+        if (!payload || !Array.isArray(payload.reviews) || !payload.reviews.length) return;
+        if (payload.product_id && productId && String(payload.product_id) !== String(productId)) return;
+
+        var validReviews = payload.reviews.filter(function (review) {
+          return review && clean(review.body) && clean(review.author);
+        });
+        if (!validReviews.length) return;
+
+        var liveRating = Number(payload.rating);
+        var liveCount = Number(payload.review_count);
+
+        if (score && Number.isFinite(liveRating)) score.textContent = liveRating.toFixed(1);
+        if (stars && Number.isFinite(liveRating)) stars.textContent = renderStars(liveRating);
+        if (count) count.textContent = (Number.isFinite(liveCount) ? liveCount : validReviews.length) + ' reviews';
+        if (summary) {
+          summary.setAttribute(
+            'aria-label',
+            (Number.isFinite(liveRating) ? liveRating.toFixed(1) : '0') +
+              ' out of 5 stars from ' +
+              (Number.isFinite(liveCount) ? liveCount : validReviews.length) +
+              ' reviews'
+          );
+        }
+
+        var fragment = document.createDocumentFragment();
+        validReviews.forEach(function (review) {
+          fragment.appendChild(makeCard(review));
+        });
+        grid.replaceChildren(fragment);
+      })
+      .catch(function () {
+        // Keep the server-rendered verified snapshot if the sync asset is unavailable.
+      });
+  })();
+</script>
 
 {% schema %}
 {
