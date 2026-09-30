@@ -1,2 +1,47 @@
-{% render 'bhd-page-terse-support' %}
-{% comment %}Terse support atomic live-sync 2026-09-26 snippets/bhd-page-investor-relations.liquid{% endcomment %}
+{% render 'bhd-page-header',
+  family: 'Connect',
+  family_url: '/pages/our-story',
+  eyebrow: 'Investor & Media Relations',
+  title: 'Investor Relations',
+  intro: 'Best Hydrate is building from a focused consumer hydration product toward a broader evidence-led hydration business.'
+%}
+
+<nav class="bhd-merged-anchor-nav" aria-label="Investor relations sections">
+  <a href="#overview">Overview</a>
+  <a href="#corporate-information">Corporate Information</a>
+  <a href="#interest-form">Investor &amp; Advisor Interest</a>
+  <a href="/blogs/news">News &amp; Media</a>
+</nav>
+
+<div class="bhd-page__keypoints" aria-label="Investor and media relations overview">
+  <div><strong>Investor Relations</strong><span>Company overview, corporate facts and investor/advisor inquiries.</span></div>
+  <div><strong>News &amp; Media</strong><span>Newsroom, press resources, events and current company updates.</span></div>
+  <div><strong>Clear separation</strong><span>Commercial facts, research evidence and longer-term opportunities remain explicitly distinguished.</span></div>
+</div>
+
+<section id="overview" class="bhd-page__cards-section bhd-investor-section">
+  <p class="bhd-page__kicker">Investor overview</p>
+  <h2>Consumer wedge, evidence, expansion</h2>
+  <div class="bhd-page__cards bhd-page__cards--3">
+    <article><h3>Consumer wedge</h3><p>Start with a product customers can buy and use now.</p></article>
+    <article><h3>Evidence</h3><p>Build credibility through research and disciplined claims.</p></article>
+    <article><h3>Expansion</h3><p>Grow channels, products and applications as evidence and demand support them.</p></article>
+  </div>
+  <p>Investor materials distinguish the current business from longer-term opportunities.</p>
+</section>
+
+<section id="corporate-information" class="bhd-investor-section" aria-label="Corporate information">
+  {% render 'bhd-page-corporate-information', embedded: true %}
+</section>
+
+<section class="bhd-investor-section" aria-label="Investor and advisor interest">
+  {% render 'bhd-page-investor-contact', embedded: true %}
+</section>
+
+<style>
+.bhd-merged-anchor-nav{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 28px}
+.bhd-merged-anchor-nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid rgba(8,61,119,.18);border-radius:999px;text-decoration:none;font-weight:800}
+.bhd-investor-section{scroll-margin-top:96px}
+</style>
+
+{% comment %}Integrated investor hierarchy 2026-09-29. Investor overview, corporate information and investor/advisor inquiry are one canonical Investor Relations page under Investor & Media Relations.{% endcomment %}

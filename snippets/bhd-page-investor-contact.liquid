@@ -1,3 +1,4 @@
+{% unless embedded %}
 {% render 'bhd-page-header',
   family: 'Connect',
   parent: 'Investor Relations',
@@ -8,8 +9,10 @@
   hero_image: 'https://images.pexels.com/photos/8297652/pexels-photo-8297652.jpeg?auto=compress&cs=tinysrgb&w=1800',
   hero_alt: 'Two professionals reviewing business documents during a meeting'
 %}
+{% endunless %}
 
-<div class="bhd-page__keypoints" aria-label="Investor and advisor interest"><div><strong>Investors</strong><span>Prospective lead and follow-on investors interested in an early-stage hydration platform.</span></div><div><strong>Advisors & connectors</strong><span>Experienced people who can sharpen the strategy or make high-value introductions.</span></div><div><strong>Strategic operators</strong><span>Partners and senior leaders who can strengthen commercialization, research or execution.</span></div></div>
+
+<div class="bhd-page__subpoints" aria-label="Investor and advisor interest"><div><strong>Investors</strong><span>Prospective lead and follow-on investors interested in an early-stage hydration platform.</span></div><div><strong>Advisors & connectors</strong><span>Experienced people who can sharpen the strategy or make high-value introductions.</span></div><div><strong>Strategic operators</strong><span>Partners and senior leaders who can strengthen commercialization, research or execution.</span></div></div>
 
 <section class="bhd-page__feature"><div><p class="bhd-page__kicker">Build the next stage with us</p><h2>Capital is valuable. So are judgment, access and execution.</h2><p>Best Hydrate is exploring a disciplined seed financing while continuing to strengthen its commercial, scientific and development platform. We are interested in people who can contribute more than capital alone, whether through experience, introductions, strategic capability or operating leadership.</p></div></section>
 
@@ -52,7 +55,7 @@
   {% endform %}
 </section>
 
-<section class="bhd-page__brand-context"><div><p class="bhd-page__kicker">Investor context</p><h2>Explore the opportunity</h2><p>Review Best Hydrate’s current foundation, growth platform and next-stage priorities.</p></div><div class="bhd-page__brand-actions"><a class="bhd-page__button" href="/pages/investor-overview">Investor Overview</a><a class="bhd-page__button bhd-page__button--secondary" href="/pages/corporate-information">Corporate Information</a></div></section>
+<section class="bhd-page__brand-context"><div><p class="bhd-page__kicker">Investor context</p><h2>Explore the opportunity</h2><p>Review Best Hydrate’s current foundation, growth platform and next-stage priorities.</p></div><div class="bhd-page__brand-actions"><a class="bhd-page__button" href="/pages/investor-relations#overview">Investor Overview</a><a class="bhd-page__button bhd-page__button--secondary" href="/pages/investor-relations#corporate-information">Corporate Information</a></div></section>
 
 <section class="bhd-page__references" aria-labelledby="InvestorDisclaimer-{{ section.id }}"><h2 id="InvestorDisclaimer-{{ section.id }}">Investor notice</h2><p class="bhd-page__reference-note">This website provides general company information only. It is not an offer to sell or a solicitation of an offer to buy securities, and it does not provide investment, legal, tax or accounting advice.</p></section>
 

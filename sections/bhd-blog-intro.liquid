@@ -1,14 +1,14 @@
 {% if blog.handle == 'news' %}
 <section id="BhdBlogIntro-{{ section.id }}" class="bhd-blog-intro">
   <div class="page-width">
-    <nav class="bhd-blog-intro__breadcrumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span>Connect</span><span aria-hidden="true">›</span><span aria-current="page">News & Insights</span></nav>
+    <nav class="bhd-blog-intro__breadcrumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span>Connect</span><span aria-hidden="true">›</span><a href="/pages/investor-relations">Investor &amp; Media Relations</a><span aria-hidden="true">›</span><span aria-current="page">News &amp; Media</span></nav>
 
     <div class="bhd-blog-intro__hero">
       <div class="bhd-blog-intro__copy">
-        <p class="bhd-blog-intro__eyebrow">News, Science & Performance</p>
-        <h1>News & Insights</h1>
+        <p class="bhd-blog-intro__eyebrow">News, Press & Events</p>
+        <h1>News &amp; Media</h1>
         <p>Company updates, athlete stories, hydration education and research commentary from Best Hydrate. Older articles remain part of the archive, while the rebuilt Science pages provide the controlling reference for current scientific and product claims.</p>
-        <div class="bhd-blog-intro__actions"><a href="/pages/hydration-science">Hydration Science</a><a href="/pages/press">Press & Media</a></div>
+        <div class="bhd-blog-intro__actions"><a href="/pages/press">Press &amp; Media</a><a href="/pages/events">Events</a><a href="/pages/hydration-science">Hydration Science</a></div>
       </div>
       {% assign featured_article = blog.articles.first %}
       {% if featured_article != blank %}

@@ -36,17 +36,17 @@
     <div class="bhd-how-to__cycle" aria-label="Athlete use cycle">
       <p class="bhd-how-to__cycle-kicker">FOR ATHLETES</p>
       <div class="bhd-how-to__cycle-row">
-        <span><strong>PREP</strong><small>Prepare for YOUR best.</small></span>
+        <a href="/pages/prep"><strong>PREP</strong><small>Prepare for YOUR best.</small></a>
         <b aria-hidden="true">→</b>
-        <span><strong>PERFORM</strong><small>Perform at YOUR best.</small></span>
+        <a href="/pages/perform"><strong>PERFORM</strong><small>Perform at YOUR best.</small></a>
         <b aria-hidden="true">→</b>
-        <span><strong>RECOVER</strong><small>Recover for YOUR next best.</small></span>
+        <a href="/pages/recover"><strong>RECOVER</strong><small>Recover for YOUR next best.</small></a>
       </div>
     </div>
 
     <div class="bhd-how-to__actions">
       <a class="button button--primary" href="/products/lemonade-best-hydrate">Shop Best Hydrate</a>
-      <a class="bhd-how-to__link" href="/pages/directions">Full directions →</a>
+      <a class="bhd-how-to__link" href="/products/lemonade-best-hydrate#directions">Full directions →</a>
     </div>
   </div>
 </section>
@@ -64,7 +64,7 @@
   #BhdHowTo-{{ section.id }} .bhd-how-to__card p:last-child{margin:0;color:#5f6f83;font-size:1.3rem;line-height:1.5}
   #BhdHowTo-{{ section.id }} .bhd-how-to__cycle{margin-top:1.6rem;padding:1.6rem 1.8rem;border:1px solid #d7e3f1;border-radius:1.4rem;background:#f7fbff;text-align:center}
   #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap}
-  #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row span{display:grid;gap:.15rem}
+  #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row a{display:grid;gap:.15rem;text-decoration:none;padding:.6rem .75rem;border-radius:1rem}.bhd-how-to__cycle-row a:hover{background:#fff}
   #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row strong{color:#0b2d67;font-size:1.3rem;letter-spacing:.08em}
   #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row small{color:#5f6f83;font-size:1.15rem}
   #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row b{color:#66a7d4;font-size:1.6rem}
@@ -76,7 +76,7 @@
     #BhdHowTo-{{ section.id }} .bhd-how-to__cycle{text-align:left}
     #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row{justify-content:flex-start}
     #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row b{display:none}
-    #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row span{width:100%}
+    #BhdHowTo-{{ section.id }} .bhd-how-to__cycle-row a{width:100%}
     #BhdHowTo-{{ section.id }} .bhd-how-to__actions{justify-content:flex-start}
   }
 </style>
