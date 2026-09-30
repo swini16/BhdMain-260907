@@ -59,7 +59,7 @@ jobs:
             echo "ci1=true" >> "$GITHUB_OUTPUT"
             echo "relevant=false" >> "$GITHUB_OUTPUT"
             echo "::notice::CI1 selected: run fast static sanity and skip rendered Shopify preview."
-          elif grep -Eq '^(assets/|blocks/|config/|layout/|locales/|sections/|snippets/|templates/|tests/playwright/|playwright\.config\.cjs$|\.github/workflows/shopify-pr-preview-gate\.yml$)' /tmp/pr-changed-files.txt; then
+          elif grep -Eq '^(assets/|blocks/|config/|layout/|locales/|sections/|snippets/|templates/|tests/playwright/|playwright\.config\.cjs$|scripts/check-responsive-surfaces\.mjs$|\.github/workflows/shopify-pr-preview-gate\.yml$)' /tmp/pr-changed-files.txt; then
             echo "ci1=false" >> "$GITHUB_OUTPUT"
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             echo "::notice::Relevant Shopify/theme/QA changes detected. Running full rendered preview gate."
@@ -254,6 +254,10 @@ jobs:
               exit 1
             fi
           done
+
+      - name: Enforce desktop/mobile-only responsive policy
+        if: steps.scope.outputs.relevant == 'true'
+        run: node scripts/check-responsive-surfaces.mjs
 
       - name: Run Playwright against proposed and baseline previews
         if: steps.scope.outputs.relevant == 'true'
