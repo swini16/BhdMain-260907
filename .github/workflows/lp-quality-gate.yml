@@ -88,7 +88,7 @@ jobs:
           for x in "window.amplitude.track(name, payload)" "LP CTA Clicked" "LP Section Viewed" "event: dataLayerEvent" "lp_cta_clicked" "lp_section_viewed" "page_handle:" "lp_context:" "experiment_id" "variant_id" "[data-lp-cta]" "[data-lp-section]"; do grep -Fq "$x" "$t"; done
           for x in "render 'bhd-lp-experiment-runtime'" "render 'bhd-lp-tracking'"; do grep -Fq "$x" "$d"; done
           for x in "BHD_LP_PAGE_HANDLE" "bhd-lp-experiments.js" "bhd-lp-experiment-runtime.js"; do grep -Fq "$x" "$e"; done
-          for x in '"schemaVersion": 1' '"experiments": []'; do grep -Fq "$x" "$ec"; done
+          for x in '"schemaVersion": 1' '"experiments":'; do grep -Fq "$x" "$ec"; done
           for x in "open.eyebrow" "open.lead" "open.earlyCta" "close.tasteHeadline" "close.offerHeadline" "close.finalCta" "bhd_exp" "bhd_var" "bhd_experiment_exposure" "LP Experiment Exposed" "localStorage" "textContent"; do grep -Fq "$x" "$er"; done
           ! grep -Fq "innerHTML" "$er"
           ! grep -Fq "href =" "$er"
@@ -108,6 +108,36 @@ jobs:
           node --check /tmp/lp.js
           node --check assets/bhd-lp-experiments.js
           node --check assets/bhd-lp-experiment-runtime.js
+          node - <<'NODE'
+          const fs=require('fs');
+          const text=fs.readFileSync('assets/bhd-lp-experiments.js','utf8').trim();
+          const prefix='window.BHD_LP_EXPERIMENTS = Object.freeze(';
+          if(!text.startsWith(prefix)||!text.endsWith(');')) throw new Error('LP experiment registry wrapper invalid');
+          const data=JSON.parse(text.slice(prefix.length,-2));
+          if(data.schemaVersion!==1||!Array.isArray(data.experiments)) throw new Error('LP experiment registry schema invalid');
+          const targets=new Set([
+            'open.eyebrow','open.lead','open.earlyCta','open.lowSugarLink',
+            'close.tasteEyebrow','close.tasteHeadline','close.tasteBody',
+            'close.offerEyebrow','close.offerHeadline','close.offerBody',
+            'close.finalCta','close.stickyCta'
+          ]);
+          for(const exp of data.experiments){
+            if(!exp||!/^[a-zA-Z0-9._-]{1,96}$/.test(String(exp.id||''))) throw new Error('Invalid experiment id');
+            if(!/^[a-z0-9][a-z0-9-]{1,118}$/.test(String(exp.pageHandle||''))) throw new Error('Invalid experiment pageHandle');
+            if(!['active','paused','draft'].includes(String(exp.status||'').toLowerCase())) throw new Error('Invalid experiment status');
+            if(!Array.isArray(exp.variants)||exp.variants.length<2||exp.variants.length>8) throw new Error('Experiment must have 2-8 variants');
+            for(const variant of exp.variants){
+              if(!variant||!/^[a-zA-Z0-9._-]{1,96}$/.test(String(variant.id||''))) throw new Error('Invalid variant id');
+              if(!(Number(variant.weight)>0)) throw new Error('Variant weight must be positive');
+              if(!variant.changes||typeof variant.changes!=='object'||Array.isArray(variant.changes)) throw new Error('Variant changes must be an object');
+              for(const [field,value] of Object.entries(variant.changes)){
+                if(!targets.has(field)) throw new Error('Non-allow-listed LP experiment target: '+field);
+                if(typeof value!=='string'||!value.trim()||value.length>320) throw new Error('Invalid LP experiment text value for '+field);
+              }
+            }
+          }
+          console.log('LP experiment registry contract valid:',data.experiments.length,'experiments');
+          NODE
 
   static-safety:
     name: LP static safety checks
