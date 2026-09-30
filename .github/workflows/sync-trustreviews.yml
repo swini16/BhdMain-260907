@@ -1,0 +1,59 @@
+name: Sync TrustReviews review feed
+
+on:
+  schedule:
+    - cron: '15 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trustreviews-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync TrustReviews reviews
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Sync and validate review feed
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/sync-trustreviews.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path('assets/bhd-reviews.json').read_text(encoding='utf-8'))
+          reviews = payload.get('reviews', [])
+          assert payload.get('source') == 'TrustReviews'
+          assert payload.get('product_id') == '8904882422044'
+          assert len(reviews) >= 1
+          assert all(r.get('author') and r.get('body') and 1 <= int(r.get('rating', 0)) <= 5 for r in reviews)
+          print(f"Validated {len(reviews)} TrustReviews review cards for product {payload['product_id']}.")
+          PY
+
+      - name: Commit changed review feed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/bhd-reviews.json
+          if git diff --cached --quiet; then
+            echo 'No review changes'
+            exit 0
+          fi
+          git commit -m 'Sync TrustReviews review feed'
+          git pull --rebase origin main
+          git push origin HEAD:main
