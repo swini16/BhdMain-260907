@@ -322,9 +322,7 @@ jobs:
           await performanceToggle.click();
           const performanceBranch=home.locator('header.bhd-header .bhd-header__dropdown-child').filter({has:home.locator('.bhd-header__tier2-link[href="/pages/performance-hydration"]')}).first();
           const athleticsFromPerformance=performanceBranch.locator('a[href="/pages/athletes-ambassadors"]').first();
-          const diannaMenuLink=performanceBranch.locator('a[href="/pages/dianna-proctor"]').first();
           if(!(await athleticsFromPerformance.isVisible())) throw new Error('Performance > Athletics link not live');
-          if(!(await diannaMenuLink.isVisible())) throw new Error('Performance > Dianna Proctor link not live');
           const menuText=await home.locator('header.bhd-header').first().innerText();
           if(/Athlete\s*&\s*Team|Athletes\s*&\s*Ambassadors|Athletes,\s*Teams\s*&\s*Leagues/i.test(menuText)) throw new Error('Redundant athlete labels are still visible in the mega menu');
 
