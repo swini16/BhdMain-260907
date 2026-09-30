@@ -195,3 +195,66 @@ test('TrustReviews frame has mobile vertical room', async ({ page }, testInfo) =
     animations: 'disabled',
   });
 });
+
+
+test('TrustReviews diagnostic reports true internal overflow', async ({ page }, testInfo) => {
+  await gotoWithTransientRetry(page, withQa('/'));
+  const host = page.locator('#trustreviewsCardsFrame');
+  await expect(host).toBeVisible({ timeout: 20000 });
+
+  const hostBox = await host.boundingBox();
+  const frame = page.frames().find((candidate) => candidate !== page.mainFrame() && /trust/i.test(candidate.url()));
+
+  const report = { project: testInfo.project.name, hostBox, frameUrl: frame?.url() || null, body: null, clipped: [] };
+
+  if (frame) {
+    report.body = await frame.locator('body').evaluate((body) => {
+      const s = getComputedStyle(body);
+      return {
+        clientHeight: body.clientHeight,
+        scrollHeight: body.scrollHeight,
+        clientWidth: body.clientWidth,
+        scrollWidth: body.scrollWidth,
+        overflowY: s.overflowY,
+        overflowX: s.overflowX,
+      };
+    }).catch(() => null);
+
+    report.clipped = await frame.locator('body *').evaluateAll((els) =>
+      els.map((el) => {
+        const s = getComputedStyle(el);
+        const r = el.getBoundingClientRect();
+        const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+        return {
+          tag: el.tagName,
+          id: el.id || '',
+          cls: typeof el.className === 'string' ? el.className : '',
+          text: text.slice(0, 120),
+          clientHeight: el.clientHeight,
+          scrollHeight: el.scrollHeight,
+          clientWidth: el.clientWidth,
+          scrollWidth: el.scrollWidth,
+          overflowY: s.overflowY,
+          overflowX: s.overflowX,
+          maxHeight: s.maxHeight,
+          height: s.height,
+          display: s.display,
+          rect: { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) },
+        };
+      }).filter((x) =>
+        x.text.length > 20 &&
+        (
+          x.scrollHeight > x.clientHeight + 4 ||
+          x.scrollWidth > x.clientWidth + 4 ||
+          ['hidden','clip','scroll','auto'].includes(x.overflowY)
+        )
+      ).slice(0, 40)
+    ).catch(() => []);
+  }
+
+  console.log('TRUSTREVIEWS_DIAGNOSTIC', JSON.stringify(report));
+  await testInfo.attach('trustreviews-diagnostic.json', {
+    body: Buffer.from(JSON.stringify(report, null, 2)),
+    contentType: 'application/json',
+  });
+});
