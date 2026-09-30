@@ -1,0 +1,356 @@
+{% comment %}
+  Best Hydrate native customer review renderer.
+  TrustReviews remains the collection/source system, while the storefront display
+  is theme-native so review cards stay readable and responsive.
+{% endcomment %}
+
+{%- liquid
+  assign review_product = product
+  if review_product == blank and section.settings.product != blank
+    assign review_product = section.settings.product
+  endif
+
+  comment
+    Review cards render immediately from the current verified snapshot, then refresh
+    from a same-origin theme asset that is automatically synced from TrustReviews.
+    Rating and count remain live from TrustReviews' Shopify review metafields.
+  endcomment
+  assign review_asset_url = 'bhd-reviews.json' | asset_url
+  assign review_rating = '5.0'
+  assign review_count = '5'
+  if review_product != blank
+    if review_product.metafields.reviews.rating.value != blank
+      assign review_rating = review_product.metafields.reviews.rating.value
+    endif
+    if review_product.metafields.reviews.rating_count != blank
+      assign review_count = review_product.metafields.reviews.rating_count.value
+    endif
+  endif
+-%}
+
+<section
+  id="BhdNativeReviews-{{ section.id }}"
+  class="bhd-native-reviews color-{{ section.settings.color_scheme }} gradient"
+  data-bhd-native-reviews
+  data-bhd-reviews-url="{{ review_asset_url }}"
+  data-bhd-product-id="{{ review_product.id | default: '' }}"
+>
+  <div class="page-width bhd-native-reviews__inner">
+    {%- if section.settings.show_heading -%}
+      <header class="bhd-native-reviews__header">
+        <p class="bhd-native-reviews__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </header>
+    {%- endif -%}
+
+    <div class="bhd-native-reviews__summary" data-bhd-reviews-summary aria-label="{{ review_rating }} out of 5 stars from {{ review_count }} reviews">
+      <span class="bhd-native-reviews__score" data-bhd-reviews-score>{{ review_rating }}</span>
+      <span class="bhd-native-reviews__stars" data-bhd-reviews-stars aria-hidden="true">★★★★★</span>
+      <span class="bhd-native-reviews__count" data-bhd-reviews-count>{{ review_count }} reviews</span>
+    </div>
+
+    <div class="bhd-native-reviews__grid" data-bhd-reviews-grid aria-live="polite">
+      <article class="bhd-native-review-card" data-bhd-review-card>
+        <div class="bhd-native-review-card__stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="bhd-native-review-card__text" data-bhd-review-text>I am so happy to find electrolytes both my son and I love! I add it to cold tea for a homemade take on Ice Tea Lemonade and my son puts in in his water bottle before heading off to sport camp for the day. I'll be buying again soon!</p>
+        <footer class="bhd-native-review-card__footer">
+          <strong>Leah</strong>
+          <span>Imported from Amazon</span>
+        </footer>
+      </article>
+
+      <article class="bhd-native-review-card" data-bhd-review-card>
+        <div class="bhd-native-review-card__stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="bhd-native-review-card__text" data-bhd-review-text>I drink best hydrate everyday and it works! Sleep better, more focused, less fatigue. This is not produced by the giants such as Pepsi Co. or Coca Cola that rely on false promises. Give it a try you will feel the difference!</p>
+        <footer class="bhd-native-review-card__footer">
+          <strong>Matt Smith</strong>
+          <span>Imported from Amazon</span>
+        </footer>
+      </article>
+
+      <article class="bhd-native-review-card" data-bhd-review-card>
+        <div class="bhd-native-review-card__stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="bhd-native-review-card__text" data-bhd-review-text>Love adding this to my water to stay hydrate on the golf course, and when I play hockey. I enjoy the light flavour to it - super easy to drink</p>
+        <footer class="bhd-native-review-card__footer">
+          <strong>PoozybGolfs</strong>
+          <span>Imported from Amazon</span>
+        </footer>
+      </article>
+
+      <article class="bhd-native-review-card" data-bhd-review-card>
+        <div class="bhd-native-review-card__stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="bhd-native-review-card__text" data-bhd-review-text>My wife and I found out about Best Hydrate and gave it a try. We both drink it daily for our general health and enjoy the taste of the product. It’s not too sweet and tastes great. We would highly recommend Best Hydrate. Thank you for making such an awesome product.</p>
+        <footer class="bhd-native-review-card__footer">
+          <strong>Andy</strong>
+          <span>Imported from Amazon</span>
+        </footer>
+      </article>
+
+      <article class="bhd-native-review-card" data-bhd-review-card>
+        <div class="bhd-native-review-card__stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="bhd-native-review-card__text" data-bhd-review-text>An awesome product, much better price point than its competitors and is tasty and works well, i find myself using it most day. Highly recommend</p>
+        <footer class="bhd-native-review-card__footer">
+          <strong>clay hines</strong>
+          <span>Imported from Amazon</span>
+        </footer>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  #BhdNativeReviews-{{ section.id }}{
+    overflow-x:clip;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-reviews__inner{
+    max-width:120rem;
+    padding-top:clamp(2rem,3vw,3.6rem);
+    padding-bottom:clamp(2rem,3vw,3.6rem);
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-reviews__header{
+    max-width:76rem;
+    margin:0 auto 1rem;
+    text-align:center;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-reviews__eyebrow{
+    margin:0 0 .45rem;
+    color:#3f6089;
+    font-size:1.12rem;
+    font-weight:850;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-reviews__header h2{
+    margin:.2rem 0 .7rem;
+    color:#0b2d67;
+    font-size:clamp(2.2rem,3vw,3.4rem);
+    line-height:1.12;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-reviews__summary{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:.55rem;
+    flex-wrap:wrap;
+    margin:0 auto 1.5rem;
+    color:#52657a;
+    font-size:1.18rem;
+    line-height:1.2;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-reviews__score{
+    color:#0b2d67;
+    font-weight:900;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-reviews__stars,
+  #BhdNativeReviews-{{ section.id }} .bhd-native-review-card__stars{
+    color:#efad20;
+    letter-spacing:.08em;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-reviews__count{
+    font-weight:700;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-reviews__grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:1.2rem;
+    align-items:stretch;
+    width:100%;
+    min-width:0;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-review-card{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    height:100%;
+    padding:1.55rem 1.65rem;
+    border:1px solid #d8e4f0;
+    border-radius:1.25rem;
+    background:#fff;
+    box-shadow:0 .45rem 1.4rem rgba(32,65,105,.07);
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-review-card:last-child:nth-child(odd){
+    grid-column:1 / -1;
+    width:100%;
+    max-width:58rem;
+    justify-self:center;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-review-card__stars{
+    margin-bottom:.65rem;
+    font-size:1.25rem;
+    line-height:1;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-review-card__text{
+    flex:1 1 auto;
+    margin:0;
+    color:#334a64;
+    font-size:1.28rem;
+    line-height:1.58;
+    white-space:normal;
+    overflow:visible;
+    overflow-wrap:anywhere;
+    word-break:normal;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-review-card__footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:.65rem 1rem;
+    flex-wrap:wrap;
+    margin-top:1.2rem;
+    padding-top:.9rem;
+    border-top:1px solid #e4ebf3;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-review-card__footer strong{
+    color:#0b2d67;
+    font-size:1.2rem;
+  }
+  #BhdNativeReviews-{{ section.id }} .bhd-native-review-card__footer span{
+    color:#66788c;
+    font-size:1.05rem;
+    font-weight:700;
+  }
+
+  @media screen and (max-width:899px){
+    #BhdNativeReviews-{{ section.id }} .bhd-native-reviews__grid{
+      grid-template-columns:1fr;
+      gap:.9rem;
+    }
+    #BhdNativeReviews-{{ section.id }} .bhd-native-review-card,
+    #BhdNativeReviews-{{ section.id }} .bhd-native-review-card:last-child:nth-child(odd){
+      grid-column:auto;
+      width:100%;
+      max-width:none;
+      padding:1.25rem 1.3rem;
+    }
+    #BhdNativeReviews-{{ section.id }} .bhd-native-review-card__text{
+      font-size:1.18rem;
+      line-height:1.55;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var root = document.getElementById('BhdNativeReviews-{{ section.id }}');
+    if (!root || root.dataset.bhdReviewsInitialized === 'true') return;
+    root.dataset.bhdReviewsInitialized = 'true';
+
+    var reviewsUrl = root.dataset.bhdReviewsUrl;
+    var productId = root.dataset.bhdProductId;
+    var grid = root.querySelector('[data-bhd-reviews-grid]');
+
+    if (!reviewsUrl || !grid) return;
+
+    function clean(value) {
+      return String(value == null ? '' : value).replace(/\s+/g, ' ').trim();
+    }
+
+    function renderStars(rating) {
+      var rounded = Math.max(0, Math.min(5, Math.round(Number(rating) || 0)));
+      return '★★★★★'.slice(0, rounded) + '☆☆☆☆☆'.slice(0, 5 - rounded);
+    }
+
+    function makeCard(review) {
+      var article = document.createElement('article');
+      article.className = 'bhd-native-review-card';
+      article.setAttribute('data-bhd-review-card', '');
+
+      var reviewRating = Number(review.rating) || 0;
+      var starText = document.createElement('div');
+      starText.className = 'bhd-native-review-card__stars';
+      starText.setAttribute('aria-label', reviewRating + ' out of 5 stars');
+      starText.textContent = renderStars(reviewRating);
+
+      var body = document.createElement('p');
+      body.className = 'bhd-native-review-card__text';
+      body.setAttribute('data-bhd-review-text', '');
+      body.textContent = clean(review.body);
+
+      var footer = document.createElement('footer');
+      footer.className = 'bhd-native-review-card__footer';
+
+      var author = document.createElement('strong');
+      author.textContent = clean(review.author);
+
+      var source = document.createElement('span');
+      source.textContent = review.source ? 'Imported from ' + clean(review.source) : 'Customer review';
+
+      footer.appendChild(author);
+      footer.appendChild(source);
+      article.appendChild(starText);
+      article.appendChild(body);
+      article.appendChild(footer);
+
+      return article;
+    }
+
+    fetch(reviewsUrl, {
+      credentials: 'same-origin',
+      cache: 'no-cache'
+    })
+      .then(function (response) {
+        if (!response.ok) throw new Error('Review asset request failed');
+        return response.json();
+      })
+      .then(function (payload) {
+        if (!payload || !Array.isArray(payload.reviews) || !payload.reviews.length) return;
+        if (payload.product_id && productId && String(payload.product_id) !== String(productId)) return;
+
+        var validReviews = payload.reviews.filter(function (review) {
+          return review && clean(review.body) && clean(review.author);
+        });
+        if (!validReviews.length) return;
+
+        var fragment = document.createDocumentFragment();
+        validReviews.forEach(function (review) {
+          fragment.appendChild(makeCard(review));
+        });
+        grid.replaceChildren(fragment);
+      })
+      .catch(function () {
+        // Keep the server-rendered verified snapshot if the sync asset is unavailable.
+      });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BHD native reviews",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Review product"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Show heading",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Customer reviews"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What customers are saying"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "BHD native reviews"
+    }
+  ]
+}
+{% endschema %}
