@@ -1,3 +1,4 @@
+{% unless embedded %}
 {% render 'bhd-page-header',
   family: 'Solutions',
   family_url: '/pages/product-details',
@@ -9,6 +10,8 @@
   hero_image: 'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=1800',
   hero_alt: 'Water being poured from a clear bottle into a drinking glass'
 %}
+{% endunless %}
+
 
 <div class="bhd-page__keypoints" aria-label="Best Hydrate preparation principles">
   <div><strong>Label first</strong><span>Use the scoop quantity and directions printed on the current container.</span></div>
@@ -77,7 +80,7 @@
     <p>See Product Details for the current ingredient map, then explore the science pages for sodium-glucose transport, electrolytes and bicarbonate.</p>
   </div>
   <div class="bhd-page__brand-actions">
-    <a class="bhd-page__button" href="/pages/product-details">Product Details</a>
+    <a class="bhd-page__button" href="/products/lemonade-best-hydrate#product-details">Product Details</a>
     <a class="bhd-page__button bhd-page__button--secondary" href="/products/lemonade-best-hydrate">Shop Best Hydrate</a>
   </div>
 </section>
@@ -86,7 +89,7 @@
   <p class="bhd-page__kicker">Related pages</p>
   <h2 id="RelatedDirections-{{ section.id }}">Use it in context</h2>
   <div class="bhd-page__related-grid">
-    <a href="/pages/product-details"><strong>Product Details</strong><span>What is in the current formula.</span></a>
+    <a href="/products/lemonade-best-hydrate#product-details"><strong>Product Details</strong><span>What is in the current formula.</span></a>
     <a href="/pages/performance-hydration"><strong>Performance Hydration</strong><span>Fluid planning around exercise and sweat.</span></a>
     <a href="/pages/work-long-shifts"><strong>Work & Long Shifts</strong><span>Hydration access during demanding work.</span></a>
     <a href="/pages/clinical-hydration"><strong>Clinical Hydration</strong><span>When hydration requires clinician-directed care.</span></a>
