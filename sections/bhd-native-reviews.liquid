@@ -5,21 +5,13 @@
 {% endcomment %}
 
 {%- liquid
-  assign review_product = product
-  if review_product == blank and section.settings.product != blank
-    assign review_product = section.settings.product
-  endif
-
+  comment
+    Review bodies are a verified snapshot of the current five TrustReviews/Amazon reviews.
+    Keep the visible summary pinned to the same snapshot so count/rating cannot drift from
+    app-owned metafields that are not reliably exposed in Shopify theme previews.
+  endcomment
   assign review_rating = '5.0'
   assign review_count = '5'
-  if review_product != blank
-    if review_product.metafields.trustreviews.avg_rating != blank
-      assign review_rating = review_product.metafields.trustreviews.avg_rating.value
-    endif
-    if review_product.metafields.trustreviews.num_reviews != blank
-      assign review_count = review_product.metafields.trustreviews.num_reviews.value
-    endif
-  endif
 -%}
 
 <section
