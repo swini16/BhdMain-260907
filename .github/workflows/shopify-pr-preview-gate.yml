@@ -3,7 +3,7 @@ name: Shopify PR preview gate
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened, ready_for_review, edited]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
@@ -16,14 +16,13 @@ jobs:
   preview-gate:
     name: Shopify preview + Playwright gate
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 12
     env:
       SHOPIFY_FLAG_STORE: best-hydrate.myshopify.com
       SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN || secrets.SHOPIFY_THEME_ACCESS_TOKEN || secrets.SHOPIFY_ADMIN_API_TOKEN || secrets.SHOPIFY_ACCESS_TOKEN }}
       SHOPIFY_FLAG_FORCE: '1'
       BASE_URL: https://besthydrate.com
       PRODUCT_PATH: /products/lemonade-best-hydrate
-      CRITICAL_HOTFIX: ${{ contains(github.event.pull_request.labels.*.name, 'critical-hotfix') }}
 
     steps:
       - name: Checkout proposed PR code
@@ -48,29 +47,88 @@ jobs:
             echo "::warning::No usable ChatGPT conversation title candidate found; Telegram may show UNKNOWN."
           fi
 
-      - name: Detect Shopify preview scope
+      - name: Detect preview scope
         id: scope
         shell: bash
         run: |
           set -euo pipefail
-          git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" > /tmp/pr-changed-files.txt
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          git diff --name-only "$BASE" "$HEAD" > /tmp/pr-changed-files.txt
 
           if [[ "${{ github.event.pull_request.title }}" == "[CI1]"* ]]; then
             echo "ci1=true" >> "$GITHUB_OUTPUT"
             echo "relevant=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::CI1 selected: run fast static sanity and skip rendered Shopify preview."
-          elif grep -Eq '^(assets/|blocks/|config/|layout/|locales/|sections/|snippets/|templates/|tests/playwright/|playwright\.config\.cjs$|scripts/check-responsive-surfaces\.mjs$|\.github/workflows/shopify-pr-preview-gate\.yml$)' /tmp/pr-changed-files.txt; then
-            echo "ci1=false" >> "$GITHUB_OUTPUT"
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::Relevant Shopify/theme/QA changes detected. Running full rendered preview gate."
-          else
-            echo "ci1=false" >> "$GITHUB_OUTPUT"
-            echo "relevant=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::No Shopify/theme/QA changes detected. Required gate reports success without creating preview themes."
+            echo "preview_paths=/" >> "$GITHUB_OUTPUT"
+            echo "expect_nav=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::CI1 selected: static sanity only."
+            exit 0
           fi
 
-      - name: CI1 static sanity gate
-        if: steps.scope.outputs.ci1 == 'true'
+          if ! grep -Eq '^(assets/|blocks/|config/|layout/|locales/|sections/|snippets/|templates/|tests/playwright/|playwright\.config\.cjs$|scripts/check-responsive-surfaces\.mjs$|\.github/workflows/shopify-pr-preview-gate\.yml$)' /tmp/pr-changed-files.txt; then
+            echo "ci1=false" >> "$GITHUB_OUTPUT"
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+            echo "preview_paths=/" >> "$GITHUB_OUTPUT"
+            echo "expect_nav=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No storefront/theme changes. Required gate exits after static sanity."
+            exit 0
+          fi
+
+          echo "ci1=false" >> "$GITHUB_OUTPUT"
+          echo "relevant=true" >> "$GITHUB_OUTPUT"
+
+          python3 - <<'PY' > /tmp/preview-scope.env
+          from pathlib import Path
+          files=[line.strip() for line in Path('/tmp/pr-changed-files.txt').read_text().splitlines() if line.strip()]
+          paths=['/']
+          nav=False
+
+          def any_match(*needles):
+              return any(any(n in f for n in needles) for f in files)
+
+          if any_match('bhd-header', 'bhd-menu', 'bhd-page-breadcrumbs', 'bhd-footer-nav', 'header-group.json'):
+              nav=True
+              paths += [
+                  '/pages/hydration-science',
+                  '/pages/performance-hydration',
+                  '/pages/partnerships',
+                  '/pages/investor-relations',
+              ]
+
+          if any_match('main-product.liquid', 'bhd-page-product-details', 'bhd-page-directions', 'bhd-page-faq', 'templates/product'):
+              paths += ['/products/lemonade-best-hydrate']
+
+          if any_match('bhd-phase-page', 'bhd-page-performance-hydration', 'bhd-page-endurance', 'bhd-page-heat-high-sweat', 'bhd-page-recovery', 'bhd-how-to-use'):
+              paths += ['/pages/prep', '/pages/perform', '/pages/recover', '/pages/performance-hydration']
+
+          if any_match('research-publications', 'current-research', 'research-partners', 'research-impact', 'clinical-development', 'clinical-program', 'pilot-studies', 'healthcare-applications'):
+              paths += ['/pages/research-publications', '/pages/clinical-development']
+
+          if any_match('bhd-page-partnerships', 'research-partnerships', 'retail-distribution', 'humanitarian-partnerships'):
+              paths += ['/pages/partnerships']
+
+          if any_match('investor-relations', 'investor-overview', 'corporate-information', 'investor-contact', 'bhd-blog-intro'):
+              paths += ['/pages/investor-relations', '/blogs/news']
+
+          if any(f.startswith(('layout/','assets/','config/')) for f in files):
+              paths += ['/products/lemonade-best-hydrate']
+
+          seen=[]
+          for p in paths:
+              if p not in seen:
+                  seen.append(p)
+
+          # Keep the required gate bounded. Exhaustive full-site QA runs separately
+          # as an advisory workflow and must not serialize every deploy.
+          seen=seen[:8]
+          print('preview_paths=' + ','.join(seen))
+          print('expect_nav=' + ('true' if nav else 'false'))
+          PY
+
+          cat /tmp/preview-scope.env >> "$GITHUB_OUTPUT"
+          echo "::notice::Targeted preview paths: $(grep '^preview_paths=' /tmp/preview-scope.env | cut -d= -f2-)"
+
+      - name: Fast static sanity
         shell: bash
         run: |
           set -euo pipefail
@@ -90,10 +148,9 @@ jobs:
               if re.search(r"(?m)^(<<<<<<<|=======|>>>>>>>)", text):
                   raise SystemExit(f"{name}: merge-conflict marker")
               if name.endswith(".json"):
-                  # Shopify JSON templates can contain a leading /* ... */ generated-file comment.
                   payload=re.sub(r"^\ufeff?\s*/\*.*?\*/\s*", "", text, count=1, flags=re.S)
                   json.loads(payload)
-          print(f"CI1 static sanity passed for {len(changed)} changed files")
+          print(f"Static sanity passed for {len(changed)} changed files")
           PY
 
       - name: Block banned personalization copy and rejected imagery
@@ -116,7 +173,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${SHOPIFY_CLI_THEME_TOKEN:-}" ]; then
-            echo "::error::Missing Shopify theme credential. Add SHOPIFY_CLI_THEME_TOKEN as an Actions repository secret."
+            echo "::error::Missing Shopify theme credential."
             exit 1
           fi
 
@@ -126,62 +183,23 @@ jobs:
         with:
           node-version: 24
 
-      - name: Install Shopify CLI and Playwright
+      - name: Install preview test dependencies
         if: steps.scope.outputs.relevant == 'true'
         run: |
           npm install --no-save @shopify/cli@latest @playwright/test@latest @axe-core/playwright@latest
           npx playwright install --with-deps chromium
 
-      - name: Build proposed and baseline theme packages
+      - name: Build proposed theme package
         if: steps.scope.outputs.relevant == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/bhd-theme /tmp/bhd-theme-base artifacts
-
+          mkdir -p /tmp/bhd-theme artifacts
           for dir in assets blocks config layout locales sections snippets templates; do
             if [ -d "$dir" ]; then cp -R "$dir" /tmp/bhd-theme/; fi
           done
-
-          git worktree add --detach /tmp/bhd-base "${{ github.event.pull_request.base.sha }}"
-          for dir in assets blocks config layout locales sections snippets templates; do
-            if [ -d "/tmp/bhd-base/$dir" ]; then cp -R "/tmp/bhd-base/$dir" /tmp/bhd-theme-base/; fi
-          done
-
           test -f /tmp/bhd-theme/layout/theme.liquid
           test -f /tmp/bhd-theme/config/settings_schema.json
-          test -f /tmp/bhd-theme-base/layout/theme.liquid
-          test -f /tmp/bhd-theme-base/config/settings_schema.json
-
-      - name: Create rendered baseline development theme
-        if: steps.scope.outputs.relevant == 'true'
-        id: baseline
-        shell: bash
-        run: |
-          set -euo pipefail
-          DEV_CONTEXT="pr-${{ github.event.pull_request.number }}-base"
-
-          npx shopify theme push \
-            --path /tmp/bhd-theme-base \
-            --store "$SHOPIFY_FLAG_STORE" \
-            --password "$SHOPIFY_CLI_THEME_TOKEN" \
-            --development \
-            --development-context "$DEV_CONTEXT" \
-            --json > /tmp/shopify-baseline.json
-
-          cat /tmp/shopify-baseline.json
-          cp /tmp/shopify-baseline.json artifacts/shopify-baseline.json
-
-          THEME_ID="$(jq -er '.theme.id | tostring' /tmp/shopify-baseline.json)"
-          ROLE="$(jq -er '.theme.role' /tmp/shopify-baseline.json)"
-
-          echo "theme_id=$THEME_ID" >> "$GITHUB_OUTPUT"
-          echo "BASELINE_PREVIEW_THEME_ID=$THEME_ID" >> "$GITHUB_ENV"
-
-          if [ "$ROLE" != "development" ]; then
-            echo "::error::Expected baseline development theme, got role=$ROLE"
-            exit 1
-          fi
 
       - name: Create proposed Shopify development theme
         if: steps.scope.outputs.relevant == 'true'
@@ -191,20 +209,12 @@ jobs:
           set -euo pipefail
           DEV_CONTEXT="pr-${{ github.event.pull_request.number }}-proposed"
 
-          npx shopify theme push \
-            --path /tmp/bhd-theme \
-            --store "$SHOPIFY_FLAG_STORE" \
-            --password "$SHOPIFY_CLI_THEME_TOKEN" \
-            --development \
-            --development-context "$DEV_CONTEXT" \
-            --json > /tmp/shopify-preview.json
+          npx shopify theme push             --path /tmp/bhd-theme             --store "$SHOPIFY_FLAG_STORE"             --password "$SHOPIFY_CLI_THEME_TOKEN"             --development             --development-context "$DEV_CONTEXT"             --json > /tmp/shopify-preview.json
 
-          cat /tmp/shopify-preview.json
           cp /tmp/shopify-preview.json artifacts/shopify-preview.json
 
           THEME_ID="$(jq -er '.theme.id | tostring' /tmp/shopify-preview.json)"
           ROLE="$(jq -er '.theme.role' /tmp/shopify-preview.json)"
-
           echo "theme_id=$THEME_ID" >> "$GITHUB_OUTPUT"
           echo "PREVIEW_THEME_ID=$THEME_ID" >> "$GITHUB_ENV"
 
@@ -213,93 +223,61 @@ jobs:
             exit 1
           fi
 
-          git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" > /tmp/pr-changed-files.txt
-
-          if grep -Eq '^(assets/(constants|cart|quick-add-bulk|quantity-popover|price-per-item|quick-order-list)\.js|snippets/cart-drawer\.liquid|layout/theme\.liquid)$' /tmp/pr-changed-files.txt; then
-            echo "IGNORE_PREVIEW_BASELINE_JS=0" >> "$GITHUB_ENV"
-          else
-            echo "IGNORE_PREVIEW_BASELINE_JS=1" >> "$GITHUB_ENV"
-          fi
-
           jq -r '.theme.errors // {} | keys[]' /tmp/shopify-preview.json > /tmp/theme-error-files.txt || true
           if [ -s /tmp/theme-error-files.txt ]; then
-            echo "::warning::Shopify reported pre-existing upload errors:"
-            cat /tmp/theme-error-files.txt
+            echo "::notice::Shopify reported upload errors in theme files. Only changed-file errors block this PR."
             while IFS= read -r error_file; do
               if grep -Fxq "$error_file" /tmp/pr-changed-files.txt; then
                 echo "::error::Changed file failed Shopify upload: $error_file"
+                jq -r --arg f "$error_file" '.theme.errors[$f][]?' /tmp/shopify-preview.json
                 exit 1
               fi
             done < /tmp/theme-error-files.txt
           fi
 
-      - name: Verify both rendered themes respond
+      - name: Verify rendered preview responds
         if: steps.scope.outputs.relevant == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          for THEME_ID in "$BASELINE_PREVIEW_THEME_ID" "$PREVIEW_THEME_ID"; do
-            URL="https://besthydrate.com/?preview_theme_id=${THEME_ID}&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
-            ready=0
-            for attempt in {1..12}; do
-              code="$(curl -L -sS -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
-              if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && grep -qi '<html' /tmp/preview-home.html; then
-                ready=1
-                break
-              fi
-              sleep 5
-            done
-            if [ "$ready" -ne 1 ]; then
-              echo "::error::Shopify rendered theme $THEME_ID did not become ready."
-              exit 1
+          URL="https://besthydrate.com/?preview_theme_id=$PREVIEW_THEME_ID&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
+          for attempt in {1..8}; do
+            code="$(curl -L -sS -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
+            if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && grep -qi '<html' /tmp/preview-home.html; then
+              exit 0
             fi
+            sleep 3
           done
+          echo "::error::Shopify rendered preview did not become ready."
+          exit 1
 
       - name: Enforce desktop/mobile-only responsive policy
         if: steps.scope.outputs.relevant == 'true'
         run: node scripts/check-responsive-surfaces.mjs
 
-      - name: Run Playwright against proposed and baseline previews
+      - name: Run targeted preview smoke
         if: steps.scope.outputs.relevant == 'true'
-        shell: bash
+        env:
+          PREVIEW_PATHS: ${{ steps.scope.outputs.preview_paths }}
+          PREVIEW_EXPECT_NAV: ${{ steps.scope.outputs.expect_nav }}
         run: |
-          set -euo pipefail
-          if [ "$CRITICAL_HOTFIX" = "true" ]; then
-            echo "::notice::critical-hotfix: running targeted product validation only."
-            npx playwright test               --config=playwright.config.cjs               tests/playwright/robotic-validation.spec.cjs               tests/playwright/storefront-smoke.spec.cjs               --grep "Lemonade product page passes robotic validation|Lemonade product can add to cart and open checkout"
-          else
-            npx playwright test --config=playwright.config.cjs
-          fi
+          npx playwright test             --config=playwright.config.cjs             tests/playwright/pr-preview-gate.spec.cjs
 
-      - name: Upload preview QA diagnostics
-        if: ${{ !cancelled() && steps.scope.outputs.relevant == 'true' }}
+      - name: Upload failure diagnostics
+        if: ${{ failure() && steps.scope.outputs.relevant == 'true' }}
         uses: actions/upload-artifact@v4
         with:
-          name: shopify-pr-preview-${{ github.run_id }}
+          name: shopify-pr-preview-failure-${{ github.run_id }}
           path: |
             playwright-report/
             test-results/
             artifacts/shopify-preview.json
-            artifacts/shopify-baseline.json
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 3
+          compression-level: 6
 
       - name: Delete proposed development preview
         if: ${{ always() && steps.scope.outputs.relevant == 'true' && steps.preview.outputs.theme_id != '' }}
         shell: bash
         run: |
-          npx shopify theme delete \
-            --store "$SHOPIFY_FLAG_STORE" \
-            --password "$SHOPIFY_CLI_THEME_TOKEN" \
-            --theme "${{ steps.preview.outputs.theme_id }}" \
-            --force
-
-      - name: Delete baseline development preview
-        if: ${{ always() && steps.scope.outputs.relevant == 'true' && steps.baseline.outputs.theme_id != '' }}
-        shell: bash
-        run: |
-          npx shopify theme delete \
-            --store "$SHOPIFY_FLAG_STORE" \
-            --password "$SHOPIFY_CLI_THEME_TOKEN" \
-            --theme "${{ steps.baseline.outputs.theme_id }}" \
-            --force
+          npx shopify theme delete             --store "$SHOPIFY_FLAG_STORE"             --password "$SHOPIFY_CLI_THEME_TOKEN"             --theme "${{ steps.preview.outputs.theme_id }}"             --force
