@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json, os, re
+from pathlib import Path
 
 def vals(body, key):
     rx=re.compile(rf"^\s*{re.escape(key)}\s*:\s*(.*?)\s*$", re.I)
@@ -17,52 +18,31 @@ KNOWN={
     "write meeting reply":"Write meeting reply",
     "review navras comments phased prs":"Review Navras Comments Phased PRs",
     "bhd newsjacking watch":"BHD Newsjacking Watch",
-    "attio ios app availability":"Attio iOS App Availability",
-    "time selector graph fix":"Time Selector Graph Fix",
-    "best hydrate global qa":"Best Hydrate Global QA",
+    "investigate ise ai model":"Investigate Ise AI Model",
 }
+BAD_LEGACY={"sports event ad watch","best hydrate pastel/navras acceptance review","ihp dashboard communications control plane","bhd ihp+","current chat","unknown"}
 
-BAD_LEGACY={
-    "sports event ad watch",
-    "best hydrate pastel/navras acceptance review",
-    "ihp dashboard communications control plane",
-    "bhd ihp+",
-    "current chat",
-    "unknown",
-}
-
+# Kept explicit and dependency-free so production notification cannot fail because PyYAML is absent.
 ROUTES=[
-    (r"\b(bicarb|bicarbonate|sodium bicarbonate)\b|reddit.{0,30}bicarb", "BHD Newsjacking Watch", 92, "bicarb"),
-    (r"\b(dianna|athletics|athlete|ambassador)\b|mega menu|personalization|personalisation|sweat testing", "Review Navras Comments Phased PRs", 92, "storefront-navras-review"),
-    (r"iphone.{0,30}crm|\bios setup\b|control plane|communications flow|phase provenance|teams phone mobile|entra|graph permissions", "IHP control plane flowchart", 93, "ios-crm-control-plane"),
-    (r"nested summary hierarchy|editable task master hierarchy|task rollup|rollup outline|summary hierarchy|editable hierarchy", "Editable Task Hierarchy", 94, "task-hierarchy"),
-    (r"page selector|hierarchical ihp navigation|super menu|site[- ]wide navigation", "CI1 PR 218 Sorting Status", 88, "ihp-navigation"),
-    (r"task master taxonomy|column groups?|column width|sorting status|primary.*strategy.*governance", "CI1 PR 218 Sorting Status", 88, "task-master-columns"),
-    (r"executive decision cockpit|ceo growth|executive dashboard|executive summary|ihp home|homepage.{0,30}(duplicate|redundan)", "Metric report inconsistency", 82, "executive-home"),
-    (r"metricool|\b6h\b.{0,30}(range|trend)|analytics refresh|time selector|range integrity", "iHP Analytics Refresh", 86, "analytics"),
-    (r"task tags|notes chronology|project-style grouping|project style grouping|assignment toggle|assignment directory", "Write meeting reply", 82, "task-collaboration"),
+    (r"\b(bicarb|bicarbonate|sodium bicarbonate)\b|newsjack|formula.{0,20}buffer", "BHD Newsjacking Watch", 94, "bhd-newsjacking"),
+    (r"\b(dianna|athletics|athlete|ambassador)\b|mega[- ]menu|personalization|personalisation|sweat testing|arrival path|supermenu.{0,30}highlight", "Review Navras Comments Phased PRs", 93, "navras-review"),
+    (r"iphone.{0,30}crm|ios.{0,30}crm|\bios setup\b|control plane|communications flow|phase provenance|teams phone|entra|graph permissions", "IHP control plane flowchart", 94, "ihp-control-plane"),
+    (r"nested summary hierarchy|task master hierarchy|full task master hierarchy|task hierarchy|hierarchy levels?|task rollup|rollup outline|summary hierarchy|editable hierarchy|skip unused", "Editable Task Hierarchy", 95, "editable-task-hierarchy"),
+    (r"page selector|hierarchical ihp navigation|super[- ]menu|site[- ]wide navigation|task master taxonomy|column groups?|column width|sorting status", "CI1 PR 218 Sorting Status", 90, "ci1-sorting-status"),
+    (r"executive decision cockpit|ceo growth|executive dashboard|executive summary|ihp home|homepage.{0,30}(duplicate|redundan)", "Metric report inconsistency", 86, "metric-report"),
+    (r"metricool|\b6h\b.{0,30}(range|trend)|analytics refresh|time selector|range integrity|instrumentation rollups?|system health.{0,40}instrumentation", "iHP Analytics Refresh", 92, "ihp-analytics"),
+    (r"task tags|notes chronology|project-style grouping|project style grouping|assignment toggle|assignment directory", "Write meeting reply", 86, "write-meeting-reply"),
+    (r"creative intelligence|ise ai|creative feedback loop", "Investigate Ise AI Model", 90, "investigate-ise-ai"),
 ]
 
 def infer(body, pr_title):
     canonical=(vals(body,"ChatGPT-Conversation-Title") or [""])[0]
-    conf_raw=(vals(body,"ChatGPT-Conversation-Title-Confidence") or [""])[0]
-    source=(vals(body,"ChatGPT-Conversation-Title-Source") or [""])[0].lower()
-    verified=(vals(body,"ChatGPT-Conversation-Title-Verified") or [""])[0].lower()
-
     if canonical:
-        try:
-            confidence=int(conf_raw) if conf_raw else (100 if verified=="exact" else 85)
-        except ValueError:
-            confidence=85
-        confidence=max(0,min(100,confidence))
-        if confidence>=75:
-            return {"title":canonical,"confidence":confidence,"source":source or "canonical","rule":"canonical"}
-
+        return {"title":canonical,"confidence":100,"source":"canonical","rule":"canonical"}
     text=(pr_title+"\n"+body).lower()
     for pattern,title,confidence,rule in ROUTES:
         if re.search(pattern,text,re.I|re.S):
-            return {"title":title,"confidence":confidence,"source":"context-inferred","rule":rule}
-
+            return {"title":title,"confidence":confidence,"source":"learned-map","rule":rule}
     legacy=[]
     for key in ("ChatGPT-Chat-Name","ChatGPT-Tab-Title","ChatGPT chat title"):
         legacy.extend(vals(body,key))
@@ -74,7 +54,6 @@ def infer(body, pr_title):
         n=norm(item)
         if item and n not in BAD_LEGACY:
             return {"title":item,"confidence":75,"source":"legacy-mapped","rule":"legacy-best-effort"}
-
     return {"title":"","confidence":0,"source":"none","rule":"none"}
 
 if __name__=="__main__":
