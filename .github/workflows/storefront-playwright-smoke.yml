@@ -48,6 +48,9 @@ jobs:
         if: github.event_name == 'push'
         run: sleep 30
 
+      - name: Enforce desktop/mobile-only responsive policy
+        run: node scripts/check-responsive-surfaces.mjs
+
       - name: Run storefront Playwright validation
         run: npx playwright test --config=playwright.config.cjs
 
@@ -60,8 +63,8 @@ jobs:
           find test-results -type f -name 'visual-*.jpg' -print0 | while IFS= read -r -d '' f; do
             cp "$f" "visual-current/$(basename "$f")"
           done
-          echo 'bhd-visual-v3' > visual-current/baseline-version.txt
-          test "$(find visual-current -maxdepth 1 -name 'visual-*.jpg' | wc -l)" -ge 10
+          echo 'bhd-visual-v4' > visual-current/baseline-version.txt
+          test "$(find visual-current -maxdepth 1 -name 'visual-*.jpg' | wc -l)" -ge 8
 
       - name: Compare screenshots with last approved main run
         if: ${{ github.event_name == 'push' && !cancelled() && !contains(github.event.head_commit.message, '[approve-visual-baseline]') }}
@@ -100,8 +103,8 @@ jobs:
           unzip -q /tmp/visual-baseline.zip -d /tmp/visual-baseline-extract
 
           BASELINE_VERSION="$(find /tmp/visual-baseline-extract -type f -name 'baseline-version.txt' -print -quit || true)"
-          if [ -z "$BASELINE_VERSION" ] || [ "$(cat "$BASELINE_VERSION")" != "bhd-visual-v3" ]; then
-            echo "Prior artifact uses an older visual-capture format. Bootstrapping bhd-visual-v3 baseline."
+          if [ -z "$BASELINE_VERSION" ] || [ "$(cat "$BASELINE_VERSION")" != "bhd-visual-v4" ]; then
+            echo "Prior artifact uses an older visual-capture format. Bootstrapping bhd-visual-v4 baseline."
             exit 0
           fi
 
