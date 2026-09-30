@@ -21,6 +21,9 @@ KNOWN={
     "investigate ise ai model":"Investigate Ise AI Model",
     "pastel response queue":"Pastel response queue",
     "pastel comment review":"Pastel Comment Review",
+    "time selector graph fix":"Time Selector Graph Fix",
+    "paid media control build":"Paid Media Control Build",
+    "run river lp cleanup":"Run River LP Cleanup",
 }
 BAD_LEGACY={"sports event ad watch","best hydrate pastel/navras acceptance review","ihp dashboard communications control plane","bhd ihp+","current chat","unknown"}
 
@@ -32,9 +35,12 @@ ROUTES=[
     (r"nested summary hierarchy|task master hierarchy|full task master hierarchy|task hierarchy|hierarchy levels?|task rollup|rollup outline|summary hierarchy|editable hierarchy|skip unused", "Editable Task Hierarchy", 95, "editable-task-hierarchy"),
     (r"page selector|hierarchical ihp navigation|super[- ]menu|site[- ]wide navigation|task master taxonomy|column groups?|column width|sorting status", "CI1 PR 218 Sorting Status", 90, "ci1-sorting-status"),
     (r"executive decision cockpit|ceo growth|executive dashboard|executive summary|ihp home|homepage.{0,30}(duplicate|redundan)", "Metric report inconsistency", 86, "metric-report"),
-    (r"metricool|\b6h\b.{0,30}(range|trend)|analytics refresh|time selector|range integrity|instrumentation rollups?|system health.{0,40}instrumentation", "iHP Analytics Refresh", 92, "ihp-analytics"),
-    (r"task tags|notes chronology|project-style grouping|project style grouping|assignment toggle|assignment directory", "Write meeting reply", 86, "write-meeting-reply"),
-    (r"creative intelligence|ise ai|creative feedback loop|meta ads control|meta.{0,30}(experiment|creative history)|tiktok ads control|campaigns? api", "Investigate Ise AI Model", 90, "investigate-ise-ai"),
+    (r"3d master range|custom rolling time ranges?|custom time range|time selector.{0,30}graph", "Time Selector Graph Fix", 96, "time-selector-graph"),
+    (r"metricool|\b6h\b.{0,30}(range|trend)|analytics refresh|range integrity|instrumentation rollups?|system health.{0,40}instrumentation", "iHP Analytics Refresh", 92, "ihp-analytics"),
+    (r"task tags|notes chronology|project-style grouping|project style grouping|assignment toggle|assignment directory|task detail workspace|tagged notes|inline comments|collaboration notes|directed handoffs", "Write meeting reply", 92, "write-meeting-reply"),
+    (r"creative intelligence|ise ai|creative feedback loop", "Investigate Ise AI Model", 90, "investigate-ise-ai"),
+    (r"google ads control|sem/ppc|paid media control|cross-channel paid media|meta ads control|tiktok ads control|amazon ads control|campaigns? api", "Paid Media Control Build", 94, "paid-media-control"),
+    (r"governed landing-page experiment runtime|operate landing-page experiments|ehp-lp-runtime|landing-page experiments?.{0,40}experiment intelligence", "Run River LP Cleanup", 92, "run-river-lp"),
     (r"maple leaf|worker asset|trust strip|trust-strip", "Pastel response queue", 90, "pastel-response-queue"),
     (r"trustreviews?|review overflow|reviews?.{0,20}overflow", "Pastel Comment Review", 90, "pastel-comment-review"),
 ]
