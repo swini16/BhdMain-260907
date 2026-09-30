@@ -201,18 +201,24 @@ jobs:
           test -f /tmp/bhd-theme/layout/theme.liquid
           test -f /tmp/bhd-theme/config/settings_schema.json
 
-      - name: Diagnose TrustReviews server-rendered review feed
+      - name: Sync and validate TrustReviews review feed
         if: steps.scope.outputs.relevant == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          curl -L --fail --silent --show-error --max-time 30 'https://reviews.trustapps.co/_w/938e7cb7-8c69-47b7-976e-3082273b3445/8904882422044' -o /tmp/trustreviews.html
-          echo "trustreviews_bytes=$(wc -c < /tmp/trustreviews.html)"
-          grep -n -m 3 -B 8 -A 28 'id="review-body"' /tmp/trustreviews.html || true
-          for needle in 'Leah' 'Matt Smith' 'PoozybGolfs' 'Andy' 'clay hines'; do
-            echo "--- $needle ---"
-            grep -in -m 1 -B 10 -A 24 "$needle" /tmp/trustreviews.html || true
-          done
+          python3 scripts/sync-trustreviews.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path('assets/bhd-reviews.json').read_text(encoding='utf-8'))
+          reviews = payload.get('reviews', [])
+          assert payload.get('source') == 'TrustReviews'
+          assert payload.get('product_id') == '8904882422044'
+          assert len(reviews) >= 1
+          assert all(r.get('author') and r.get('body') and 1 <= int(r.get('rating', 0)) <= 5 for r in reviews)
+          print(f"Validated {len(reviews)} TrustReviews review cards for product {payload['product_id']}.")
+          PY
 
       - name: Create proposed Shopify development theme
         if: steps.scope.outputs.relevant == 'true'
