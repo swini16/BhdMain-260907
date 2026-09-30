@@ -5,6 +5,11 @@
 {% endcomment %}
 
 {%- liquid
+  assign review_product = product
+  if review_product == blank and section.settings.product != blank
+    assign review_product = section.settings.product
+  endif
+
   comment
     Review bodies are the verified current five TrustReviews/Amazon reviews.
     Rating and count remain live from TrustReviews' Shopify review metafields.
@@ -16,7 +21,7 @@
       assign review_rating = review_product.metafields.reviews.rating.value
     endif
     if review_product.metafields.reviews.rating_count != blank
-      assign review_count = review_product.metafields.reviews.rating_count
+      assign review_count = review_product.metafields.reviews.rating_count.value
     endif
   endif
 -%}
