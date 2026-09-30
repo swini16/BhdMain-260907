@@ -19,6 +19,8 @@ KNOWN={
     "review navras comments phased prs":"Review Navras Comments Phased PRs",
     "bhd newsjacking watch":"BHD Newsjacking Watch",
     "investigate ise ai model":"Investigate Ise AI Model",
+    "pastel response queue":"Pastel response queue",
+    "pastel comment review":"Pastel Comment Review",
 }
 BAD_LEGACY={"sports event ad watch","best hydrate pastel/navras acceptance review","ihp dashboard communications control plane","bhd ihp+","current chat","unknown"}
 
@@ -32,7 +34,9 @@ ROUTES=[
     (r"executive decision cockpit|ceo growth|executive dashboard|executive summary|ihp home|homepage.{0,30}(duplicate|redundan)", "Metric report inconsistency", 86, "metric-report"),
     (r"metricool|\b6h\b.{0,30}(range|trend)|analytics refresh|time selector|range integrity|instrumentation rollups?|system health.{0,40}instrumentation", "iHP Analytics Refresh", 92, "ihp-analytics"),
     (r"task tags|notes chronology|project-style grouping|project style grouping|assignment toggle|assignment directory", "Write meeting reply", 86, "write-meeting-reply"),
-    (r"creative intelligence|ise ai|creative feedback loop", "Investigate Ise AI Model", 90, "investigate-ise-ai"),
+    (r"creative intelligence|ise ai|creative feedback loop|meta ads control|meta.{0,30}(experiment|creative history)|tiktok ads control|campaigns? api", "Investigate Ise AI Model", 90, "investigate-ise-ai"),
+    (r"maple leaf|worker asset|trust strip|trust-strip", "Pastel response queue", 90, "pastel-response-queue"),
+    (r"trustreviews?|review overflow|reviews?.{0,20}overflow", "Pastel Comment Review", 90, "pastel-comment-review"),
 ]
 
 def infer(body, pr_title):
@@ -44,7 +48,7 @@ def infer(body, pr_title):
         if re.search(pattern,text,re.I|re.S):
             return {"title":title,"confidence":confidence,"source":"learned-map","rule":rule}
     legacy=[]
-    for key in ("ChatGPT-Chat-Name","ChatGPT-Tab-Title","ChatGPT chat title"):
+    for key in ("ChatGPT-Chat-Name","ChatGPT-Tab-Title","ChatGPT chat title","ChatGPT-Chat-Title"):
         legacy.extend(vals(body,key))
     for item in legacy:
         n=norm(item)
