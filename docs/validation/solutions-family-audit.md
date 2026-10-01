@@ -52,7 +52,7 @@ PASS across the family:
 - Travel does not claim to prevent thrombosis or cure jet lag
 - Rehabilitation does not override swallowing or texture prescriptions
 - Active Aging does not impose a one-size-fits-all fluid prescription
-- Eco-Humanitarian places safe water, WASH and appropriately formulated therapeutic ORS ahead of product marketing
+- Eco-Humanitarian places safe water, sanitation and hygiene, and appropriately formulated therapeutic ORS ahead of product marketing
 
 ### 4. Content and visual differentiation
 

@@ -9,7 +9,7 @@ Research level: VERY HIGH
 |---|---|---|
 | Dedicated snippet | PASS | Implemented and dispatched. |
 | Humanitarian visuals | PASS | Real community water-access imagery is used rather than staged product imagery. |
-| WASH priority | PASS | Safe water, sanitation and hygiene are placed before powdered hydration products. |
+| Water, sanitation and hygiene priority | PASS | Safe water, sanitation and hygiene are placed before powdered hydration products. |
 | ORS phrase control | PASS | “ORS for a brighter tomorrow” is explicitly defined as appropriate therapeutic ORS in humanitarian context, not the current consumer Best Hydrate product. |
 | WHO ORS boundary | PASS | Therapeutic formulation requirements and current-product distinction are explicit. |
 | Sustainability trade-off | PASS | Packaging reduction is balanced against stability, dosing accuracy, moisture protection and instructions. |
