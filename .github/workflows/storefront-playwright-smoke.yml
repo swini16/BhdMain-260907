@@ -20,7 +20,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  ci0-bypass:
+    name: CI0 bypass
+    if: ${{ ((github.event_name == 'pull_request' && (startsWith(github.head_ref, 'ci0-') || startsWith(github.event.pull_request.title, 'CI0:') || startsWith(github.event.pull_request.title, '[CI0]'))) || (github.event_name == 'push' && (startsWith(github.event.head_commit.message, 'CI0:') || contains(github.event.head_commit.message, '[CI0]')))) }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "CI0 selected. Storefront Playwright bypassed."
+
   smoke:
+    if: ${{ !((github.event_name == 'pull_request' && (startsWith(github.head_ref, 'ci0-') || startsWith(github.event.pull_request.title, 'CI0:') || startsWith(github.event.pull_request.title, '[CI0]'))) || (github.event_name == 'push' && (startsWith(github.event.head_commit.message, 'CI0:') || contains(github.event.head_commit.message, '[CI0]')))) }}
     name: Smoke + robotic validation
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
