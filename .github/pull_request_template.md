@@ -1,9 +1,12 @@
 ## ChatGPT conversation attribution
 
 ChatGPT-Conversation-Title:
-ChatGPT-Conversation-Title-Confidence:
-ChatGPT-Conversation-Title-Source:
-ChatGPT-Chat-ID:
-ChatGPT-Chat:
+ChatGPT-Conversation-Title-Source: canonical
+ChatGPT-Origin-Thread:
+ChatGPT-Attribution-Version: 1
 
-<!-- Best available title. Confidence/source are internal attribution metadata only. Never block work. -->
+<!-- PR creators should supply the current ChatGPT conversation title here whenever available. If omitted, the trusted PR-open normalizer immediately applies the centralized best plausible match. Attribution is operational metadata only and never blocks PR, CI, merge, or deploy. -->
+
+## Change
+
+## Verification
