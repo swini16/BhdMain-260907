@@ -24,11 +24,24 @@ KNOWN={
     "time selector graph fix":"Time Selector Graph Fix",
     "paid media control build":"Paid Media Control Build",
     "run river lp cleanup":"Run River LP Cleanup",
+    "experiment adapters expanded":"Experiment adapters expanded",
+    "telegram title watch":"Telegram Title Watch",
+    "crm integration next steps":"CRM Integration Next Steps",
+    "investigate klaviyo submission":"Investigate Klaviyo Submission",
+    "seo tracking alert analysis":"SEO Tracking Alert Analysis",
+    "pastel review fixed":"Pastel Review Fixed",
 }
 BAD_LEGACY={"sports event ad watch","best hydrate pastel/navras acceptance review","ihp dashboard communications control plane","bhd ihp+","current chat","unknown"}
 
 # Kept explicit and dependency-free so production notification cannot fail because PyYAML is absent.
 ROUTES=[
+    (r"core.{0,20}live.{0,30}watch|live.{0,20}core.{0,30}watch|crm opportunity|attio.{0,40}(relationship|task|opportunity)|watcher.{0,30}crm", "CRM Integration Next Steps", 97, "crm-watchers"),
+    (r"klaviyo|single[- ]opt[- ]in|viewed product|signup success|metrics query", "Investigate Klaviyo Submission", 96, "klaviyo-submission"),
+    (r"purposeful sodium|701 mg|serving and usage|dri context|backlink outreach|seo.{0,30}(authority|comparison|sglt1)", "SEO Tracking Alert Analysis", 95, "seo-tracking"),
+    (r"restore.{0,30}eco[- ]humanitarian|rich eco[- ]humanitarian|botswana.{0,40}(carousel|field|content)", "Pastel Review Fixed", 97, "pastel-review-fixed"),
+    (r"\bwash\b|minimize.{0,20}wash|eco[- ]humanitarian framing|water, sanitation and hygiene", "Pastel response queue", 95, "pastel-response-queue-wash"),
+    (r"visual qa|visual review|browse[- /]comment|visual comment log|review workspace", "Pastel Comment Review", 94, "visual-qa-review"),
+    (r"experiment registry v2|registry v2|grin.{0,40}(adapter|measurement|creator)|earned[- ]media.{0,50}(registry|adapter|attribution)|earned-media-readonly|grin-readonly", "Experiment adapters expanded", 96, "experiment-adapters"),
     (r"\b(bicarb|bicarbonate|sodium bicarbonate)\b|newsjack|formula.{0,20}buffer", "BHD Newsjacking Watch", 94, "bhd-newsjacking"),
     (r"\b(dianna|athletics|athlete|ambassador)\b|mega[- ]menu|personalization|personalisation|sweat testing|arrival path|supermenu.{0,30}highlight", "Review Navras Comments Phased PRs", 93, "navras-review"),
     (r"iphone.{0,30}crm|ios.{0,30}crm|\bios setup\b|control plane|communications flow|phase provenance|teams phone|entra|graph permissions", "IHP control plane flowchart", 94, "ihp-control-plane"),
@@ -49,21 +62,29 @@ def infer(body, pr_title):
     canonical=(vals(body,"ChatGPT-Conversation-Title") or [""])[0]
     if canonical:
         return {"title":canonical,"confidence":100,"source":"canonical","rule":"canonical"}
+
+    legacy=[]
+    for key in ("ChatGPT-Chat-Name","ChatGPT-Tab-Title","ChatGPT chat title","ChatGPT-Chat-Title"):
+        legacy.extend(vals(body,key))
+
+    # Exact known prior conversation titles outrank contextual inference.
+    for item in legacy:
+        n=norm(item)
+        if n in KNOWN:
+            return {"title":KNOWN[n],"confidence":95,"source":"exact-known-title","rule":"known-legacy"}
+
     text=(pr_title+"\n"+body).lower()
     for pattern,title,confidence,rule in ROUTES:
         if re.search(pattern,text,re.I|re.S):
             return {"title":title,"confidence":confidence,"source":"learned-map","rule":rule}
-    legacy=[]
-    for key in ("ChatGPT-Chat-Name","ChatGPT-Tab-Title","ChatGPT chat title","ChatGPT-Chat-Title"):
-        legacy.extend(vals(body,key))
+
+    # Unknown legacy labels are last-resort only. Reject known operational/task/watch labels.
     for item in legacy:
         n=norm(item)
-        if n in KNOWN:
-            return {"title":KNOWN[n],"confidence":90,"source":"legacy-mapped","rule":"known-legacy"}
-    for item in legacy:
-        n=norm(item)
-        if item and n not in BAD_LEGACY:
-            return {"title":item,"confidence":75,"source":"legacy-mapped","rule":"legacy-best-effort"}
+        looks_operational = bool(re.search(r"\b(task|watch|watcher|monitor)\b", n))
+        if item and n not in BAD_LEGACY and not looks_operational:
+            return {"title":item,"confidence":75,"source":"legacy-best-effort","rule":"legacy-best-effort"}
+
     return {"title":"","confidence":0,"source":"none","rule":"none"}
 
 if __name__=="__main__":
