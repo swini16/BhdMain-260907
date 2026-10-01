@@ -383,11 +383,13 @@
                     {%- endif -%}
                   </p>
                 {%- when 'description' -%}
-                  {%- if product.description != blank -%}
-                    <div class="product__description bhd-inline-product-description rte quick-add-hidden" {{ block.shopify_attributes }}>
-                      {{ product.description }}
-                    </div>
-                  {%- endif -%}
+                  {%- unless product.handle contains 'lemonade' -%}
+                    {%- if product.description != blank -%}
+                      <div class="product__description bhd-inline-product-description rte quick-add-hidden" {{ block.shopify_attributes }}>
+                        {{ product.description }}
+                      </div>
+                    {%- endif -%}
+                  {%- endunless -%}
                 {%- when 'sku' -%}
                   <p
                     class="product__sku{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.sku.size == 0 %} visibility-hidden{% endif %}"
@@ -889,11 +891,13 @@
         </div>
       </div>
 
-      {%- if product.description != blank -%}
-        <div class="bhd-full-product-description rte" aria-label="Product details">
-          {{ product.description }}
-        </div>
-      {%- endif -%}
+      {%- unless product.handle contains 'lemonade' -%}
+        {%- if product.description != blank -%}
+          <div class="bhd-full-product-description rte" aria-label="Product details">
+            {{ product.description }}
+          </div>
+        {%- endif -%}
+      {%- endunless -%}
 
       {% render 'product-media-modal', variant_images: variant_images %}
 
@@ -951,14 +955,14 @@
 </product-info>
 
 {% if product.handle contains 'lemonade' %}
+  {% render 'bhd-product-story' %}
   <section class="page-width bhd-product-info-hub" aria-labelledby="BhdProductInfoHub-{{ section.id }}">
     <div class="bhd-product-info-hub__intro">
-      <p class="bhd-page__kicker">Product information</p>
-      <h2 id="BhdProductInfoHub-{{ section.id }}">Everything about Best Hydrate, in one product page</h2>
-      <p>Product details, preparation directions and frequently asked questions are integrated below so customers do not need to jump between separate product-information pages.</p>
+      <p class="bhd-page__kicker">The essentials</p>
+      <h2 id="BhdProductInfoHub-{{ section.id }}">Formula, directions &amp; answers</h2>
     </div>
     <nav class="bhd-product-info-hub__nav" aria-label="Best Hydrate product information">
-      <a href="#product-details">Product Details</a>
+      <a href="#product-details">Formula</a>
       <a href="#directions">Directions</a>
       <a href="#faq">FAQ</a>
     </nav>

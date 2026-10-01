@@ -1,4 +1,31 @@
-{% unless embedded %}
+{% if embedded %}
+<div class="bhd-page__keypoints" aria-label="Best Hydrate formula essentials">
+  <div><strong>1 g sugar / 100 mL</strong><span>Low sugar, on purpose.</span></div>
+  <div><strong>5 electrolytes</strong><span>Sodium, potassium, chloride, bicarbonate and citrate.</span></div>
+  <div><strong>6 ingredients</strong><span>A short, transparent formula.</span></div>
+</div>
+
+<section class="bhd-page__cards-section">
+  <p class="bhd-page__kicker">Formula</p>
+  <h2>Purposeful glucose. Electrolytes. Bicarb Bonus™.</h2>
+  <div class="bhd-page__cards bhd-page__cards--3">
+    <article><h3>Glucose + sodium</h3><p>Keeps glucose in the formula for sodium-glucose transport without a conventional heavy sugar load.</p><a href="/pages/glucose-water-absorption">See the mechanism →</a></article>
+    <article><h3>Five electrolytes</h3><p>Sodium, potassium, chloride, bicarbonate and citrate each have a defined formulation role.</p><a href="/pages/five-essential-electrolytes">See the five →</a></article>
+    <article><h3>Bicarb Bonus™</h3><p>Sodium bicarbonate adds bicarbonate without positioning Best Hydrate as a high-dose bicarbonate protocol.</p><a href="/pages/why-bicarbonate">Why bicarbonate →</a></article>
+  </div>
+</section>
+
+<section class="bhd-page__brand-context">
+  <div>
+    <p class="bhd-page__kicker">Made in Alberta</p>
+    <h2>Simple formula. Clear label.</h2>
+    <p>Health Canada NPN 80118664. Mixed and packaged in Edmonton.</p>
+  </div>
+  <div class="bhd-page__brand-actions">
+    <a class="bhd-page__button" href="/pages/our-formula">Full Formula</a>
+  </div>
+</section>
+{% else %}
 {% render 'bhd-page-header',
   family: 'Solutions',
   family_url: '/pages/product-details',
@@ -10,9 +37,6 @@
   hero_image: 'https://images.pexels.com/photos/416528/pexels-photo-416528.jpeg?auto=compress&cs=tinysrgb&w=1800',
   hero_alt: 'Clear drinking water being poured into a glass'
 %}
-{% endunless %}
-
-
 <div class="bhd-page__keypoints" aria-label="Best Hydrate product overview">
   <div><strong>1 scoop + 500 mL</strong><span>The current label serving makes one prepared 500 mL drink.</span></div>
   <div><strong>Purposeful sodium</strong><span>701 mg sodium + 388 mg potassium per prepared serving.</span></div>
@@ -112,3 +136,5 @@
   </ol>
   <p class="bhd-page__reference-note">Product details can change. The current package label governs preparation, cautions and authorized conditions of use.</p>
 </section>
+
+{% endif %}
