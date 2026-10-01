@@ -22,6 +22,7 @@ const ANALYTICS_ENDPOINTS = [
 
 const KEY_PAGES = [
   { name: 'home', path: '/' },
+  { name: 'low-sugar', path: '/pages/low-sugar-hydration-glucose-sglt1' },
   { name: 'prep', path: '/pages/prep' },
   { name: 'perform', path: '/pages/perform' },
   { name: 'recover', path: '/pages/recover' },
@@ -38,6 +39,8 @@ const SUPPORT_PAGES = [
   { name: 'humanitarian-partnerships', path: '/pages/humanitarian-partnerships', terse: true },
   { name: 'investor-relations', path: '/pages/investor-relations', terse: true },
   { name: 'investor-overview', path: '/pages/investor-overview', terse: true },
+  { name: 'press', path: '/pages/press', terse: true },
+  { name: 'contact', path: '/pages/contact', terse: false },
   { name: 'active-living', path: '/pages/active-living', terse: true },
   { name: 'everyday-wellness', path: '/pages/everyday-wellness', terse: true },
   { name: 'travel-hydration', path: '/pages/travel-hydration', terse: true },
@@ -456,6 +459,11 @@ for (const target of KEY_PAGES) {
     const productCta = page.locator('a[href*="/products/"]:visible').first();
     await expect(productCta, `${target.name}: visible product CTA/link`).toBeVisible();
 
+    if (target.name === 'low-sugar') {
+      const earlyBuy = page.locator('a[href*="/products/"]:visible').filter({ hasText: /Buy Now/i }).first();
+      await expect(earlyBuy, 'low-sugar: explicit Buy Now CTA after summary').toBeVisible();
+    }
+
     if (['prep', 'perform', 'recover'].includes(target.name)) {
       const phaseShopLinks = page.locator('[data-bhd-phase-shop]');
       await expect(
@@ -542,6 +550,17 @@ test('support-page matrix stays healthy, terse and routed', async ({ page }) => 
       ).toBe(0);
     }
 
+    if (target.name === 'press') {
+      await expect(page.getByText('New peer-reviewed publication', { exact: true }), 'press: publication milestone').toBeVisible();
+      await expect(page.getByRole('button', { name: /Send Media Inquiry/i }), 'press: media inquiry form').toBeVisible();
+      await expect(page.getByText('Press resources are still growing', { exact: false }), 'press: stale startup placeholder copy removed').toHaveCount(0);
+    }
+
+    if (target.name === 'contact') {
+      await expect(page.getByRole('button', { name: /^Send$/i }), 'contact: primary contact form').toBeVisible();
+      await expect(page.getByText('Press & media', { exact: true }).first(), 'contact: media routing option').toBeVisible();
+    }
+
     expect(firstPartyFailures, `${target.name}: first-party network failures`).toEqual([]);
     expect(pageErrors, `${target.name}: uncaught JavaScript errors`).toEqual([]);
   }
@@ -578,6 +597,41 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
   firstPartyFailures.length = 0;
   pageErrors.length = 0;
   const response = await gotoWithTransientRetry(page, withQa(productPath));
+
+  const initialPurchaseState = await page.evaluate(() => {
+    const info = document.querySelector('.product__info-wrapper');
+    const add = document.querySelector('form[action*="/cart/add"] button[name="add"]');
+    if (!info || !add) return null;
+    const infoStyle = getComputedStyle(info);
+    const addStyle = getComputedStyle(add);
+    const infoRect = info.getBoundingClientRect();
+    const addRect = add.getBoundingClientRect();
+    return {
+      infoOpacity: Number(infoStyle.opacity || 1),
+      infoDisplay: infoStyle.display,
+      infoVisibility: infoStyle.visibility,
+      infoWidth: infoRect.width,
+      infoHeight: infoRect.height,
+      addOpacity: Number(addStyle.opacity || 1),
+      addDisplay: addStyle.display,
+      addVisibility: addStyle.visibility,
+      addWidth: addRect.width,
+      addHeight: addRect.height,
+      infoText: (info.textContent || '').replace(/\s+/g, ' ').trim().length,
+    };
+  });
+  expect(initialPurchaseState, 'product: purchase UI must exist before any scroll').not.toBeNull();
+  expect(initialPurchaseState.infoOpacity, 'product: purchase column must not start transparent').toBeGreaterThan(0.5);
+  expect(initialPurchaseState.infoDisplay, 'product: purchase column must render').not.toBe('none');
+  expect(initialPurchaseState.infoVisibility, 'product: purchase column must be visible').not.toBe('hidden');
+  expect(initialPurchaseState.infoWidth, 'product: purchase column must have width').toBeGreaterThan(50);
+  expect(initialPurchaseState.infoHeight, 'product: purchase column must have height').toBeGreaterThan(50);
+  expect(initialPurchaseState.addOpacity, 'product: Add to Cart must not start transparent').toBeGreaterThan(0.5);
+  expect(initialPurchaseState.addDisplay, 'product: Add to Cart must render').not.toBe('none');
+  expect(initialPurchaseState.addVisibility, 'product: Add to Cart must be visible').not.toBe('hidden');
+  expect(initialPurchaseState.addWidth, 'product: Add to Cart must have width').toBeGreaterThan(50);
+  expect(initialPurchaseState.addHeight, 'product: Add to Cart must have height').toBeGreaterThan(20);
+  expect(initialPurchaseState.infoText, 'product: purchase column must not be blank').toBeGreaterThan(40);
 
   await assertPageHealth(page, response, 'product');
   await assertAccessibility(page, 'product');
@@ -632,6 +686,14 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
   await expect(addToCart, 'product: Add to Cart must be visible').toBeVisible();
   await expect(addToCart, 'product: Add to Cart must be enabled').toBeEnabled();
 
+  const sellingPlanSelected = await page.locator('input[name="selling_plan"]:checked, select[name="selling_plan"]').evaluateAll((els) =>
+    els.some((el) => Boolean(el.value))
+  );
+  if (!sellingPlanSelected) {
+    const recurringPolicy = page.getByText('This item is a deferred, subscription, or recurring purchase.', { exact: false }).first();
+    await expect(recurringPolicy, 'product: recurring-purchase policy must stay hidden for one-time purchase').toBeHidden();
+  }
+
   const purchaseBeforeFlavourVote = await page.evaluate(() => {
     const add = document.querySelector('form[action*="/cart/add"] button[name="add"]');
     const vote = document.querySelector('[data-bhd-flavour-vote]');
@@ -642,6 +704,12 @@ test('Lemonade product page passes robotic validation', async ({ page }, testInf
     purchaseBeforeFlavourVote,
     'product: flavour-vote module must stay below the primary Add to Cart action'
   ).toBe(true);
+
+  await addToCart.click();
+  const cartDrawer = page.locator('cart-drawer');
+  await expect(cartDrawer, 'product: add-to-cart should open the cart drawer').toHaveClass(/active/, { timeout: 15_000 });
+  await expect(cartDrawer, 'product: cart drawer should contain the added item').not.toHaveClass(/is-empty/);
+  await expect(page.locator('.cart-count-bubble').first(), 'product: cart count should update after add-to-cart').toBeVisible();
 
   expect(firstPartyFailures, 'product: first-party network failures').toEqual([]);
   expect(pageErrors, 'product: uncaught JavaScript errors').toEqual([]);
