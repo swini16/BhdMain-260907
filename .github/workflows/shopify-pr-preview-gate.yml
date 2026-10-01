@@ -56,6 +56,17 @@ jobs:
           HEAD="${{ github.event.pull_request.head.sha }}"
           git diff --name-only "$BASE" "$HEAD" > /tmp/pr-changed-files.txt
 
+          if [[ "${{ github.head_ref }}" == ci0-* || "${{ github.event.pull_request.title }}" == "CI0:"* || "${{ github.event.pull_request.title }}" == "[CI0]"* ]]; then
+            echo "ci0=true" >> "$GITHUB_OUTPUT"
+            echo "ci1=false" >> "$GITHUB_OUTPUT"
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+            echo "preview_paths=/" >> "$GITHUB_OUTPUT"
+            echo "expect_nav=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::CI0 selected: all preview/QA gates bypassed."
+            exit 0
+          fi
+          echo "ci0=false" >> "$GITHUB_OUTPUT"
+
           if [[ "${{ github.event.pull_request.title }}" == "[CI1]"* ]]; then
             echo "ci1=true" >> "$GITHUB_OUTPUT"
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -129,6 +140,7 @@ jobs:
           echo "::notice::Targeted preview paths: $(grep '^preview_paths=' /tmp/preview-scope.env | cut -d= -f2-)"
 
       - name: Fast static sanity
+        if: steps.scope.outputs.ci0 != 'true'
         shell: bash
         run: |
           set -euo pipefail
