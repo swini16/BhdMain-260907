@@ -26,6 +26,12 @@
     </div>
   </div>
 
+  <nav class="bhd-product-story__deep-links" aria-label="Product details">
+    <a href="/pages/directions">Directions</a>
+    <a href="/pages/product-details">Full product details</a>
+    <a href="/pages/q-a">FAQ</a>
+  </nav>
+
 </section>
 
 <style>
@@ -40,6 +46,8 @@
   .bhd-product-story__split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(1.5rem,4vw,3.5rem);align-items:center;margin-top:1rem}
   .bhd-product-story__media img{display:block;width:100%;height:auto;max-height:44rem;object-fit:cover;border-radius:1.4rem}
   .bhd-product-story__actions{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.1rem}
+  .bhd-product-story__deep-links{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.2rem;padding-top:1rem;border-top:1px solid #dfe8f2}
+  .bhd-product-story__deep-links a{display:inline-flex;align-items:center;min-height:3.5rem;padding:.55rem .85rem;border-radius:999px;background:#f5f9fd;color:#0b2d67;font-weight:800;text-decoration:none}
   @media screen and (max-width:749px){
     .bhd-product-story__cards{grid-template-columns:1fr}
     .bhd-product-story__split{grid-template-columns:1fr}
