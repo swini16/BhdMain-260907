@@ -19,3 +19,17 @@ for name,kw,title,rule in cases:
     assert got["title"]==title, (name,got,title)
     assert got["rule"]==rule, (name,got,rule)
 print(f"ok {len(cases)} attribution cases")
+
+
+# architecture invariants
+root=pathlib.Path(__file__).resolve().parents[2]
+normalizer=(root/".github/workflows/chat-title-attribution.yml").read_text()
+assert "canonicalized-at-open" not in normalizer
+assert "Fallback candidate" in normalizer
+notifier=(root/".github/workflows/deploy.yml")
+if not notifier.exists():
+    notifier=root/".github/workflows/lp-quality-gate.yml"
+notifier_text=notifier.read_text()
+assert 'PR_COMMIT_TITLE="$commit_title"' in notifier_text
+assert 'PR_HEAD_REF="$head_ref"' in notifier_text
+print("ok architecture invariants")
