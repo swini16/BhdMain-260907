@@ -202,6 +202,42 @@
       @media screen and (max-width:749px){form[data-testid^="klaviyo-form-"],form.klaviyo-form{width:calc(100vw - 2.4rem)!important;max-width:calc(100vw - 2.4rem)!important;border-radius:1.4rem!important}}
     </style>
 
+    {%- comment -%} BHD Klaviyo single-opt-in success-copy override 2026-10-01 {%- endcomment -%}
+    <script id="bhd-klaviyo-single-optin-success">
+      (function () {
+        var obsoleteCopy = 'Check your inbox to confirm your signup.';
+        var scheduled = false;
+
+        function applySingleOptInCopy() {
+          scheduled = false;
+          document.querySelectorAll('form[data-testid^="klaviyo-form-"] p, form.klaviyo-form p').forEach(function (node) {
+            if ((node.textContent || '').trim() === obsoleteCopy) node.remove();
+          });
+        }
+
+        function scheduleApply() {
+          if (scheduled) return;
+          scheduled = true;
+          window.requestAnimationFrame(applySingleOptInCopy);
+        }
+
+        function start() {
+          applySingleOptInCopy();
+          new MutationObserver(scheduleApply).observe(document.body, {
+            childList: true,
+            subtree: true,
+            characterData: true
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', start, { once: true });
+        } else {
+          start();
+        }
+      })();
+    </script>
+
         {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
       assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
