@@ -66,7 +66,7 @@ jobs:
         run: |
           set -euo pipefail
           f='snippets/bhd-lp-conversion-shell.liquid'; o='snippets/bhd-lp-conversion-open.liquid'; d='snippets/bhd-page-dispatch.liquid'
-          l='snippets/bhd-page-lp-low-sugar.liquid'; r='snippets/bhd-page-lp-run-the-river-edmonton.liquid'; b='snippets/bhd-page-lp-bicarb-bonus.liquid'; t='snippets/bhd-lp-tracking.liquid'
+          l='snippets/bhd-page-lp-low-sugar.liquid'; r='snippets/bhd-page-lp-run-the-river-edmonton.liquid'; b='snippets/bhd-page-lp-bicarb-bonus.liquid'; re='snippets/bhd-page-lp-race-eve.liquid'; bt='snippets/bhd-page-lp-back-to-training.liquid'; t='snippets/bhd-lp-tracking.liquid'
           e='snippets/bhd-lp-experiment-runtime.liquid'; ec='assets/bhd-lp-experiments.js'; er='assets/bhd-lp-experiment-runtime.js'
           test -f "$f"; test -f "$o"; test -f "$d"; test -f "$l"; test -f "$r"; test -f "$b"; test -f "$t"; test -f "$e"; test -f "$ec"; test -f "$er"
           grep -Fq "render 'bhd-lp-conversion-open'" "$d"
@@ -75,6 +75,9 @@ jobs:
           grep -Fq 'show_lp_sales_close' "$d"
           grep -Fq "render 'bhd-page-lp-low-sugar'" "$d"
           grep -Fq "render 'bhd-page-lp-run-the-river-edmonton'" "$d"
+          grep -Fq "render 'bhd-page-lp-race-eve'" "$d"
+          grep -Fq "render 'bhd-page-lp-back-to-training'" "$d"
+          for x in 'data-lp-cta="early"' 'data-lp-cta="final"' 'data-lp-cta="sticky"' 'Amazon.ca' 'Free &amp; Fast Delivery'; do grep -Fq "$x" "$re"; grep -Fq "$x" "$bt"; done
           grep -Fq "render 'bhd-page-lp-bicarb-bonus'" "$d"
           grep -Fq 'is_dedicated_paid_lp' "$d"
           grep -Fq "render 'bhd-lp-tracking'" "$d"
