@@ -24,11 +24,13 @@ KNOWN={
     "time selector graph fix":"Time Selector Graph Fix",
     "paid media control build":"Paid Media Control Build",
     "run river lp cleanup":"Run River LP Cleanup",
+    "experiment adapters expanded":"Experiment adapters expanded",
 }
 BAD_LEGACY={"sports event ad watch","best hydrate pastel/navras acceptance review","ihp dashboard communications control plane","bhd ihp+","current chat","unknown"}
 
 # Kept explicit and dependency-free so production notification cannot fail because PyYAML is absent.
 ROUTES=[
+    (r"unified experiment registry|experiment registry v2|grin creator|earned[- ]media attribution|earned media pipeline|measurement[- ]only experiment adapter|creator measurement adapter", "Experiment adapters expanded", 94, "experiment-adapters-expanded"),
     (r"\b(bicarb|bicarbonate|sodium bicarbonate)\b|newsjack|formula.{0,20}buffer", "BHD Newsjacking Watch", 94, "bhd-newsjacking"),
     (r"\b(dianna|athletics|athlete|ambassador)\b|mega[- ]menu|personalization|personalisation|sweat testing|arrival path|supermenu.{0,30}highlight", "Review Navras Comments Phased PRs", 93, "navras-review"),
     (r"iphone.{0,30}crm|ios.{0,30}crm|\bios setup\b|control plane|communications flow|phase provenance|teams phone|entra|graph permissions", "IHP control plane flowchart", 94, "ihp-control-plane"),
