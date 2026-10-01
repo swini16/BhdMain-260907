@@ -129,63 +129,73 @@
           }
         }
 
-        function activateFallback() {
-          if (hasKlaviyoLoader()) return;
-
+        function ensureKlaviyoLoader() {
           initKlaviyoQueue();
 
-          var script = document.createElement('script');
-          script.type = 'text/javascript';
-          script.async = true;
-          script.src = 'https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=UmwHWm';
-          script.setAttribute('data-bhd-klaviyo-fallback', 'true');
-          document.head.appendChild(script);
+          if (!hasKlaviyoLoader()) {
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.async = true;
+            script.src = 'https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=UmwHWm';
+            script.setAttribute('data-bhd-klaviyo-fallback', 'true');
+            document.head.appendChild(script);
+          }
+        }
 
-          {% if request.page_type == 'product' and product %}
-            if (!window.__bhdKlaviyoViewedProductTracked) {
-              window.__bhdKlaviyoViewedProductTracked = true;
+        {% if request.page_type == 'product' and product %}
+          function trackViewedProductOnce() {
+            if (window.__bhdKlaviyoViewedProductTracked) return;
+            window.__bhdKlaviyoViewedProductTracked = true;
 
-              var viewedProduct = {
-                Name: {{ product.title | json }},
-                ProductID: {{ product.id | json }},
-                Categories: {{ product.collections | map: 'title' | json }},
-                ImageURL: {{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }},
-                URL: {{ shop.url | append: product.url | json }},
-                Brand: {{ product.vendor | json }},
-                Price: {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
-                CompareAtPrice: {{ product.compare_at_price_max | divided_by: 100.0 | json }}
-              };
+            var viewedProduct = {
+              Name: {{ product.title | json }},
+              ProductID: {{ product.id | json }},
+              Categories: {{ product.collections | map: 'title' | json }},
+              ImageURL: {{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }},
+              URL: {{ shop.url | append: product.url | json }},
+              Brand: {{ product.vendor | json }},
+              Price: {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+              CompareAtPrice: {{ product.compare_at_price_max | divided_by: 100.0 | json }}
+            };
 
-              function trackViewedProduct() {
-                window.klaviyo.track('Viewed Product', viewedProduct);
-                window.klaviyo.trackViewedItem({
-                  Title: viewedProduct.Name,
-                  ItemId: viewedProduct.ProductID,
-                  Categories: viewedProduct.Categories,
-                  ImageUrl: viewedProduct.ImageURL,
-                  Url: viewedProduct.URL,
-                  Metadata: {
-                    Brand: viewedProduct.Brand,
-                    Price: viewedProduct.Price,
-                    CompareAtPrice: viewedProduct.CompareAtPrice
-                  }
-                });
-              }
-
-              var identifiedEmail = new URLSearchParams(window.location.search).get('utm_email');
-              if (identifiedEmail) {
-                window.klaviyo.identify({ email: identifiedEmail }).then(trackViewedProduct);
-              } else {
-                trackViewedProduct();
-              }
+            function emitViewedProduct() {
+              window.klaviyo.track('Viewed Product', viewedProduct);
+              window.klaviyo.trackViewedItem({
+                Title: viewedProduct.Name,
+                ItemId: viewedProduct.ProductID,
+                Categories: viewedProduct.Categories,
+                ImageUrl: viewedProduct.ImageURL,
+                Url: viewedProduct.URL,
+                Metadata: {
+                  Brand: viewedProduct.Brand,
+                  Price: viewedProduct.Price,
+                  CompareAtPrice: viewedProduct.CompareAtPrice
+                }
+              });
             }
+
+            var identifiedEmail = new URLSearchParams(window.location.search).get('utm_email');
+            if (identifiedEmail && window.klaviyo && typeof window.klaviyo.identify === 'function') {
+              Promise.resolve(window.klaviyo.identify({ email: identifiedEmail }))
+                .then(emitViewedProduct)
+                .catch(emitViewedProduct);
+            } else {
+              emitViewedProduct();
+            }
+          }
+        {% endif %}
+
+        function activateKlaviyoTracking() {
+          ensureKlaviyoLoader();
+          {% if request.page_type == 'product' and product %}
+            trackViewedProductOnce();
           {% endif %}
         }
 
         if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', activateFallback, { once: true });
+          document.addEventListener('DOMContentLoaded', activateKlaviyoTracking, { once: true });
         } else {
-          activateFallback();
+          activateKlaviyoTracking();
         }
       })();
     </script>
