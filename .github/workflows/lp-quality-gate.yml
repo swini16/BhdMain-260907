@@ -166,6 +166,13 @@ jobs:
           opener=Path('snippets/bhd-lp-conversion-open.liquid').read_text()
           assert shell.count('data-lp-cta="final"') == 1
           assert opener.count('data-lp-cta="early"') == 1
+          theme=Path('layout/theme.liquid').read_text()
+          assert 'if (hasKlaviyoLoader()) return;' not in theme, 'Klaviyo Viewed Product tracking must not be gated behind fallback loader absence'
+          assert 'function ensureKlaviyoLoader()' in theme
+          assert 'function trackViewedProductOnce()' in theme
+          activate=theme.split('function activateKlaviyoTracking()',1)[1].split("if (document.readyState",1)[0]
+          assert 'ensureKlaviyoLoader();' in activate
+          assert 'trackViewedProductOnce();' in activate
           PY
 
   rendered-browser-smoke:
