@@ -1,0 +1,37 @@
+<section class="page-width bhd-product-athlete-story" aria-labelledby="BhdProductAthlete-{{ section.id }}">
+  <div class="bhd-product-athlete-story__media">
+    <img
+      src="https://cdn.shopify.com/s/files/1/0741/2170/7804/files/DiannaP2.png?v=1781989232"
+      alt="Best Hydrate athlete ambassador Dianna Proctor"
+      width="1500"
+      height="1000"
+      loading="lazy"
+      decoding="async"
+    >
+  </div>
+  <div class="bhd-product-athlete-story__copy">
+    <p class="bhd-pdp-kicker">PERFORMANCE CONTEXT</p>
+    <h2 id="BhdProductAthlete-{{ section.id }}">A real athlete partnership, not a product claim.</h2>
+    <p>Best Hydrate supports Edmonton sprinter Dianna Proctor as an athlete ambassador. Her performances are her own.</p>
+    <div class="bhd-product-athlete-story__links">
+      <a href="/pages/dianna-proctor">Meet Dianna →</a>
+      <a href="/pages/performance-hydration">Performance hydration →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bhd-product-athlete-story{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.6rem,4vw,4rem);align-items:center;padding-top:clamp(2.4rem,5vw,5rem);padding-bottom:clamp(2.4rem,5vw,5rem)}
+  .bhd-product-athlete-story__media{overflow:hidden;border-radius:1.5rem;background:#f5f8fc}
+  .bhd-product-athlete-story__media img{display:block;width:100%;height:100%;max-height:46rem;object-fit:cover}
+  .bhd-product-athlete-story__copy{max-width:58rem}
+  .bhd-product-athlete-story__copy h2{margin:.3rem 0 .8rem;color:#0b2d67;font-size:clamp(2.2rem,3vw,3.4rem);line-height:1.08}
+  .bhd-product-athlete-story__copy p:not(.bhd-pdp-kicker){margin:.4rem 0;color:#52657a;font-size:1.25rem;line-height:1.5}
+  .bhd-product-athlete-story__links{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:1.2rem}
+  .bhd-product-athlete-story__links a{display:inline-flex;align-items:center;min-height:3.8rem;padding:.65rem 1rem;border:1px solid #9fb9d8;border-radius:999px;background:#eef5fc;color:#0b2d67;font-weight:800;text-decoration:none}
+  @media screen and (max-width:749px){
+    .bhd-product-athlete-story{grid-template-columns:1fr;gap:1.2rem;padding-top:2rem;padding-bottom:2.4rem}
+    .bhd-product-athlete-story__media img{max-height:34rem}
+    .bhd-product-athlete-story__copy p:not(.bhd-pdp-kicker){font-size:1.15rem}
+  }
+</style>
