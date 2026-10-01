@@ -27,22 +27,7 @@
   @media screen and (max-width:600px){.bhd-product-guide{padding-bottom:34px}.bhd-product-guide__grid{grid-template-columns:1fr}}
 {%- endstyle -%}
 
-<section class="bhd-product-guide page-width" aria-labelledby="BhdProductGuide-{{ section.id }}">
-  <nav class="bhd-product-guide__breadcrumbs" aria-label="Breadcrumb">
-    <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span>Solutions</span><span aria-hidden="true">›</span><span>Products</span><span aria-hidden="true">›</span><span aria-current="page">{{ product.title }}</span>
-  </nav>
-  <div class="bhd-product-guide__intro">
-    <p class="bhd-product-guide__eyebrow">Know what you are mixing</p>
-    <h2 id="BhdProductGuide-{{ section.id }}">Simple formula. Clear directions. Deeper science when you want it.</h2>
-    <p>The current Best Hydrate formula lists glucose, sodium chloride, citric acid, sodium bicarbonate, potassium chloride and lemon powder. The public product page identifies NPN 80118664.</p>
-  </div>
-  <div class="bhd-product-guide__grid">
-    <a href="/pages/product-details"><strong>Product Details</strong><span>Ingredients, formula roles, regulatory context and what the product is designed to do.</span></a>
-    <a href="/pages/directions"><strong>Directions</strong><span>Label-first preparation, 500 mL serving context, handling and practical use.</span></a>
-    <a href="/pages/our-formula"><strong>Our Formula</strong><span>See how glucose and the listed electrolyte sources fit together.</span></a>
-    <a href="/pages/hydration-science"><strong>Hydration Science</strong><span>Understand fluid balance, electrolytes and intestinal absorption.</span></a>
-  </div>
-</section>
+
 
 {%- capture disclosures_content -%}
   {%- render 'product-disclosures',
