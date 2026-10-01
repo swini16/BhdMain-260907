@@ -1,0 +1,23 @@
+name: Chat title attribution tests
+on:
+  pull_request:
+    paths:
+      - '.github/scripts/chat_title_attribution.py'
+      - '.github/scripts/test_chat_title_attribution.py'
+      - '.github/workflows/chat-title-attribution.yml'
+      - '.github/workflows/chat-title-attribution-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/chat_title_attribution.py'
+      - '.github/scripts/test_chat_title_attribution.py'
+      - '.github/workflows/chat-title-attribution.yml'
+permissions:
+  contents: read
+jobs:
+  attribution-tests:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/test_chat_title_attribution.py
