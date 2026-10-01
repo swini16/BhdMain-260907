@@ -24,7 +24,7 @@ jobs:
         with:
           ref: ${{ github.event.repository.default_branch }}
 
-      - name: Canonicalize PR metadata
+      - name: Canonicalize source provenance only
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -34,18 +34,31 @@ jobs:
         shell: bash
         run: |
           set +e
-          commit_messages="$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json commits --jq '.commits[] | (.messageHeadline + "\n" + .messageBody)' 2>/dev/null || true)"
-          commit_title="$(printf '%s\n' "$commit_messages" | sed -nE 's/^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*(.+)[[:space:]]*$/\1/p' | tail -n1)"
-          attribution="$(PR_COMMIT_TITLE="$commit_title" python3 .github/scripts/chat_title_attribution.py 2>/dev/null || true)"
-          title="$(printf '%s' "$attribution" | jq -r '.title // ""' 2>/dev/null || true)"
-          source="$(printf '%s' "$attribution" | jq -r '.source // "none"' 2>/dev/null || true)"
-          [ -n "$title" ] || { echo "::notice::No plausible conversation title yet; leaving PR unchanged."; exit 0; }
 
           body="${PR_BODY:-}"
           if printf '%s\n' "$body" | grep -qiE '^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*[^[:space:]]'; then
             echo "::notice::Canonical conversation title already present."
             exit 0
           fi
+
+          commit_messages="$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json commits --jq '.commits[] | (.messageHeadline + "\n" + .messageBody)' 2>/dev/null || true)"
+          commit_title="$(printf '%s\n' "$commit_messages" | sed -nE 's/^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*(.+)[[:space:]]*$/\1/p' | tail -n1)"
+
+          attribution="$(PR_COMMIT_TITLE="$commit_title" python3 .github/scripts/chat_title_attribution.py 2>/dev/null || true)"
+          title="$(printf '%s' "$attribution" | jq -r '.title // ""' 2>/dev/null || true)"
+          source="$(printf '%s' "$attribution" | jq -r '.source // "none"' 2>/dev/null || true)"
+          rule="$(printf '%s' "$attribution" | jq -r '.rule // "none"' 2>/dev/null || true)"
+
+          [ -n "$title" ] || { echo "::notice::No plausible conversation title yet; leaving PR unchanged."; exit 0; }
+
+          case "$source" in
+            commit-provenance|branch-provenance)
+              ;;
+            *)
+              echo "::notice::Fallback candidate '$title' [$rule] is not promoted to canonical metadata."
+              exit 0
+              ;;
+          esac
 
           if printf '%s\n' "$body" | grep -qiE '^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*$'; then
             body="$(BODY="$body" TITLE="$title" python3 -c 'import os,re; b=os.environ.get("BODY",""); t=os.environ["TITLE"]; print(re.sub(r"(?im)^[ \t]*ChatGPT-Conversation-Title:[ \t]*$", "ChatGPT-Conversation-Title: "+t, b, count=1))')"
@@ -60,13 +73,13 @@ jobs:
           fi
 
           gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$body" || {
-            echo "::warning::Attribution writeback unavailable; PR/CI/deploy continue normally."
+            echo "::warning::Source-provenance writeback unavailable; PR/CI/deploy continue normally."
             exit 0
           }
 
           verify="$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json body --jq '.body' 2>/dev/null || true)"
           printf '%s\n' "$verify" | grep -Fq "ChatGPT-Conversation-Title: $title" || {
-            echo "::warning::Attribution writeback could not be verified; continuing without blocking."
+            echo "::warning::Source-provenance writeback could not be verified; continuing without blocking."
             exit 0
           }
-          echo "Canonical ChatGPT conversation title stamped: $title"
+          echo "Canonical source provenance stamped: $title"
