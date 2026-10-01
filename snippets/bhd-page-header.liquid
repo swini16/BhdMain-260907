@@ -8,7 +8,7 @@
   </div>
   {% if hero_image != blank %}
     <div class="bhd-page-hero__media">
-      <img src="{{ hero_image }}" alt="{{ hero_alt | escape }}" width="1800" height="1200" loading="eager" fetchpriority="high" decoding="async">
+      <img src="{{ hero_image }}"{% if hero_srcset != blank %} srcset="{{ hero_srcset | escape }}" sizes="{{ hero_sizes | default: '100vw' | escape }}"{% endif %} alt="{{ hero_alt | escape }}" width="1800" height="1200" loading="eager" fetchpriority="high" decoding="async">
     </div>
   {% endif %}
 </header>
