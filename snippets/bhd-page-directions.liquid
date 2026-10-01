@@ -1,4 +1,16 @@
-{% unless embedded %}
+{% if embedded %}
+<div class="bhd-page__keypoints" aria-label="Best Hydrate directions">
+  <div><strong>1 scoop</strong><span>Use the measured serving.</span></div>
+  <div><strong>500 mL water</strong><span>Keep the intended dilution.</span></div>
+  <div><strong>Mix lightly</strong><span>Shake or stir, then enjoy.</span></div>
+</div>
+
+<section class="bhd-page__steps" aria-label="How to prepare Best Hydrate">
+  <article class="bhd-page__step"><h2>1. Add one scoop</h2><p>Measure one scoop into a clean bottle or glass.</p></article>
+  <article class="bhd-page__step"><h2>2. Add 500 mL water</h2><p>Use clean drinking water and keep the labelled dilution.</p></article>
+  <article class="bhd-page__step"><h2>3. Mix &amp; enjoy</h2><p>Shake or stir until dispersed. Follow the current package if its directions differ.</p></article>
+</section>
+{% else %}
 {% render 'bhd-page-header',
   family: 'Solutions',
   family_url: '/pages/product-details',
@@ -10,9 +22,6 @@
   hero_image: 'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=1800',
   hero_alt: 'Water being poured from a clear bottle into a drinking glass'
 %}
-{% endunless %}
-
-
 <div class="bhd-page__keypoints" aria-label="Best Hydrate preparation principles">
   <div><strong>Current label serving</strong><span>Mix 1 scoop with 500 mL of water.</span></div>
   <div><strong>Purposeful sodium</strong><span>One prepared serving provides 701 mg sodium and 388 mg potassium.</span></div>
@@ -123,3 +132,5 @@
   </ol>
   <p class="bhd-page__reference-note">This page supports use of the product label. It is not a replacement label, medical advice from a qualified healthcare professional or an emergency hydration protocol.</p>
 </section>
+
+{% endif %}
