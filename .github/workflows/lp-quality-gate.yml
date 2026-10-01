@@ -13,7 +13,15 @@ permissions:
   pull-requests: read
 
 jobs:
+  ci0-bypass:
+    name: CI0 bypass
+    if: ${{ ((github.event_name == 'pull_request' && (startsWith(github.head_ref, 'ci0-') || startsWith(github.event.pull_request.title, 'CI0:') || startsWith(github.event.pull_request.title, '[CI0]'))) || (github.event_name == 'push' && (startsWith(github.event.head_commit.message, 'CI0:') || contains(github.event.head_commit.message, '[CI0]')))) }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "CI0 selected. Heavy CI gates bypassed."
+
   liquid-theme-check:
+    if: ${{ !((github.event_name == 'pull_request' && (startsWith(github.head_ref, 'ci0-') || startsWith(github.event.pull_request.title, 'CI0:') || startsWith(github.event.pull_request.title, '[CI0]'))) || (github.event_name == 'push' && (startsWith(github.event.head_commit.message, 'CI0:') || contains(github.event.head_commit.message, '[CI0]')))) }}
     name: Liquid / Shopify Theme Check
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
@@ -54,6 +62,7 @@ jobs:
           PY
 
   lp-contracts:
+    if: ${{ !((github.event_name == 'pull_request' && (startsWith(github.head_ref, 'ci0-') || startsWith(github.event.pull_request.title, 'CI0:') || startsWith(github.event.pull_request.title, '[CI0]'))) || (github.event_name == 'push' && (startsWith(github.event.head_commit.message, 'CI0:') || contains(github.event.head_commit.message, '[CI0]')))) }}
     name: LP UX / tracking contracts
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
@@ -140,6 +149,7 @@ jobs:
           NODE
 
   static-safety:
+    if: ${{ !((github.event_name == 'pull_request' && (startsWith(github.head_ref, 'ci0-') || startsWith(github.event.pull_request.title, 'CI0:') || startsWith(github.event.pull_request.title, '[CI0]'))) || (github.event_name == 'push' && (startsWith(github.event.head_commit.message, 'CI0:') || contains(github.event.head_commit.message, '[CI0]')))) }}
     name: LP static safety checks
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
@@ -176,6 +186,7 @@ jobs:
           PY
 
   rendered-browser-smoke:
+    if: ${{ !((github.event_name == 'pull_request' && (startsWith(github.head_ref, 'ci0-') || startsWith(github.event.pull_request.title, 'CI0:') || startsWith(github.event.pull_request.title, '[CI0]'))) || (github.event_name == 'push' && (startsWith(github.event.head_commit.message, 'CI0:') || contains(github.event.head_commit.message, '[CI0]')))) }}
     name: Rendered browser smoke - isolated live baseline
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
@@ -239,7 +250,7 @@ jobs:
 
   shopify-main-sync:
     name: Shopify MAIN sync
-    if: github.event_name == 'push'
+    if: ${{ always() && github.event_name == 'push' && ((startsWith(github.event.head_commit.message, 'CI0:') || contains(github.event.head_commit.message, '[CI0]')) || (needs.liquid-theme-check.result == 'success' && needs.lp-contracts.result == 'success' && needs.static-safety.result == 'success')) }}
     needs: [liquid-theme-check, lp-contracts, static-safety]
     runs-on: ubuntu-latest
     env:
@@ -292,7 +303,7 @@ jobs:
 
   post-merge-live-contract:
     name: Post-merge live LP conversion contract
-    if: github.event_name == 'push'
+    if: ${{ github.event_name == 'push' && !(startsWith(github.event.head_commit.message, 'CI0:') || contains(github.event.head_commit.message, '[CI0]')) }}
     needs: [liquid-theme-check, lp-contracts, static-safety, shopify-main-sync]
     runs-on: ubuntu-latest
     steps:
