@@ -8,10 +8,15 @@ permissions:
   pull-requests: write
   contents: read
 
+concurrency:
+  group: chat-title-${{ github.repository }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   canonicalize:
     name: Best-effort conversation attribution
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     continue-on-error: true
     steps:
       - name: Checkout trusted attribution rules
@@ -28,8 +33,8 @@ jobs:
         shell: bash
         run: |
           set +e
-          attribution="$(python3 .github/scripts/chat_title_attribution.py 2>/dev/null)"
-          title="$(printf '%s' "$attribution" | jq -r '.title // ""' 2>/dev/null)"
+          attribution="$(python3 .github/scripts/chat_title_attribution.py 2>/dev/null || true)"
+          title="$(printf '%s' "$attribution" | jq -r '.title // ""' 2>/dev/null || true)"
           [ -n "$title" ] || { echo "::notice::No plausible conversation title yet; leaving PR unchanged."; exit 0; }
 
           body="${PR_BODY:-}"
@@ -38,26 +43,14 @@ jobs:
             exit 0
           fi
 
-          # Replace an empty template field when present; otherwise append canonical metadata.
           if printf '%s\n' "$body" | grep -qiE '^[[:space:]]*ChatGPT-Conversation-Title:[[:space:]]*$'; then
-            body="$(BODY="$body" TITLE="$title" python3 - <<'PY'
-import os,re
-body=os.environ.get("BODY","")
-title=os.environ["TITLE"]
-print(re.sub(r"(?im)^\s*ChatGPT-Conversation-Title:\s*$", "ChatGPT-Conversation-Title: "+title, body, count=1))
-PY
-)"
+            body="$(BODY="$body" TITLE="$title" python3 -c 'import os,re; b=os.environ.get("BODY",""); t=os.environ["TITLE"]; print(re.sub(r"(?im)^[ 	]*ChatGPT-Conversation-Title:[ 	]*$", "ChatGPT-Conversation-Title: "+t, b, count=1))')"
           else
             body="$(printf '%s\n\nChatGPT-Conversation-Title: %s\n' "$body" "$title")"
           fi
 
           if printf '%s\n' "$body" | grep -qiE '^[[:space:]]*ChatGPT-Conversation-Title-Source:'; then
-            body="$(BODY="$body" python3 - <<'PY'
-import os,re
-body=os.environ.get("BODY","")
-print(re.sub(r"(?im)^\s*ChatGPT-Conversation-Title-Source:.*$", "ChatGPT-Conversation-Title-Source: canonicalized-at-open", body, count=1))
-PY
-)"
+            body="$(BODY="$body" python3 -c 'import os,re; b=os.environ.get("BODY",""); print(re.sub(r"(?im)^[ 	]*ChatGPT-Conversation-Title-Source:.*$", "ChatGPT-Conversation-Title-Source: canonicalized-at-open", b, count=1))')"
           else
             body="$(printf '%s\nChatGPT-Conversation-Title-Source: canonicalized-at-open\n' "$body")"
           fi
@@ -66,4 +59,10 @@ PY
             echo "::warning::Attribution writeback unavailable; PR/CI/deploy continue normally."
             exit 0
           }
+
+          verify="$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json body --jq '.body' 2>/dev/null || true)"
+          if ! printf '%s\n' "$verify" | grep -Fq "ChatGPT-Conversation-Title: $title"; then
+            echo "::warning::Attribution writeback could not be verified; continuing without blocking."
+            exit 0
+          fi
           echo "Canonical ChatGPT conversation title stamped: $title"
