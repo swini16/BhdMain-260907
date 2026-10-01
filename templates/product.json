@@ -44,10 +44,6 @@
             "custom_liquid": "<div class=\"bhd-purchase-reassurance\">{% if product.selected_or_first_available_variant.available %}<span class=\"bhd-stock\">● In stock</span>{% endif %}<span class=\"bhd-purchase-note\">Secure checkout.</span><a href=\"/policies/shipping-policy\">Shipping &amp; delivery</a><a href=\"/policies/refund-policy\">Returns &amp; refunds</a></div><style>.product-form__submit:not([disabled]){min-height:5.2rem;background:#0b2d67!important;color:#fff!important;font-weight:850}.product-form__submit:not([disabled]):after{box-shadow:0 0 0 1px #0b2d67!important}.shopify-payment-button{margin-top:.6rem}.bhd-purchase-reassurance{display:flex;align-items:center;gap:.7rem 1.1rem;flex-wrap:wrap;margin:.7rem 0 1rem;color:#52657a;font-size:1.15rem}.bhd-purchase-reassurance a{color:#0b2d67;text-underline-offset:.25rem}.bhd-purchase-note{color:#52657a}.bhd-stock{color:#26734d;font-weight:800}</style>"
           }
         },
-        "description": {
-          "type": "description",
-          "settings": {}
-        },
         "marketplaces": {
           "type": "custom_liquid",
           "settings": {
@@ -108,7 +104,6 @@
         "mobile_sticky",
         "purchase_reassurance",
         "trust_strip",
-        "description",
         "marketplaces",
         "share",
         "ux_polish"
@@ -132,7 +127,7 @@
     "reviews_intro": {
       "type": "custom-liquid",
       "settings": {
-        "custom_liquid": "<div id=\"customer-reviews\" class=\"bhd-reviews-intro\"><p class=\"bhd-reviews-intro__eyebrow\">Customer reviews</p><h2>What customers are saying</h2><p>Read Best Hydrate customer feedback here, or open the review pages for the marketplace where you shop.</p><div class=\"bhd-reviews-intro__links\"><a href=\"https://www.amazon.ca/product-reviews/B0CPSR65JY\" target=\"_blank\" rel=\"noopener noreferrer\">Amazon.ca reviews</a><a href=\"https://www.amazon.com/product-reviews/B0CPSR65JY\" target=\"_blank\" rel=\"noopener noreferrer\">Amazon.com reviews</a></div></div><style>.bhd-reviews-intro{max-width:112rem;margin:0 auto;padding:1rem 5rem 1.5rem;text-align:center}.bhd-reviews-intro__eyebrow{margin:0 0 .45rem;color:#3f6089;font-size:1.12rem;font-weight:850;letter-spacing:.11em;text-transform:uppercase}.bhd-reviews-intro h2{margin:.2rem 0 .7rem;color:#0b2d67;font-size:clamp(2.2rem,3vw,3.4rem)}.bhd-reviews-intro>p:not(.bhd-reviews-intro__eyebrow){max-width:72rem;margin:.4rem auto 1.1rem;color:#5f6f83;font-size:1.35rem;line-height:1.5}.bhd-reviews-intro__links{display:flex;justify-content:center;flex-wrap:wrap;gap:.7rem}.bhd-reviews-intro__links a{padding:.7rem 1rem;border:1px solid #9fb9d8;border-radius:999px;background:#eef5fc;color:#0b2d67;font-size:1.15rem;font-weight:800;text-decoration:none}.bhd-reviews-intro__links a:hover{background:#dbe8f6}@media screen and (max-width:749px){.bhd-reviews-intro{padding:1rem 2rem 1.25rem}}</style>",
+        "custom_liquid": "<div id=\"customer-reviews\" class=\"bhd-reviews-intro\"><p class=\"bhd-reviews-intro__eyebrow\">Customer reviews</p><h2>What customers are saying</h2><div class=\"bhd-reviews-intro__links\"><a href=\"https://www.amazon.ca/product-reviews/B0CPSR65JY\" target=\"_blank\" rel=\"noopener noreferrer\">Amazon.ca reviews</a><a href=\"https://www.amazon.com/product-reviews/B0CPSR65JY\" target=\"_blank\" rel=\"noopener noreferrer\">Amazon.com reviews</a></div></div><style>.bhd-reviews-intro{max-width:112rem;margin:0 auto;padding:1rem 5rem 1.25rem;text-align:center}.bhd-reviews-intro__eyebrow{margin:0 0 .45rem;color:#3f6089;font-size:1.12rem;font-weight:850;letter-spacing:.11em;text-transform:uppercase}.bhd-reviews-intro h2{margin:.2rem 0 .8rem;color:#0b2d67;font-size:clamp(2.2rem,3vw,3.4rem)}.bhd-reviews-intro__links{display:flex;justify-content:center;flex-wrap:wrap;gap:.7rem}.bhd-reviews-intro__links a{padding:.7rem 1rem;border:1px solid #9fb9d8;border-radius:999px;background:#eef5fc;color:#0b2d67;font-size:1.15rem;font-weight:800;text-decoration:none}.bhd-reviews-intro__links a:hover{background:#dbe8f6}@media screen and (max-width:749px){.bhd-reviews-intro{padding:1rem 2rem 1.1rem}}</style>",
         "color_scheme": "scheme-1",
         "padding_top": 24,
         "padding_bottom": 0
@@ -146,24 +141,6 @@
         "eyebrow": "Customer reviews",
         "heading": "What customers are saying",
         "color_scheme": "scheme-1"
-      }
-    },
-    "related-products": {
-      "type": "related-products",
-      "settings": {
-        "heading": "You may also like",
-        "heading_size": "h2",
-        "products_to_show": 4,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "image_ratio": "portrait",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": true,
-        "columns_mobile": "2",
-        "padding_top": 0,
-        "padding_bottom": 60
       }
     },
     "disclosures": {
@@ -188,7 +165,6 @@
     "reviews_intro",
     "reviews",
     "flavour_vote_after_reviews",
-    "disclosures",
-    "related-products"
+    "disclosures"
   ]
 }
