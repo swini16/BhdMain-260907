@@ -63,7 +63,7 @@
         "purchase_value": {
           "type": "custom_liquid",
           "settings": {
-            "custom_liquid": "<div class=\"bhd-product-value\" aria-label=\"Best Hydrate essentials\"><strong>LOW SUGAR, ON PURPOSE.</strong><span class=\"bhd-benefit-pill bhd-benefit-pill--sugar\">1 g sugar / 100 mL</span><span class=\"bhd-benefit-pill bhd-benefit-pill--electrolytes\">5 electrolytes</span><span class=\"bhd-benefit-pill bhd-benefit-pill--servings\">32 servings</span><span class=\"bhd-benefit-pill bhd-benefit-pill--shipping\">✓ Free &amp; Fast Delivery</span><p class=\"bhd-product-taste\">Light lemonade. Not too sweet.</p></div><style>.bhd-product-value{display:flex;flex-wrap:wrap;gap:.45rem .6rem;align-items:stretch;margin:.55rem 0 .25rem}.bhd-product-value>strong{flex-basis:100%;color:#0b2d67;font-size:1.32rem}.bhd-benefit-pill{display:flex;align-items:center;justify-content:center;flex:1 1 11rem;min-width:0;padding:.45rem .72rem;border:1px solid #d7e3f1;border-radius:999px;font-size:1.08rem;font-weight:800;line-height:1.2;text-align:center}.bhd-benefit-pill--sugar{background:#fff4d9;border-color:#e9c86f;color:#664a00}.bhd-benefit-pill--electrolytes{background:#eaf3ff;border-color:#9ec2ee;color:#174f83}.bhd-benefit-pill--servings{background:#f3edff;border-color:#cbb8ef;color:#59427d}.bhd-benefit-pill--shipping{background:#e4f6ec;border-color:#83c69e;color:#174f38}.bhd-product-taste{flex-basis:100%;margin:.25rem 0 0;color:#52657a;font-size:1.08rem;line-height:1.35}@media screen and (max-width:749px){.bhd-benefit-pill{flex-basis:9.5rem;padding:.42rem .58rem;font-size:1rem}}</style>"
+            "custom_liquid": "<div class=\"bhd-product-value\" aria-label=\"Best Hydrate value\"><strong>LOW SUGAR, ON PURPOSE.</strong><span class=\"bhd-benefit-pill bhd-benefit-pill--sugar\">1 g sugar / 100 mL prepared</span><span class=\"bhd-benefit-pill bhd-benefit-pill--electrolytes\">5 electrolytes</span><span class=\"bhd-benefit-pill bhd-benefit-pill--servings\">32 servings</span><span class=\"bhd-benefit-pill bhd-benefit-pill--bicarb\">Bicarb Bonus™</span><span class=\"bhd-benefit-pill bhd-benefit-pill--shipping\">✓ Free &amp; Fast Delivery</span><p class=\"bhd-product-taste\"><strong>Light, balanced lemonade.</strong> Not too sweet.</p></div><style>.bhd-product-value{display:flex;flex-wrap:wrap;gap:.45rem .6rem;align-items:stretch;margin:.55rem 0 .25rem}.bhd-product-value>strong{flex-basis:100%;color:#0b2d67;font-size:1.32rem}.bhd-benefit-pill{display:flex;align-items:center;justify-content:center;flex:1 1 11rem;min-width:0;padding:.45rem .72rem;border:1px solid #d7e3f1;border-radius:999px;font-size:1.08rem;font-weight:800;line-height:1.2;text-align:center}.bhd-benefit-pill--sugar{background:#fff4d9;border-color:#e9c86f;color:#664a00}.bhd-benefit-pill--electrolytes{background:#eaf3ff;border-color:#9ec2ee;color:#174f83}.bhd-benefit-pill--servings{background:#f3edff;border-color:#cbb8ef;color:#59427d}.bhd-benefit-pill--bicarb{background:#e7f8f5;border-color:#92d3c8;color:#155f56}.bhd-benefit-pill--shipping{background:#e4f6ec;border-color:#83c69e;color:#174f38}.bhd-product-taste{flex-basis:100%;margin:.35rem 0 0;color:#52657a;font-size:1.18rem;line-height:1.4}.bhd-product-taste strong{color:#0b2d67}@media screen and (max-width:749px){.bhd-benefit-pill{flex-basis:9.5rem;padding:.42rem .58rem;font-size:1rem}}</style>"
           }
         },
         "purchase_choice": {
@@ -102,12 +102,14 @@
         "rating",
         "price",
         "purchase_value",
+        "purchase_choice",
         "quantity_selector",
         "buy_buttons",
         "subscription_guard",
         "mobile_sticky",
         "purchase_reassurance",
         "trust_strip",
+        "flavour_vote",
         "description",
         "marketplaces",
         "share",
@@ -132,7 +134,7 @@
     "reviews_intro": {
       "type": "custom-liquid",
       "settings": {
-        "custom_liquid": "<div id=\"customer-reviews\" class=\"bhd-reviews-intro\"><p class=\"bhd-reviews-intro__eyebrow\">Customer reviews</p><h2>What customers are saying</h2><p>Read Best Hydrate customer feedback here, or open the review pages for the marketplace where you shop.</p><div class=\"bhd-reviews-intro__links\"><a href=\"https://www.amazon.ca/product-reviews/B0CPSR65JY\" target=\"_blank\" rel=\"noopener noreferrer\">Amazon.ca reviews</a><a href=\"https://www.amazon.com/product-reviews/B0CPSR65JY\" target=\"_blank\" rel=\"noopener noreferrer\">Amazon.com reviews</a></div></div><style>.bhd-reviews-intro{max-width:112rem;margin:0 auto;padding:1rem 5rem 1.5rem;text-align:center}.bhd-reviews-intro__eyebrow{margin:0 0 .45rem;color:#3f6089;font-size:1.12rem;font-weight:850;letter-spacing:.11em;text-transform:uppercase}.bhd-reviews-intro h2{margin:.2rem 0 .7rem;color:#0b2d67;font-size:clamp(2.2rem,3vw,3.4rem)}.bhd-reviews-intro>p:not(.bhd-reviews-intro__eyebrow){max-width:72rem;margin:.4rem auto 1.1rem;color:#5f6f83;font-size:1.35rem;line-height:1.5}.bhd-reviews-intro__links{display:flex;justify-content:center;flex-wrap:wrap;gap:.7rem}.bhd-reviews-intro__links a{padding:.7rem 1rem;border:1px solid #9fb9d8;border-radius:999px;background:#eef5fc;color:#0b2d67;font-size:1.15rem;font-weight:800;text-decoration:none}.bhd-reviews-intro__links a:hover{background:#dbe8f6}@media screen and (max-width:749px){.bhd-reviews-intro{padding:1rem 2rem 1.25rem}}</style>",
+        "custom_liquid": "<div id=\"customer-reviews\" class=\"bhd-reviews-intro\"><p class=\"bhd-reviews-intro__eyebrow\">Customer reviews</p><h2>What customers are saying</h2><div class=\"bhd-reviews-intro__links\"><a href=\"https://www.amazon.ca/product-reviews/B0CPSR65JY\" target=\"_blank\" rel=\"noopener noreferrer\">Amazon.ca reviews</a><a href=\"https://www.amazon.com/product-reviews/B0CPSR65JY\" target=\"_blank\" rel=\"noopener noreferrer\">Amazon.com reviews</a></div></div><style>.bhd-reviews-intro{max-width:112rem;margin:0 auto;padding:1rem 5rem 1.25rem;text-align:center}.bhd-reviews-intro__eyebrow{margin:0 0 .45rem;color:#3f6089;font-size:1.12rem;font-weight:850;letter-spacing:.11em;text-transform:uppercase}.bhd-reviews-intro h2{margin:.2rem 0 .8rem;color:#0b2d67;font-size:clamp(2.2rem,3vw,3.4rem)}.bhd-reviews-intro__links{display:flex;justify-content:center;flex-wrap:wrap;gap:.7rem}.bhd-reviews-intro__links a{padding:.7rem 1rem;border:1px solid #9fb9d8;border-radius:999px;background:#eef5fc;color:#0b2d67;font-size:1.15rem;font-weight:800;text-decoration:none}.bhd-reviews-intro__links a:hover{background:#dbe8f6}@media screen and (max-width:749px){.bhd-reviews-intro{padding:1rem 2rem 1.1rem}}</style>",
         "color_scheme": "scheme-1",
         "padding_top": 24,
         "padding_bottom": 0
@@ -148,38 +150,11 @@
         "color_scheme": "scheme-1"
       }
     },
-    "related-products": {
-      "type": "related-products",
-      "settings": {
-        "heading": "You may also like",
-        "heading_size": "h2",
-        "products_to_show": 4,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "image_ratio": "portrait",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": true,
-        "columns_mobile": "2",
-        "padding_top": 0,
-        "padding_bottom": 60
-      }
-    },
     "disclosures": {
       "type": "disclosures",
       "settings": {
         "padding_top": 36,
         "padding_bottom": 0
-      }
-    },
-    "flavour_vote_after_reviews": {
-      "type": "custom-liquid",
-      "settings": {
-        "custom_liquid": "{% render 'bhd-flavour-vote', product: product %}",
-        "color_scheme": "scheme-1",
-        "padding_top": 24,
-        "padding_bottom": 24
       }
     }
   },
@@ -187,8 +162,6 @@
     "main",
     "reviews_intro",
     "reviews",
-    "flavour_vote_after_reviews",
-    "disclosures",
-    "related-products"
+    "disclosures"
   ]
 }
