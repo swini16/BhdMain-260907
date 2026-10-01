@@ -7,7 +7,8 @@ on:
       - '.github/workflows/chat-title-attribution.yml'
       - '.github/workflows/chat-title-attribution-tests.yml'
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - '.github/scripts/chat_title_attribution.py'
       - '.github/scripts/test_chat_title_attribution.py'
