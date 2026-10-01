@@ -206,12 +206,41 @@
     <script id="bhd-klaviyo-single-optin-success">
       (function () {
         var obsoleteCopy = 'Check your inbox to confirm your signup.';
+        var successCopy = "You're in.";
+        var autoCloseDelayMs = 2500;
         var scheduled = false;
+
+        function closeSuccessForm(form) {
+          if (!form || !form.isConnected || !(form.textContent || '').includes(successCopy)) return;
+          var root = form.closest('[role="dialog"]') || form.parentElement || form;
+          var closeButton = root.querySelector(
+            'button[aria-label*="close" i], [role="button"][aria-label*="close" i], button[data-testid*="close" i], [data-testid*="close" i], button[title*="close" i]'
+          );
+          if (closeButton) {
+            closeButton.click();
+            return;
+          }
+          form.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Escape',
+            code: 'Escape',
+            bubbles: true
+          }));
+        }
+
+        function scheduleAutoClose(form) {
+          if (!form || form.dataset.bhdSuccessAutoClose === 'scheduled') return;
+          if (!(form.textContent || '').includes(successCopy)) return;
+          form.dataset.bhdSuccessAutoClose = 'scheduled';
+          window.setTimeout(function () { closeSuccessForm(form); }, autoCloseDelayMs);
+        }
 
         function applySingleOptInCopy() {
           scheduled = false;
-          document.querySelectorAll('form[data-testid^="klaviyo-form-"] p, form.klaviyo-form p').forEach(function (node) {
-            if ((node.textContent || '').trim() === obsoleteCopy) node.remove();
+          document.querySelectorAll('form[data-testid^="klaviyo-form-"], form.klaviyo-form').forEach(function (form) {
+            form.querySelectorAll('p').forEach(function (node) {
+              if ((node.textContent || '').trim() === obsoleteCopy) node.remove();
+            });
+            scheduleAutoClose(form);
           });
         }
 
