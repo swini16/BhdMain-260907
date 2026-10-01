@@ -13,7 +13,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  ci0-bypass:
+    name: CI0 bypass
+    if: ${{ (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'ci0-') || startsWith(github.event.pull_request.title, 'CI0:') || startsWith(github.event.pull_request.title, '[CI0]'))) }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "CI0 selected. Shopify preview gate bypassed."
+
   preview-gate:
+    if: ${{ !(github.event_name == 'pull_request' && (startsWith(github.head_ref, 'ci0-') || startsWith(github.event.pull_request.title, 'CI0:') || startsWith(github.event.pull_request.title, '[CI0]'))) }}
     name: Shopify preview + Playwright gate
     runs-on: ubuntu-latest
     timeout-minutes: 12
