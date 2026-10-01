@@ -118,7 +118,7 @@
     <div class="bhd-header__actions">
       <a href="{{ routes.search_url }}" class="bhd-header__icon-button" aria-label="Search"><span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span></a>
       {% if shop.customer_accounts_enabled %}<a href="{{ routes.account_url }}" class="bhd-header__icon-button" aria-label="Account"><span class="svg-wrapper">{{ 'icon-account.svg' | inline_asset_content }}</span></a>{% endif %}
-      <a href="/blogs/news" class="bhd-header__icon-button bhd-header__discuss-button" aria-label="Best Hydrate News & Insights" title="News"><img src="{{ 'bhd-discuss-icon.webp' | asset_url }}" alt="" width="96" height="96" loading="eager"></a>
+      <a href="/blogs/news" class="bhd-header__icon-button bhd-header__discuss-button" aria-label="Best Hydrate News &amp; Media" title="News"><span class="svg-wrapper" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5.5h11.5v13H6.5A1.5 1.5 0 0 1 5 17V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M16.5 8.5H19v8.25A1.75 1.75 0 0 1 17.25 18.5h-.75V8.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 9h5.5M8 12h5.5M8 15h3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span></a>
       <a href="{{ routes.cart_url }}" class="bhd-header__icon-button bhd-header__cart-button" aria-label="Cart"><span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>{% if cart.item_count > 0 %}<span class="bhd-header__cart-count">{{ cart.item_count }}</span>{% endif %}</a>
     </div>
   </div>
