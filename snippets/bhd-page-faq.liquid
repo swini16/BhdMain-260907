@@ -1,4 +1,26 @@
-{% unless embedded %}
+{% if embedded %}
+<section class="bhd-page__cards-section">
+  <p class="bhd-page__kicker">Quick answers</p>
+  <h2>The questions that matter most</h2>
+  <div class="bhd-page__cards bhd-page__cards--4">
+    <article><h3>How sweet is it?</h3><p>Light and balanced, not too sweet. Prepared product has 1 g sugar per 100 mL.</p></article>
+    <article><h3>Does it contain magnesium?</h3><p>No. Magnesium is not part of the current formula.</p></article>
+    <article><h3>How many servings?</h3><p>32 servings per jar. One serving is one scoop mixed with 500 mL water.</p></article>
+    <article><h3>Where is it made?</h3><p>Mixed and packaged in Edmonton, Alberta. Health Canada NPN 80118664.</p></article>
+  </div>
+</section>
+
+<section class="bhd-page__brand-context">
+  <div>
+    <p class="bhd-page__kicker">More questions?</p>
+    <h2>Keep the product page simple.</h2>
+    <p>Use the full FAQ for deeper label, science and use-context questions.</p>
+  </div>
+  <div class="bhd-page__brand-actions">
+    <a class="bhd-page__button bhd-page__button--secondary" href="/pages/q-a">Full FAQ</a>
+  </div>
+</section>
+{% else %}
 {% render 'bhd-page-header',
   family: 'Solutions',
   parent: 'Product Details',
@@ -9,9 +31,6 @@
   hero_image: 'https://images.pexels.com/photos/5946081/pexels-photo-5946081.jpeg?auto=compress&cs=tinysrgb&w=1800',
   hero_alt: 'Glass of water and hydration drink preparation on a clean counter'
 %}
-{% endunless %}
-
-
 <div class="bhd-page__keypoints" aria-label="FAQ principles">
   <div><strong>Label first</strong><span>The current physical package label controls exact preparation and authorized conditions of use.</span></div>
   <div><strong>Current formula</strong><span>Glucose, sodium chloride, citric acid, sodium bicarbonate, potassium chloride and lemon powder.</span></div>
@@ -58,3 +77,5 @@
   <p class="bhd-page__kicker">Go deeper</p><h2 id="RelatedFaq-{{ section.id }}">Use the page built for your question</h2>
   <div class="bhd-page__related-grid"><a href="/products/lemonade-best-hydrate#directions"><strong>Directions</strong><span>Preparation and use context.</span></a><a href="/pages/our-formula"><strong>Our Formula</strong><span>Current ingredients and formulation philosophy.</span></a><a href="/pages/performance-hydration"><strong>Performance</strong><span>Training, competition and sweat context.</span></a><a href="/pages/clinical-hydration"><strong>Clinical Hydration</strong><span>Where clinician-directed care becomes important.</span></a></div>
 </section>
+
+{% endif %}
