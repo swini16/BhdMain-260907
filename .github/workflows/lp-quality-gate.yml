@@ -464,8 +464,9 @@ jobs:
             pr_json="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" 2>/dev/null || true)"
             body="$(printf '%s' "$pr_json" | jq -r '.body // ""' 2>/dev/null || true)"
             pr_title="$(printf '%s' "$pr_json" | jq -r '.title // ""' 2>/dev/null || true)"
-            attribution="$(PR_BODY="$body" PR_TITLE="$pr_title" python3 .github/scripts/chat_title_attribution.py)"
-            inferred_title="$(printf '%s' "$attribution" | jq -r '.title // ""')"
+            # Attribution is operational metadata only. Resolver failure must never suppress the notifier or affect deploy/live verification.
+            attribution="$(PR_BODY="$body" PR_TITLE="$pr_title" python3 .github/scripts/chat_title_attribution.py 2>/dev/null || true)"
+            inferred_title="$(printf '%s' "$attribution" | jq -r '.title // ""' 2>/dev/null || true)"
             if [ -n "$inferred_title" ]; then
               chat_name="$inferred_title"
             fi
