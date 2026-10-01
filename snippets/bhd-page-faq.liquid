@@ -12,11 +12,12 @@
 {% endunless %}
 
 
+{% unless embedded %}
 <div class="bhd-page__keypoints" aria-label="FAQ principles">
   <div><strong>Label first</strong><span>The current physical package label controls exact preparation and authorized conditions of use.</span></div>
   <div><strong>Current formula</strong><span>Glucose, sodium chloride, citric acid, sodium bicarbonate, potassium chloride and lemon powder.</span></div>
   <div><strong>Context matters</strong><span>Hydration needs change with activity, heat, sweating, travel, work and personal preference.</span></div>
-</div>
+</div>{% endunless %}
 
 <section class="bhd-page__cards-section">
   <p class="bhd-page__kicker">Product basics</p>
@@ -25,14 +26,15 @@
     <article><h3>What is Best Hydrate?</h3><p>A lemon-flavoured powdered hydration mix intended to be mixed with water according to the current package label. It combines glucose with listed electrolyte ingredients in a measured drink format.</p></article>
     <article><h3>Does it contain magnesium?</h3><p>No. Magnesium is not listed in the current formula and is not represented as a current Best Hydrate ingredient.</p></article>
     <article><h3>Is it a therapeutic oral rehydration solution?</h3><p>No. Best Hydrate is a consumer hydration product and should not be equated with appropriately formulated therapeutic oral rehydration solution used to treat diarrhoeal dehydration.</p></article>
-    <article><h3>How do I mix it?</h3><p>Mix <strong>1 scoop with 500 mL of water</strong>. That is one prepared serving. If a newer physical label differs, follow the package in hand.</p><a href="/products/lemonade-best-hydrate#directions">Read Directions →</a></article>
-    <article><h3>What is in one prepared serving?</h3><p>One 500 mL serving provides <strong>701 mg sodium</strong> and <strong>388 mg potassium</strong>, along with glucose and the rest of the current labelled formula.</p></article>
+    {% unless embedded %}<article><h3>How do I mix it?</h3><p>Mix <strong>1 scoop with 500 mL of water</strong>. That is one prepared serving. If a newer physical label differs, follow the package in hand.</p><a href="/products/lemonade-best-hydrate#directions">Read Directions →</a></article>{% endunless %}
+    {% unless embedded %}<article><h3>What is in one prepared serving?</h3><p>One 500 mL serving provides <strong>701 mg sodium</strong> and <strong>388 mg potassium</strong>, along with glucose and the rest of the current labelled formula.</p></article>{% endunless %}
     <article><h3>Can I use it every day?</h3><p>It can fit routine use when the current label and your overall diet allow. One serving already provides meaningful sodium, so daily use should be considered alongside food, other drinks and any fluid or electrolyte restrictions.</p></article>
-    <article><h3>How do the sodium numbers compare with daily reference intakes?</h3><p>For generally healthy adults, the sodium Adequate Intake is 1,500 mg/day and the Chronic Disease Risk Reduction intake is 2,300 mg/day. One serving contains about 47% of the Adequate Intake. Those whole-day reference values are not a Best Hydrate servings-per-day target.</p></article>
-    <article><h3>Can I use more to hydrate faster?</h3><p>Do not automatically stack servings or concentrate the powder. During prolonged heat or heavy sweating, fluid and sodium losses can rise, but replacement should reflect the situation and the current label rather than assuming more is always better.</p></article>
+    {% unless embedded %}<article><h3>How do the sodium numbers compare with daily reference intakes?</h3><p>For generally healthy adults, the sodium Adequate Intake is 1,500 mg/day and the Chronic Disease Risk Reduction intake is 2,300 mg/day. One serving contains about 47% of the Adequate Intake. Those whole-day reference values are not a Best Hydrate servings-per-day target.</p></article>{% endunless %}
+    {% unless embedded %}<article><h3>Can I use more to hydrate faster?</h3><p>Do not automatically stack servings or concentrate the powder. During prolonged heat or heavy sweating, fluid and sodium losses can rise, but replacement should reflect the situation and the current label rather than assuming more is always better.</p></article>{% endunless %}
   </div>
 </section>
 
+{% unless embedded %}
 <section class="bhd-page__split">
   <div class="bhd-page__split-media"><img src="https://images.pexels.com/photos/3768114/pexels-photo-3768114.jpeg?auto=compress&cs=tinysrgb&w=1500" alt="Person preparing a drink in a reusable bottle" width="1500" height="1000" loading="lazy" decoding="async"></div>
   <div class="bhd-page__split-copy">
@@ -58,3 +60,5 @@
   <p class="bhd-page__kicker">Go deeper</p><h2 id="RelatedFaq-{{ section.id }}">Use the page built for your question</h2>
   <div class="bhd-page__related-grid"><a href="/products/lemonade-best-hydrate#directions"><strong>Directions</strong><span>Preparation and use context.</span></a><a href="/pages/our-formula"><strong>Our Formula</strong><span>Current ingredients and formulation philosophy.</span></a><a href="/pages/performance-hydration"><strong>Performance</strong><span>Training, competition and sweat context.</span></a><a href="/pages/clinical-hydration"><strong>Clinical Hydration</strong><span>Where clinician-directed care becomes important.</span></a></div>
 </section>
+
+{% endunless %}
