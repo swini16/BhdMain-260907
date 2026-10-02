@@ -366,6 +366,7 @@ jobs:
           const partnershipsToggle=home.getByRole('button',{name:/Open Partnerships submenu/i}).first();
           if(!(await partnershipsToggle.isVisible())) throw new Error('Partnerships submenu not live');
           await partnershipsToggle.click();
+          // Partnerships uses anchored categories; the Athletics page remains canonical under Solutions > Performance.
           const partnershipsBranch=home.locator('header.bhd-header .bhd-header__dropdown-child').filter({has:home.locator('.bhd-header__tier2-link[href="/pages/partnerships"]')}).first();
           const athletePartnership=partnershipsBranch.locator('a[href="/pages/partnerships#athlete-team-event"]').first();
           if(!(await athletePartnership.isVisible())) throw new Error('Partnerships > Athlete, Team & Event link not live');
