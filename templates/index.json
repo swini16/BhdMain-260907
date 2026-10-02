@@ -104,9 +104,14 @@
       "settings": {
         "color_scheme": "scheme-1"
       }
+    },
+    "media_research": {
+      "type": "bhd-publication-ribbon",
+      "settings": {}
     }
   },
   "order": [
+    "media_research",
     "hero",
     "science_research",
     "benefits",

@@ -1,76 +1,103 @@
-<section id="BhdPublicationRibbon-{{ section.id }}" class="bhd-publication-ribbon" aria-label="Publication announcement">
-  <a href="/blogs/news/just-published-innovative-oral-hydration-technologies">
-    <span class="bhd-publication-ribbon__badge">JUST PUBLISHED</span>
-    <span class="bhd-publication-ribbon__headline">New peer-reviewed hydration review in <em>Frontiers in Nutrition</em></span>
-    <span class="bhd-publication-ribbon__cta">Read the story →</span>
-  </a>
+<section id="BhdPublicationRibbon-{{ section.id }}" class="bhd-publication-ribbon" aria-label="Best Hydrate in the news and research">
+  <div class="bhd-publication-ribbon__grid">
+    <a class="bhd-publication-ribbon__item bhd-publication-ribbon__item--media" href="https://edmontonjournal.com/news/local-news/thisty-edmonton-sports-drink-market" target="_blank" rel="noopener">
+      <span class="bhd-publication-ribbon__badge">FEATURED</span>
+      <span class="bhd-publication-ribbon__headline">Best Hydrate featured in the <em>Edmonton Journal</em></span>
+      <span class="bhd-publication-ribbon__cta">Read article →</span>
+    </a>
+    <a class="bhd-publication-ribbon__item bhd-publication-ribbon__item--research" href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2026.1851906/abstract" target="_blank" rel="noopener">
+      <span class="bhd-publication-ribbon__badge">PEER-REVIEWED</span>
+      <span class="bhd-publication-ribbon__headline">Hydration review published in <em>Frontiers in Nutrition</em></span>
+      <span class="bhd-publication-ribbon__cta">Read publication →</span>
+    </a>
+  </div>
 </section>
 
 <style>
   #BhdPublicationRibbon-{{ section.id }}{
     position:relative;
     z-index:2;
-    background:linear-gradient(90deg,#0b2d67 0%,#154f92 55%,#0b2d67 100%);
-    border-top:1px solid rgba(255,255,255,.12);
-    border-bottom:1px solid rgba(5,31,72,.55);
-    box-shadow:0 .55rem 1.35rem rgba(13,33,78,.14)
+    border-top:1px solid rgba(11,45,103,.10);
+    border-bottom:1px solid rgba(11,45,103,.14);
+    box-shadow:0 .45rem 1.25rem rgba(13,33,78,.07)
   }
-  #BhdPublicationRibbon-{{ section.id }} a{
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__grid{
+    display:grid;
+    grid-template-columns:1fr 1fr
+  }
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item{
     display:flex;
     align-items:center;
     justify-content:center;
     gap:1rem;
-    min-height:5.4rem;
-    padding:1rem 1.6rem;
-    color:#fff;
+    min-height:6rem;
+    padding:1.05rem 1.6rem;
+    color:#173457;
     text-decoration:none;
     text-align:center;
     line-height:1.25
   }
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item--media{
+    background:#fff0f0;
+    border-right:1px solid rgba(124,47,47,.18)
+  }
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item--research{
+    background:#eef7ff
+  }
   #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__badge{
     display:inline-flex;
     align-items:center;
-    min-height:2.8rem;
-    padding:.48rem .8rem;
+    min-height:2.7rem;
+    padding:.46rem .76rem;
+    border:1px solid rgba(23,52,87,.14);
     border-radius:999px;
-    background:#dff5ff;
-    color:#0b3f73;
-    font-size:1.02rem;
+    background:rgba(255,255,255,.72);
+    color:#0b2d67;
+    font-size:.98rem;
     font-weight:900;
-    letter-spacing:.11em;
+    letter-spacing:.1em;
     white-space:nowrap
   }
   #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__headline{
-    font-size:1.38rem;
+    font-size:1.34rem;
     font-weight:760
   }
   #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__cta{
     padding-left:.9rem;
-    border-left:1px solid rgba(255,255,255,.34);
-    font-size:1.2rem;
+    border-left:1px solid rgba(23,52,87,.22);
+    font-size:1.15rem;
     font-weight:850;
     white-space:nowrap
   }
-  #BhdPublicationRibbon-{{ section.id }} a:hover .bhd-publication-ribbon__cta{text-decoration:underline}
-  @media(max-width:749px){
-    #BhdPublicationRibbon-{{ section.id }} a{
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item:hover .bhd-publication-ribbon__cta{text-decoration:underline}
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item:focus-visible{
+    outline:3px solid #078ee7;
+    outline-offset:-3px
+  }
+  @media(max-width:989px){
+    #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item{
       flex-wrap:wrap;
       gap:.45rem .7rem;
-      min-height:6.2rem;
-      padding:.82rem 1rem
+      padding:.9rem 1rem
     }
-    #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__badge{font-size:.95rem}
-    #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__headline{width:100%;font-size:1.16rem}
+    #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__headline{width:100%;font-size:1.17rem}
     #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__cta{padding-left:0;border-left:0;font-size:1.08rem}
+  }
+  @media(max-width:749px){
+    #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__grid{grid-template-columns:1fr}
+    #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item--media{
+      border-right:0;
+      border-bottom:1px solid rgba(23,52,87,.14)
+    }
   }
 </style>
 
 {% schema %}
 {
-  "name":"Publication ribbon",
+  "name":"Media + research ribbons",
   "settings":[],
-  "presets":[{"name":"Publication ribbon"}]
+  "presets":[{"name":"Media + research ribbons"}]
 }
 {% endschema %}
 
-{% comment %}Prominence sync 2026-09-23{% endcomment %}
+{% comment %}Dual proof ribbon sync 2026-10-02{% endcomment %}
