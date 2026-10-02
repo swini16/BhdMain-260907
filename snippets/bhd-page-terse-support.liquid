@@ -169,4 +169,16 @@
 
 <section class="bhd-page__feature"><div><p class="bhd-page__kicker">Why it matters</p><h2>What to know</h2><p>{{ t_proof }}</p></div></section>
 
+{% if page.handle == 'everyday-wellness' %}
+<section class="bhd-page__cards-section" aria-labelledby="EverydayFaq-{{ section.id }}">
+  <p class="bhd-page__kicker">Everyday hydration FAQ</p>
+  <h2 id="EverydayFaq-{{ section.id }}">Everyday electrolyte powder questions</h2>
+  <div class="bhd-page__cards bhd-page__cards--3">
+    <article><h3>What should I look for in an electrolyte powder for everyday use?</h3><p>Look for simple preparation, a taste you will actually drink, clear label directions and a formula that fits the situation. Plain water and normal meals are still enough for many routine days.</p></article>
+    <article><h3>Do I need a daily hydration powder?</h3><p>No. An electrolyte powder can be a convenient option when heat, activity, sweating, travel or limited fluid access make hydration harder, but it is not necessary for every drink or every day.</p></article>
+    <article><h3>Can I travel with electrolyte powder?</h3><p>Travel rules vary by carrier, security authority and destination, so check the current rules before packing. Dry powder is compact and can be mixed later when safe water is available.</p></article>
+  </div>
+</section>
+{% endif %}
+
 <section class="bhd-page__brand-context"><div><p class="bhd-page__kicker">Next</p><h2>Choose the next step.</h2></div><div class="bhd-page__brand-actions"><a class="bhd-page__button" href="{{ t_primary }}">{{ t_primary_label }}</a><a class="bhd-page__button bhd-page__button--secondary" href="{{ t_secondary }}">{{ t_secondary_label }}</a></div></section>
