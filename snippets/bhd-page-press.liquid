@@ -2,6 +2,7 @@
 {% assign bhd_product_clean = 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-lemonade-clean-20260910.png?v=1789057777' %}
 {% assign bhd_product_splash = 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-lemonade-splash-20260910.png?v=1789057786' %}
 {% assign bhd_logo = 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/LOGOClear.png?v=1682315014' %}
+{% assign bhd_press_team = 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-austin-spencer-press-2026-10-02.jpg?v=1790978185' %}
 
 {% render 'bhd-page-header',
   family: 'Connect',
@@ -10,8 +11,8 @@
   eyebrow: 'Media Kit',
   title: 'Press & Media',
   intro: 'Fast facts, source links, product images, founder media and interview access for journalists, editors and producers.',
-  hero_image: bhd_product_splash,
-  hero_alt: 'Best Hydrate Lemonade electrolyte powder with water splash and lemon'
+  hero_image: bhd_press_team,
+  hero_alt: 'Austin Swiniarski and Dr. Spencer Proctor in a laboratory with Best Hydrate products and labeled ingredients'
 %}
 
 <div class="bhd-page__keypoints" aria-label="Best Hydrate media summary"><div><strong>Alberta-grown</strong><span>Founded in 2021 in Alberta, Canada, with product mixed and packaged in Edmonton.</span></div><div><strong>Science-first</strong><span>Consumer hydration today, alongside a growing research and clinical-development program.</span></div><div><strong>Reporter-ready</strong><span>Downloadable visuals, source links, fact checks and interview requests in one place.</span></div></div>
@@ -23,6 +24,7 @@
 <section class="bhd-media-assets" aria-labelledby="MediaAssets-{{ section.id }}">
   <div class="bhd-media-assets__head"><p class="bhd-page__kicker">Media assets</p><h2 id="MediaAssets-{{ section.id }}">Images & brand files</h2><p>Open the full-size asset, then save the original image from your browser. For alternate formats or higher-resolution source files, send a media request below.</p></div>
   <div class="bhd-media-assets__grid">
+    <article class="bhd-media-asset"><a class="bhd-media-asset__image" href="{{ bhd_press_team }}" target="_blank" rel="noopener"><img src="{{ bhd_press_team }}" alt="Austin Swiniarski and Dr. Spencer Proctor in a laboratory with Best Hydrate products and labeled ingredients" width="1536" height="1152" loading="lazy" decoding="async"></a><div><h3>Austin + Spencer press photo</h3><p>Primary Best Hydrate team image for editorial and promotional use.</p><a class="bhd-page__button bhd-page__button--secondary" href="{{ bhd_press_team }}" target="_blank" rel="noopener">Open full size</a></div></article>
     <article class="bhd-media-asset"><a class="bhd-media-asset__image" href="{{ bhd_product_clean }}" target="_blank" rel="noopener"><img src="{{ bhd_product_clean }}" alt="Best Hydrate Lemonade electrolyte powder clean product image" width="1200" height="1200" loading="lazy" decoding="async"></a><div><h3>Clean product image</h3><p>Primary catalog-ready Best Hydrate Lemonade product image.</p><a class="bhd-page__button bhd-page__button--secondary" href="{{ bhd_product_clean }}" target="_blank" rel="noopener">Open full size</a></div></article>
     <article class="bhd-media-asset"><a class="bhd-media-asset__image" href="{{ bhd_product_splash }}" target="_blank" rel="noopener"><img src="{{ bhd_product_splash }}" alt="Best Hydrate Lemonade electrolyte powder splash image" width="713" height="726" loading="lazy" decoding="async"></a><div><h3>Splash product image</h3><p>Editorial and promotional product image with water-and-lemon treatment.</p><a class="bhd-page__button bhd-page__button--secondary" href="{{ bhd_product_splash }}" target="_blank" rel="noopener">Open full size</a></div></article>
     <article class="bhd-media-asset"><a class="bhd-media-asset__image" href="{{ bhd_founder_headshot }}" target="_blank" rel="noopener"><img src="{{ bhd_founder_headshot }}" alt="Austin Swiniarski, founder and CEO of Best Hydrate" width="1000" height="1000" loading="lazy" decoding="async"></a><div><h3>Founder headshot</h3><p>Austin Swiniarski, Founder & CEO, Best Hydrate Inc.</p><a class="bhd-page__button bhd-page__button--secondary" href="{{ bhd_founder_headshot }}" target="_blank" rel="noopener">Open full size</a></div></article>
