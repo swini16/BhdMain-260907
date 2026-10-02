@@ -166,6 +166,11 @@ jobs:
             echo "::error::Rejected/low-quality storefront imagery was reintroduced."
             exit 1
           fi
+          if grep -RIniE '1[[:space:]]*g[[:space:]]+sugar[[:space:]]*/[[:space:]]*100[[:space:]]*mL' snippets sections templates assets config layout locales --include='*.liquid' --include='*.json' --include='*.js' --include='*.css'; then
+            echo "::error::Obsolete 1 g sugar / 100 mL storefront claim was reintroduced; current label is 6 g sugars per 500 mL."
+            exit 1
+          fi
+          grep -Fq '6 g sugars / 500 mL prepared' templates/product.json
           python3 - <<'PY'
           from pathlib import Path
           for file in ['snippets/bhd-lp-conversion-shell.liquid','snippets/bhd-lp-conversion-open.liquid','snippets/bhd-page-lp-low-sugar.liquid','snippets/bhd-page-lp-run-the-river-edmonton.liquid','snippets/bhd-page-lp-bicarb-bonus.liquid','snippets/bhd-lp-tracking.liquid']:
