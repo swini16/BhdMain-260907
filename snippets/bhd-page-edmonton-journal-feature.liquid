@@ -1,0 +1,100 @@
+{% assign ej_photo = 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-edmonton-journal-austin-spencer-20261001.webp?v=1790965412' %}
+{% assign product_url = '/products/lemonade-best-hydrate' %}
+{% if localization.country.iso_code == 'US' %}
+  {% assign product_url = '/products/lemonade-electrolyte-best-hydrate' %}
+{% endif %}
+{% assign newsletter_form_id = 'BhdEjNewsletter-' | append: section.id %}
+
+{% render 'bhd-page-header',
+  family: 'Connect',
+  parent: 'Press & Media',
+  parent_url: '/pages/press',
+  eyebrow: 'Featured coverage · October 1, 2026',
+  title: 'Best Hydrate in the Edmonton Journal',
+  intro: 'Edmonton Journal feature writer Steven Sandor spoke with Austin Swiniarski and Spencer Proctor about Best Hydrate, Edmonton’s sports-drink market and the Alberta company behind the product.',
+  hero_image: ej_photo,
+  hero_alt: 'Austin Swiniarski and Spencer Proctor with Best Hydrate in a laboratory'
+%}
+
+<section class="bhd-ej-source bhd-page__feature">
+  <div>
+    <p class="bhd-page__kicker">Original reporting</p>
+    <h2>“Thirsty? Edmonton product developers enter the sports drink market”</h2>
+    <p><strong>Steven Sandor · Edmonton Journal · October 1, 2026</strong></p>
+    <p>The feature covers the local sports-drink market, Best Hydrate’s Alberta roots, and the people building the company. This page provides Best Hydrate context and links readers to the publisher’s original reporting.</p>
+    <div class="bhd-ej-actions">
+      <a class="bhd-page__button" href="https://edmontonjournal.com/news/local-news/thisty-edmonton-sports-drink-market" target="_blank" rel="noopener">Read the original article →</a>
+      <a class="bhd-page__button bhd-page__button--secondary" href="/pages/press">Press &amp; Media</a>
+    </div>
+    <p class="bhd-ej-rights"><small>Edmonton Journal article text and publisher photography remain the property of their respective rights holders. Best Hydrate does not reproduce the full article here.</small></p>
+  </div>
+</section>
+
+<section class="bhd-page__prose-grid">
+  <article class="bhd-page__prose">
+    <p class="bhd-page__kicker">Behind the feature</p>
+    <h2>An Alberta hydration company, built from a real problem</h2>
+    <p>Best Hydrate was founded in Alberta and is building a science-informed hydration company across consumer products, performance and research.</p>
+    <p>The Edmonton Journal feature is independent coverage. It should be read as reporting about the company and local market, not as a product efficacy endorsement.</p>
+  </article>
+  <aside class="bhd-page__callout">
+    <span class="bhd-page__callout-label">Learn more</span>
+    <h3>Go deeper than the headline.</h3>
+    <p>Explore the company story, peer-reviewed publication record and current product information.</p>
+    <p><a href="/pages/our-story">Our Story →</a><br><a href="/pages/publications">Publications →</a><br><a href="/pages/product-details">Product Details →</a></p>
+  </aside>
+</section>
+
+<section class="bhd-page__brand-context">
+  <div>
+    <p class="bhd-page__kicker">Curious about the product?</p>
+    <h2>Meet Best Hydrate.</h2>
+    <p>Purposefully low sugar, 5 electrolytes, Bicarb Bonus™ and 32 servings per container.</p>
+  </div>
+  <div class="bhd-page__brand-actions">
+    <a class="bhd-page__button" href="{{ product_url }}">Buy Now</a>
+    <a class="bhd-page__button bhd-page__button--secondary" href="/pages/our-formula">Learn More</a>
+  </div>
+</section>
+
+<section class="bhd-ej-connect" aria-labelledby="BhdEjConnect-{{ section.id }}">
+  <div class="bhd-ej-connect__signup">
+    <p class="bhd-page__kicker">Stay connected</p>
+    <h2 id="BhdEjConnect-{{ section.id }}">Research, product and company updates.</h2>
+    <p>Subscribe for new Best Hydrate updates. Unsubscribe anytime.</p>
+    {% form 'customer', id: newsletter_form_id, class: 'bhd-ej-connect__form' %}
+      <input type="hidden" name="contact[tags]" value="newsletter,edmonton-journal">
+      <label for="BhdEjEmail-{{ section.id }}">Email address</label>
+      <div class="bhd-ej-connect__form-row">
+        <input id="BhdEjEmail-{{ section.id }}" type="email" name="contact[email]" value="{{ form.email }}" autocomplete="email" required placeholder="you@example.com">
+        <button class="bhd-page__button" type="submit">Subscribe</button>
+      </div>
+      {% if form.posted_successfully? %}<p role="status"><strong>Thanks. You are subscribed.</strong></p>{% elsif form.errors %}<p role="alert">Please enter a valid email address.</p>{% endif %}
+    {% endform %}
+  </div>
+  <div class="bhd-ej-connect__follow">
+    <p class="bhd-page__kicker">Follow Best Hydrate</p>
+    <h2>Keep up with what comes next.</h2>
+    <div class="bhd-ej-actions">
+      <a class="bhd-page__button bhd-page__button--secondary" href="https://www.instagram.com/besthydrate/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a class="bhd-page__button bhd-page__button--secondary" href="https://www.facebook.com/104214145395682" target="_blank" rel="noopener noreferrer">Facebook</a>
+      <a class="bhd-page__button bhd-page__button--secondary" href="https://www.tiktok.com/@besthydrate" target="_blank" rel="noopener noreferrer">TikTok</a>
+      <a class="bhd-page__button bhd-page__button--secondary" href="https://www.youtube.com/channel/UCXqEmkYOnl-iU2AUaYS9kkA" target="_blank" rel="noopener noreferrer">YouTube</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bhd-ej-actions{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.2rem}
+  .bhd-ej-rights{margin-top:1rem;color:#66758a}
+  .bhd-ej-connect{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:clamp(2rem,5vw,4rem) 0}
+  .bhd-ej-connect>div{padding:clamp(1.3rem,3vw,2.3rem);border:1px solid #dfe8f3;border-radius:20px;background:#f7fbff}
+  .bhd-ej-connect h2{margin:.2rem 0 .7rem}
+  .bhd-ej-connect__form label{display:block;margin:.8rem 0 .4rem;font-weight:700}
+  .bhd-ej-connect__form-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.7rem}
+  .bhd-ej-connect__form input{min-height:4.6rem;width:100%;box-sizing:border-box;padding:.8rem 1rem;border:1px solid #cdd9e7;border-radius:999px;background:#fff;font:inherit}
+  .bhd-ej-connect__form button{border:0;cursor:pointer}
+  @media(max-width:760px){.bhd-ej-connect{grid-template-columns:1fr}.bhd-ej-connect__form-row{grid-template-columns:1fr}.bhd-ej-connect__form button{width:100%}}
+</style>
+
+{% comment %}QA retry marker 2026-10-02{% endcomment %}
