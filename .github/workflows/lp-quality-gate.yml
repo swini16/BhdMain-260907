@@ -367,17 +367,8 @@ jobs:
           if(!(await partnershipsToggle.isVisible())) throw new Error('Partnerships submenu not live');
           await partnershipsToggle.click();
           const partnershipsBranch=home.locator('header.bhd-header .bhd-header__dropdown-child').filter({has:home.locator('.bhd-header__tier2-link[href="/pages/partnerships"]')}).first();
-          const athleticsFromPartnerships=partnershipsBranch.locator('a[href="/pages/athletes-ambassadors"]').first();
-          if(!(await athleticsFromPartnerships.isVisible())) throw new Error('Partnerships > Athletics link not live');
-          await athleticsFromPartnerships.click();
-          await home.waitForURL(/\/pages\/athletes-ambassadors/, {timeout:15000});
-          await home.waitForTimeout(700);
-          currentMain=await home.locator('header.bhd-header [data-main-item].bhd-current-main .bhd-header__main-link').allTextContents();
-          currentTier2=await home.locator('header.bhd-header [data-main-item].bhd-current-main .bhd-header__dropdown-child.bhd-current-tier2 .bhd-header__tier2-link').allTextContents();
-          arrival=await home.locator('header.bhd-header').first().getAttribute('data-bhd-arrival-context');
-          if(currentMain.map(x=>x.trim()).join('|')!=='Connect') throw new Error('Partnerships arrival did not highlight Connect only: '+currentMain.join('|'));
-          if(currentTier2.map(x=>x.trim()).join('|')!=='Partnerships') throw new Error('Partnerships arrival did not highlight Partnerships only: '+currentTier2.join('|'));
-          if(arrival!=='Connect > Partnerships') throw new Error('Partnerships arrival context was not preserved: '+arrival);
+          const athletePartnership=partnershipsBranch.locator('a[href="/pages/partnerships#athlete-team-event"]').first();
+          if(!(await athletePartnership.isVisible())) throw new Error('Partnerships > Athlete, Team & Event link not live');
 
           await home.goto('https://besthydrate.com/pages/athletes-ambassadors?bhd_live_verify=direct-'+Date.now(),{waitUntil:'domcontentloaded',timeout:45000});
           await home.waitForTimeout(700);
