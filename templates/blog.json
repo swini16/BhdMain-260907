@@ -23,7 +23,17 @@
     "bhd_engagement": {
       "type": "bhd-blog-engagement",
       "settings": {}
+    },
+    "media_research": {
+      "type": "bhd-publication-ribbon",
+      "settings": {}
     }
   },
-  "order": ["bhd_intro", "main", "bhd_social_archive", "bhd_engagement"]
+  "order": [
+    "media_research",
+    "bhd_intro",
+    "main",
+    "bhd_social_archive",
+    "bhd_engagement"
+  ]
 }
