@@ -531,10 +531,12 @@ test('support-page matrix stays healthy, terse and routed', async ({ page }) => 
     await expect(nextAction, `${target.name}: visible next-step CTA`).toBeVisible();
 
     if (target.terse) {
-      await expect(
-        page.locator('.bhd-page__keypoints:visible'),
+      const keypointGroups = page.locator('.bhd-page__keypoints:visible');
+      expect(
+        await keypointGroups.count(),
         `${target.name}: terse key-points foundation`
-      ).toBeVisible();
+      ).toBeGreaterThan(0);
+      await expect(keypointGroups.first()).toBeVisible();
 
       expect(
         await page.locator('.bhd-enrichment').count(),
