@@ -46,9 +46,11 @@
 {%- endif -%}
 
 {%- if settings.favicon != blank -%}
-  <link rel="icon" type="image/png" sizes="96x96" href="{{ settings.favicon | image_url: width: 96, height: 96, crop: 'center' }}">
-  <link rel="shortcut icon" type="image/png" href="{{ settings.favicon | image_url: width: 96, height: 96, crop: 'center' }}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.favicon | image_url: width: 180, height: 180, crop: 'center' }}">
+  {%- assign bhd_favicon_96 = settings.favicon | image_url: width: 96, height: 96, crop: 'center' | prepend: 'https:' -%}
+  {%- assign bhd_touch_icon = settings.favicon | image_url: width: 180, height: 180, crop: 'center' | prepend: 'https:' -%}
+  <link rel="icon" type="image/png" sizes="96x96" href="{{ bhd_favicon_96 }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ bhd_touch_icon }}">
+  <meta name="msapplication-TileImage" content="{{ bhd_touch_icon }}">
 {%- endif -%}
 
 <meta property="og:site_name" content="{{ shop.name }}">
