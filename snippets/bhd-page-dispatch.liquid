@@ -65,8 +65,12 @@
       {% assign rendered_page_content = guide_label_parts | slice: 1, 999 | join: '</small></p>' %}
     {% endif %}
     {% assign rendered_page_content_downcase = rendered_page_content | downcase %}
+    {% assign suppress_fallback_h1 = false %}
+    {% if rendered_page_content_downcase contains '<h1' or page.handle == 'low-sugar-hydration-glucose-sglt1' %}
+      {% assign suppress_fallback_h1 = true %}
+    {% endif %}
     <div class="bhd-page-fallback__content{% if is_consumer_conversion_lp %} bhd-page-fallback__content--consumer-lp{% endif %}">
-      {% unless rendered_page_content_downcase contains '<h1' %}
+      {% unless suppress_fallback_h1 %}
         <h1>{{ page.title }}</h1>
       {% endunless %}
       {% if is_consumer_conversion_lp %}
