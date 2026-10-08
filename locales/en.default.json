@@ -1,4 +1,7 @@
 {
+  "bhd_earned_media": {
+    "shop_product": "Shop Best Hydrate"
+  },
   "general": {
     "password_page": {
       "login_form_heading": "Enter store using password:",
@@ -559,3 +562,4 @@
     }
   }
 }
+
