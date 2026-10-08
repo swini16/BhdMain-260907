@@ -245,7 +245,7 @@
       {%- if product.handle contains 'lemonade' -%}
         <div class="bhd-mobile-product-intro">
           <h1>{{ product.title | escape }}</h1>
-          <div class="bhd-mobile-product-intro__price" role="status">
+          <div id="BhdMobilePrice-{{ section.id }}" class="bhd-mobile-product-intro__price" role="status">
             {%- render 'price',
               product: product,
               use_variant: true,
@@ -258,7 +258,8 @@
             <span class="bhd-pill--sugar">{{ 'products.product.mobile_intro_sugar' | t }}</span>
             <span class="bhd-pill--electrolytes">{{ 'products.product.mobile_intro_electrolytes' | t }}</span>
             <span class="bhd-pill--servings">{{ 'products.product.mobile_intro_servings' | t }}</span>
-            <span class="bhd-pill--value">{{ 'products.product.mobile_intro_value' | t }}</span>
+            {%- assign bhd_mobile_price_per_serving = product.selected_or_first_available_variant.price | divided_by: 32.0 | round | money_with_currency -%}
+            <span id="BhdMobileServingPrice-{{ section.id }}" class="bhd-pill--value">{{ 'products.product.mobile_intro_value' | t: price: bhd_mobile_price_per_serving }}</span>
             <span class="bhd-pill--bicarb">Bicarb Bonus™ • not a megadose</span>
             <span class="bhd-pill--shipping">✓ Free &amp; Fast Delivery • Usually 1–2 days</span>
           </div>
