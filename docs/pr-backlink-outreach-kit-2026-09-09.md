@@ -1,12 +1,12 @@
 # Best Hydrate PR + Earned-Link Outreach Kit
 
-**Prepared:** 2026-09-09  
+**Updated:** 2026-10-01  
 **Goal:** Earn relevant editorial/institutional links by giving each target a real story and the exact Best Hydrate source page that supports it.  
 **Rule:** Ask for coverage, attribution, a resource listing, or a useful source link. Do **not** ask people to “give us an SEO backlink,” buy links, or trade links at scale.
 
 ## 1) Core story
 
-Best Hydrate is an Alberta oral-hydration company combining a commercial electrolyte product with a developing research platform. A 2026 review article co-authored by Best Hydrate and University of Alberta-affiliated authors has been accepted in *Frontiers in Nutrition* (Sport and Exercise Nutrition), DOI **10.3389/fnut.2026.1851906**. The company also works at the intersection of performance hydration, consumer hydration, clinical-development questions and humanitarian access.
+Best Hydrate is an Alberta oral-hydration company combining a commercial electrolyte product with a developing research platform. A 2026 review article co-authored by Best Hydrate and University of Alberta-affiliated authors was published in *Frontiers in Nutrition* (Sport and Exercise Nutrition) on **September 23, 2026**, DOI **10.3389/fnut.2026.1851906**. The company also works at the intersection of performance hydration, consumer hydration, clinical-development questions and humanitarian access.
 
 **Claim boundary:** the Frontiers article is a review of oral hydration technologies. It is **not** a clinical efficacy trial of Best Hydrate. Keep that distinction in every pitch.
 
@@ -35,7 +35,7 @@ Independent scholarly source: https://doi.org/10.3389/fnut.2026.1851906
 
 | Priority | Target | Current contact route | Pitch angle | Preferred link |
 |---|---|---|---|---|
-| A1 | University of Alberta communications / Folio | media@ualberta.ca; Michael Brown: mjbrown1@ualberta.ca; Jill Flaman (VP Research communications): flaman@ualberta.ca | U of A + Alberta company co-authored oral-hydration review accepted in Frontiers | /pages/publications |
+| A1 | University of Alberta communications / Folio | media@ualberta.ca; Michael Brown: mjbrown1@ualberta.ca; Jill Flaman (VP Research communications): flaman@ualberta.ca | U of A + Alberta company co-authored oral-hydration review published in Frontiers | /pages/publications |
 | A2 | The Conversation Canada | Academic co-author submits through The Conversation pitch system; editorial: ca-editorial@theconversation.com | Evidence-based explainer: why oral hydration technology still has room to evolve | /pages/hydration-science or /pages/publications |
 | A3 | Natural Products Canada | Prairie Regional Director Darren Bolding: darren@naturalproductscanada.com; Marketing & Communications Director Mark Cluett: mark@naturalproductscanada.com | Canadian natural-health-product startup moving from product into research | /pages/publications or /pages/our-story |
 | A4 | Canadian Food Innovation Network (CFIN) | info@cfin-rcia.ca; join/update YODL company profile | Canadian food/beverage innovation + research story; ask about member/media opportunities | /pages/publications or /pages/our-formula |
@@ -66,11 +66,11 @@ Independent scholarly source: https://doi.org/10.3389/fnut.2026.1851906
 
 ### A. University / research newsroom
 
-**Subject:** Alberta oral-hydration review accepted in Frontiers in Nutrition
+**Subject:** Alberta oral-hydration review published in Frontiers in Nutrition
 
 Hi [Name],
 
-I’m reaching out from Best Hydrate, an Alberta hydration company. A review article co-authored by University of Alberta-affiliated researchers and Best Hydrate authors has been accepted in *Frontiers in Nutrition*, Sport and Exercise Nutrition (DOI 10.3389/fnut.2026.1851906).
+I’m reaching out from Best Hydrate, an Alberta hydration company. A review article co-authored by University of Alberta-affiliated researchers and Best Hydrate authors was published in *Frontiers in Nutrition*, Sport and Exercise Nutrition on September 23, 2026 (DOI 10.3389/fnut.2026.1851906).
 
 The review examines oral rehydration technology across exercise and clinical contexts and the opportunity for further innovation. We think there may be a useful Alberta research/commercialization story here, particularly around collaboration between academic researchers and an early-stage local company.
 
@@ -94,7 +94,7 @@ Hi [Name],
 
 Best Hydrate started in Alberta as a practical hydration-product idea and is now building a broader research and development platform around oral hydration.
 
-A review article co-authored by Best Hydrate and University of Alberta-affiliated authors has now been accepted in *Frontiers in Nutrition*. For us, the interesting story is the transition from a small consumer startup into a company trying to systematically connect product development, academic research, performance and future clinical/humanitarian applications.
+A review article co-authored by Best Hydrate and University of Alberta-affiliated authors was published in *Frontiers in Nutrition* on September 23, 2026. For us, the interesting story is the transition from a small consumer startup into a company trying to systematically connect product development, academic research, performance and future clinical/humanitarian applications.
 
 Publication details:
 https://besthydrate.com/pages/publications
@@ -215,10 +215,10 @@ Use one row per outreach target:
 
 ## 9) First 10 sends
 
-1. U of A VP Research / media communications
-2. The Conversation Canada via an eligible academic co-author
-3. Natural Products Canada Prairie + communications
-4. CFIN
+1. U of A communications / Folio
+2. U of A department or lab publication/news page, if editorially appropriate
+3. The Conversation Canada via an eligible academic co-author
+4. Natural Products Canada Prairie + communications
 5. Edmonton Unlimited
 6. BioAlberta
 7. Startup TNT Edmonton
@@ -227,3 +227,10 @@ Use one row per outreach target:
 10. Global Edmonton
 
 Do these as **personalized sends**, not one blast.
+
+
+## 10) October 1, 2026 authority note
+
+Semrush currently reports an Authority Score of **7** for besthydrate.com. Raw referring-domain count is not the priority because much of the profile is low-quality SEO noise. The next objective is a small number of genuine editorial or institutional links from relevant organizations.
+
+First ask: University of Alberta/Folio coverage or a publication/news listing that cites the Frontiers paper and links to the maintained Best Hydrate publication page where editorially appropriate. Spencer Proctor's public University of Alberta profile is live, but the new hydration publication is not currently surfaced in the profile text found in public search.
