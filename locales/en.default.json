@@ -185,7 +185,7 @@
       "mobile_intro_sugar": "~1 g sugar / 100 mL prepared",
       "mobile_intro_electrolytes": "5 electrolytes",
       "mobile_intro_servings": "32 servings",
-      "mobile_intro_value": "~C$1.25/serving",
+      "mobile_intro_value": "~{{ price }}/serving",
       "mobile_intro_taste": "Tastes great. Light, balanced, not too sweet."
     },
     "modal": {
