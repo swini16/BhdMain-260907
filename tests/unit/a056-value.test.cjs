@@ -12,7 +12,7 @@ test('all substantiation gates are present in the shared Liquid snippet', () => 
   for (const condition of ["localization.country.iso_code == 'CA'", "localization.country.currency.iso_code == 'CAD'", "cart.currency.iso_code == 'CAD'", 'claim_product.id == 8904882422044', 'claim_variant.id == 47373155631388', 'claim_variant.price == 3999', 'claim_variant.available', 'cart.taxes_included', 'claim_product.quantity_price_breaks_configured?', 'claim_product.selected_selling_plan']) assert.ok(snippet.includes(condition), condition);
   assert.ok(snippet.includes('mM-bhd-a056-value-claim-261008@v2'));
 });
-test('approved exact strings and rounding remain intact', () => {
+test('proposed exact strings and rounding remain intact', () => {
   assert.deepEqual(strings, {
     home_heading: '32 servings. One jar.',
     home_body: 'About C$1.25 per prepared 500 mL serving.',
