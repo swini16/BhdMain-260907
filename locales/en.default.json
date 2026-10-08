@@ -1,4 +1,11 @@
 {
+  "a056": {
+    "home_heading": "32 servings. One jar.",
+    "home_body": "About C$1.25 per prepared 500 mL serving.",
+    "product_heading": "More hydration value in every jar.",
+    "product_body": "32 servings per jar. About C$1.25 per prepared 500 mL serving.",
+    "qualification": "Based on a C$39.99 jar, prepared as directed. Before tax, delivery and water cost. Canadian pricing; prices may change."
+  },
   "general": {
     "password_page": {
       "login_form_heading": "Enter store using password:",
@@ -559,3 +566,4 @@
     }
   }
 }
+
