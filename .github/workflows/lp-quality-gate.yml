@@ -76,8 +76,8 @@ jobs:
           set -euo pipefail
           f='snippets/bhd-lp-conversion-shell.liquid'; o='snippets/bhd-lp-conversion-open.liquid'; d='snippets/bhd-page-dispatch.liquid'
           l='snippets/bhd-page-lp-low-sugar.liquid'; r='snippets/bhd-page-lp-run-the-river-edmonton.liquid'; b='snippets/bhd-page-lp-bicarb-bonus.liquid'; t='snippets/bhd-lp-tracking.liquid'
-          e='snippets/bhd-lp-experiment-runtime.liquid'; ec='assets/bhd-lp-experiments.js'; er='assets/bhd-lp-experiment-runtime.js'
-          test -f "$f"; test -f "$o"; test -f "$d"; test -f "$l"; test -f "$r"; test -f "$b"; test -f "$t"; test -f "$e"; test -f "$ec"; test -f "$er"
+          e='snippets/bhd-lp-experiment-runtime.liquid'; pe='snippets/bhd-product-experiment-runtime.liquid'; ec='assets/bhd-lp-experiments.js'; er='assets/bhd-lp-experiment-runtime.js'; th='layout/theme.liquid'
+          test -f "$f"; test -f "$o"; test -f "$d"; test -f "$l"; test -f "$r"; test -f "$b"; test -f "$t"; test -f "$e"; test -f "$pe"; test -f "$ec"; test -f "$er"; test -f "$th"
           grep -Fq "render 'bhd-lp-conversion-open'" "$d"
           grep -Fq "render 'bhd-lp-conversion-shell'" "$d"
           grep -Fq 'is_consumer_conversion_lp' "$d"
@@ -96,11 +96,17 @@ jobs:
           ! grep -Fq 'Race tomorrow? Don’t reinvent hydration tonight.' "$r"
           for x in "window.amplitude.track(name, payload)" "LP CTA Clicked" "LP Section Viewed" "event: dataLayerEvent" "lp_cta_clicked" "lp_section_viewed" "page_handle:" "lp_context:" "experiment_id" "variant_id" "[data-lp-cta]" "[data-lp-section]"; do grep -Fq "$x" "$t"; done
           for x in "render 'bhd-lp-experiment-runtime'" "render 'bhd-lp-tracking'"; do grep -Fq "$x" "$d"; done
-          for x in "BHD_LP_PAGE_HANDLE" "bhd-lp-experiments.js" "bhd-lp-experiment-runtime.js"; do grep -Fq "$x" "$e"; done
+          for x in "BHD_LP_PAGE_HANDLE" "BHD_EXPERIMENT_CONTEXT" "surface: 'landing_page'" "bhd-lp-experiments.js" "bhd-lp-experiment-runtime.js"; do grep -Fq "$x" "$e"; done
+          for x in "BHD_EXPERIMENT_CONTEXT" "surface: 'product'" "product.handle" "_bhd_*" "bhd-lp-experiments.js" "bhd-lp-experiment-runtime.js"; do grep -Fq "$x" "$pe"; done
+          grep -Fq "render 'bhd-product-experiment-runtime'" "$th"
           for x in '"schemaVersion": 1' '"experiments":'; do grep -Fq "$x" "$ec"; done
-          for x in "open.eyebrow" "open.lead" "open.earlyCta" "close.tasteHeadline" "close.offerHeadline" "close.finalCta" "bhd_exp" "bhd_var" "bhd_experiment_exposure" "LP Experiment Exposed" "localStorage" "textContent"; do grep -Fq "$x" "$er"; done
+          for x in "open.eyebrow" "open.lead" "open.earlyCta" "close.tasteHeadline" "close.offerHeadline" "close.finalCta" "product.addToCart" "product.deliveryNote" "product.purchaseChoiceTitle" "product.purchaseChoiceBody" "product.reassurance" "product.stickyCta" "product.stickyShipping" "properties[_bhd_experiment]" "properties[_bhd_variant]" "properties[_bhd_surface]" "properties[_bhd_context]" "bhd_exp" "bhd_var" "bhd_experiment_exposure" "LP Experiment Exposed" "Product Experiment Exposed" "localStorage" "textContent" "MutationObserver"; do grep -Fq "$x" "$er"; done
           ! grep -Fq "innerHTML" "$er"
           ! grep -Fq "href =" "$er"
+          ! grep -Fq ".price" "$er"
+          ! grep -Fq "selling_plan" "$er"
+          ! grep -Fq "variant-id" "$er"
+          ! grep -Fq "product-id" "$er"
           grep -Fq 'data-lp-section="open"' "$o"
           grep -Fq 'data-lp-cta="early-amazon"' "$r"
           grep -Fq 'data-lp-cta="final-amazon"' "$r"
@@ -124,24 +130,36 @@ jobs:
           if(!text.startsWith(prefix)||!text.endsWith(');')) throw new Error('LP experiment registry wrapper invalid');
           const data=JSON.parse(text.slice(prefix.length,-2));
           if(data.schemaVersion!==1||!Array.isArray(data.experiments)) throw new Error('LP experiment registry schema invalid');
-          const targets=new Set([
+          const landingTargets=new Set([
             'open.eyebrow','open.lead','open.earlyCta','open.lowSugarLink',
             'close.tasteEyebrow','close.tasteHeadline','close.tasteBody',
             'close.offerEyebrow','close.offerHeadline','close.offerBody',
             'close.finalCta','close.stickyCta'
           ]);
+          const productTargets=new Set([
+            'product.addToCart','product.deliveryNote','product.purchaseChoiceTitle',
+            'product.purchaseChoiceBody','product.reassurance','product.stickyCta','product.stickyShipping'
+          ]);
           for(const exp of data.experiments){
             if(!exp||!/^[a-zA-Z0-9._-]{1,96}$/.test(String(exp.id||''))) throw new Error('Invalid experiment id');
-            if(!/^[a-z0-9][a-z0-9-]{1,118}$/.test(String(exp.pageHandle||''))) throw new Error('Invalid experiment pageHandle');
+            const surface=String(exp.surface||(exp.pageHandle?'landing_page':'')).toLowerCase();
+            if(surface==='landing_page'){
+              if(!/^[a-z0-9][a-z0-9-]{1,118}$/.test(String(exp.pageHandle||''))) throw new Error('Invalid experiment pageHandle');
+            } else if(surface==='product'){
+              if(!/^[a-z0-9][a-z0-9-]{1,118}$/.test(String(exp.productHandle||''))) throw new Error('Invalid experiment productHandle');
+            } else {
+              throw new Error('Unsupported storefront experiment surface: '+surface);
+            }
             if(!['active','paused','draft'].includes(String(exp.status||'').toLowerCase())) throw new Error('Invalid experiment status');
             if(!Array.isArray(exp.variants)||exp.variants.length<2||exp.variants.length>8) throw new Error('Experiment must have 2-8 variants');
+            const targets=surface==='product'?productTargets:landingTargets;
             for(const variant of exp.variants){
               if(!variant||!/^[a-zA-Z0-9._-]{1,96}$/.test(String(variant.id||''))) throw new Error('Invalid variant id');
               if(!(Number(variant.weight)>0)) throw new Error('Variant weight must be positive');
               if(!variant.changes||typeof variant.changes!=='object'||Array.isArray(variant.changes)) throw new Error('Variant changes must be an object');
               for(const [field,value] of Object.entries(variant.changes)){
-                if(!targets.has(field)) throw new Error('Non-allow-listed LP experiment target: '+field);
-                if(typeof value!=='string'||!value.trim()||value.length>320) throw new Error('Invalid LP experiment text value for '+field);
+                if(!targets.has(field)) throw new Error('Non-allow-listed '+surface+' experiment target: '+field);
+                if(typeof value!=='string'||!value.trim()||value.length>320) throw new Error('Invalid experiment text value for '+field);
               }
             }
           }

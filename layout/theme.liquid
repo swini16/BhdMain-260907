@@ -556,6 +556,10 @@
       {{ content_for_layout }}
     </main>
 
+    {%- if request.page_type == 'product' and product -%}
+      {% render 'bhd-product-experiment-runtime' %}
+    {%- endif -%}
+
     {% sections 'footer-group' %}
 
     <ul hidden>
