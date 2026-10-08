@@ -52,6 +52,9 @@ jobs:
           npm install --no-save @playwright/test@latest @axe-core/playwright@latest
           npx playwright install --with-deps chromium
 
+      - name: Test storefront unit contracts
+        run: node --test tests/unit/*.test.cjs
+
       - name: Allow live Shopify sync after main push
         if: github.event_name == 'push'
         run: sleep 30
@@ -75,6 +78,7 @@ jobs:
           test "$(find visual-current -maxdepth 1 -name 'visual-*.jpg' | wc -l)" -ge 8
 
       - name: Compare screenshots with last approved main run
+        id: visual_compare
         if: ${{ github.event_name == 'push' && !cancelled() && !contains(github.event.head_commit.message, '[approve-visual-baseline]') }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -121,12 +125,15 @@ jobs:
           done
 
           node scripts/visual-regression-compare.mjs visual-baseline visual-current visual-diff
+          echo 'verified=true' >> "$GITHUB_OUTPUT"
 
       - name: Record approved visual baseline
+        id: visual_baseline
         if: ${{ github.event_name == 'push' && !cancelled() && contains(github.event.head_commit.message, '[approve-visual-baseline]') }}
         run: |
           echo "Intentional visual change approved by commit marker."
           echo "This successful run becomes the next automatic baseline."
+          echo 'approved=true' >> "$GITHUB_OUTPUT"
 
       - name: Upload visual regression evidence
         if: ${{ !cancelled() }}
@@ -210,7 +217,7 @@ jobs:
           $ARTIFACTS
 
           ---
-          This issue is maintained automatically. Repeated failures update it in place; the next successful live validation closes it.
+          This issue is maintained automatically. Repeated failures update it in place. Recovery must verify the failed category; visual differences require a passing comparison or explicit reviewed baseline approval.
           EOF
 
           ISSUE="$(
@@ -233,6 +240,8 @@ jobs:
         if: ${{ success() && github.event_name != 'pull_request' }}
         env:
           GH_TOKEN: ${{ github.token }}
+          VISUAL_COMPARE_VERIFIED: ${{ steps.visual_compare.outputs.verified }}
+          VISUAL_BASELINE_APPROVED: ${{ steps.visual_baseline.outputs.approved }}
         shell: bash
         run: |
           set -euo pipefail
@@ -253,6 +262,29 @@ jobs:
           fi
 
           BODY="$(gh issue view "$ISSUE" --repo "$GITHUB_REPOSITORY" --json body --jq .body)"
+          CATEGORY="$(printf '%s\n' "$BODY" | sed -n 's/^\*\*Category:\*\* \(.*\)$/\1/p' | sed 's/[[:space:]]*$//')"
+
+          # Scheduled/manual runs do not compare screenshots. A green smoke run
+          # cannot establish that a visual difference was fixed or approved.
+          # Bootstrap exits also leave verified unset: only a real comparison
+          # or the existing explicit approval marker may resolve this category.
+          case "$CATEGORY" in
+            'Visual regression')
+              if [ "${VISUAL_COMPARE_VERIFIED:-}" != 'true' ] && [ "${VISUAL_BASELINE_APPROVED:-}" != 'true' ]; then
+                echo "Keeping visual-regression issue #$ISSUE open: no passing comparison or explicit baseline approval in this run."
+                exit 0
+              fi
+              ;;
+            'Live storefront functionality / layout / accessibility'|'Visual capture pipeline'|'CI infrastructure'|'Validation pipeline')
+              # The step's success() guard establishes recovery for these
+              # stages, which run on every ordinary non-PR validation.
+              ;;
+            *)
+              echo "Keeping issue #$ISSUE open: missing or unknown failure category requires review."
+              exit 0
+              ;;
+          esac
+
           {
             printf '%s\n\n' "$BODY"
             echo '---'
