@@ -3,9 +3,9 @@
 ChatGPT-Conversation-Title:
 ChatGPT-Conversation-Title-Source: canonical
 ChatGPT-Origin-Thread:
-ChatGPT-Attribution-Version: 1
+ChatGPT-Attribution-Version: 2
 
-<!-- PR creators should supply the current ChatGPT conversation title here whenever available. If omitted, the trusted PR-open normalizer immediately applies the centralized best plausible match. Attribution is operational metadata only and never blocks PR, CI, merge, or deploy. -->
+<!-- Source contract: provide the exact current ChatGPT conversation title here. Redundant accepted provenance: commit trailer "ChatGPT-Conversation-Title: <title>" or branch "chat/<known-title-slug>/...". Context inference is fallback only. Attribution never blocks PR, CI, merge, deploy, or Telegram. -->
 
 ## Change
 
