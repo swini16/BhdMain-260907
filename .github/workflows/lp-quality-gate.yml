@@ -3,7 +3,7 @@ name: LP Quality Gate
 on:
   pull_request:
     branches: [main]
-    paths: ['**/*.liquid','assets/**','templates/**','config/**','.github/workflows/lp-quality-gate.yml']
+    paths: ['**/*.liquid','assets/**','templates/**','config/**','.github/workflows/lp-quality-gate.yml','.github/scripts/telegram-production-note.mjs','.github/scripts/test-telegram-production-note.mjs']
   push:
     branches: [main]
   workflow_dispatch:
@@ -70,6 +70,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
+      - name: Validate concise production note format
+        run: node --test .github/scripts/test-telegram-production-note.mjs
       - name: Validate conversion, responsive and analytics contracts
         shell: bash
         run: |
@@ -426,7 +428,7 @@ jobs:
     needs: [liquid-theme-check, lp-contracts, static-safety, rendered-browser-smoke, post-merge-live-contract]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout attribution rules
+      - name: Checkout production note formatter
         uses: actions/checkout@v4
 
       - name: Notify Telegram after eHP live verification
@@ -451,46 +453,17 @@ jobs:
             [ "$result" = "success" ] || overall="failure"
           done
 
-          short="${GITHUB_SHA:0:8}"
-          pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
-          ref="$short"
-          pr_url=""
-          chat_url=""
-          chat_name="⚠️ CONVERSATION TITLE UNKNOWN"
-          pr_title=""
-
-          if [ -n "$pr" ]; then
-            ref="PR #$pr • $short"
-            pr_url="https://github.com/$GITHUB_REPOSITORY/pull/$pr"
-            pr_json="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr" 2>/dev/null || true)"
-            body="$(printf '%s' "$pr_json" | jq -r '.body // ""' 2>/dev/null || true)"
-            pr_title="$(printf '%s' "$pr_json" | jq -r '.title // ""' 2>/dev/null || true)"
-            # Attribution is operational metadata only. Resolver failure must never suppress the notifier or affect deploy/live verification.
-            attribution="$(PR_BODY="$body" PR_TITLE="$pr_title" python3 .github/scripts/chat_title_attribution.py 2>/dev/null || true)"
-            inferred_title="$(printf '%s' "$attribution" | jq -r '.title // ""' 2>/dev/null || true)"
-            if [ -n "$inferred_title" ]; then
-              chat_name="$inferred_title"
-            fi
-
-            body_chat="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat:[[:space:]]*(https://chatgpt\.com/c/[A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
-            body_chat_id="$(printf '%s\n' "$body" | sed -nE 's#^[[:space:]]*ChatGPT-Chat-ID:[[:space:]]*([A-Za-z0-9_-]{20,128})[[:space:]]*$#\1#p' | head -n1)"
-            if [ -n "$body_chat" ]; then chat_url="$body_chat";
-            elif [ -n "$body_chat_id" ]; then chat_url="https://chatgpt.com/c/$body_chat_id";
-            fi
+          pr="$(gh api "/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '[.[] | select(.merged_at != null)] | .[0].number // empty')"
+          if [ -z "$pr" ]; then
+            echo "::warning::No merged PR found; no untraceable Telegram note sent."
+            exit 0
           fi
-
-          if [ "$overall" = "success" ]; then
-            text="🟢 eHP LIVE • Chat: $chat_name • $ref • verified"
-          else
-            text="🔴 eHP LIVE VERIFY FAILED • Chat: $chat_name • $ref"
-          fi
-          if [ -n "$pr_title" ]; then text="$(printf '%s\n%s' "$text" "Task: $pr_title")"; fi
-          if [ -n "$pr_url" ]; then text="$(printf '%s\n%s' "$text" "$pr_url")"; fi
-          if [ -n "$chat_url" ]; then text="$(printf '%s\n%s' "$text" "ChatGPT: $chat_url")"; fi
-          text="$(printf '%s\n%s' "$text" "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")"
+          pr_json="$(gh api "/repos/$GITHUB_REPOSITORY/pulls/$pr")"
+          text="$(PR_JSON="$pr_json" NOTIFY_SURFACE="eHP" DEPLOY_RESULT="$overall" node .github/scripts/telegram-production-note.mjs)"
 
           response="$(curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
             --data-urlencode "text=${text}")"
           test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
           echo "eHP Telegram notification acknowledged by Telegram."
+
