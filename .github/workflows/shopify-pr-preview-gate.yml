@@ -21,6 +21,7 @@ jobs:
       SHOPIFY_FLAG_STORE: best-hydrate.myshopify.com
       SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN || secrets.SHOPIFY_THEME_ACCESS_TOKEN || secrets.SHOPIFY_ADMIN_API_TOKEN || secrets.SHOPIFY_ACCESS_TOKEN }}
       SHOPIFY_FLAG_FORCE: '1'
+      PLAYWRIGHT_BROWSER_CHANNEL: chrome
       BASE_URL: https://besthydrate.com
       PRODUCT_PATH: /products/lemonade-best-hydrate
 
@@ -204,6 +205,19 @@ jobs:
         run: |
           npm install --no-save @shopify/cli@latest @playwright/test@latest
           npx playwright install --with-deps chromium
+
+      - name: Verify installed Chrome sandbox before staging
+        if: steps.scope.outputs.relevant == 'true'
+        run: |
+          google-chrome --version
+          node - <<'JS'
+          const { chromium } = require('@playwright/test');
+          (async () => {
+            const browser = await chromium.launch({ channel: 'chrome', chromiumSandbox: true });
+            console.log('Sandbox-enabled Chrome:', browser.version());
+            await browser.close();
+          })().catch(error => { console.error(error); process.exit(1); });
+          JS
 
       - name: Build proposed theme package
         if: steps.scope.outputs.relevant == 'true'

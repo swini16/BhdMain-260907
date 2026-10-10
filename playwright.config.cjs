@@ -13,6 +13,7 @@ module.exports = defineConfig({
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
   ],
   use: {
+    channel: process.env.PLAYWRIGHT_BROWSER_CHANNEL || undefined,
     launchOptions: { chromiumSandbox: true },
     baseURL: process.env.BASE_URL || 'https://besthydrate.com',
     actionTimeout: 10000,
