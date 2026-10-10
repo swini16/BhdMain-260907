@@ -93,6 +93,9 @@ jobs:
           files=[line.strip() for line in Path('/tmp/pr-changed-files.txt').read_text().splitlines() if line.strip()]
           paths=['/']
           nav=False
+          media=any(any(n in f for n in ['bhd-page-media-alliance', 'bhd-publication-ribbon', 'bhd-page-press', 'media-pages.spec']) for f in files)
+          if media:
+              paths += ['/pages/folio-hydration-feature', '/pages/cbc-edmonton-am', '/pages/press']
 
           def any_match(*needles):
               return any(any(n in f for n in needles) for f in files)
@@ -134,6 +137,7 @@ jobs:
           seen=seen[:8]
           print('preview_paths=' + ','.join(seen))
           print('expect_nav=' + ('true' if nav else 'false'))
+          print('media=' + ('true' if media else 'false'))
           PY
 
           cat /tmp/preview-scope.env >> "$GITHUB_OUTPUT"
@@ -285,6 +289,20 @@ jobs:
       - name: Enforce desktop/mobile-only responsive policy
         if: steps.scope.outputs.relevant == 'true'
         run: node scripts/check-responsive-surfaces.mjs
+
+      - name: Capture and validate proposed media pages
+        if: steps.scope.outputs.media == 'true'
+        run: |
+          npx playwright test --config=playwright.config.cjs tests/playwright/media-pages.spec.cjs
+
+      - name: Retain media review evidence
+        if: ${{ always() && steps.scope.outputs.media == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ehp-media-review-${{ github.event.pull_request.head.sha }}
+          path: artifacts/media-review/
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Run targeted preview smoke
         if: steps.scope.outputs.relevant == 'true'

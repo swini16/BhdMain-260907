@@ -1,0 +1,80 @@
+{% doc %}
+  Renders the Best Hydrate media story, product and partnership pathways.
+{% enddoc %}
+{% assign media_now = 'now' | date: '%s' | plus: 0 %}
+{% assign product_url = '/products/lemonade-best-hydrate' %}
+{% if localization.country.iso_code == 'US' %}
+  {% assign product_url = '/products/lemonade-electrolyte-best-hydrate' %}
+{% endif %}
+{% assign media_product_image = 'https://cdn.shopify.com/s/files/1/0741/2170/7804/files/best-hydrate-lemonade-clean-20260910.png?v=1789057777' %}
+{% assign media_title = 'Best Hydrate in U of Alberta’s Folio' %}
+{% assign media_eyebrow = 'Featured coverage · October 8, 2026' %}
+{% assign media_intro = 'Built on alliances. Made possible by people.' %}
+{% if page.handle == 'cbc-edmonton-am' %}
+  {% assign media_title = 'Best Hydrate and CBC Edmonton AM' %}
+  {% assign media_eyebrow = 'Conversation & community' %}
+{% endif %}
+
+{% render 'bhd-page-header',
+  family: 'Connect',
+  parent: 'Press & Media',
+  parent_url: '/pages/press',
+  eyebrow: media_eyebrow,
+  title: media_title,
+  intro: media_intro,
+  hero_image: media_product_image,
+  hero_alt: 'Best Hydrate Lemonade electrolyte powder jar'
+%}
+
+<section class="bhd-page__feature" aria-labelledby="BhdMediaStory-{{ section.id }}">
+  <div>
+    {% if page.handle == 'cbc-edmonton-am' %}
+      <p class="bhd-page__kicker">Listen & explore</p>
+      <h2 id="BhdMediaStory-{{ section.id }}">A conversation about the people behind Best Hydrate.</h2>
+      {% if media_now < 1791812100 %}
+        <p><strong>Scheduled for Monday, October 12, 2026 at 7:35 a.m. MDT.</strong></p>
+        <p>Austin Swiniarski and Dr. Spencer Proctor are scheduled to join CBC Edmonton AM to talk about Best Hydrate, their collaboration and future possibilities for hydration.</p>
+      {% else %}
+        <p>The conversation was scheduled for October 12, 2026 at 7:35 a.m. MDT. An interview replay has not yet been verified here.</p>
+      {% endif %}
+      <p>This Thanksgiving, we’re grateful for the alliances that make the work possible.</p>
+      <a class="bhd-page__button" href="https://www.cbc.ca/listen/live-radio" target="_blank" rel="noopener noreferrer">Listen live on CBC →</a>
+      <p><small>Choose Radio One Edmonton. This is the live station service, not an interview replay.</small></p>
+      <a class="bhd-page__text-link" href="https://www.cbc.ca/listen/live-radio/1-17-edmonton-am" target="_blank" rel="noopener noreferrer">CBC Edmonton AM program & archive →</a>
+      <p><a class="bhd-page__text-link" href="/pages/folio-hydration-feature">Read the story in U of Alberta’s Folio →</a></p>
+    {% else %}
+      <p class="bhd-page__kicker">U of Alberta’s Folio · October 8, 2026</p>
+      <h2 id="BhdMediaStory-{{ section.id }}">Questions became a research alliance.</h2>
+      <p>U of Alberta’s Folio shares the collaboration between Austin Swiniarski and Dr. Spencer Proctor, and the questions shaping the next stage of oral-hydration research. We’re grateful to the people who helped bring that alliance together.</p>
+      <a class="bhd-page__button" href="https://www.ualberta.ca/en/news/spotlights/2026/10-oct/uofa-researcher-lends-expertise-to-boost-science-of-oral-hydration.html" target="_blank" rel="noopener noreferrer">Read U of Alberta’s Folio →</a>
+      <p><small>Read the original reporting at the University of Alberta. Coverage and research collaboration do not imply a product endorsement or completed product efficacy trial.</small></p>
+      {% if media_now < 1791812100 %}
+        <p>Austin and Dr. Proctor are also scheduled to join CBC Edmonton AM on Monday, October 12 at 7:35 a.m. MDT.</p>
+      {% endif %}
+      <a class="bhd-page__text-link" href="/pages/cbc-edmonton-am">CBC Edmonton AM listening information →</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="bhd-page__brand-context" aria-labelledby="BhdMediaProduct-{{ section.id }}">
+  <div>
+    <p class="bhd-page__kicker">Meet the product</p>
+    <h2 id="BhdMediaProduct-{{ section.id }}">Hydrate for YOUR Best Day!</h2>
+    <p>Meet Best Hydrate Lemonade. Light, balanced flavour, purposeful low sugar and 32 servings per container. See the current product page for ingredients, directions and availability.</p>
+  </div>
+  <div class="bhd-page__brand-actions">
+    <a class="bhd-page__button" href="{{ product_url }}">Buy Now</a>
+    <a class="bhd-page__button bhd-page__button--secondary" href="/pages/product-details">Product Details</a>
+  </div>
+</section>
+
+<section class="bhd-page__feature" aria-labelledby="BhdMediaPartners-{{ section.id }}">
+  <div>
+    <p class="bhd-page__kicker">Strategic partnerships</p>
+    <h2 id="BhdMediaPartners-{{ section.id }}">Help shape what comes next.</h2>
+    <p>Best Hydrate is growing through alliances. We welcome conversations with strategic partners who can help guide our next stage of growth.</p>
+    <a class="bhd-page__button" href="/pages/partnerships">Explore Partnerships</a>
+    <a class="bhd-page__button bhd-page__button--secondary" href="/pages/contact">Start a Conversation</a>
+    <p><a class="bhd-page__text-link" href="/pages/press">More Best Hydrate news & media →</a></p>
+  </div>
+</section>
