@@ -1,10 +1,16 @@
 <section id="BhdPublicationRibbon-{{ section.id }}" class="bhd-publication-ribbon" aria-label="Best Hydrate in the news and research">
   <div class="bhd-publication-ribbon__grid">
-    <a class="bhd-publication-ribbon__item bhd-publication-ribbon__item--media" href="https://edmontonjournal.com/news/local-news/thisty-edmonton-sports-drink-market" target="_blank" rel="noopener">
+    <div class="bhd-publication-ribbon__item bhd-publication-ribbon__item--media">
       <span class="bhd-publication-ribbon__badge">FEATURED</span>
-      <span class="bhd-publication-ribbon__headline">Best Hydrate featured in the <em>Edmonton Journal</em></span>
-      <span class="bhd-publication-ribbon__cta">Read article →</span>
-    </a>
+      <span class="bhd-publication-ribbon__headline">
+        Featured in <a href="/pages/folio-hydration-feature"><em>U of Alberta’s Folio</em></a>
+        and the <a href="https://edmontonjournal.com/news/local-news/thisty-edmonton-sports-drink-market" target="_blank" rel="noopener"><em>Edmonton Journal</em></a>
+        {%- assign bhd_media_now = 'now' | date: '%s' | plus: 0 -%}
+        {%- if bhd_media_now < 1791812100 -%}
+          <span class="bhd-publication-ribbon__upcoming"><a href="/pages/cbc-edmonton-am">Coming to CBC Edmonton AM Monday, Oct. 12 at 7:35 a.m. MDT.</a></span>
+        {%- endif -%}
+      </span>
+    </div>
     <a class="bhd-publication-ribbon__item bhd-publication-ribbon__item--research" href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2026.1851906/abstract" target="_blank" rel="noopener">
       <span class="bhd-publication-ribbon__badge">PEER-REVIEWED</span>
       <span class="bhd-publication-ribbon__headline">Hydration review published in <em>Frontiers in Nutrition</em></span>
@@ -62,6 +68,16 @@
     font-size:1.34rem;
     font-weight:760
   }
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__headline a{
+    color:inherit;
+    text-underline-offset:.2em
+  }
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__upcoming{
+    display:block;
+    margin-top:.35rem;
+    font-size:1.15rem;
+    font-weight:500
+  }
   #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__cta{
     padding-left:.9rem;
     border-left:1px solid rgba(23,52,87,.22);
@@ -70,7 +86,8 @@
     white-space:nowrap
   }
   #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item:hover .bhd-publication-ribbon__cta{text-decoration:underline}
-  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item:focus-visible{
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item:focus-visible,
+  #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__headline a:focus-visible{
     outline:3px solid #078ee7;
     outline-offset:-3px
   }
