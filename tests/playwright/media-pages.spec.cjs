@@ -31,7 +31,12 @@ test.describe('Proposed media pages', () => {
       const assets = [];
       const pending = [];
       page.on('pageerror', error => jsErrors.push(error.message));
-      await context.route('**/*', r => /google-analytics|googletagmanager|amplitude|facebook\.com\/tr|analytics\.tiktok|klaviyo|monorail|analytics\.shopify/.test(r.request().url()) ? r.fulfill({ status: 204, body: '' }) : r.continue());
+      await context.route('**/*', r => {
+        const request = r.request();
+        if (!/google-analytics|googletagmanager|amplitude|facebook\.com\/tr|analytics\.tiktok|klaviyo|monorail|analytics\.shopify/.test(request.url())) return r.continue();
+        const script = request.resourceType() === 'script' || /\.js(?:[?#]|$)/.test(request.url());
+        return r.fulfill(script ? { status: 200, contentType: 'application/javascript', body: '' } : { status: 204, body: '' });
+      });
       page.on('response', response => {
         const request = response.request();
         const url = response.url();
