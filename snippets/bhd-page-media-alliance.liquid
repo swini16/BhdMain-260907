@@ -15,6 +15,8 @@
   {% assign media_eyebrow = 'Conversation & community' %}
 {% endif %}
 
+<div id="BhdMedia-{{ section.id }}" class="bhd-media-page" data-bhd-review-page="{% if page.handle == 'cbc-edmonton-am' %}cbc{% else %}folio{% endif %}">
+<div data-bhd-review-block="hero">
 {% render 'bhd-page-header',
   family: 'Connect',
   parent: 'Press & Media',
@@ -25,8 +27,9 @@
   hero_image: media_product_image,
   hero_alt: 'Best Hydrate Lemonade electrolyte powder jar'
 %}
+</div>
 
-<section class="bhd-page__feature" aria-labelledby="BhdMediaStory-{{ section.id }}">
+<section class="bhd-page__feature" data-bhd-review-block="story" aria-labelledby="BhdMediaStory-{{ section.id }}">
   <div>
     {% if page.handle == 'cbc-edmonton-am' %}
       <p class="bhd-page__kicker">Listen & explore</p>
@@ -56,7 +59,7 @@
   </div>
 </section>
 
-<section class="bhd-page__brand-context" aria-labelledby="BhdMediaProduct-{{ section.id }}">
+<section class="bhd-page__brand-context" data-bhd-review-block="product" aria-labelledby="BhdMediaProduct-{{ section.id }}">
   <div>
     <p class="bhd-page__kicker">Meet the product</p>
     <h2 id="BhdMediaProduct-{{ section.id }}">Hydrate for YOUR Best Day!</h2>
@@ -68,7 +71,7 @@
   </div>
 </section>
 
-<section class="bhd-page__feature" aria-labelledby="BhdMediaPartners-{{ section.id }}">
+<section class="bhd-page__feature" data-bhd-review-block="partnerships" aria-labelledby="BhdMediaPartners-{{ section.id }}">
   <div>
     <p class="bhd-page__kicker">Strategic partnerships</p>
     <h2 id="BhdMediaPartners-{{ section.id }}">Help shape what comes next.</h2>
@@ -78,3 +81,20 @@
     <p><a class="bhd-page__text-link" href="/pages/press">More Best Hydrate news & media →</a></p>
   </div>
 </section>
+</div>
+
+<style>
+  /* Reuse the existing bhd-hero-v4 palette; keep approved product art uncropped. */
+  #BhdMedia-{{ section.id }}.bhd-media-page{
+    --bhd-navy:#0d1d53;
+    --bhd-blue:#1475ef;
+    --bhd-muted:#52657f;
+    --bhd-line:#d9e6f5
+  }
+  #BhdMedia-{{ section.id }}.bhd-media-page .bhd-page-hero__media{background:#fff}
+  #BhdMedia-{{ section.id }}.bhd-media-page .bhd-page-hero__media img{object-fit:contain}
+  #BhdMedia-{{ section.id }}.bhd-media-page .bhd-page-hero__lede,
+  #BhdMedia-{{ section.id }}.bhd-media-page .bhd-page__feature p{color:var(--bhd-muted)}
+  #BhdMedia-{{ section.id }}.bhd-media-page .bhd-page__feature{background:#fff;border-color:var(--bhd-line)}
+  #BhdMedia-{{ section.id }}.bhd-media-page .bhd-page__brand-context{background:var(--bhd-navy)}
+</style>
