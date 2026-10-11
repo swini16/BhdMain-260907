@@ -292,12 +292,42 @@ jobs:
           # theme push's preview URL selects a theme but does not authenticate
           # hidden Page reads. Let the supported CLI proxy own that session.
           # Reuse only the development theme created and role-checked above.
+          # Keep the existing changed-file upload gate authoritative. Re-uploading
+          # known rejected, unchanged baseline files makes CLI dev return its
+          # global upload-error page (HTTP 500) before rendering any route.
+          python3 - <<'PY_UPLOAD_GUARD'
+          import json, pathlib, subprocess
+          base = "${{ github.event.pull_request.base.sha }}"
+          changed = set(pathlib.Path('/tmp/pr-changed-files.txt').read_text().splitlines())
+          errors = json.loads(pathlib.Path('/tmp/shopify-preview.json').read_text())['theme'].get('errors', {})
+          # These template families cannot render the tested index, Page,
+          # product or cart routes. Never exclude shared Liquid/assets/config,
+          # or ANY Page/product/index/cart template, even if unchanged.
+          unrelated = {'article', 'blog', 'collection', 'list-collections', 'search', 'gift_card', 'password', '404'}
+          allowed = []
+          for name, messages in errors.items():
+              path = pathlib.PurePosixPath(name)
+              family = path.name.split('.')[0]
+              if name in changed or path.parent != pathlib.PurePosixPath('templates') or family not in unrelated:
+                  raise SystemExit(f'Required or unproven template upload error: {name}: {messages}')
+              original = subprocess.run(['git', 'show', f'{base}:{name}'], capture_output=True, check=True).stdout
+              if original != pathlib.Path('/tmp/bhd-theme', name).read_bytes():
+                  raise SystemExit(f'Rejected file differs from target base: {name}')
+              allowed.append(name)
+              print(f'Unchanged unrelated template exclusion: {name}: {messages}')
+          pathlib.Path('/tmp/verified-preview-exclusions.txt').write_text(''.join(name + '\n' for name in allowed))
+          PY_UPLOAD_GUARD
+          baseline_ignore=()
+          while IFS= read -r error_file; do
+            [ -n "$error_file" ] || continue
+            baseline_ignore+=(--ignore "$error_file")
+          done < /tmp/verified-preview-exclusions.txt
           setsid npx shopify theme dev \
             --path /tmp/bhd-theme \
             --store "$SHOPIFY_FLAG_STORE" \
             --theme "$PREVIEW_THEME_ID" \
             --host 127.0.0.1 --port 9292 \
-            --live-reload off --nodelete --no-input --no-color \
+            --live-reload off --nodelete --no-input --no-color "${baseline_ignore[@]}" \
             > /tmp/bhd-preview-renderer.log 2>&1 &
           echo "$!" > /tmp/bhd-preview-renderer.pid
           echo "BASE_URL=http://127.0.0.1:9292" >> "$GITHUB_ENV"
@@ -325,6 +355,28 @@ jobs:
               text = text.replace(token, '[REDACTED]')
           text = re.sub(r'https?://[^\s<>]+', '[URL REDACTED]', text)
           text = re.sub(r'(?i)(authorization|password|token|cookie)([=: ]+)[^\s,;]+', r'\1\2[REDACTED]', text)
+          body_path = pathlib.Path('/tmp/preview-home.html')
+          body = body_path.read_text(errors='replace') if body_path.exists() else ''
+          # Store readable error text only, never scripts, cookies or URLs.
+          from html.parser import HTMLParser
+          class ErrorText(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.skip = 0; self.parts = []
+              def handle_starttag(self, tag, attrs):
+                  if tag in ('script', 'style'): self.skip += 1
+              def handle_endtag(self, tag):
+                  if tag in ('script', 'style'): self.skip = max(0, self.skip - 1)
+              def handle_data(self, data):
+                  if not self.skip: self.parts.append(data)
+          parser = ErrorText(); parser.feed(body)
+          safe = '\n'.join(parser.parts)
+          if token: safe = safe.replace(token, '[REDACTED]')
+          safe = re.sub(r'https?://[^\s<>]+', '[URL REDACTED]', safe)
+          safe = re.sub(r'(?i)(authorization|password|token|cookie|session)[^\n]*', r'[SESSION DETAIL REDACTED]', safe)
+          safe = re.sub(r'\b[A-Za-z0-9_+/=-]{40,}\b', '[OPAQUE VALUE REDACTED]', safe)
+          pathlib.Path('artifacts/preview-response-sanitized.txt').write_text(safe[:16000])
+          print('CLI upload-error response:', 'Failed to Upload Theme Files' in body)
+          print('CLI rendering-error response:', 'Failed to render storefront' in body)
           print('Renderer diagnostics (last 80 lines):')
           print('\n'.join(text.splitlines()[-80:]))
           PY_DIAGNOSTICS
@@ -375,6 +427,7 @@ jobs:
             playwright-report/
             test-results/
             artifacts/shopify-preview.json
+            artifacts/preview-response-sanitized.txt
           if-no-files-found: ignore
           retention-days: 3
           compression-level: 6
