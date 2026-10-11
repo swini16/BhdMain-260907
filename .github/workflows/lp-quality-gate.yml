@@ -309,6 +309,18 @@ jobs:
     needs: [liquid-theme-check, lp-contracts, static-safety, shopify-main-sync]
     runs-on: ubuntu-latest
     steps:
+      - name: Verify CBC station details on the public page
+        run: |
+          node --input-type=module - <<'JS'
+          const url = 'https://besthydrate.com/pages/cbc-edmonton-am?utm_source=qa_automation&utm_medium=readback&utm_campaign=cbc_station_details';
+          const response = await fetch(url);
+          const html = await response.text();
+          const line = 'CBC Radio One Edmonton · 93.9 FM / 740 AM · October 12, 7:35 a.m. MDT.';
+          if (response.status !== 200 || !html.includes(line) || !html.includes('Best Hydrate and CBC Edmonton AM') || !html.includes('https://www.cbc.ca/listen/live-radio')) {
+            throw new Error(`CBC station detail readback failed: HTTP ${response.status}`);
+          }
+          console.log(`PASS HTTP ${response.status}: ${line} ${url}`);
+          JS
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - run: |
