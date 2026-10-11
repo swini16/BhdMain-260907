@@ -309,13 +309,25 @@ jobs:
           set -euo pipefail
           URL="$BASE_URL/?preview_theme_id=$PREVIEW_THEME_ID&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
           for attempt in {1..8}; do
-            code="$(curl -L -sS -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
+            code="$(curl --max-time 10 -L -sS -H 'Accept: text/html' -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
             if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && grep -qi '<html' /tmp/preview-home.html; then
               exit 0
             fi
             sleep 3
           done
-          echo "::error::Shopify rendered preview did not become ready."
+          echo "::error::Shopify rendered preview did not become ready (last HTTP status: $code)."
+          python3 - <<'PY_DIAGNOSTICS'
+          import os, pathlib, re
+          log = pathlib.Path('/tmp/bhd-preview-renderer.log')
+          text = log.read_text(errors='replace') if log.exists() else 'Renderer log missing.'
+          token = os.environ.get('SHOPIFY_CLI_THEME_TOKEN', '')
+          if token:
+              text = text.replace(token, '[REDACTED]')
+          text = re.sub(r'https?://[^\s<>]+', '[URL REDACTED]', text)
+          text = re.sub(r'(?i)(authorization|password|token|cookie)([=: ]+)[^\s,;]+', r'\1\2[REDACTED]', text)
+          print('Renderer diagnostics (last 80 lines):')
+          print('\n'.join(text.splitlines()[-80:]))
+          PY_DIAGNOSTICS
           exit 1
 
       - name: Enforce desktop/mobile-only responsive policy
