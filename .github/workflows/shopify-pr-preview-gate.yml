@@ -21,6 +21,7 @@ jobs:
       SHOPIFY_FLAG_STORE: best-hydrate.myshopify.com
       SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN || secrets.SHOPIFY_THEME_ACCESS_TOKEN || secrets.SHOPIFY_ADMIN_API_TOKEN || secrets.SHOPIFY_ACCESS_TOKEN }}
       SHOPIFY_FLAG_FORCE: '1'
+      PLAYWRIGHT_BROWSER_CHANNEL: chrome
       BASE_URL: https://besthydrate.com
       PRODUCT_PATH: /products/lemonade-best-hydrate
 
@@ -93,6 +94,9 @@ jobs:
           files=[line.strip() for line in Path('/tmp/pr-changed-files.txt').read_text().splitlines() if line.strip()]
           paths=['/']
           nav=False
+          media=any(any(n in f for n in ['bhd-page-media-alliance', 'bhd-publication-ribbon', 'bhd-page-press', 'media-pages.spec']) for f in files)
+          if media:
+              paths += ['/pages/folio-hydration-feature', '/pages/cbc-edmonton-am', '/pages/press']
 
           def any_match(*needles):
               return any(any(n in f for n in needles) for f in files)
@@ -134,6 +138,7 @@ jobs:
           seen=seen[:8]
           print('preview_paths=' + ','.join(seen))
           print('expect_nav=' + ('true' if nav else 'false'))
+          print('media=' + ('true' if media else 'false'))
           PY
 
           cat /tmp/preview-scope.env >> "$GITHUB_OUTPUT"
@@ -201,6 +206,19 @@ jobs:
           npm install --no-save @shopify/cli@latest @playwright/test@latest
           npx playwright install --with-deps chromium
 
+      - name: Verify installed Chrome sandbox before staging
+        if: steps.scope.outputs.relevant == 'true'
+        run: |
+          google-chrome --version
+          node - <<'JS'
+          const { chromium } = require('@playwright/test');
+          (async () => {
+            const browser = await chromium.launch({ channel: 'chrome', chromiumSandbox: true });
+            console.log('Sandbox-enabled Chrome:', browser.version());
+            await browser.close();
+          })().catch(error => { console.error(error); process.exit(1); });
+          JS
+
       - name: Build proposed theme package
         if: steps.scope.outputs.relevant == 'true'
         shell: bash
@@ -212,6 +230,12 @@ jobs:
           done
           test -f /tmp/bhd-theme/layout/theme.liquid
           test -f /tmp/bhd-theme/config/settings_schema.json
+
+      - name: Build source-bound media alternate-template fixtures
+        if: steps.scope.outputs.media == 'true'
+        run: |
+          python3 scripts/build-media-preview-fixtures.py /tmp/bhd-theme
+          echo "MEDIA_PREVIEW_FIXTURES=1" >> "$GITHUB_ENV"
 
       - name: Sync and validate TrustReviews review feed
         if: steps.scope.outputs.relevant == 'true'
@@ -266,25 +290,139 @@ jobs:
             done < /tmp/theme-error-files.txt
           fi
 
+      - name: Start authenticated renderer for hidden media pages
+        if: steps.scope.outputs.media == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          # theme push's preview URL selects a theme but does not authenticate
+          # hidden Page reads. Let the supported CLI proxy own that session.
+          # Reuse only the development theme created and role-checked above.
+          # Keep the existing changed-file upload gate authoritative. Re-uploading
+          # known rejected, unchanged baseline files makes CLI dev return its
+          # global upload-error page (HTTP 500) before rendering any route.
+          python3 - <<'PY_UPLOAD_GUARD'
+          import json, pathlib, re, subprocess
+          base = "${{ github.event.pull_request.base.sha }}"
+          changed = set(pathlib.Path('/tmp/pr-changed-files.txt').read_text().splitlines())
+          errors = json.loads(pathlib.Path('/tmp/shopify-preview.json').read_text())['theme'].get('errors', {})
+          for filename, messages in errors.items():
+              print(f'Shopify upload error: {filename}: {messages}', flush=True)
+          # These template families cannot render the tested index, Page,
+          # product or cart routes. Never exclude shared Liquid/assets/config,
+          # or ANY Page/product/index/cart template, even if unchanged.
+          unrelated = {'article', 'blog', 'collection', 'list-collections', 'search', 'gift_card', 'password', '404'}
+          orphan_candidates = {f'snippets/bhd-hero-mobile-{kind}.liquid' for kind in ('performance', 'medical', 'humanitarian', 'daily')}
+          source_files = [p for folder in ('assets', 'blocks', 'config', 'layout', 'locales', 'sections', 'snippets', 'templates') for p in pathlib.Path('/tmp/bhd-theme', folder).rglob('*') if p.is_file()]
+          allowed = []
+          for name, messages in errors.items():
+              path = pathlib.PurePosixPath(name)
+              family = path.name.split('.')[0]
+              unrelated_template = path.parent == pathlib.PurePosixPath('templates') and family in unrelated
+              proven_orphan = name in orphan_candidates
+              if proven_orphan:
+                  for source in source_files:
+                      if source == pathlib.Path('/tmp/bhd-theme', name): continue
+                      content = source.read_text(errors='replace')
+                      if path.stem in content:
+                          proven_orphan = False; break
+                      # App-block rendering does not resolve theme snippets.
+                      for tag in re.findall(r'{%[-]?(.*?)[-]?%}', content, re.S):
+                          for statement in tag.splitlines():
+                              match = re.match(r"\s*(?:render|include)\s+(.+)", statement)
+                              if match and not (match[1].startswith(("'", '\"')) or match[1].strip() == 'block'):
+                                  proven_orphan = False
+              if name in changed or not (unrelated_template or proven_orphan):
+                  raise SystemExit(f'Required or unproven template upload error: {name}: {messages}')
+              original = subprocess.run(['git', 'show', f'{base}:{name}'], capture_output=True, check=True).stdout
+              if original != pathlib.Path('/tmp/bhd-theme', name).read_bytes():
+                  raise SystemExit(f'Rejected file differs from target base: {name}')
+              allowed.append(name)
+              print(f'Verified unchanged unrelated exclusion: {name}: {messages}')
+          pathlib.Path('/tmp/verified-preview-exclusions.txt').write_text(''.join(name + '\n' for name in allowed))
+          PY_UPLOAD_GUARD
+          baseline_ignore=()
+          while IFS= read -r error_file; do
+            [ -n "$error_file" ] || continue
+            baseline_ignore+=(--ignore "$error_file")
+          done < /tmp/verified-preview-exclusions.txt
+          setsid npx shopify theme dev \
+            --path /tmp/bhd-theme \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --theme "$PREVIEW_THEME_ID" \
+            --host 127.0.0.1 --port 9292 \
+            --live-reload off --nodelete --no-input --no-color "${baseline_ignore[@]}" \
+            > /tmp/bhd-preview-renderer.log 2>&1 &
+          echo "$!" > /tmp/bhd-preview-renderer.pid
+          echo "BASE_URL=http://127.0.0.1:9292" >> "$GITHUB_ENV"
+
       - name: Verify rendered preview responds
         if: steps.scope.outputs.relevant == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          URL="https://besthydrate.com/?preview_theme_id=$PREVIEW_THEME_ID&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
+          URL="$BASE_URL/?preview_theme_id=$PREVIEW_THEME_ID&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
           for attempt in {1..8}; do
-            code="$(curl -L -sS -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
+            code="$(curl --max-time 10 -L -sS -H 'Accept: text/html' -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
             if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && grep -qi '<html' /tmp/preview-home.html; then
               exit 0
             fi
             sleep 3
           done
-          echo "::error::Shopify rendered preview did not become ready."
+          echo "::error::Shopify rendered preview did not become ready (last HTTP status: $code)."
+          python3 - <<'PY_DIAGNOSTICS'
+          import os, pathlib, re
+          log = pathlib.Path('/tmp/bhd-preview-renderer.log')
+          text = log.read_text(errors='replace') if log.exists() else 'Renderer log missing.'
+          token = os.environ.get('SHOPIFY_CLI_THEME_TOKEN', '')
+          if token:
+              text = text.replace(token, '[REDACTED]')
+          text = re.sub(r'https?://[^\s<>]+', '[URL REDACTED]', text)
+          text = re.sub(r'(?i)(authorization|password|token|cookie)([=: ]+)[^\s,;]+', r'\1\2[REDACTED]', text)
+          body_path = pathlib.Path('/tmp/preview-home.html')
+          body = body_path.read_text(errors='replace') if body_path.exists() else ''
+          # Store readable error text only, never scripts, cookies or URLs.
+          from html.parser import HTMLParser
+          class ErrorText(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.skip = 0; self.parts = []
+              def handle_starttag(self, tag, attrs):
+                  if tag in ('script', 'style'): self.skip += 1
+              def handle_endtag(self, tag):
+                  if tag in ('script', 'style'): self.skip = max(0, self.skip - 1)
+              def handle_data(self, data):
+                  if not self.skip: self.parts.append(data)
+          parser = ErrorText(); parser.feed(body)
+          safe = '\n'.join(parser.parts)
+          if token: safe = safe.replace(token, '[REDACTED]')
+          safe = re.sub(r'https?://[^\s<>]+', '[URL REDACTED]', safe)
+          safe = re.sub(r'(?i)(authorization|password|token|cookie|session)[^\n]*', r'[SESSION DETAIL REDACTED]', safe)
+          safe = re.sub(r'\b[A-Za-z0-9_+/=-]{40,}\b', '[OPAQUE VALUE REDACTED]', safe)
+          pathlib.Path('artifacts/preview-response-sanitized.txt').write_text(safe[:16000])
+          print('CLI upload-error response:', 'Failed to Upload Theme Files' in body)
+          print('CLI rendering-error response:', 'Failed to render storefront' in body)
+          print('Renderer diagnostics (last 80 lines):')
+          print('\n'.join(text.splitlines()[-80:]))
+          PY_DIAGNOSTICS
           exit 1
 
       - name: Enforce desktop/mobile-only responsive policy
         if: steps.scope.outputs.relevant == 'true'
         run: node scripts/check-responsive-surfaces.mjs
+
+      - name: Capture and validate proposed media pages
+        if: steps.scope.outputs.media == 'true'
+        run: |
+          npx playwright test --config=playwright.config.cjs tests/playwright/media-pages.spec.cjs
+
+      - name: Retain media review evidence
+        if: ${{ always() && steps.scope.outputs.media == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ehp-media-review-${{ github.event.pull_request.head.sha }}
+          path: artifacts/media-review/
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Run targeted preview smoke
         if: steps.scope.outputs.relevant == 'true'
@@ -292,7 +430,12 @@ jobs:
           PREVIEW_PATHS: ${{ steps.scope.outputs.preview_paths }}
           PREVIEW_EXPECT_NAV: ${{ steps.scope.outputs.expect_nav }}
         run: |
-          npx playwright test             --config=playwright.config.cjs             tests/playwright/pr-preview-gate.spec.cjs
+          if [ "${MEDIA_PREVIEW_FIXTURES:-}" = "1" ]; then
+            PREVIEW_PATHS="${PREVIEW_PATHS//\/pages\/folio-hydration-feature/\/pages\/press?view=qa-media-folio}"
+            PREVIEW_PATHS="${PREVIEW_PATHS//\/pages\/cbc-edmonton-am/\/pages\/press?view=qa-media-cbc}"
+            export PREVIEW_PATHS
+          fi
+          npx playwright test --config=playwright.config.cjs tests/playwright/pr-preview-gate.spec.cjs
 
       - name: Run native review responsive contract
         if: steps.scope.outputs.relevant == 'true'
@@ -313,9 +456,20 @@ jobs:
             playwright-report/
             test-results/
             artifacts/shopify-preview.json
+            artifacts/media-fixtures.json
+            artifacts/preview-response-sanitized.txt
           if-no-files-found: ignore
           retention-days: 3
           compression-level: 6
+
+      - name: Stop authenticated preview renderer
+        if: always()
+        shell: bash
+        run: |
+          if [ -f /tmp/bhd-preview-renderer.pid ]; then
+            renderer_pid="$(cat /tmp/bhd-preview-renderer.pid)"
+            kill -- "-$renderer_pid" 2>/dev/null || true
+          fi
 
       - name: Delete proposed development preview
         if: ${{ always() && steps.scope.outputs.relevant == 'true' && steps.preview.outputs.theme_id != '' }}
