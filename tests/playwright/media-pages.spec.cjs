@@ -66,6 +66,7 @@ test.describe('Proposed media pages', () => {
       };
       fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify(manifest, null, 2));
       expect(response?.status(), 'Unpublished route must render in isolated preview; do not publish to make this pass').toBeLessThan(400);
+      expect(await page.evaluate(() => String(window.Shopify?.theme?.id || '')), 'Renderer must serve the proposed development theme').toBe(String(themeId));
       expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(4);
       if (route === '/') {
         const ribbon = page.locator('.bhd-publication-ribbon');

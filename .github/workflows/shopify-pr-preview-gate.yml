@@ -284,12 +284,30 @@ jobs:
             done < /tmp/theme-error-files.txt
           fi
 
+      - name: Start authenticated renderer for hidden media pages
+        if: steps.scope.outputs.media == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          # theme push's preview URL selects a theme but does not authenticate
+          # hidden Page reads. Let the supported CLI proxy own that session.
+          # Reuse only the development theme created and role-checked above.
+          setsid npx shopify theme dev \
+            --path /tmp/bhd-theme \
+            --store "$SHOPIFY_FLAG_STORE" \
+            --theme "$PREVIEW_THEME_ID" \
+            --host 127.0.0.1 --port 9292 \
+            --live-reload off --nodelete --no-input --no-color \
+            > /tmp/bhd-preview-renderer.log 2>&1 &
+          echo "$!" > /tmp/bhd-preview-renderer.pid
+          echo "BASE_URL=http://127.0.0.1:9292" >> "$GITHUB_ENV"
+
       - name: Verify rendered preview responds
         if: steps.scope.outputs.relevant == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          URL="https://besthydrate.com/?preview_theme_id=$PREVIEW_THEME_ID&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
+          URL="$BASE_URL/?preview_theme_id=$PREVIEW_THEME_ID&utm_source=qa_automation&utm_medium=playwright&utm_campaign=pr_preview"
           for attempt in {1..8}; do
             code="$(curl -L -sS -o /tmp/preview-home.html -w '%{http_code}' "$URL" || true)"
             if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && grep -qi '<html' /tmp/preview-home.html; then
@@ -348,6 +366,15 @@ jobs:
           if-no-files-found: ignore
           retention-days: 3
           compression-level: 6
+
+      - name: Stop authenticated preview renderer
+        if: always()
+        shell: bash
+        run: |
+          if [ -f /tmp/bhd-preview-renderer.pid ]; then
+            renderer_pid="$(cat /tmp/bhd-preview-renderer.pid)"
+            kill -- "-$renderer_pid" 2>/dev/null || true
+          fi
 
       - name: Delete proposed development preview
         if: ${{ always() && steps.scope.outputs.relevant == 'true' && steps.preview.outputs.theme_id != '' }}
