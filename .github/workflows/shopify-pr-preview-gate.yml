@@ -300,6 +300,8 @@ jobs:
           base = "${{ github.event.pull_request.base.sha }}"
           changed = set(pathlib.Path('/tmp/pr-changed-files.txt').read_text().splitlines())
           errors = json.loads(pathlib.Path('/tmp/shopify-preview.json').read_text())['theme'].get('errors', {})
+          for filename, messages in errors.items():
+              print(f'Shopify upload error: {filename}: {messages}', flush=True)
           # These template families cannot render the tested index, Page,
           # product or cart routes. Never exclude shared Liquid/assets/config,
           # or ANY Page/product/index/cart template, even if unchanged.
