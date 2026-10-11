@@ -103,8 +103,13 @@
   @media(max-width:749px){
     #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__grid{grid-template-columns:1fr}
     #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item--media{
+      display:block;
       border-right:0;
       border-bottom:1px solid rgba(23,52,87,.14)
+    }
+    #BhdPublicationRibbon-{{ section.id }} .bhd-publication-ribbon__item--media .bhd-publication-ribbon__headline{
+      display:block;
+      margin-top:.45rem
     }
   }
 </style>
