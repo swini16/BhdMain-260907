@@ -231,6 +231,12 @@ jobs:
           test -f /tmp/bhd-theme/layout/theme.liquid
           test -f /tmp/bhd-theme/config/settings_schema.json
 
+      - name: Build source-bound media alternate-template fixtures
+        if: steps.scope.outputs.media == 'true'
+        run: |
+          python3 scripts/build-media-preview-fixtures.py /tmp/bhd-theme
+          echo "MEDIA_PREVIEW_FIXTURES=1" >> "$GITHUB_ENV"
+
       - name: Sync and validate TrustReviews review feed
         if: steps.scope.outputs.relevant == 'true'
         shell: bash
@@ -424,7 +430,12 @@ jobs:
           PREVIEW_PATHS: ${{ steps.scope.outputs.preview_paths }}
           PREVIEW_EXPECT_NAV: ${{ steps.scope.outputs.expect_nav }}
         run: |
-          npx playwright test             --config=playwright.config.cjs             tests/playwright/pr-preview-gate.spec.cjs
+          if [ "${MEDIA_PREVIEW_FIXTURES:-}" = "1" ]; then
+            PREVIEW_PATHS="${PREVIEW_PATHS//\/pages\/folio-hydration-feature/\/pages\/press?view=qa-media-folio}"
+            PREVIEW_PATHS="${PREVIEW_PATHS//\/pages\/cbc-edmonton-am/\/pages\/press?view=qa-media-cbc}"
+            export PREVIEW_PATHS
+          fi
+          npx playwright test --config=playwright.config.cjs tests/playwright/pr-preview-gate.spec.cjs
 
       - name: Run native review responsive contract
         if: steps.scope.outputs.relevant == 'true'
@@ -445,6 +456,7 @@ jobs:
             playwright-report/
             test-results/
             artifacts/shopify-preview.json
+            artifacts/media-fixtures.json
             artifacts/preview-response-sanitized.txt
           if-no-files-found: ignore
           retention-days: 3

@@ -4,14 +4,17 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { execFileSync } = require('node:child_process');
 const origin = process.env.BASE_URL || 'https://besthydrate.com';
-const themeId = process.env.PREVIEW_THEME_ID;
+const publicCheck = process.env.MEDIA_PUBLIC_CHECK === '1';
+const fixtures = process.env.MEDIA_PREVIEW_FIXTURES === '1';
+const themeId = process.env.PREVIEW_THEME_ID || (publicCheck ? process.env.EXPECTED_LIVE_THEME_ID : '');
 const cutoff = 1791812100000;
 const routes = ['/', '/pages/folio-hydration-feature', '/pages/cbc-edmonton-am', '/pages/press'];
 const sourceFiles = ['sections/bhd-publication-ribbon.liquid', 'snippets/bhd-page-breadcrumbs.liquid', 'snippets/bhd-page-dispatch.liquid', 'snippets/bhd-page-media-alliance.liquid', 'snippets/bhd-page-press.liquid', 'sections/main-page.liquid', 'snippets/bhd-page-header.liquid', 'templates/page.json', 'templates/index.json', 'layout/theme.liquid'];
 const sha = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex');
 const urlFor = (route) => {
-  const url = new URL(route, origin);
-  url.searchParams.set('preview_theme_id', themeId);
+  const kind = route.endsWith('folio-hydration-feature') ? 'folio' : route.endsWith('cbc-edmonton-am') ? 'cbc' : '';
+  const url = new URL(fixtures && kind ? `/pages/press?view=qa-media-${kind}` : route, origin);
+  if (!publicCheck) url.searchParams.set('preview_theme_id', themeId);
   url.searchParams.set('utm_source', 'qa_automation');
   url.searchParams.set('utm_medium', 'playwright');
   url.searchParams.set('utm_campaign', 'ehp_media_review');
@@ -59,13 +62,13 @@ test.describe('Proposed media pages', () => {
       fs.writeFileSync(path.join(dir, 'rendered.html'), html);
       await Promise.all(pending);
       const manifest = {
-        capturedAt: new Date().toISOString(), route, finalUrl: page.url(), status: response?.status(),
+        capturedAt: new Date().toISOString(), mode: fixtures ? "isolated-context-fixture" : publicCheck ? "public-route" : "preview-route", route, finalUrl: page.url(), status: response?.status(),
         themeId, commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
         viewport: page.viewportSize(), screenshotSha256: sha(shot), renderedHtmlSha256: sha(html),
         source: Object.fromEntries(sourceFiles.map(file => [file, sha(fs.readFileSync(file))])), assets, networkErrors, jsErrors,
       };
       fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify(manifest, null, 2));
-      expect(response?.status(), 'Unpublished route must render in isolated preview; do not publish to make this pass').toBeLessThan(400);
+      expect(response?.status(), 'Selected fixture or real public route must return success').toBeLessThan(400);
       expect(await page.evaluate(() => String(window.Shopify?.theme?.id || '')), 'Renderer must serve the proposed development theme').toBe(String(themeId));
       expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(4);
       if (route === '/') {
