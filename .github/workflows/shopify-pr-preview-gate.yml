@@ -296,7 +296,7 @@ jobs:
           # known rejected, unchanged baseline files makes CLI dev return its
           # global upload-error page (HTTP 500) before rendering any route.
           python3 - <<'PY_UPLOAD_GUARD'
-          import json, pathlib, subprocess
+          import json, pathlib, re, subprocess
           base = "${{ github.event.pull_request.base.sha }}"
           changed = set(pathlib.Path('/tmp/pr-changed-files.txt').read_text().splitlines())
           errors = json.loads(pathlib.Path('/tmp/shopify-preview.json').read_text())['theme'].get('errors', {})
@@ -304,17 +304,33 @@ jobs:
           # product or cart routes. Never exclude shared Liquid/assets/config,
           # or ANY Page/product/index/cart template, even if unchanged.
           unrelated = {'article', 'blog', 'collection', 'list-collections', 'search', 'gift_card', 'password', '404'}
+          orphan_candidates = {f'snippets/bhd-hero-mobile-{kind}.liquid' for kind in ('performance', 'medical', 'humanitarian', 'daily')}
+          source_files = [p for folder in ('assets', 'blocks', 'config', 'layout', 'locales', 'sections', 'snippets', 'templates') for p in pathlib.Path('/tmp/bhd-theme', folder).rglob('*') if p.is_file()]
           allowed = []
           for name, messages in errors.items():
               path = pathlib.PurePosixPath(name)
               family = path.name.split('.')[0]
-              if name in changed or path.parent != pathlib.PurePosixPath('templates') or family not in unrelated:
+              unrelated_template = path.parent == pathlib.PurePosixPath('templates') and family in unrelated
+              proven_orphan = name in orphan_candidates
+              if proven_orphan:
+                  for source in source_files:
+                      if source == pathlib.Path('/tmp/bhd-theme', name): continue
+                      content = source.read_text(errors='replace')
+                      if path.stem in content:
+                          proven_orphan = False; break
+                      # App-block rendering does not resolve theme snippets.
+                      for tag in re.findall(r'{%[-]?(.*?)[-]?%}', content, re.S):
+                          for statement in tag.splitlines():
+                              match = re.match(r"\s*(?:render|include)\s+(.+)", statement)
+                              if match and not (match[1].startswith(("'", '\"')) or match[1].strip() == 'block'):
+                                  proven_orphan = False
+              if name in changed or not (unrelated_template or proven_orphan):
                   raise SystemExit(f'Required or unproven template upload error: {name}: {messages}')
               original = subprocess.run(['git', 'show', f'{base}:{name}'], capture_output=True, check=True).stdout
               if original != pathlib.Path('/tmp/bhd-theme', name).read_bytes():
                   raise SystemExit(f'Rejected file differs from target base: {name}')
               allowed.append(name)
-              print(f'Unchanged unrelated template exclusion: {name}: {messages}')
+              print(f'Verified unchanged unrelated exclusion: {name}: {messages}')
           pathlib.Path('/tmp/verified-preview-exclusions.txt').write_text(''.join(name + '\n' for name in allowed))
           PY_UPLOAD_GUARD
           baseline_ignore=()
