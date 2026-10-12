@@ -460,7 +460,9 @@ jobs:
         if: steps.scope.outputs.purchase == 'true'
         env:
           BASE_URL: https://besthydrate.com
-        run: npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0
+        run: |
+          node tests/cart-update.cjs
+          npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0
 
       - name: Stage isolated zero-stock Liquid fixture
         if: ${{ always() && steps.scope.outputs.purchase == 'true' && steps.preview.outputs.theme_id != '' }}
@@ -469,6 +471,20 @@ jobs:
           python3 scripts/build-zero-stock-preview.py /tmp/bhd-theme
           npx shopify theme push --path /tmp/bhd-theme --store "$SHOPIFY_FLAG_STORE" --password "$SHOPIFY_CLI_THEME_TOKEN" --theme "$PREVIEW_THEME_ID" --nodelete --only snippets/bhd-backorder-notice.liquid --only sections/main-product.liquid --json > /tmp/zero-stock-upload.json
           jq -e '((.theme.errors // {}) | length) == 0' /tmp/zero-stock-upload.json
+          mkdir -p /tmp/bhd-fixture-readback
+          npx shopify theme pull --path /tmp/bhd-fixture-readback --store "$SHOPIFY_FLAG_STORE" --password "$SHOPIFY_CLI_THEME_TOKEN" --theme "$PREVIEW_THEME_ID" --nodelete --only snippets/bhd-backorder-notice.liquid --only sections/main-product.liquid
+          python3 - <<'PY_READBACK'
+          import hashlib, json
+          from pathlib import Path
+          results = {}
+          for name in ('snippets/bhd-backorder-notice.liquid', 'sections/main-product.liquid'):
+              expected = Path('/tmp/bhd-theme', name).read_bytes()
+              actual = Path('/tmp/bhd-fixture-readback', name).read_bytes()
+              assert actual == expected, f'Remote fixture mismatch: {name}'
+              results[name] = hashlib.sha256(actual).hexdigest()
+          Path('artifacts/purchase-review/remote-fixture-readback.json').write_text(json.dumps(results, indent=2))
+          print('PASS exact remote fixture SHA256:', json.dumps(results))
+          PY_READBACK
 
       - name: Verify simulated zero-stock purchase flow
         if: ${{ always() && steps.zero_fixture.outcome == 'success' }}

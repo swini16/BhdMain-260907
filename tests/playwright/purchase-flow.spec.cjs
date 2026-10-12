@@ -9,6 +9,7 @@ const url = route => {
   const u = new URL(route, origin);
   if(theme) u.searchParams.set('preview_theme_id', theme);
   u.searchParams.set('utm_source','qa_automation');
+  u.searchParams.set('qa_stock_state',`${simulated ? 'zero' : 'actual'}-${process.env.GITHUB_SHA || 'local'}`);
   return u.href;
 };
 test('Canadian product to checkout navigation without placing an order', async ({ page, context }, info) => {
@@ -45,6 +46,16 @@ test('Canadian product to checkout navigation without placing an order', async (
   await expect(drawer).toHaveClass(/active/);
   await expect(drawer.locator('.cart-item__name').first()).toBeVisible();
   if(simulated) await expect(drawer.locator('.bhd-backorder-notice').first()).toHaveText(copy);
+  // Exercise the drawer redraw as well as the persisted server quantity.
+  for(const desired of [2,1]) {
+    const drawerChange = page.waitForResponse(r=>/\/cart\/change(?:\.js)?(?:[?#]|$)/.test(r.url()) && r.request().method()==='POST');
+    const input=drawer.locator('input[name="updates[]"]').first();
+    await input.fill(String(desired));await input.press('Tab');
+    const result=await drawerChange;expect(result.status()).toBe(200);
+    expect((await result.json()).items.find(i=>i.variant_id===47373155631388)?.quantity).toBe(desired);
+    await expect(drawer.locator('input[name="updates[]"]').first()).toHaveAttribute('value',String(desired));
+    await expect(drawer.locator('#CartDrawer-CartErrors')).toBeEmpty();
+  }
   await page.screenshot({path:path.join(dir,'drawer.png'),fullPage:true});
   await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
   const quantity=page.locator('cart-items input[name="updates[]"]').first();
@@ -55,6 +66,8 @@ test('Canadian product to checkout navigation without placing an order', async (
   expect(changeResponse.status()).toBe(200);
   const changedCart = await changeResponse.json();
   expect(changedCart.items.find(i=>i.variant_id===47373155631388)?.quantity).toBe(2);
+  await expect(page.locator('cart-items input[name="updates[]"]').first()).toHaveAttribute('value','2');
+  await expect(page.locator('#cart-errors')).toBeEmpty();
   await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
   await expect(page.locator('cart-items input[name="updates[]"]').first()).toHaveValue('2');
   if(simulated) await expect(page.locator('cart-items .bhd-backorder-notice').first()).toHaveText(copy);
