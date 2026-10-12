@@ -1,0 +1,43 @@
+[
+  {
+    "id": "gid://shopify/Article/613994791196",
+    "handle": "best-hydrate-cbc-edmonton-am-interview",
+    "title": "Best Hydrate on CBC Edmonton AM",
+    "publishedAt": "2026-10-12T22:09:22Z",
+    "tags": [
+      "Alberta",
+      "CBC Edmonton AM",
+      "Company News",
+      "Interview",
+      "Media",
+      "Press"
+    ]
+  },
+  {
+    "id": "gid://shopify/Article/613994758428",
+    "handle": "best-hydrate-u-alberta-folio-hydration-research",
+    "title": "Best Hydrate in U of Alberta’s Folio",
+    "publishedAt": "2026-10-12T22:09:10Z",
+    "tags": [
+      "Alberta",
+      "Company News",
+      "Media",
+      "Press",
+      "Research",
+      "U of Alberta’s Folio"
+    ]
+  },
+  {
+    "id": "gid://shopify/Article/613665800476",
+    "handle": "best-hydrate-featured-edmonton-journal-2026",
+    "title": "Best Hydrate Featured in the Edmonton Journal",
+    "publishedAt": "2026-10-01T18:00:00Z",
+    "tags": [
+      "Alberta",
+      "Company News",
+      "Edmonton Journal",
+      "Media",
+      "Press"
+    ]
+  }
+]

@@ -1,0 +1,252 @@
+{
+  "source": "Shopify Admin API full inventory, no pagination remaining",
+  "total": 22,
+  "published": 11,
+  "existing": [
+    {
+      "id": "gid://shopify/Article/613665800476",
+      "title": "Best Hydrate Featured in the Edmonton Journal",
+      "handle": "best-hydrate-featured-edmonton-journal-2026",
+      "tags": [
+        "Alberta",
+        "Company News",
+        "Edmonton Journal",
+        "Media",
+        "Press"
+      ],
+      "publishedAt": "2026-10-01T18:00:00Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/613310300444",
+      "title": "Just Published: Revisiting the Need for Innovative Oral Hydration Technologies",
+      "handle": "just-published-innovative-oral-hydration-technologies",
+      "tags": [
+        "Frontiers in Nutrition",
+        "Hydration",
+        "Research",
+        "Science"
+      ],
+      "publishedAt": "2026-09-23T19:40:00Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/612910170396",
+      "title": "Best Electrolyte Powder in Canada (2026): Label & Price Comparison",
+      "handle": "best-electrolyte-powder-canada-what-to-look-for-2026",
+      "tags": [
+        "Canada",
+        "Canadian Made",
+        "Comparison",
+        "Electrolyte Powder Canada",
+        "Electrolytes",
+        "Hydration",
+        "Product Guide",
+        "Science"
+      ],
+      "publishedAt": "2026-09-10T15:32:10Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/611936436508",
+      "title": "Dianna Proctor Wins 400 m Silver at the 2026 Canadian Championships",
+      "handle": "silver-medal-for-dianna-in-400m-at-the-national-championships",
+      "tags": [],
+      "publishedAt": "2026-06-20T21:03:10Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/611879551260",
+      "title": "Young Edmonton sprint Olympic hopeful flexes at National Tour meet ahead of 2026 Canadian Track and Field Championships",
+      "handle": "young-edmonton-sprint-olympic-hopeful-flexes-at-national-tour-meet-ahead-of-2026-canadian-track-and-field-championships",
+      "tags": [],
+      "publishedAt": "2026-06-05T19:44:57Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/611749921052",
+      "title": "Hydration & Electrolyte Coaching Notes for Sprint Athletes",
+      "handle": "hydration-and-electrolyte-coaching-notes-for-sprint-athletes-with-commentary-for-females",
+      "tags": [
+        "Athlete",
+        "DiannaProctor",
+        "Sponsor",
+        "Sports",
+        "TeamCanada"
+      ],
+      "publishedAt": "2026-05-12T12:56:54Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/611702931740",
+      "title": "Dianna & Best Hydrate in Botswana :D",
+      "handle": "dianna-best-hydrate-in-botswana-d",
+      "tags": [
+        "Athlete",
+        "DiannaProctor",
+        "Sponsor",
+        "Sports",
+        "TeamCanada"
+      ],
+      "publishedAt": "2026-05-01T18:47:58Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/611688349980",
+      "title": "Zero-Sugar vs Low-Sugar Hydration for Endurance Performance",
+      "handle": "zero-sugar-hydration-may-be-slowing-your-performance-down",
+      "tags": [],
+      "publishedAt": "2026-04-29T04:05:17Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/611130474780",
+      "title": "2025's U Sports Rookie of the Year- Dianna Proctor",
+      "handle": "2025s-u-sports-rookie-of-the-year-dianna-proctor",
+      "tags": [],
+      "publishedAt": "2026-02-21T02:38:32Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/611024830748",
+      "title": "43-year-old record = broken! by Dianna Proctor",
+      "handle": "43-year-old-record-broken-by-dianna-proctor",
+      "tags": [
+        "Athlete",
+        "DiannaProctor",
+        "Sponsor",
+        "Sports",
+        "TeamCanada"
+      ],
+      "publishedAt": "2026-01-28T19:17:31Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/609168654620",
+      "title": "Introducing Best Hydrate Lemonade: Simple, Scientific Hydration",
+      "handle": "stay-hydrated-naturally-introducing-our-new-daily-hydration-product",
+      "tags": [],
+      "publishedAt": "2025-01-18T03:01:37Z",
+      "isPublished": true
+    },
+    {
+      "id": "gid://shopify/Article/612910661916",
+      "title": "ROLLBACK 2026-09-10 — Canada Product Copy (pre-SEO tune)",
+      "handle": "rollback-2026-09-10-canada-product-copy-pre-seo-tune",
+      "tags": [],
+      "publishedAt": null,
+      "isPublished": false
+    },
+    {
+      "id": "gid://shopify/Article/612910629148",
+      "title": "ROLLBACK 2026-09-10 — Canada Guide (pre-SEO tune)",
+      "handle": "rollback-2026-09-10-canada-guide-pre-seo-tune",
+      "tags": [
+        "Canada",
+        "Canadian Made",
+        "Electrolytes",
+        "Hydration",
+        "Product Guide",
+        "Science"
+      ],
+      "publishedAt": null,
+      "isPublished": false
+    },
+    {
+      "id": "gid://shopify/Article/612910596380",
+      "title": "ROLLBACK 2026-09-10 — Zero-Sugar Article (pre-SEO tune)",
+      "handle": "rollback-2026-09-10-zero-sugar-article-pre-seo-tune",
+      "tags": [],
+      "publishedAt": null,
+      "isPublished": false
+    },
+    {
+      "id": "gid://shopify/Article/612910530844",
+      "title": "ROLLBACK 2026-09-10 — Best Electrolyte Powder Canada (pre-shortening)",
+      "handle": "rollback-2026-09-10-best-electrolyte-powder-canada-pre-shortening",
+      "tags": [
+        "Canada",
+        "Canadian Made",
+        "Electrolytes",
+        "Hydration",
+        "Product Guide",
+        "Science"
+      ],
+      "publishedAt": null,
+      "isPublished": false
+    },
+    {
+      "id": "gid://shopify/Article/612910498076",
+      "title": "ROLLBACK 2026-09-10 — Best Electrolyte Powder Canada (pre-stronger positioning)",
+      "handle": "rollback-2026-09-10-best-electrolyte-powder-canada-pre-stronger-positioning",
+      "tags": [],
+      "publishedAt": null,
+      "isPublished": false
+    },
+    {
+      "id": "gid://shopify/Article/612910367004",
+      "title": "ROLLBACK 2026-09-10 — Best Electrolyte Powder Canada (pre-sodium correction)",
+      "handle": "rollback-2026-09-10-best-electrolyte-powder-canada-pre-sodium-correction",
+      "tags": [],
+      "publishedAt": null,
+      "isPublished": false
+    },
+    {
+      "id": "gid://shopify/Article/612910334236",
+      "title": "ROLLBACK 2026-09-10 — Best Electrolyte Powder Canada (pre-humanize)",
+      "handle": "rollback-2026-09-10-best-electrolyte-powder-canada-pre-humanize",
+      "tags": [
+        "Canada",
+        "Canadian Made",
+        "Electrolytes",
+        "Hydration",
+        "Product Guide",
+        "Rollback",
+        "Science"
+      ],
+      "publishedAt": null,
+      "isPublished": false
+    },
+    {
+      "id": "gid://shopify/Article/612910203164",
+      "title": "ROLLBACK 2026-09-10 — Best Electrolyte Powder in Canada Guide",
+      "handle": "rollback-2026-09-10-best-electrolyte-powder-canada-guide",
+      "tags": [
+        "Backup",
+        "Rollback"
+      ],
+      "publishedAt": null,
+      "isPublished": false
+    },
+    {
+      "id": "gid://shopify/Article/612910072092",
+      "title": "ROLLBACK 2026-09-10 — Best Hydrate Lemonade Launch",
+      "handle": "rollback-2026-09-10-best-hydrate-lemonade-launch",
+      "tags": [],
+      "publishedAt": null,
+      "isPublished": false
+    },
+    {
+      "id": "gid://shopify/Article/612910039324",
+      "title": "ROLLBACK 2026-09-10 — Zero-Sugar vs Low-Sugar Hydration",
+      "handle": "rollback-2026-09-10-zero-sugar-vs-low-sugar-hydration",
+      "tags": [],
+      "publishedAt": null,
+      "isPublished": false
+    },
+    {
+      "id": "gid://shopify/Article/606296408348",
+      "title": "News",
+      "handle": "test",
+      "tags": [],
+      "publishedAt": null,
+      "isPublished": false
+    }
+  ],
+  "verifiedMissing": [
+    "CBC Edmonton AM interview",
+    "U of Alberta’s Folio article"
+  ],
+  "duplicateAvoidance": "Existing Edmonton Journal and Frontiers publication remain. Athlete stories already represented; source references alone are not new Best Hydrate media coverage.",
+  "separateFollowup": "snippets/bhd-page-press.liquid CBC card still says replay status and links live radio; propose scoped copy/link correction after approval, not edited here."
+}

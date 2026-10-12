@@ -1,0 +1,53 @@
+{
+  "status": "LOCAL DRAFTS ONLY; no Shopify create or publish",
+  "entries": [
+    {
+      "title": "Best Hydrate in U of Alberta’s Folio",
+      "handle": "best-hydrate-u-alberta-folio-hydration-research",
+      "tags": [
+        "Alberta",
+        "Company News",
+        "Media",
+        "Press",
+        "U of Alberta’s Folio",
+        "Research"
+      ],
+      "summary": "U of Alberta’s Folio reports on Dr. Spencer Proctor’s collaboration with Best Hydrate and the research questions shaping oral hydration.",
+      "body": "<p>In U of Alberta’s Folio, Bev Betkowski reports on Dr. Spencer Proctor’s collaboration with Best Hydrate and a review of oral-hydration research. The article describes plans to compare and improve formulations, alongside questions for future research.</p>\n<p><strong>Source article published:</strong> October 8, 2026. This News entry is a later addition to our coverage archive.</p>\n<p><a href=\"/pages/folio-hydration-feature\">Read our Folio coverage page</a></p>\n<p><a href=\"https://www.ualberta.ca/en/news/spotlights/2026/10-oct/uofa-researcher-lends-expertise-to-boost-science-of-oral-hydration.html\" target=\"_blank\" rel=\"noopener noreferrer\">Read the original reporting in U of Alberta’s Folio</a></p>\n<p>Coverage and research collaboration do not imply a product endorsement or a completed product efficacy trial.</p>",
+      "sourceDate": "2026-10-08",
+      "sourceDateType": "verified source article publication",
+      "destination": "/pages/folio-hydration-feature",
+      "blogId": "gid://shopify/Blog/96688144668",
+      "category": "Press & Media (using existing Media/Press tags)",
+      "isPublished": false,
+      "publishedAt": null,
+      "publicationInstruction": "Set real publication time only after owner approval; do not substitute source date. Publish Folio then CBC in normal sequence; actual publication timestamps determine newest News item.",
+      "image": null
+    },
+    {
+      "title": "Best Hydrate on CBC Edmonton AM",
+      "handle": "best-hydrate-cbc-edmonton-am-interview",
+      "tags": [
+        "Alberta",
+        "Company News",
+        "Media",
+        "Press",
+        "CBC Edmonton AM",
+        "Interview"
+      ],
+      "summary": "CBC Edmonton AM introduces Best Hydrate founder Austin Swiniarski and chief scientific officer Spencer Proctor. Listen to the original interview.",
+      "body": "<p>CBC Edmonton AM introduces Best Hydrate founder Austin Swiniarski and chief scientific officer Spencer Proctor in a segment about the Sherwood Park company.</p>\n<p>CBC’s headline is <q>A sports drink that could help with Crohn's disease</q>. That wording is attributed to CBC; it does not establish that Best Hydrate treats Crohn’s disease or that a product efficacy trial has been completed.</p>\n<p><a href=\"/pages/cbc-edmonton-am\">Read our CBC interview coverage page</a></p>\n<p><a href=\"https://www.cbc.ca/listen/live-radio/1-17-edmonton-am/clip/16242570-a-sports-drink-help-crohns-disease\" target=\"_blank\" rel=\"noopener noreferrer\">Listen to our CBC interview</a></p>",
+      "sourceDate": null,
+      "sourceDateType": "air date unresolved; no public date claim",
+      "sourceListingDate": "2026-10-11",
+      "sourceDateNote": "Screenshot lists Oct11; prior interview confirmation Oct12. Listing date is not treated as air date. Do not backdate new article.",
+      "destination": "/pages/cbc-edmonton-am",
+      "blogId": "gid://shopify/Blog/96688144668",
+      "category": "Press & Media (using existing Media/Press tags)",
+      "isPublished": false,
+      "publishedAt": null,
+      "publicationInstruction": "Set real publication time only after owner approval; do not substitute source date. Publish Folio then CBC in normal sequence; actual publication timestamps determine newest News item.",
+      "image": null
+    }
+  ]
+}
