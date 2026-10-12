@@ -1,0 +1,31 @@
+{
+  "status": "STAGED ONLY; no live title writes",
+  "baseCommit": "84798895ef45b5db67af12ad81d23e567365944b",
+  "instruction": "Re-read articles immediately before a future title-only update. Stop if title or updatedAt differs. Preserve handle, publication date, body, summary, tags and image; never recreate or republish.",
+  "entries": [
+    {
+      "id": "gid://shopify/Article/613994791196",
+      "expectedTitle": "Best Hydrate on CBC Edmonton AM",
+      "expectedUpdatedAt": "2026-10-12T22:09:22Z",
+      "title": "CBC Edmonton AM: A sports drink that could help with Crohn's disease",
+      "handle": "best-hydrate-cbc-edmonton-am-interview",
+      "publishedAt": "2026-10-12T22:09:22Z"
+    },
+    {
+      "id": "gid://shopify/Article/613994758428",
+      "expectedTitle": "Best Hydrate in U of Alberta’s Folio",
+      "expectedUpdatedAt": "2026-10-12T22:09:10Z",
+      "title": "U of Alberta’s Folio: U of A researcher lends expertise to boost the science of oral hydration",
+      "handle": "best-hydrate-u-alberta-folio-hydration-research",
+      "publishedAt": "2026-10-12T22:09:10Z"
+    },
+    {
+      "id": "gid://shopify/Article/613665800476",
+      "expectedTitle": "Best Hydrate Featured in the Edmonton Journal",
+      "expectedUpdatedAt": "2026-10-04T01:58:22Z",
+      "title": "Edmonton Journal: Thirsty? Edmonton product developers enter the sports drink market",
+      "handle": "best-hydrate-featured-edmonton-journal-2026",
+      "publishedAt": "2026-10-01T18:00:00Z"
+    }
+  ]
+}

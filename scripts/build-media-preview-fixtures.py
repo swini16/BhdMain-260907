@@ -16,7 +16,7 @@ if root == pathlib.Path.cwd().resolve():
 manifest = {}
 names = ['bhd-page-dispatch', 'bhd-page-media-alliance', 'bhd-page-header', 'bhd-page-breadcrumbs', 'bhd-menu-descendants']
 sha = lambda value: hashlib.sha256(value.encode()).hexdigest()
-for kind, handle, title in [('folio', 'folio-hydration-feature', 'Best Hydrate in U of Alberta’s Folio'), ('cbc', 'cbc-edmonton-am', 'Best Hydrate and CBC Edmonton AM')]:
+for kind, handle, title in [('folio', 'folio-hydration-feature', 'U of Alberta’s Folio: U of A researcher lends expertise to boost the science of oral hydration'), ('cbc', 'cbc-edmonton-am', "CBC Edmonton AM: A sports drink that could help with Crohn's disease")]:
     mapping = {name: f'qa-{kind}-{name}' for name in names}
     def context_copy(source):
         result = source
@@ -25,7 +25,7 @@ for kind, handle, title in [('folio', 'folio-hydration-feature', 'Best Hydrate i
         def transform(match):
             tag = match[0]
             tag = re.sub(r'\bpage\.handle\b', "'" + handle + "'", tag)
-            tag = re.sub(r'\bpage\.title\b', "'" + title + "'", tag)
+            tag = re.sub(r'\bpage\.title\b', json.dumps(title, ensure_ascii=False), tag)
             tag = re.sub(r'\brequest\.path\b', "'/pages/" + handle + "'", tag)
             for original, target in mapping.items():
                 tag = re.sub(r"(\brender\s+)(['\"])" + re.escape(original) + r'\2', lambda m: m[1] + m[2] + target + m[2], tag)
