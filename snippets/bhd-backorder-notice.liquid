@@ -1,0 +1,11 @@
+{% doc %}
+  Shows the approved delay copy for an eligible tracked backorder.
+  @param {variant} variant - Current product or cart-line variant.
+{% enddoc %}
+{%- liquid
+  assign eligible_ids = '47373155631388' | split: ','
+  assign variant_id = variant.id | append: ''
+-%}
+{%- if eligible_ids contains variant_id and variant.inventory_management != blank and variant.inventory_policy == 'continue' and variant.inventory_quantity <= 0 -%}
+  <p class="bhd-backorder-notice" role="status">{{ 'products.product.backorder_delay' | t }}</p>
+{%- endif -%}

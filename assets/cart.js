@@ -221,9 +221,11 @@ class CartItems extends window.StandardEvents.createViewEventElement(HTMLElement
           if (cartDrawerWrapper) cartDrawerWrapper.classList.toggle('is-empty', parsedState.item_count === 0);
 
           sectionsToRender.forEach((section) => {
-            const elementToReplace =
-              document.getElementById(section.id).querySelector(section.selector) ||
-              document.getElementById(section.id);
+            // The custom header has no Dawn cart-icon-bubble. A successful
+            // cart update must not fail while refreshing an absent optional target.
+            const sectionRoot = document.getElementById(section.id);
+            if (!sectionRoot) return;
+            const elementToReplace = sectionRoot.querySelector(section.selector) || sectionRoot;
             elementToReplace.innerHTML = this.getSectionInnerHTML(
               parsedState.sections[section.section],
               section.selector

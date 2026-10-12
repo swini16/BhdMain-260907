@@ -478,3 +478,38 @@ jobs:
             --data-urlencode "text=${text}")"
           test "$(printf '%s' "$response" | jq -r '.ok // false')" = "true"
           echo "eHP Telegram notification acknowledged by Telegram."
+
+  post-merge-purchase-contract:
+    name: Live Canadian purchase navigation
+    if: ${{ github.event_name == 'push' }}
+    needs: [shopify-main-sync]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Detect purchase-flow release
+        id: scope
+        run: |
+          if git diff --name-only '${{ github.event.before }}' '${{ github.sha }}' | grep -Eq 'bhd-backorder|purchase-flow'; then
+            echo 'purchase=true' >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.scope.outputs.purchase == 'true'
+        with: { node-version: '24' }
+      - name: Verify live desktop and mobile purchase navigation
+        if: steps.scope.outputs.purchase == 'true'
+        env:
+          BASE_URL: https://besthydrate.com
+          PLAYWRIGHT_BROWSER_CHANNEL: chrome
+        run: |
+          npm install --no-save @playwright/test@latest
+          npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0
+      - name: Retain live purchase evidence
+        if: ${{ always() && steps.scope.outputs.purchase == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ehp-live-purchase-${{ github.sha }}
+          path: |
+            artifacts/purchase-review/
+            test-results/
+          retention-days: 14

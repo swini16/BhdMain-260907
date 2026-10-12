@@ -344,33 +344,20 @@
                           <span class="svg-wrapper" style="color: rgb(238, 148, 65)">
                             {{- 'icon-inventory-status.svg' | inline_asset_content -}}
                           </span>
-                          {%- if block.settings.show_inventory_quantity -%}
-                            {{-
-                              'products.product.inventory_low_stock_show_count'
-                              | t: quantity: product.selected_or_first_available_variant.inventory_quantity
-                            -}}
-                          {%- else -%}
-                            {{- 'products.product.inventory_low_stock' | t -}}
-                          {%- endif -%}
+                          {{- 'products.product.inventory_low_stock' | t -}}
                         {%- else -%}
                           <span class="svg-wrapper" style="color: rgb(62, 214, 96)">
                             {{- 'icon-inventory-status.svg' | inline_asset_content -}}
                           </span>
-                          {%- if block.settings.show_inventory_quantity -%}
-                            {{-
-                              'products.product.inventory_in_stock_show_count'
-                              | t: quantity: product.selected_or_first_available_variant.inventory_quantity
-                            -}}
-                          {%- else -%}
-                            {{- 'products.product.inventory_in_stock' | t -}}
-                          {%- endif -%}
+                          {{- 'products.product.inventory_in_stock' | t -}}
                         {%- endif -%}
                       {%- else -%}
                         {%- if product.selected_or_first_available_variant.inventory_policy == 'continue' -%}
                           <span class="svg-wrapper" style="color: rgb(62, 214, 96)">
                             {{- 'icon-inventory-status.svg' | inline_asset_content -}}
                           </span>
-                          {{- 'products.product.inventory_out_of_stock_continue_selling' | t -}}
+                          {%- capture bhd_backorder_copy -%}{%- render 'bhd-backorder-notice', variant: product.selected_or_first_available_variant -%}{%- endcapture -%}
+                          {%- if bhd_backorder_copy != blank -%}{{ 'products.product.backorder_delay' | t }}{%- else -%}{{ 'products.product.inventory_out_of_stock_continue_selling' | t }}{%- endif -%}
                         {%- else -%}
                           <span class="svg-wrapper" style="color: rgb(200, 200, 200)">
                             {{- 'icon-inventory-status.svg' | inline_asset_content -}}
