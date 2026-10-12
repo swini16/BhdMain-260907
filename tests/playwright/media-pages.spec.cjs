@@ -7,7 +7,6 @@ const origin = process.env.BASE_URL || 'https://besthydrate.com';
 const publicCheck = process.env.MEDIA_PUBLIC_CHECK === '1';
 const fixtures = process.env.MEDIA_PREVIEW_FIXTURES === '1';
 const themeId = process.env.PREVIEW_THEME_ID || (publicCheck ? process.env.EXPECTED_LIVE_THEME_ID : '');
-const cutoff = 1791812100000;
 const routes = ['/', '/pages/folio-hydration-feature', '/pages/cbc-edmonton-am', '/pages/press'];
 const sourceFiles = ['sections/bhd-publication-ribbon.liquid', 'snippets/bhd-page-breadcrumbs.liquid', 'snippets/bhd-page-dispatch.liquid', 'snippets/bhd-page-media-alliance.liquid', 'snippets/bhd-page-press.liquid', 'sections/main-page.liquid', 'snippets/bhd-page-header.liquid', 'templates/page.json', 'templates/index.json', 'layout/theme.liquid'];
 const sha = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex');
@@ -75,8 +74,8 @@ test.describe('Proposed media pages', () => {
         const ribbon = page.locator('.bhd-publication-ribbon');
         await expect(ribbon).toBeVisible();
         await expect(ribbon.getByRole('link', { name: 'U of Alberta’s Folio', exact: true })).toHaveAttribute('href', '/pages/folio-hydration-feature');
-        if (Date.now() < cutoff) await expect(ribbon.getByRole('link', { name: /Coming to CBC Edmonton AM/ })).toHaveAttribute('href', '/pages/cbc-edmonton-am');
-        else await expect(ribbon).not.toContainText('Coming to CBC');
+        await expect(ribbon.getByRole('link', { name: 'Listen to our CBC interview', exact: true })).toHaveAttribute('href', 'https://www.cbc.ca/listen/live-radio/1-17-edmonton-am/clip/16242570-a-sports-drink-help-crohns-disease');
+        await expect(ribbon).not.toContainText('Coming to CBC');
         await ribbon.screenshot({ path: path.join(dir, 'banner.png') });
       } else if (route === '/pages/press') {
         const cards = page.locator('.bhd-page__cards-section').filter({ has: page.getByRole('heading', { name: 'Best Hydrate in the news', exact: true }) });
