@@ -453,14 +453,15 @@ jobs:
         run: npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0
 
       - name: Stage isolated zero-stock Liquid fixture
-        if: steps.scope.outputs.purchase == 'true'
+        if: ${{ always() && steps.scope.outputs.purchase == 'true' && steps.preview.outputs.theme_id != '' }}
+        id: zero_fixture
         run: |
           python3 scripts/build-zero-stock-preview.py /tmp/bhd-theme
           npx shopify theme push --path /tmp/bhd-theme --store "$SHOPIFY_FLAG_STORE" --password "$SHOPIFY_CLI_THEME_TOKEN" --theme "$PREVIEW_THEME_ID" --nodelete --only snippets/bhd-backorder-notice.liquid --only sections/main-product.liquid --json > /tmp/zero-stock-upload.json
           jq -e '((.theme.errors // {}) | length) == 0' /tmp/zero-stock-upload.json
 
       - name: Verify simulated zero-stock purchase flow
-        if: steps.scope.outputs.purchase == 'true'
+        if: ${{ always() && steps.zero_fixture.outcome == 'success' }}
         env:
           SIMULATED_ZERO_STOCK: '1'
         run: npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0

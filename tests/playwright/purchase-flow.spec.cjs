@@ -55,7 +55,14 @@ test('Canadian product to checkout navigation without placing an order', async (
   const checkout=page.locator('#checkout');
   await expect(checkout).toBeEnabled();
   await checkout.click();
-  await page.waitForURL(/\/checkouts?\//,{timeout:45000});
+  try {
+    await page.waitForURL(/\/checkouts?\//,{timeout:45000,waitUntil:'domcontentloaded'});
+    await expect(page.locator('input[type="email"], input[autocomplete="email"]').first()).toBeVisible({timeout:20000});
+  } catch(error) {
+    const end = new URL(page.url());
+    console.log('Checkout diagnostic:', JSON.stringify({host:end.host,path:end.pathname.replace(/(\/checkouts?\/).*/, '$1[redacted]'),title:await page.title(),body:(await page.locator('body').innerText()).slice(0,2500)}));
+    throw error;
+  }
   await expect(page.locator('body')).not.toContainText(/Your cart is empty|Something went wrong/);
   await page.screenshot({path:path.join(dir,'checkout.png'),fullPage:true});
   fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({mode:simulated?'simulated-liquid-zero-stock':'actual-stock',themeId:theme,viewport:page.viewportSize(),checkoutReached:true,orderPlaced:false,discountCodeAttempted:'FIRST15',capturedAt:new Date().toISOString()},null,2));
