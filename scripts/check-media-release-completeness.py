@@ -92,6 +92,9 @@ def read_news_feed():
             raise ValueError('Repeated News feed page')
         seen.add(url)
         feed = ET.fromstring(read_public(url))
+        if len(seen) == 1:
+            first_entry = feed.find('a:entry', ATOM)
+            print('FEED_ENTRY_EVIDENCE ' + ET.tostring(first_entry, encoding='unicode'))
         for entry in feed.findall('a:entry', ATOM):
             alternate = next((n.get('href') for n in entry.findall('a:link', ATOM)
                               if n.get('rel', 'alternate') == 'alternate'), None)
@@ -126,6 +129,8 @@ def main():
         result['publishedNewsCount'] = len(articles)
         press = read_public(ORIGIN + '/pages/press')
         news = read_public(ORIGIN + '/blogs/news')
+        hero = re.search(r'<a[^>]*class="[^"]*bhd-blog-intro__featured[^"]*"[\s\S]*?</a>', news)
+        print('HERO_HTML_EVIDENCE ' + (hero.group() if hero else 'MISSING'))
         result['latestHero'] = links(news).hero
         result['errors'] = evaluate(routes, articles, press, news)
         for route in sorted(routes):
