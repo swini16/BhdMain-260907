@@ -96,9 +96,8 @@ test.describe('Proposed media pages', () => {
         await expect(hero).toHaveAttribute('alt', 'Best Hydrate Lemonade electrolyte powder jar');
         expect(await hero.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
         if (cbc) {
-          await expect(page.getByRole('link', { name: 'Listen live on CBC →', exact: true })).toHaveAttribute('href', 'https://www.cbc.ca/listen/live-radio');
-          await expect(page.locator('.bhd-page')).toContainText('Choose Radio One Edmonton. This is the live station service, not an interview replay.');
-          await expect(page.locator('.bhd-page')).toContainText(Date.now() < cutoff ? 'Scheduled for Monday, October 12, 2026 at 7:35 a.m. MDT.' : 'An interview replay has not yet been verified here.');
+          await expect(page.getByRole('link', { name: 'Listen to our CBC interview', exact: true })).toHaveAttribute('href', 'https://www.cbc.ca/listen/live-radio/1-17-edmonton-am/clip/16242570-a-sports-drink-help-crohns-disease');
+          await expect(page.locator('.bhd-page')).not.toContainText(/scheduled to join|Scheduled for Monday|An interview replay has not yet been verified|not an interview replay/);
         }
         // Exercise breadcrumb navigation inside the same development preview.
         await crumbs.locator('a[href="/pages/press"]').click();
