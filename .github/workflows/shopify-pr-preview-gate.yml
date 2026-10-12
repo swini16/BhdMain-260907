@@ -139,6 +139,7 @@ jobs:
           print('preview_paths=' + ','.join(seen))
           print('expect_nav=' + ('true' if nav else 'false'))
           print('media=' + ('true' if media else 'false'))
+          print('purchase=' + ('true' if any('bhd-backorder' in f or 'purchase-flow' in f for f in files) else 'false'))
           PY
 
           cat /tmp/preview-scope.env >> "$GITHUB_OUTPUT"
@@ -290,8 +291,8 @@ jobs:
             done < /tmp/theme-error-files.txt
           fi
 
-      - name: Start authenticated renderer for hidden media pages
-        if: steps.scope.outputs.media == 'true'
+      - name: Start authenticated renderer for isolated preview
+        if: steps.scope.outputs.relevant == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -446,6 +447,31 @@ jobs:
             --grep "native reviews are responsive and never clip text" \
             --project=desktop-chromium \
             --project=mobile-chromium
+
+      - name: Verify actual-stock purchase flow
+        if: steps.scope.outputs.purchase == 'true'
+        run: npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0
+
+      - name: Stage isolated zero-stock Liquid fixture
+        if: steps.scope.outputs.purchase == 'true'
+        run: |
+          python3 scripts/build-zero-stock-preview.py /tmp/bhd-theme
+          npx shopify theme push --path /tmp/bhd-theme --store "$SHOPIFY_FLAG_STORE" --password "$SHOPIFY_CLI_THEME_TOKEN" --theme "$PREVIEW_THEME_ID" --nodelete --only snippets/bhd-backorder-notice.liquid --only sections/main-product.liquid --json > /tmp/zero-stock-upload.json
+          jq -e '((.theme.errors // {}) | length) == 0' /tmp/zero-stock-upload.json
+
+      - name: Verify simulated zero-stock purchase flow
+        if: steps.scope.outputs.purchase == 'true'
+        env:
+          SIMULATED_ZERO_STOCK: '1'
+        run: npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0
+
+      - name: Retain purchase-flow review evidence
+        if: ${{ always() && steps.scope.outputs.purchase == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ehp-purchase-review-${{ github.event.pull_request.head.sha }}
+          path: artifacts/purchase-review/
+          retention-days: 14
 
       - name: Upload failure diagnostics
         if: ${{ failure() && steps.scope.outputs.relevant == 'true' }}

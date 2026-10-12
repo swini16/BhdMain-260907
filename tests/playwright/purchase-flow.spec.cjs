@@ -1,0 +1,56 @@
+const { test, expect } = require('@playwright/test');
+const fs = require('node:fs');
+const path = require('node:path');
+const simulated = process.env.SIMULATED_ZERO_STOCK === '1';
+const theme = process.env.PREVIEW_THEME_ID;
+const origin = process.env.BASE_URL || 'https://besthydrate.com';
+const copy = 'Due to high demand, may take an extra day or two to arrive';
+const url = route => {
+  const u = new URL(route, origin);
+  if(theme) u.searchParams.set('preview_theme_id', theme);
+  u.searchParams.set('utm_source','qa_automation');
+  return u.href;
+};
+test('Canadian product to checkout navigation without placing an order', async ({ page, context }, info) => {
+  test.setTimeout(120000);
+  const dir=path.join('artifacts/purchase-review',simulated?'simulated-zero':'actual-stock',info.project.name);
+  fs.mkdirSync(dir,{recursive:true});
+  await context.route('**/*',r => /google-analytics|googletagmanager|amplitude|facebook\.com\/tr|analytics\.tiktok|klaviyo|monorail|analytics\.shopify/.test(r.request().url()) ? r.fulfill({status:204,body:''}) : r.continue());
+  const response = await page.goto(url('/products/lemonade-best-hydrate?variant=47373155631388'),{waitUntil:'domcontentloaded'});
+  expect(response.status()).toBeLessThan(400);
+  if(theme) expect(await page.evaluate(()=>String(window.Shopify?.theme?.id))).toBe(String(theme));
+  const product=page.locator('product-info').first();
+  const button=product.locator('button[name="add"]').first();
+  await expect(button).toBeEnabled();
+  await expect(product.locator('input[name="id"]').first()).toHaveValue('47373155631388');
+  if(simulated) {
+    await expect(product.locator('.bhd-backorder-notice').first()).toHaveText(copy);
+    await expect(page.locator('.bhd-pill--shipping').first()).toBeHidden();
+    await expect(page.locator('.bhd-stock').first()).toBeHidden();
+  } else await expect(product.locator('.bhd-backorder-notice')).toHaveCount(0);
+  expect(await product.innerText()).not.toMatch(/\bbackorder\b/i);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(4);
+  await page.screenshot({path:path.join(dir,'product.png'),fullPage:true});
+  await button.click();
+  const drawer=page.locator('cart-drawer');
+  await expect(drawer).toHaveClass(/active/);
+  await expect(drawer.locator('.cart-item__name').first()).toBeVisible();
+  if(simulated) await expect(drawer.locator('.bhd-backorder-notice').first()).toHaveText(copy);
+  await page.screenshot({path:path.join(dir,'drawer.png'),fullPage:true});
+  await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
+  const quantity=page.locator('cart-items input[name="updates[]"]').first();
+  await expect(quantity).toHaveValue('1');
+  await quantity.fill('2');await quantity.press('Tab');
+  await expect.poll(async()=>page.evaluate(async()=>{const c=await fetch('/cart.js').then(r=>r.json());return c.items.find(i=>i.variant_id===47373155631388)?.quantity;})).toBe(2);
+  if(simulated) await expect(page.locator('cart-items .bhd-backorder-notice').first()).toHaveText(copy);
+  await page.screenshot({path:path.join(dir,'cart.png'),fullPage:true});
+  // Existing advertised code only: no discount creation and no payment submission.
+  await page.goto(url('/discount/FIRST15?redirect=/cart'),{waitUntil:'domcontentloaded'});
+  const checkout=page.locator('#checkout');
+  await expect(checkout).toBeEnabled();
+  await checkout.click();
+  await page.waitForURL(/\/checkouts?\//,{timeout:45000});
+  await expect(page.locator('body')).not.toContainText(/Your cart is empty|Something went wrong/);
+  await page.screenshot({path:path.join(dir,'checkout.png'),fullPage:true});
+  fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({mode:simulated?'simulated-liquid-zero-stock':'actual-stock',themeId:theme,viewport:page.viewportSize(),checkoutReached:true,orderPlaced:false,discountCodeAttempted:'FIRST15',capturedAt:new Date().toISOString()},null,2));
+});

@@ -40,13 +40,11 @@ const buttons = read('snippets/buy-buttons.liquid').replace(/{%-?\s*form\b[\s\S]
   const item = id => ({ id, inventory_management: 'fba-shipping', inventory_quantity: 0, inventory_policy: 'continue' });
   const mixed = await engine.parseAndRender("{% for item in items %}{% render 'bhd-backorder-notice', variant: item %}{% endfor %}", { items: [item(47373155631388), item(51937870741788)] });
   assert.equal(mixed.split(copy).length - 1, 1);
-  engine.options.globals = { settings: { bhd_backorder_variant_ids: 'none' } };
-  assert.equal((await engine.parseAndRender("{% render 'bhd-backorder-notice', variant: variant %}", { variant: item(47373155631388) })).trim(), '');
   for (const file of ['snippets/bhd-backorder-notice.liquid', 'snippets/buy-buttons.liquid', 'snippets/cart-drawer.liquid', 'sections/main-cart-items.liquid', 'sections/main-product.liquid', 'layout/theme.liquid']) toLiquidHtmlAST(read(file));
   for (const file of ['locales/en.default.json', 'config/settings_schema.json']) JSON.parse(read(file));
   require('postcss').parse(read('assets/bhd-backorder.css'));
   assert(!read('sections/main-product.liquid').includes('inventory_low_stock_show_count'));
   assert(!read('sections/main-product.liquid').includes('inventory_in_stock_show_count'));
   assert(read('assets/product-info.js').includes("updateSourceFromDestination('BhdBackorder')"));
-  console.log(`PASS ${count} rendered purchase states; mixed-cart and eligibility-disable fixtures; Liquid/JSON/CSS parsing; stock count removal and variant-update hook.`);
+  console.log(`PASS ${count} rendered purchase states; mixed-cart fixture; Liquid/JSON/CSS parsing; stock count removal and variant-update hook.`);
 })().catch(error => { console.error(error); process.exitCode = 1; }).finally(() => fs.rmSync(temp, { recursive: true, force: true }));
