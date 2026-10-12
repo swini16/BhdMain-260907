@@ -50,6 +50,7 @@ test('Canadian product to checkout navigation without placing an order', async (
   await expect(page.locator('cart-items input[name="updates[]"]').first()).toHaveValue('2');
   if(simulated) await expect(page.locator('cart-items .bhd-backorder-notice').first()).toHaveText(copy);
   await page.screenshot({path:path.join(dir,'cart.png'),fullPage:true});
+  const expectedProduct = (await page.locator('cart-items .cart-item__name').first().innerText()).trim();
   // Existing advertised code only: no discount creation and no payment submission.
   await page.goto(url('/discount/FIRST15?redirect=/cart'),{waitUntil:'domcontentloaded'});
   const checkout=page.locator('#checkout');
@@ -58,12 +59,18 @@ test('Canadian product to checkout navigation without placing an order', async (
   try {
     await page.waitForURL(/\/checkouts?\//,{timeout:45000,waitUntil:'domcontentloaded'});
     await expect(page.locator('input[type="email"], input[autocomplete="email"]').first()).toBeVisible({timeout:20000});
+    const expandSummary = page.getByRole('button', {name:/show order summary/i});
+    if(await expandSummary.isVisible()) await expandSummary.click();
+    const checkoutItem = page.getByRole('row').filter({hasText:expectedProduct}).first();
+    await expect(checkoutItem).toBeVisible();
+    await expect(checkoutItem.getByText('2', {exact:true})).toBeVisible();
+    await expect(page.locator('body')).not.toContainText(/verify you are human|security challenge|your cart is empty|something went wrong/i);
   } catch(error) {
     const end = new URL(page.url());
-    console.log('Checkout diagnostic:', JSON.stringify({host:end.host,path:end.pathname.replace(/(\/checkouts?\/).*/, '$1[redacted]'),title:await page.title(),body:(await page.locator('body').innerText()).slice(0,2500)}));
+    console.log('Checkout diagnostic:', JSON.stringify({host:end.host,path:decodeURIComponent(end.pathname).replace(/(\/checkouts?\/).*/, '$1[redacted]'),title:await page.title(),body:(await page.locator('body').innerText()).slice(0,2500)}));
     throw error;
   }
   await expect(page.locator('body')).not.toContainText(/Your cart is empty|Something went wrong/);
   await page.screenshot({path:path.join(dir,'checkout.png'),fullPage:true});
-  fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({mode:simulated?'simulated-liquid-zero-stock':'actual-stock',themeId:theme,viewport:page.viewportSize(),checkoutReached:true,orderPlaced:false,discountCodeAttempted:'FIRST15',capturedAt:new Date().toISOString()},null,2));
+  fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({mode:simulated?'simulated-liquid-zero-stock':'actual-stock',themeId:theme,viewport:page.viewportSize(),checkoutReached:true,checkoutItem:expectedProduct,checkoutQuantity:2,variantBeforeCheckout:47373155631388,orderPlaced:false,discountCodeAttempted:'FIRST15',capturedAt:new Date().toISOString()},null,2));
 });

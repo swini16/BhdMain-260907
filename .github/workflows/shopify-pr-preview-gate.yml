@@ -448,8 +448,18 @@ jobs:
             --project=desktop-chromium \
             --project=mobile-chromium
 
+      - name: Stop local renderer before direct purchase preview
+        if: steps.scope.outputs.purchase == 'true'
+        run: |
+          if [ -f /tmp/bhd-preview-renderer.pid ]; then
+            renderer_pid="$(cat /tmp/bhd-preview-renderer.pid)"
+            kill -- "-$renderer_pid" 2>/dev/null || true
+          fi
+
       - name: Verify actual-stock purchase flow
         if: steps.scope.outputs.purchase == 'true'
+        env:
+          BASE_URL: https://besthydrate.com
         run: npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0
 
       - name: Stage isolated zero-stock Liquid fixture
@@ -463,6 +473,7 @@ jobs:
       - name: Verify simulated zero-stock purchase flow
         if: ${{ always() && steps.zero_fixture.outcome == 'success' }}
         env:
+          BASE_URL: https://besthydrate.com
           SIMULATED_ZERO_STOCK: '1'
         run: npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0
 
