@@ -4,11 +4,11 @@
   "before": {
     "folio": {
       "id": "gid://shopify/Page/155601764636",
-      "title": "Best Hydrate in U of Alberta’s Folio",
+      "title": "Best Hydrate in U of Alberta\u2019s Folio",
       "handle": "folio-hydration-feature",
       "seoTitle": null,
       "seoDescription": {
-        "value": "Read U of Alberta’s Folio coverage of Best Hydrate’s collaboration with University of Alberta researcher Dr. Spencer Proctor and Austin Swiniarski."
+        "value": "Read U of Alberta\u2019s Folio coverage of Best Hydrate\u2019s collaboration with University of Alberta researcher Dr. Spencer Proctor and Austin Swiniarski."
       }
     },
     "cbc": {
@@ -25,12 +25,13 @@
   },
   "proposed": {
     "folio": {
-      "title": "Best Hydrate in U of Alberta’s Folio | Hydration Research",
-      "description": "Read U of Alberta’s Folio reporting on Dr. Spencer Proctor, Best Hydrate and oral-hydration research, with a brief attributed excerpt and the original article."
-    },
-    "cbc": {
-      "title": "Best Hydrate on CBC Edmonton AM | Listen to the Interview",
-      "description": "Listen to Best Hydrate’s CBC Edmonton AM interview with Austin Swiniarski and Dr. Spencer Proctor. Open the original segment on CBC Listen."
+      "title": "Best Hydrate in U of Alberta\u2019s Folio | Hydration Research",
+      "description": "Read U of Alberta\u2019s Folio reporting on Dr. Spencer Proctor, Best Hydrate and oral-hydration research, with a brief attributed excerpt and the original article."
     }
+  },
+  "held_cbc_proposal": {
+    "title": "Best Hydrate on CBC Edmonton AM | Listen to the Interview",
+    "description": "Listen to Best Hydrate\u2019s CBC Edmonton AM interview with Austin Swiniarski and Dr. Spencer Proctor. Open the original segment on CBC Listen.",
+    "status": "NOT STAGED FOR RELEASE: verified source title/excerpt unavailable; preserve existing CBC heading and SEO until resolved"
   }
 }

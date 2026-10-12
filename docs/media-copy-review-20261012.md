@@ -19,3 +19,7 @@ SEO before/proposed title and description, page IDs and handles are recorded in 
 ## Validation and release gates
 
 Changed snippet: zero Shopify Theme Check offenses. git diff --check passed. Verified original/source links intact, one CBC clip link only, 23-word Folio quotation budget, JSON validity and protected hero/product/partnership/style blocks byte-identical. No checkout/inventory/assets changed. No current rendered desktop/mobile preview claimed; run required focused gate only when draft/source verification is complete and publication workflow is authorized. Re-read main and current SEO before any write, preserve concurrent changes, and require explicit release approval. Earlier Folio no-CBC-link exclusion remains respected: no new CBC replay link added to Folio.
+
+## Follow-up: CBC held
+
+Existing local source receipts contain the segment URL and current store copy, but no verified official CBC title or transcript. The proposed generic CBC heading has been withdrawn. CBC heading/body/source link remain exactly as on the base commit. CBC SEO suggestions are held separately, not proposed for release; retain existing SEO pending verified source text. Folio remains staged. No browser fallback or new permission/provider route used.
