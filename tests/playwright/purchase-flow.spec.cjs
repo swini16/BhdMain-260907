@@ -70,11 +70,12 @@ test('Canadian product to checkout navigation without placing an order', async (
     await expect(page.locator('input[type="email"], input[autocomplete="email"]').first()).toBeVisible({timeout:20000});
     // Shopify's mobile checkout labels this disclosure 'Order summary',
     // not necessarily 'Show order summary'. Require its collapsed state.
-    const expandSummary = page.getByRole('button', {name:/order summary/i, expanded:false});
+    const expandSummary = page.locator('button[aria-controls="mobileOrderSummary"]');
     if(info.project.name === 'mobile-chromium') {
       await expect(expandSummary).toBeVisible();
+      await expect(expandSummary).toHaveAttribute('aria-expanded','false');
       await expandSummary.click();
-      await expect(page.getByRole('button', {name:/order summary/i, expanded:true})).toBeVisible();
+      await expect(expandSummary).toHaveAttribute('aria-expanded','true');
     }
     const checkoutItem = page.getByRole('row').filter({hasText:expectedProduct}).first();
     await expect(checkoutItem).toBeVisible();
