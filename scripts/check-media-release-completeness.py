@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import parse_qs, urljoin, urlsplit
 
 ORIGIN = 'https://besthydrate.com'
 ATOM = {'a': 'http://www.w3.org/2005/Atom'}
@@ -18,6 +18,9 @@ class Links(HTMLParser):
         super().__init__()
         self.paths = set()
         self.hero = None
+        self.hero_title = ''
+        self.in_hero = False
+        self.in_hero_title = False
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -28,12 +31,80 @@ class Links(HTMLParser):
             self.paths.add(target.path.rstrip('/'))
             if 'bhd-blog-intro__featured' in attrs.get('class', '').split():
                 self.hero = target.path.rstrip('/')
+                self.in_hero = True
+        if tag == 'strong' and self.in_hero:
+            self.in_hero_title = True
+
+    def handle_endtag(self, tag):
+        if tag == 'strong':
+            self.in_hero_title = False
+        if tag == 'a':
+            self.in_hero = False
+            self.in_hero_title = False
+
+    def handle_data(self, data):
+        if self.in_hero_title:
+            self.hero_title += data
 
 
 def links(markup):
     parser = Links()
     parser.feed(markup)
     return parser
+
+
+class TaggedArchive(HTMLParser):
+    """Only article-grid links count; hero/navigation links cannot prove membership."""
+    def __init__(self, path):
+        super().__init__()
+        self.path = path
+        self.depth = 0
+        self.found_grid = False
+        self.articles = set()
+        self.pages = set()
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == 'div':
+            if self.depth:
+                self.depth += 1
+            elif 'blog-articles' in attrs.get('class', '').split():
+                self.depth = 1
+                self.found_grid = True
+        if tag == 'a' and attrs.get('href'):
+            target = urlsplit(urljoin(ORIGIN, attrs['href']))
+            if target.netloc != urlsplit(ORIGIN).netloc:
+                return
+            if (self.depth and 'full-unstyled-link' in attrs.get('class', '').split()
+                    and target.path.startswith('/blogs/news/') and '/tagged/' not in target.path):
+                self.articles.add(target.path.rstrip('/'))
+            if target.path == self.path and 'pagination__item' in attrs.get('class', '').split():
+                page = parse_qs(target.query).get('page', [])
+                if len(page) == 1 and page[0].isdigit():
+                    self.pages.add(ORIGIN + self.path + '?page=' + page[0])
+
+    def handle_endtag(self, tag):
+        if tag == 'div' and self.depth:
+            self.depth -= 1
+
+
+def read_tagged_articles(tag):
+    path = '/blogs/news/tagged/' + tag.lower()
+    pending, seen, articles = [ORIGIN + path], set(), set()
+    while pending:
+        url = pending.pop()
+        if url in seen:
+            continue
+        if len(seen) >= 20:
+            raise ValueError('Tagged News pagination limit reached')
+        seen.add(url)
+        page = TaggedArchive(path)
+        page.feed(read_public(url))
+        if not page.found_grid:
+            raise ValueError(f'{tag}: public tagged article grid missing')
+        articles.update(page.articles)
+        pending.extend(page.pages - seen)
+    return articles
 
 
 def required_routes(root):
@@ -50,7 +121,7 @@ def required_routes(root):
     return routes
 
 
-def evaluate(routes, articles, press_html, news_html):
+def evaluate(routes, articles, press_html, news_html, tagged_articles):
     errors = []
     if not routes:
         errors.append('No media routes discovered; cannot certify release completeness.')
@@ -61,16 +132,22 @@ def evaluate(routes, articles, press_html, news_html):
         matches = [a for a in published if route in links(a['body']).paths]
         if not matches:
             errors.append(f'{route}: no published News article links to this media landing page')
-        elif not any({'Media', 'Press'}.issubset(set(a['tags'])) for a in matches):
-            errors.append(f'{route}: corresponding News entry lacks Media/Press tags')
+        elif not any(all('/blogs/news/' + a['handle'] in tagged_articles.get(tag, set())
+                         for tag in ('Media', 'Press')) for a in matches):
+            errors.append(f'{route}: corresponding News entry missing from Media/Press tagged archives')
     if not published:
         errors.append('No published News articles; latest hero cannot be verified.')
     else:
         latest_time = max(datetime.fromisoformat(a['publishedAt'].replace('Z', '+00:00')) for a in published)
         latest_paths = {'/blogs/news/' + a['handle'] for a in published
                         if datetime.fromisoformat(a['publishedAt'].replace('Z', '+00:00')) == latest_time}
-        if links(news_html).hero not in latest_paths:
+        hero = links(news_html)
+        if hero.hero not in latest_paths:
             errors.append('News latest-article hero does not select a newest published article')
+        else:
+            selected = next(a for a in published if '/blogs/news/' + a['handle'] == hero.hero)
+            if not selected.get('title') or hero.hero_title.strip() != selected['title']:
+                errors.append('News latest-article hero title does not exactly match the selected article')
     return errors
 
 
@@ -79,7 +156,8 @@ def read_public(url):
         raise ValueError('Refusing off-store URL')
     request = urllib.request.Request(url, headers={'User-Agent': 'BHD-media-release-check/1.0'})
     with urllib.request.urlopen(request, timeout=30) as response:
-        if response.status != 200 or urlsplit(response.url).netloc != urlsplit(ORIGIN).netloc:
+        if (response.status != 200 or urlsplit(response.url).netloc != urlsplit(ORIGIN).netloc
+                or urlsplit(response.url).path.rstrip('/') != urlsplit(url).path.rstrip('/')):
             raise ValueError('Unexpected public response')
         return response.read().decode('utf-8')
 
@@ -92,10 +170,6 @@ def read_news_feed():
             raise ValueError('Repeated News feed page')
         seen.add(url)
         feed = ET.fromstring(read_public(url))
-        if len(seen) == 1:
-            first_entry = feed.find('a:entry', ATOM)
-            if first_entry is not None:
-                print('FEED_ENTRY_EVIDENCE ' + ET.tostring(first_entry, encoding='unicode'))
         for entry in feed.findall('a:entry', ATOM):
             alternate = next((n.get('href') for n in entry.findall('a:link', ATOM)
                               if n.get('rel', 'alternate') == 'alternate'), None)
@@ -109,6 +183,7 @@ def read_news_feed():
                     node.tag = node.tag.split('}')[-1]
                 body = ET.tostring(content, encoding='unicode')
             articles.append({'handle': urlsplit(alternate).path.rstrip('/').split('/')[-1],
+                             'title': entry.findtext('a:title', None, ATOM),
                              'publishedAt': entry.findtext('a:published', None, ATOM),
                              'isPublished': True,
                              'tags': [n.get('term') or n.text or '' for n in entry.findall('a:category', ATOM)],
@@ -130,10 +205,11 @@ def main():
         result['publishedNewsCount'] = len(articles)
         press = read_public(ORIGIN + '/pages/press')
         news = read_public(ORIGIN + '/blogs/news')
-        hero = re.search(r'<a[^>]*class="[^"]*bhd-blog-intro__featured[^"]*"[\s\S]*?</a>', news)
-        print('HERO_HTML_EVIDENCE ' + (hero.group() if hero else 'MISSING'))
         result['latestHero'] = links(news).hero
-        result['errors'] = evaluate(routes, articles, press, news)
+        result['latestHeroTitle'] = links(news).hero_title.strip()
+        tagged = {tag: read_tagged_articles(tag) for tag in ('Media', 'Press')}
+        result['taggedArchiveArticles'] = {tag: sorted(paths) for tag, paths in tagged.items()}
+        result['errors'] = evaluate(routes, articles, press, news, tagged)
         for route in sorted(routes):
             if not read_public(ORIGIN + route).strip():
                 result['errors'].append(f'{route}: empty public landing page')
