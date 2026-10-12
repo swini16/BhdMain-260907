@@ -16,9 +16,18 @@ test('Canadian product to checkout navigation without placing an order', async (
   const dir=path.join('artifacts/purchase-review',simulated?'simulated-zero':'actual-stock',info.project.name);
   fs.mkdirSync(dir,{recursive:true});
   await context.route('**/*',r => /google-analytics|googletagmanager|amplitude|facebook\.com\/tr|analytics\.tiktok|klaviyo|monorail|analytics\.shopify/.test(r.request().url()) ? r.fulfill({status:204,body:''}) : r.continue());
+  // Select the Canadian market using Shopify's normal customer localization form.
+  // GitHub-hosted runners can otherwise enter the US market, where the CA product is absent.
+  await page.goto(url('/'),{waitUntil:'domcontentloaded'});
+  const localized = await context.request.post(new URL('/localization',origin).href, {
+    form:{form_type:'localization',utf8:'✓',_method:'put',country_code:'CA',return_to:'/'},
+  });
+  expect(localized.status()).toBeLessThan(400);
   const response = await page.goto(url('/products/lemonade-best-hydrate?variant=47373155631388'),{waitUntil:'domcontentloaded'});
+  if(response.status()>=400) console.log('Product diagnostic:', JSON.stringify({status:response.status(),title:await page.title(),country:await page.evaluate(()=>window.Shopify?.country),body:(await page.locator('body').innerText()).slice(0,1000)}));
   expect(response.status()).toBeLessThan(400);
   if(theme) expect(await page.evaluate(()=>String(window.Shopify?.theme?.id))).toBe(String(theme));
+  expect(await page.evaluate(()=>window.Shopify?.country)).toBe('CA');
   const product=page.locator('product-info').first();
   const button=product.locator('button[name="add"]').first();
   await expect(button).toBeEnabled();
