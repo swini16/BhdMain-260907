@@ -23,3 +23,7 @@ Changed snippet: zero Shopify Theme Check offenses. git diff --check passed. Ver
 ## Follow-up: CBC held
 
 Existing local source receipts contain the segment URL and current store copy, but no verified official CBC title or transcript. The proposed generic CBC heading has been withdrawn. CBC heading/body/source link remain exactly as on the base commit. CBC SEO suggestions are held separately, not proposed for release; retain existing SEO pending verified source text. Folio remains staged. No browser fallback or new permission/provider route used.
+
+## Folio SEO title refinement
+
+Proposed SEO title: U of A Researcher Brings Expertise to Oral Hydration | Folio. This is an attributed paraphrase aligned with the verified article headline, not an additional quotation. It replaces the earlier generic company/coverage SEO proposal. Body headline and 10-word excerpt remain unchanged (23 verbatim words total). SEO description unchanged. CBC held; no live publication approval yet.
