@@ -72,6 +72,18 @@ jobs:
         with: { node-version: '22' }
       - name: Validate concise production note format
         run: node --test .github/scripts/test-telegram-production-note.mjs
+      - name: Test read-only media release completeness check
+        run: python3 tests/media-release-completeness.py
+      - name: Review current public media completeness before release
+        if: github.event_name == 'pull_request'
+        run: python3 scripts/check-media-release-completeness.py
+      - name: Save pre-release media completeness receipt
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-release-completeness-pr-${{ github.sha }}
+          path: artifacts/media-release-completeness.json
+          retention-days: 14
       - name: Validate conversion, responsive and analytics contracts
         shell: bash
         run: |
@@ -309,6 +321,16 @@ jobs:
     needs: [liquid-theme-check, lp-contracts, static-safety, shopify-main-sync]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - name: Verify public media release completeness (read only)
+        run: python3 scripts/check-media-release-completeness.py
+      - name: Save media release completeness receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-release-completeness-${{ github.sha }}
+          path: artifacts/media-release-completeness.json
+          retention-days: 14
       - name: Verify CBC station details on the public page
         run: |
           node --input-type=module - <<'JS'
