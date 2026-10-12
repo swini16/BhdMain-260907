@@ -107,6 +107,7 @@
                     </td>
 
                     <td class="cart-item__details">
+                          {%- render 'bhd-backorder-notice', variant: item.variant -%}
                       {%- if settings.show_vendor -%}
                         <p class="caption-with-letter-spacing">{{ item.product.vendor }}</p>
                       {%- endif -%}

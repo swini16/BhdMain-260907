@@ -1533,5 +1533,17 @@
         "default": "scheme-1"
       }
     ]
+  },
+  {
+    "name": "Backorder disclosure",
+    "settings": [
+      {
+        "type": "text",
+        "id": "bhd_backorder_variant_ids",
+        "label": "Eligible variant IDs",
+        "info": "Comma-separated IDs. Disclosure requires tracked stock at zero or below and continue-selling enabled. Does not change inventory policy.",
+        "default": "47373155631388"
+      }
+    ]
   }
 ]

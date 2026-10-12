@@ -186,7 +186,8 @@
       "mobile_intro_electrolytes": "5 electrolytes",
       "mobile_intro_servings": "32 servings",
       "mobile_intro_value": "~{{ price }}/serving",
-      "mobile_intro_taste": "Tastes great. Light, balanced, not too sweet."
+      "mobile_intro_taste": "Tastes great. Light, balanced, not too sweet.",
+      "backorder_delay": "Due to high demand, may take an extra day or two to arrive"
     },
     "modal": {
       "label": "Media gallery"
