@@ -95,6 +95,9 @@ test.describe('Proposed media pages', () => {
         await expect(hero).toHaveAttribute('alt', 'Best Hydrate Lemonade electrolyte powder jar');
         expect(await hero.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
         if (cbc) {
+          await expect(page.getByRole('heading', { name: "A sports drink that could help with Crohn's disease", exact: true })).toBeVisible();
+          await expect(page.locator('.bhd-page q')).toHaveText('hopes to do more than just quench your thirst');
+          await expect(page.locator('.bhd-page')).not.toContainText('October 12, 7:35 a.m. MDT.');
           await expect(page.getByRole('link', { name: 'Listen to our CBC interview', exact: true })).toHaveAttribute('href', 'https://www.cbc.ca/listen/live-radio/1-17-edmonton-am/clip/16242570-a-sports-drink-help-crohns-disease');
           await expect(page.locator('.bhd-page')).not.toContainText(/scheduled to join|Scheduled for Monday|An interview replay has not yet been verified|not an interview replay/);
         }

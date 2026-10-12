@@ -1,0 +1,8 @@
+{
+  "pageId": "gid://shopify/Page/155601797404",
+  "status": "Pending required QA and separate CBC release after Folio PR234",
+  "sourceEvidence": "User-provided screenshot libfile_241243cdd7c8819191c42cf6a6563701, received 2026-10-12T21:42:33; directly inspected by parent's image worker. No denied source access retried.",
+  "title": "A sports drink that could help with Crohn's disease | CBC",
+  "description": "CBC Edmonton AM interviews Best Hydrate’s Austin Swiniarski and Spencer Proctor. Read the attributed headline and listen to the original CBC segment.",
+  "dateDecision": "Omit date: screenshot lists Oct11, prior confirmation Oct12. Do not infer resolution."
+}
