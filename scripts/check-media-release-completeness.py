@@ -94,7 +94,8 @@ def read_news_feed():
         feed = ET.fromstring(read_public(url))
         if len(seen) == 1:
             first_entry = feed.find('a:entry', ATOM)
-            print('FEED_ENTRY_EVIDENCE ' + ET.tostring(first_entry, encoding='unicode'))
+            if first_entry is not None:
+                print('FEED_ENTRY_EVIDENCE ' + ET.tostring(first_entry, encoding='unicode'))
         for entry in feed.findall('a:entry', ATOM):
             alternate = next((n.get('href') for n in entry.findall('a:link', ATOM)
                               if n.get('rel', 'alternate') == 'alternate'), None)
