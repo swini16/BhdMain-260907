@@ -1,0 +1,37 @@
+{
+  "status": "PREPARATION ONLY: no live SEO changes; publication approval pending; CBC source excerpt pending verified source access",
+  "base": "cef2c0ad435efd7df4f3448c968d31f200877c2b",
+  "before": {
+    "folio": {
+      "id": "gid://shopify/Page/155601764636",
+      "title": "Best Hydrate in U of Alberta\u2019s Folio",
+      "handle": "folio-hydration-feature",
+      "seoTitle": null,
+      "seoDescription": {
+        "value": "Read U of Alberta\u2019s Folio coverage of Best Hydrate\u2019s collaboration with University of Alberta researcher Dr. Spencer Proctor and Austin Swiniarski."
+      }
+    },
+    "cbc": {
+      "id": "gid://shopify/Page/155601797404",
+      "title": "Best Hydrate and CBC Edmonton AM",
+      "handle": "cbc-edmonton-am",
+      "seoTitle": {
+        "value": "Best Hydrate on CBC Edmonton AM | 93.9 FM & 740 AM"
+      },
+      "seoDescription": {
+        "value": "CBC Edmonton AM listening details for Best Hydrate: Radio One Edmonton, 93.9 FM / 740 AM. October 12, 2026, 7:35 a.m. MDT."
+      }
+    }
+  },
+  "proposed": {
+    "folio": {
+      "title": "U of A Researcher Brings Expertise to Oral Hydration | Folio",
+      "description": "Read U of Alberta\u2019s Folio reporting on Dr. Spencer Proctor, Best Hydrate and oral-hydration research, with a brief attributed excerpt and the original article."
+    }
+  },
+  "held_cbc_proposal": {
+    "title": "Best Hydrate on CBC Edmonton AM | Listen to the Interview",
+    "description": "Listen to Best Hydrate\u2019s CBC Edmonton AM interview with Austin Swiniarski and Dr. Spencer Proctor. Open the original segment on CBC Listen.",
+    "status": "NOT STAGED FOR RELEASE: verified source title/excerpt unavailable; preserve existing CBC heading and SEO until resolved"
+  }
+}

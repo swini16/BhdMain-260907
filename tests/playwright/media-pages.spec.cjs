@@ -98,6 +98,11 @@ test.describe('Proposed media pages', () => {
           await expect(page.getByRole('link', { name: 'Listen to our CBC interview', exact: true })).toHaveAttribute('href', 'https://www.cbc.ca/listen/live-radio/1-17-edmonton-am/clip/16242570-a-sports-drink-help-crohns-disease');
           await expect(page.locator('.bhd-page')).not.toContainText(/scheduled to join|Scheduled for Monday|An interview replay has not yet been verified|not an interview replay/);
         }
+        if (!cbc) {
+          await expect(page.getByRole('heading', { name: 'U of A researcher lends expertise to boost the science of oral hydration', exact: true })).toBeVisible();
+          await expect(page.locator('.bhd-page q')).toHaveText('Our goal is to bring more science to this topic');
+          await expect(page.locator('.bhd-page')).toContainText('Dr. Spencer Proctor, quoted in U of Alberta’s Folio, October 8, 2026.');
+        }
         // Exercise breadcrumb navigation inside the same development preview.
         await crumbs.locator('a[href="/pages/press"]').click();
         await expect(page.getByRole('heading', { name: 'Best Hydrate in the news', exact: true })).toBeVisible();
