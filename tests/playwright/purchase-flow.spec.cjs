@@ -40,8 +40,14 @@ test('Canadian product to checkout navigation without placing an order', async (
   await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
   const quantity=page.locator('cart-items input[name="updates[]"]').first();
   await expect(quantity).toHaveValue('1');
+  const changed = page.waitForResponse(r => /\/cart\/change(?:\.js)?(?:[?#]|$)/.test(r.url()) && r.request().method() === 'POST');
   await quantity.fill('2');await quantity.press('Tab');
-  await expect.poll(async()=>page.evaluate(async()=>{const c=await fetch('/cart.js').then(r=>r.json());return c.items.find(i=>i.variant_id===47373155631388)?.quantity;})).toBe(2);
+  const changeResponse = await changed;
+  expect(changeResponse.status()).toBe(200);
+  const changedCart = await changeResponse.json();
+  expect(changedCart.items.find(i=>i.variant_id===47373155631388)?.quantity).toBe(2);
+  await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
+  await expect(page.locator('cart-items input[name="updates[]"]').first()).toHaveValue('2');
   if(simulated) await expect(page.locator('cart-items .bhd-backorder-notice').first()).toHaveText(copy);
   await page.screenshot({path:path.join(dir,'cart.png'),fullPage:true});
   // Existing advertised code only: no discount creation and no payment submission.
