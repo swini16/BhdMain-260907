@@ -83,7 +83,7 @@ test.describe('Proposed media pages', () => {
         await expect(cards.locator('a[href="/pages/cbc-edmonton-am"]')).toBeVisible();
       } else {
         const cbc = route.endsWith('cbc-edmonton-am');
-        await expect(page.getByRole('heading', { level: 1 })).toHaveText(cbc ? 'Best Hydrate and CBC Edmonton AM' : 'Best Hydrate in U of Alberta’s Folio');
+        await expect(page.getByRole('heading', { level: 1 })).toHaveText(cbc ? "CBC Edmonton AM: A sports drink that could help with Crohn's disease" : "U of Alberta’s Folio: U of A researcher lends expertise to boost the science of oral hydration");
         const crumbs = page.locator('.bhd-breadcrumbs');
         await expect(crumbs.locator('a[href="/pages/press"]')).toBeVisible();
         await expect(crumbs).toContainText(cbc ? 'CBC Edmonton AM' : 'U of Alberta’s Folio');
@@ -95,14 +95,14 @@ test.describe('Proposed media pages', () => {
         await expect(hero).toHaveAttribute('alt', 'Best Hydrate Lemonade electrolyte powder jar');
         expect(await hero.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
         if (cbc) {
-          await expect(page.getByRole('heading', { name: "A sports drink that could help with Crohn's disease", exact: true })).toBeVisible();
+          await expect(page.getByRole('heading', { name: "CBC Edmonton AM: A sports drink that could help with Crohn's disease", exact: true })).toBeVisible();
           await expect(page.locator('.bhd-page q')).toHaveText('hopes to do more than just quench your thirst');
           await expect(page.locator('.bhd-page')).not.toContainText('October 12, 7:35 a.m. MDT.');
           await expect(page.getByRole('link', { name: 'Listen to our CBC interview', exact: true })).toHaveAttribute('href', 'https://www.cbc.ca/listen/live-radio/1-17-edmonton-am/clip/16242570-a-sports-drink-help-crohns-disease');
           await expect(page.locator('.bhd-page')).not.toContainText(/scheduled to join|Scheduled for Monday|An interview replay has not yet been verified|not an interview replay/);
         }
         if (!cbc) {
-          await expect(page.getByRole('heading', { name: 'U of A researcher lends expertise to boost the science of oral hydration', exact: true })).toBeVisible();
+          await expect(page.getByRole('heading', { name: "U of Alberta’s Folio: U of A researcher lends expertise to boost the science of oral hydration", exact: true })).toBeVisible();
           await expect(page.locator('.bhd-page q')).toHaveText('Our goal is to bring more science to this topic');
           await expect(page.locator('.bhd-page')).toContainText('Dr. Spencer Proctor, quoted in U of Alberta’s Folio, October 8, 2026.');
         }

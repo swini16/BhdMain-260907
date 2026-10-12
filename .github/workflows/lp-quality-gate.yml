@@ -338,7 +338,7 @@ jobs:
           const response = await fetch(url);
           const html = await response.text();
           const line = 'CBC Radio One Edmonton · 93.9 FM / 740 AM.';
-          if (response.status !== 200 || !html.includes(line) || !html.includes('Best Hydrate and CBC Edmonton AM') || !html.includes('https://www.cbc.ca/listen/live-radio/1-17-edmonton-am/clip/16242570-a-sports-drink-help-crohns-disease') || !html.includes('Listen to our CBC interview') || !html.includes("A sports drink that could help with Crohn's disease") || html.includes('October 12, 7:35 a.m. MDT.')) {
+          if (response.status !== 200 || !html.includes(line) || !html.includes("CBC Edmonton AM: A sports drink that could help with Crohn's disease") || !html.includes('https://www.cbc.ca/listen/live-radio/1-17-edmonton-am/clip/16242570-a-sports-drink-help-crohns-disease') || !html.includes('Listen to our CBC interview') || !html.includes("A sports drink that could help with Crohn's disease") || html.includes('October 12, 7:35 a.m. MDT.')) {
             throw new Error(`CBC station detail readback failed: HTTP ${response.status}`);
           }
           console.log(`PASS HTTP ${response.status}: ${line} ${url}`);
