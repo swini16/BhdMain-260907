@@ -7,12 +7,12 @@ Prepared against `main` at `fa87925f226904c0cd9ea86f76d804f78b04cf4f` on October
 - Selected Library file: `libfile_8a32aaa2a958819193081c0f2295d1ef`, `Lemonade-volume-update(1)(1).zip`, 57,135 bytes.
 - Verified local SHA256: `f15983253ecdbabd5eea56bb70cc91b21ef84dab8f7b07efbf0771cc07f3751f`.
 - Isolated worktree/branch; original saved checkout remains untouched. No AGENTS.md, .agents/skills or CODEOWNERS exists in current main; workspace .agents is empty. Followed repository PR template and .github/ANTI_STALL.md.
-- Reviewed open PRs and the relevant changed-file lists. PR226 (A056) and PR227 share the English locale file. Other open product work includes PR143, PR151, PR186 and PR52. All returned authors are swini16. None of these branches, assignments or review ownership was modified. This adds a new locale namespace and does not incorporate any other draft.
+- Reviewed open PRs and the relevant changed-file lists. PR226 (A056) and PR227 share the English locale file. The necessary native quantity render also touches main-product.liquid, shared with PR226, PR143 and PR52. Other open product work includes PR151 and PR186. All returned authors are swini16. None of these branches, assignments or review ownership was modified. This adds a new locale namespace and does not incorporate any other draft.
 - Read-only Shopify MAIN theme readback: `BhdMain-260907/main`, theme 182996762908. Cart footer and drawer match main exactly. English locale matches main exactly and the ZIP baseline semantically. Live product.json matches the ZIP baseline semantically, but differs from main in trust_strip, free_shipping, and disclosures settings. Those main values are preserved; no whole-template replacement.
 
 ## Exact implementation scope
 
-Eight storefront paths, plus one regression test and this review:
+38 storefront paths, plus one regression test and this review. Correcting the introduced findings requires 31 paths beyond the original eight (30 locale files and main-product.liquid), while removing the product.json change. Only display integration and its fallback strings are added:
 
 - `assets/bhd-lemonade-volume.css`: package styling for three quantity choices, focus/selection/disabled states and narrow screens.
 - `assets/bhd-lemonade-volume.js`: update the existing native form quantity; synchronize native changes and variant/quantity events. Preserve stock, quantity min/max/increments and remaining-cart constraints. Fail closed for mismatched variants, unavailable stock, missing quantity input and subscriptions, including an initial plan before app input insertion.
@@ -21,7 +21,9 @@ Eight storefront paths, plus one regression test and this review:
 - `locales/en.default.json`: only add bhd.volume (19 keys). Explicit estimate qualification and FIRST15 non-combination copy.
 - `sections/main-cart-footer.liquid`: one render inside refreshed js-contents.
 - `snippets/cart-drawer.liquid`: one render inside refreshed footer.
-- `templates/product.json`: one new lemonade_volume custom-liquid block before quantity_selector. Every pre-existing value and block order remains unchanged.
+- `sections/main-product.liquid`: one literal render call immediately inside the native quantity_selector branch. This gives the snippet a real reference visible to Theme Check.
+- Thirty non-default storefront locale files: append exactly the same 19 approved English strings under bhd.volume as explicit fallbacks. These are English fallbacks, not new translations; all existing language content is byte-preserved. Native-language translations remain a separate editorial follow-up.
+- `templates/product.json`: restored byte-for-byte to main; no remaining template delta.
 
 No workflows, discount configuration, product descriptions, pricing, images, unrelated templates or other owners' changes are modified.
 
@@ -38,15 +40,15 @@ Displayed totals are estimates for the selected addition, not a repricing of the
 Passed:
 
 - ZIP bytes/hash and safe archive paths.
-- All 37 Node unit tests, including 17 new Lemonade fixture tests.
+- All 39 Node unit tests, including 19 new Lemonade fixture tests.
 - New tests cover CAD/USD and changed contextual price; 1/2/3/back-to-1; native events/FormData; max exhaustion; inventory remaining; increments; subscriptions and initial-plan guard; variant mismatch and refresh; missing/unavailable inputs; BFCM start/end boundaries; cart refresh through empty; FIRST15/other-code prompt suppression; native cart refresh integration.
 - JavaScript syntax, git diff whitespace and desktop/mobile responsive policy source check.
-- Semantic preservation checks: remove only the new block/order entry and the template equals main; remove only bhd and the locale equals main.
-- Existing optional-cart-target regression.
+- Preservation checks: product.json is byte-identical to main; remove only the appended bhd namespace and all 30 non-default locales are byte-identical to their prior contents. Existing English locale keys are also preserved.
+- Existing optional-cart-target regression and seven backorder render states, mixed-cart fixture and Liquid/JSON/CSS parsing.
 
 Failed / remaining:
 
-- Full Shopify Theme Check: 1,421 errors and 59 warnings; same tool on main: 851 errors and 58 warnings. Incremental results are exactly 570 MatchingTranslations errors (19 English-only keys across 30 other locales) and one OrphanedSnippet warning (render is embedded in custom-liquid template settings). No new Liquid syntax errors. Translate the new keys before treating the proposal as fully validated; do not disable this check.
+- Full Shopify Theme Check still fails on exactly the same 851 errors and 58 warnings as main, with ZERO new findings (compared by path, check, severity and message, ignoring shifted line numbers). The earlier 570 new MatchingTranslations errors were 19 missing keys × 30 locales; explicit approved English fallbacks resolve them without invented translations. Moving the real render call from JSON settings to the native section resolves the additional OrphanedSnippet warning. No checks are suppressed and no baseline errors are altered.
 - Desktop/mobile browser launch failed before tests: system Chromium SUID sandbox helper is not configured correctly. No browser protection was disabled. No screenshots or rendered layout pass claimed.
 - Shopify-rendered preview, actual cart/checkout discount allocation and FIRST15 non-stacking behavior, mobile/desktop visual and keyboard/touch checks have not run. DOM/Liquid fixtures are not Shopify-rendered proof. No order was placed.
 
@@ -54,4 +56,16 @@ Failed / remaining:
 
 Opening a PR against main triggers `.github/workflows/shopify-pr-preview-gate.yml` on `pull_request: opened`, including drafts. It copies all theme directories and runs a complete development-theme upload. There is no draft guard. The task prohibits whole-theme uploads and requires CI protections to remain intact. Therefore PR creation is held pending explicit clarification; do not use CI0/CI1 naming, skip markers, a different base, workflow edits or cancellations to bypass the gate.
 
-Before release: resolve that staging authorization conflict, finish localization, run protected CI and Shopify-rendered desktop/mobile preview, verify both market routes/currencies and one-time/subscription choices, stock/quantity rules and backorders, cart add/update/remove refresh, FIRST15 vs automatic discounts without an order, scheduled boundaries, description-notice deduplication, theme/main drift and overlap with PR226/227. Reconcile live-only template differences selectively. Obtain separate release authorization. Rollback is removal of this isolated display patch; backend offers remain unchanged.
+Before release: resolve that staging authorization conflict, review English fallback scope/native-language editorial needs, run protected CI and Shopify-rendered desktop/mobile preview, verify both market routes/currencies and one-time/subscription choices, stock/quantity rules and backorders, cart add/update/remove refresh, FIRST15 vs automatic discounts without an order, scheduled boundaries, description-notice deduplication, theme/main drift and overlap with PR226/227. Reconcile live-only template differences selectively. Obtain separate release authorization. Rollback is removal of this isolated display patch; backend offers remain unchanged.
+
+## Existing preview workflow and browser access
+
+The protected Shopify PR preview gate runs on opened, synchronize, reopened and ready_for_review events targeting main, with no draft exclusion. It uses ubuntu-latest, contents:read, a per-PR concurrency group with cancel-in-progress, and a 12-minute timeout. The destination store is best-hydrate.myshopify.com; credential access comes from the existing repository secret fallback chain. No credentials were inspected or changed.
+
+For this patch it stages assets, blocks, config, layout, locales, sections, snippets and templates into /tmp/bhd-theme. After a sandbox-enabled installed Chrome preflight, `shopify theme push --development --development-context pr-<PR-number>-proposed` uploads that complete staged theme. It checks the returned theme role is development. No preview theme ID or URL exists for this task because the workflow has not run; the exact ID is allocated/returned at runtime, not knowable in advance. This is a full remote staging upload, despite not being a publication.
+
+The workflow then uses `shopify theme dev` against that returned theme ID with a runner-local authenticated renderer at 127.0.0.1:9292, live reload off and nodelete. Its upload-error guard only allows proven unchanged unrelated exclusions; changed files and shared/product/cart surfaces remain protected. For this patch the targeted routes are / and /products/lemonade-best-hydrate. The US PDP, quantity-offer interactions and checkout allocation matrix are not explicitly covered by that targeted smoke. The separate purchase-flow branch is selected only by bhd-backorder or purchase-flow filenames and will not run for this patch.
+
+Configured Playwright projects are desktop Chromium 1440×900 and mobile Chromium 390×844 with touch/mobile emulation. Both use chromiumSandbox:true and the workflow selects installed Chrome. Cleanup always attempts to stop the renderer and delete only the returned development preview when an ID was recorded. This does not promise cleanup after every early failure or cancellation. No workflow or protection is changed.
+
+Supported sandboxed browser route: the existing CI route is configured correctly and is pending authorization for its full-theme staging side effect; its actual launch/access is unverified for this branch. No usable local sandboxed browser route was found. System Chromium fails because /usr/lib/chromium/chrome-sandbox is owned by nobody rather than root; a user-namespace capability check fails because /proc/self/uid_map is read-only. No exposed browser connector was available. We did not disable sandboxing, change helper ownership, change permissions, request elevated access or alter security controls.

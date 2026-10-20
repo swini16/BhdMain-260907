@@ -105,3 +105,14 @@ test('both cart surfaces render inside the sections refreshed by native cart cod
  assert.match(read('assets/cart.js'),/main-cart-footer/);
  assert.match(read('assets/cart-drawer.js'),/cart-drawer/);
 });
+test('all existing storefront locales provide the exact approved English fallback keys',()=>{
+  const files=fs.readdirSync(path.join(root,'locales')).filter(name=>name.endsWith('.json')&&!name.endsWith('.schema.json')&&name!=='en.default.json');
+  assert.equal(files.length,30);
+  for(const name of files) assert.deepEqual(JSON.parse(read(`locales/${name}`)).bhd.volume,locale.bhd.volume,`${name}: English fallback changed`);
+});
+test('quantity offer renders once from the native section rather than template settings',()=>{
+  const section=read('sections/main-product.liquid');
+  assert.match(section,/{%- when 'quantity_selector' -%}\s*{% render 'bhd-lemonade-volume', product: product, section_id: section.id %}/);
+  assert.equal(section.split("render 'bhd-lemonade-volume'").length-1,1);
+  assert.doesNotMatch(read('templates/product.json'),/bhd-lemonade-volume|lemonade_volume/);
+});

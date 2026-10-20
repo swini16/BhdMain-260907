@@ -527,5 +527,28 @@
       "expanded": "Ajándékkártya címzettjének űrlapja kibontva",
       "collapsed": "Ajándékkártya címzettjének űrlapja összecsukva"
     }
+  },
+  "bhd": {
+    "volume": {
+      "eyebrow": "Lemonade savings",
+      "heading_standard": "Buy 2, save 10%. Buy 3+, save 15%.",
+      "heading_bfcm": "Black Friday: save 20% on 1 jar, 25% on 2+.",
+      "terms": "Estimated merchandise totals before tax and delivery. Final savings appear in cart. Best eligible offer applies. Cannot combine with FIRST15 or other discounts.",
+      "one_time": "Offers shown for one-time purchases.",
+      "jar": "1 jar",
+      "jars": "{{ quantity }} jars",
+      "single_jar": "Single jar",
+      "best_value": "Best value",
+      "save_percent": "Save {{ percent }}%",
+      "regular_price": "Regular price",
+      "each": "{{ price }} / jar",
+      "selected_message": "Quantity set to {{ quantity }}.",
+      "cart_heading": "Lemonade quantity savings",
+      "cart_standard": "2 jars: 10% off. 3+ jars: 15% off.",
+      "cart_bfcm": "1 jar: 20% off. 2+ jars: 25% off.",
+      "cart_add_second": "Add one more jar to qualify for the 2-jar offer.",
+      "cart_add_third": "Add one more jar to qualify for the 3-jar offer.",
+      "cart_terms": "Automatic savings on one-time purchases. The best eligible offer applies. Cannot combine with FIRST15 or other discounts."
+    }
   }
 }
