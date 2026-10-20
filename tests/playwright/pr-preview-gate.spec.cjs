@@ -177,6 +177,8 @@ for (const market of [
     test.setTimeout(180000);
     test.skip(!PREVIEW_THEME_ID, 'Requires the governed development-theme preview; never fall back to live QA.');
     expect(new URL(BASE_URL).hostname).toBe('127.0.0.1');
+    expect(new URL(BASE_URL).protocol).toBe('http:');
+    const rendererOrigin = new URL(BASE_URL).origin;
     const { theme } = JSON.parse(require('node:fs').readFileSync('artifacts/shopify-preview.json', 'utf8'));
     expect(theme.role, 'generated preview role').toBe('development');
     expect(String(theme.id), 'generated preview ID').toMatch(/^[1-9]\d*$/);
@@ -188,12 +190,18 @@ for (const market of [
     expect(generatedPreview.username + generatedPreview.password + generatedPreview.port + generatedPreview.hash).toBe('');
     expect(generatedPreview.pathname).toBe('/');
     expect(generatedPreview.searchParams.getAll('preview_theme_id')).toEqual([PREVIEW_THEME_ID]);
-    let storefrontOrigin = '';
+    let cartActionsStarted = false;
+    let cliVersion = 'unavailable';
+    try {
+      const installed = JSON.parse(require('node:fs').readFileSync('node_modules/@shopify/cli/package.json', 'utf8'));
+      if (/^\d+\.\d+\.\d+(?:[-+][\w.-]+)?$/.test(installed.version)) cliVersion = installed.version;
+    } catch { /* Version metadata is optional; never inspect authentication state. */ }
     const now = Date.now();
     const bfcm = now >= Date.parse('2026-11-27T07:00:00Z') && now < Date.parse('2026-12-01T07:00:00Z');
     const quantities = [1, 2, 3, 9, 10, 11];
     const evidence = {
       country: market.country, project: testInfo.project.name, themeId: PREVIEW_THEME_ID, bfcm,
+      transport: 'shopify-cli-renderer', cliVersion, stage: 'preview home', localizationPosts: [],
       localization: null, product: null, quantities: [], first15: [], checkout: 'not reached',
     };
     // Keep diagnostics useful without recording query strings, cookies, or response bodies.
@@ -201,8 +209,8 @@ for (const market of [
       const url = new URL(response.url());
       return { status: response.status(), origin: url.origin, path: url.pathname };
     };
-    const assertPreviewPage = async (response, requireMarket = true, retainOrigin = true) => {
-      expect(response, 'hosted development preview response').not.toBeNull();
+    const assertPreviewPage = async (response, requireMarket = true) => {
+      expect(response, 'development renderer response').not.toBeNull();
       const url = new URL(page.url());
       const state = {
         ...safeResponse(response),
@@ -211,40 +219,29 @@ for (const market of [
           country: window.Shopify?.country, currency: window.Shopify?.currency?.active,
         })),
       };
-      expect(response.status(), `hosted preview: ${JSON.stringify(state)}`).toBeLessThan(400);
-      expect(url.protocol).toBe('https:');
-      expect(url.username + url.password + url.port).toBe('');
-      expect(state.shop, 'same Shopify shop after canonical navigation').toBe(theme.shop);
+      expect(response.status(), `development renderer: ${JSON.stringify(state)}`).toBeLessThan(400);
+      expect(url.origin, 'retain the existing authenticated CLI renderer').toBe(rendererOrigin);
+      expect(url.username + url.password).toBe('');
+      expect(state.shop, 'same Shopify shop in the renderer').toBe(theme.shop);
       expect(state.themeId, 'exact generated development theme, never the live theme').toBe(PREVIEW_THEME_ID);
-      if (retainOrigin) expect(url.origin, 'retain the validated hosted market origin').toBe(storefrontOrigin);
       if (requireMarket) {
         expect(state.country, 'selected Shopify market').toBe(market.country);
         expect(state.currency, 'selected Shopify presentment currency').toBe(market.currency);
       }
       return state;
     };
-    const hostedUrl = path => {
-      expect(storefrontOrigin, 'validated hosted preview origin').not.toBe('');
-      const url = new URL(path, storefrontOrigin);
-      url.searchParams.set('preview_theme_id', PREVIEW_THEME_ID);
-      url.searchParams.set('utm_source', 'qa_automation');
-      url.searchParams.set('utm_medium', 'playwright');
-      url.searchParams.set('utm_campaign', 'pr_preview_targeted');
-      return url.toString();
-    };
     const visitPreview = async path => {
-      const response = await page.goto(hostedUrl(path), { waitUntil: 'domcontentloaded' });
+      const response = await page.goto(previewUrl(path), { waitUntil: 'domcontentloaded' });
       return assertPreviewPage(response);
     };
     const api = async (path, data) => {
-      expect(storefrontOrigin, 'validated cart origin').not.toBe('');
-      const response = await page.request.post(new URL(path, storefrontOrigin).toString(), { data });
+      const response = await page.request.post(new URL(path, rendererOrigin).toString(), { data });
       expect(response.ok(), `${path} status ${response.status()}`).toBeTruthy();
+      cartActionsStarted = true;
       return response.json();
     };
     const readCart = async () => {
-      expect(storefrontOrigin, 'validated cart origin').not.toBe('');
-      const response = await page.request.get(new URL('/cart.js', storefrontOrigin).toString());
+      const response = await page.request.get(new URL('/cart.js', rendererOrigin).toString());
       expect(response.ok(), `/cart.js status ${response.status()}`).toBeTruthy();
       const cart = await response.json();
       expect(cart.currency, `${market.country} cart currency`).toBe(market.currency);
@@ -305,14 +302,22 @@ for (const market of [
         .toContainText((cart.total_price / 100).toFixed(2));
       return summary;
     };
+    const recordLocalization = response => {
+      const url = new URL(response.url());
+      if (url.origin === rendererOrigin && url.pathname === '/localization'
+          && response.request().method() === 'POST' && evidence.localizationPosts.length < 3) {
+        evidence.localizationPosts.push(safeResponse(response));
+      }
+    };
+    page.on('response', recordLocalization);
     try {
-      // Shopify recommends the generated hosted preview for CLI localhost localization/session failures.
-      // Resolve the shop's canonical host through normal navigation, then prove the exact preview identity.
-      const landing = await page.goto(generatedPreview.toString(), { waitUntil: 'domcontentloaded' });
-      await assertPreviewPage(landing, false, false);
-      storefrontOrigin = new URL(page.url()).origin;
+      // Keep all theme/cart traffic on the existing official theme-dev server so its native
+      // session and crawler authorization remain inside the CLI, without exporting credentials.
+      const landing = await page.goto(previewUrl('/'), { waitUntil: 'domcontentloaded' });
+      await assertPreviewPage(landing, false);
       // Submit Shopify's documented native localization form, retaining the development preview on return.
-      const returnUrl = new URL(hostedUrl('/'));
+      evidence.stage = 'native localization';
+      const returnUrl = new URL(previewUrl('/'));
       const [localize] = await Promise.all([
         page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
         page.evaluate(fields => {
@@ -334,16 +339,16 @@ for (const market of [
           language_code: 'en', return_to: returnUrl.pathname + returnUrl.search,
         }),
       ]);
-      evidence.localization = await assertPreviewPage(localize, true, false);
-      // Localization may legitimately redirect to the market's canonical host. Keep this validated origin
-      // for the entire cart session, including cleanup after checkout navigates to a different origin.
-      storefrontOrigin = new URL(page.url()).origin;
+      evidence.localization = await assertPreviewPage(localize);
+      evidence.stage = 'market product';
       evidence.product = await visitPreview(`/products/${market.handle}`);
+      evidence.stage = 'cart setup';
       await api('/cart/clear.js', {});
       await api('/cart/update.js', { discount: '' });
       expect((await readCart()).item_count, 'isolated empty cart').toBe(0);
       // Refresh the Liquid cart context after clearing any prior offer.
       await visitPreview(`/products/${market.handle}`);
+      evidence.stage = 'product quantity prompts';
       const widget = page.locator('bhd-lemonade-volume:visible');
       await expect(widget).toHaveCount(1);
       await expect(widget).toHaveAttribute('data-variant-id', market.variant);
@@ -392,24 +397,46 @@ for (const market of [
       await quantityInput.blur();
       await assertProductPrompt(1);
       expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(4);
+      evidence.stage = 'native add to cart';
       const addResponse = page.waitForResponse(r => r.url().includes('/cart/add') && r.request().method() === 'POST');
       await productInfo.locator('form[action*="/cart/add"] button[type="submit"]').click();
       const added = await addResponse;
       expect(added.ok(), `native add to cart: status ${added.status()}`).toBeTruthy();
       await added.finished();
       await visitPreview('/cart');
+      evidence.stage = 'cart quantity offers';
       for (const quantity of [...quantities, 1]) {
         evidence.quantities.push(await changeCartQuantity(quantity));
       }
       await testInfo.attach(`lemonade-${market.country}-cart`, { body: await page.locator('#main-cart-footer').screenshot(), contentType: 'image/png' });
+      evidence.stage = 'FIRST15 comparison';
       await api('/cart/update.js', { discount: 'FIRST15' });
       await visitPreview('/cart');
       for (const quantity of [...quantities, 1]) {
         evidence.first15.push(await changeCartQuantity(quantity, true));
       }
       const checkoutOffer = evidence.first15.at(-1).discounts[0];
-      // Only open checkout. Do not fill customer/address/payment fields or click any checkout submit control.
-      const checkout = await page.goto(hostedUrl('/checkout'), { waitUntil: 'domcontentloaded' });
+      // Follow the native cart POST so Shopify's normal redirect carries the cart into checkout.
+      // Do not fill customer/address/payment fields or click any submit control inside checkout.
+      evidence.stage = 'native cart checkout';
+      const cartForm = page.locator('form#cart');
+      await expect(cartForm).toHaveCount(1);
+      await expect(cartForm).toHaveAttribute('method', /post/i);
+      const cartAction = new URL(await cartForm.getAttribute('action'), page.url());
+      expect(cartAction.origin).toBe(rendererOrigin);
+      expect(cartAction.pathname).toMatch(/\/cart$/);
+      const checkoutButton = page.locator('#main-cart-footer #checkout[name="checkout"]');
+      await expect(checkoutButton).toHaveAttribute('type', 'submit');
+      await expect(checkoutButton).toHaveAttribute('form', 'cart');
+      await expect(checkoutButton).toBeVisible();
+      await expect(checkoutButton).toBeEnabled();
+      const [, checkout] = await Promise.all([
+        page.waitForRequest(request => request.method() === 'POST'
+          && new URL(request.url()).origin === rendererOrigin
+          && new URL(request.url()).pathname === cartAction.pathname),
+        page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+        checkoutButton.click(),
+      ]);
       expect(checkout, 'pre-order checkout response').not.toBeNull();
       expect(checkout.status()).toBeLessThan(400);
       await expect(page).toHaveURL(/\/checkouts?\//);
@@ -427,9 +454,11 @@ for (const market of [
       };
       expect(evidence.checkout.offerVisible, 'strongest applied offer visible at pre-order checkout').toBeTruthy();
       if (!bfcm) expect(evidence.checkout.first15Visible, 'FIRST15 visible for one jar at pre-order checkout').toBeTruthy();
+      evidence.stage = 'complete';
     } finally {
+      page.off('response', recordLocalization);
       console.log('LEMONADE_ACCEPTANCE', JSON.stringify(evidence));
-      if (storefrontOrigin) {
+      if (cartActionsStarted) {
         await api('/cart/clear.js', {}).catch(() => {});
         await api('/cart/update.js', { discount: '' }).catch(() => {});
       }
