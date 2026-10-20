@@ -27,6 +27,12 @@
             "custom_liquid": "<p class=\"bhd-delivery-note\">Orders generally process in 0–2 business days. Delivery timing varies by destination.</p><style>.product__tax{display:none!important}.bhd-delivery-note{margin:.45rem 0 .2rem;color:#526b5f;font-size:1.08rem;line-height:1.35}@media screen and (max-width:749px){.bhd-delivery-note{margin:.35rem 0 .15rem;font-size:1rem}}</style>"
           }
         },
+        "lemonade_volume": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'bhd-lemonade-volume', product: product, section_id: section.id %}"
+          }
+        },
         "quantity_selector": {
           "type": "quantity_selector",
           "settings": {}
@@ -103,6 +109,7 @@
         "price",
         "purchase_value",
         "purchase_choice",
+        "lemonade_volume",
         "quantity_selector",
         "buy_buttons",
         "subscription_guard",

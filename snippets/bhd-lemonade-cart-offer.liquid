@@ -1,0 +1,108 @@
+{% doc %}
+  Shows the available Lemonade quantity offer once per cart surface.
+  Shopify's existing line and cart totals remain the source of applied savings.
+
+  @example
+  {% render 'bhd-lemonade-cart-offer' %}
+{% enddoc %}
+
+{%- liquid
+  assign lemonade_quantity = 0
+  assign lemonade_other_discount = false
+  assign lemonade_can_add_one = false
+  if cart.cart_level_discount_applications.size > 0
+    assign lemonade_other_discount = true
+  endif
+  for lemonade_item in cart.items
+    for lemonade_allocation in lemonade_item.line_level_discount_allocations
+      assign lemonade_discount_title = lemonade_allocation.discount_application.title
+      if lemonade_allocation.discount_application.type != 'automatic'
+        assign lemonade_other_discount = true
+      endif
+      unless lemonade_discount_title == 'Lemonade: Buy 2+, save 10%' or lemonade_discount_title == 'Lemonade: Buy 3+, save 15%'
+        assign lemonade_other_discount = true
+      endunless
+    endfor
+    if lemonade_item.product_id == 8904882422044 or lemonade_item.product_id == 10168145281308
+      if lemonade_item.selling_plan_allocation == blank
+        assign lemonade_quantity = lemonade_quantity | plus: lemonade_item.quantity
+        assign lemonade_variant = lemonade_item.variant
+        assign lemonade_variant_quantity = cart | item_count_for_variant: lemonade_variant.id
+        assign lemonade_next_quantity = lemonade_variant_quantity | plus: 1
+        assign lemonade_can_increase = lemonade_variant.available
+        if lemonade_variant.quantity_rule.increment > 1 or lemonade_variant.quantity_price_breaks.size > 0
+          assign lemonade_can_increase = false
+        endif
+        if lemonade_variant.quantity_rule.max != blank and lemonade_next_quantity > lemonade_variant.quantity_rule.max
+          assign lemonade_can_increase = false
+        endif
+        if lemonade_variant.inventory_management == 'shopify' and lemonade_variant.inventory_policy == 'deny' and lemonade_next_quantity > lemonade_variant.inventory_quantity
+          assign lemonade_can_increase = false
+        endif
+        if lemonade_can_increase
+          assign lemonade_can_add_one = true
+        endif
+      endif
+    endif
+  endfor
+  assign lemonade_now = 'now' | date: '%s' | plus: 0
+  assign lemonade_bfcm_start = '2026-11-27T07:00:00Z' | date: '%s' | plus: 0
+  assign lemonade_bfcm_end = '2026-12-01T07:00:00Z' | date: '%s' | plus: 0
+  assign lemonade_bfcm = false
+  if lemonade_now >= lemonade_bfcm_start and lemonade_now < lemonade_bfcm_end
+    assign lemonade_bfcm = true
+  endif
+-%}
+
+{%- if lemonade_quantity > 0 -%}
+  <aside class="bhd-lemonade-cart-offer" aria-label="{{ 'bhd.volume.cart_heading' | t | escape }}">
+    <strong>{{ 'bhd.volume.cart_heading' | t | escape }}</strong>
+    <p>
+      {%- if lemonade_bfcm -%}
+        {{ 'bhd.volume.cart_bfcm' | t | escape }}
+      {%- else -%}
+        {{ 'bhd.volume.cart_standard' | t | escape }}
+      {%- endif -%}
+    </p>
+    {%- if lemonade_other_discount == false and lemonade_bfcm == false and lemonade_can_add_one -%}
+      {%- if lemonade_quantity == 1 -%}
+        <p class="bhd-lemonade-cart-offer__nudge">{{ 'bhd.volume.cart_add_second' | t | escape }}</p>
+      {%- elsif lemonade_quantity == 2 -%}
+        <p class="bhd-lemonade-cart-offer__nudge">{{ 'bhd.volume.cart_add_third' | t | escape }}</p>
+      {%- endif -%}
+    {%- endif -%}
+    <small>{{ 'bhd.volume.cart_terms' | t | escape }}</small>
+  </aside>
+{%- endif -%}
+
+{% stylesheet %}
+  .bhd-lemonade-cart-offer {
+    margin: 0 0 1.4rem;
+    padding: 1.2rem 1.4rem;
+    border: 1px solid #b9cde3;
+    border-radius: 1rem;
+    background: #f4f8fd;
+    color: #0b2d67;
+    line-height: 1.4;
+  }
+
+  .bhd-lemonade-cart-offer strong {
+    display: block;
+    font-size: 1.4rem;
+  }
+
+  .bhd-lemonade-cart-offer p {
+    margin: .45rem 0;
+    font-size: 1.3rem;
+  }
+
+  .bhd-lemonade-cart-offer__nudge {
+    font-weight: 700;
+  }
+
+  .bhd-lemonade-cart-offer small {
+    display: block;
+    margin-top: .5rem;
+    font-size: 1.1rem;
+  }
+{% endstylesheet %}

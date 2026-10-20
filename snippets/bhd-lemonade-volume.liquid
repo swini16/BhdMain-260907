@@ -1,0 +1,126 @@
+{% doc %}
+  Renders presentment-currency Lemonade quantity offers beside the native quantity control.
+  Prices are server rendered. Buttons only update the existing product form quantity.
+
+  @param {product} product - The product displayed by the enclosing product-info element.
+  @param {string} section_id - The section ID used by Quantity- and product-form-.
+
+  @example
+  {% render 'bhd-lemonade-volume', product: product, section_id: section.id %}
+{% enddoc %}
+
+{%- liquid
+  assign volume_eligible = false
+  if product.id == 8904882422044 or product.id == 10168145281308
+    assign volume_eligible = true
+  endif
+  assign volume_variant = product.selected_or_first_available_variant
+  if product.quantity_price_breaks_configured?
+    assign volume_eligible = false
+  endif
+  assign volume_stock_limit = ''
+  if volume_variant.inventory_management == 'shopify' and volume_variant.inventory_policy == 'deny'
+    assign volume_stock_limit = volume_variant.inventory_quantity
+  endif
+  assign volume_now = 'now' | date: '%s' | plus: 0
+  assign volume_bfcm_start = '2026-11-27T07:00:00Z' | date: '%s' | plus: 0
+  assign volume_bfcm_end = '2026-12-01T07:00:00Z' | date: '%s' | plus: 0
+  assign volume_bfcm = false
+  if volume_now >= volume_bfcm_start and volume_now < volume_bfcm_end
+    assign volume_bfcm = true
+  endif
+  assign volume_initial_subscription = false
+  if product.selected_selling_plan != blank or product.requires_selling_plan
+    assign volume_initial_subscription = true
+  endif
+-%}
+
+{%- if volume_eligible and volume_variant != blank -%}
+  {{ 'bhd-lemonade-volume.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'bhd-lemonade-volume.js' | asset_url }}" defer="defer"></script>
+  <bhd-lemonade-volume
+    id="BhdLemonadeVolume-{{ section_id }}"
+    class="bhd-volume"
+    data-section-id="{{ section_id }}"
+    data-variant-id="{{ volume_variant.id }}"
+    data-available="{{ volume_variant.available }}"
+    data-stock-limit="{{ volume_stock_limit }}"
+    data-initial-subscription="{{ volume_initial_subscription }}"
+    data-requires-selling-plan="{{ product.requires_selling_plan }}"
+    data-selected-message="{{ 'bhd.volume.selected_message' | t: quantity: '__QUANTITY__' | escape }}"
+  >
+    <div class="bhd-volume__offers" data-volume-offers{% if volume_initial_subscription %} hidden{% endif %}>
+      <p class="bhd-volume__eyebrow">{{ 'bhd.volume.eyebrow' | t | escape }}</p>
+      <h2 class="bhd-volume__heading" id="BhdVolumeHeading-{{ section_id }}">
+        {%- if volume_bfcm -%}
+          {{ 'bhd.volume.heading_bfcm' | t | escape }}
+        {%- else -%}
+          {{ 'bhd.volume.heading_standard' | t | escape }}
+        {%- endif -%}
+      </h2>
+      <div class="bhd-volume__choices" role="group" aria-labelledby="BhdVolumeHeading-{{ section_id }}" aria-describedby="BhdVolumeTerms-{{ section_id }}">
+        {%- for volume_quantity in (1..3) -%}
+          {%- liquid
+            assign volume_rate = 0
+            if volume_bfcm
+              assign volume_rate = 25
+              if volume_quantity == 1
+                assign volume_rate = 20
+              endif
+            elsif volume_quantity == 2
+              assign volume_rate = 10
+            elsif volume_quantity == 3
+              assign volume_rate = 15
+            endif
+            assign volume_subtotal = volume_variant.price | times: volume_quantity
+            assign volume_discount = volume_subtotal | times: volume_rate | divided_by: 100.0 | round
+            assign volume_total = volume_subtotal | minus: volume_discount
+            assign volume_quantity_float = volume_quantity | times: 1.0
+            assign volume_each = volume_total | divided_by: volume_quantity_float | round
+            assign volume_total_money = volume_total | money_with_currency | strip_html
+            assign volume_each_money = volume_each | money_with_currency | strip_html
+            assign volume_quantity_label = 'bhd.volume.jars' | t: quantity: volume_quantity
+            if volume_quantity == 1
+              assign volume_quantity_label = 'bhd.volume.jar' | t
+            endif
+            assign volume_initial_selected = false
+            if volume_quantity == volume_variant.quantity_rule.min
+              assign volume_initial_selected = true
+            endif
+          -%}
+          <button
+            class="bhd-volume__choice"
+            type="button"
+            data-volume-quantity="{{ volume_quantity }}"
+            aria-pressed="{{ volume_initial_selected }}"
+            aria-controls="Quantity-{{ section_id }}"
+            disabled
+          >
+            <span class="bhd-volume__badge{% if volume_quantity != 3 or volume_bfcm %} bhd-volume__badge--plain{% endif %}">
+              {%- if volume_quantity == 3 and volume_bfcm == false -%}
+                {{ 'bhd.volume.best_value' | t | escape }}
+              {%- elsif volume_rate > 0 -%}
+                {{ 'bhd.volume.save_percent' | t: percent: volume_rate | escape }}
+              {%- else -%}
+                {{ 'bhd.volume.single_jar' | t | escape }}
+              {%- endif -%}
+            </span>
+            <span class="bhd-volume__quantity">{{ volume_quantity_label | escape }}</span>
+            <span class="bhd-volume__total">{{ volume_total_money | escape }}</span>
+            <span class="bhd-volume__each">{{ 'bhd.volume.each' | t: price: volume_each_money | escape }}</span>
+            <span class="bhd-volume__saving">
+              {%- if volume_rate > 0 -%}
+                {{ 'bhd.volume.save_percent' | t: percent: volume_rate | escape }}
+              {%- else -%}
+                {{ 'bhd.volume.regular_price' | t | escape }}
+              {%- endif -%}
+            </span>
+          </button>
+        {%- endfor -%}
+      </div>
+      <p class="bhd-volume__terms" id="BhdVolumeTerms-{{ section_id }}">{{ 'bhd.volume.terms' | t | escape }}</p>
+    </div>
+    <p class="bhd-volume__one-time">{{ 'bhd.volume.one_time' | t | escape }}</p>
+    <p class="visually-hidden" data-volume-status role="status" aria-live="polite" aria-atomic="true"></p>
+  </bhd-lemonade-volume>
+{%- endif -%}
