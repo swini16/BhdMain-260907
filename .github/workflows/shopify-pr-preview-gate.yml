@@ -187,11 +187,18 @@ jobs:
 
       - name: Verify Shopify preview credential
         if: steps.scope.outputs.relevant == 'true'
+        env:
+          SHOPIFY_CRAWLER_SIGNATURE_INPUT: ${{ secrets.SHOPIFY_CRAWLER_SIGNATURE_INPUT }}
+          SHOPIFY_CRAWLER_SIGNATURE: ${{ secrets.SHOPIFY_CRAWLER_SIGNATURE }}
         shell: bash
         run: |
           set -euo pipefail
           if [ -z "${SHOPIFY_CLI_THEME_TOKEN:-}" ]; then
             echo "::error::Missing Shopify theme credential."
+            exit 1
+          fi
+          if [ -z "${SHOPIFY_CRAWLER_SIGNATURE_INPUT:-}" ] || [ -z "${SHOPIFY_CRAWLER_SIGNATURE:-}" ]; then
+            echo "::error::Quantity acceptance requires SHOPIFY_CRAWLER_SIGNATURE_INPUT and SHOPIFY_CRAWLER_SIGNATURE repository secrets from Shopify Admin Crawler access for besthydrate.com."
             exit 1
           fi
 
@@ -436,7 +443,22 @@ jobs:
             PREVIEW_PATHS="${PREVIEW_PATHS//\/pages\/cbc-edmonton-am/\/pages\/press?view=qa-media-cbc}"
             export PREVIEW_PATHS
           fi
-          npx playwright test --config=playwright.config.cjs tests/playwright/pr-preview-gate.spec.cjs
+          npx playwright test --config=playwright.config.cjs tests/playwright/pr-preview-gate.spec.cjs \
+            --grep-invert 'Lemonade authorized hosted development preview'
+
+      - name: Verify authorized Lemonade quantity and checkout
+        if: steps.scope.outputs.relevant == 'true'
+        env:
+          SHOPIFY_CRAWLER_SIGNATURE_INPUT: ${{ secrets.SHOPIFY_CRAWLER_SIGNATURE_INPUT }}
+          SHOPIFY_CRAWLER_SIGNATURE: ${{ secrets.SHOPIFY_CRAWLER_SIGNATURE }}
+        run: |
+          # Fail before any signed request if the merchant-issued authorization is absent.
+          node -e "require('./tests/playwright/helpers/shopify-crawler-auth.cjs').readCrawlerAuthorization()"
+          # API-step errors can contain request headers. Do not persist an HTML/JSON
+          # report or trace for this credential-bearing group; all assertions still gate.
+          npx playwright test --config=playwright.config.cjs tests/playwright/pr-preview-gate.spec.cjs \
+            --grep 'Lemonade authorized hosted development preview' \
+            --reporter=line --trace=off --output=test-results-lemonade-authorized
 
       - name: Run native review responsive contract
         if: steps.scope.outputs.relevant == 'true'
@@ -508,6 +530,7 @@ jobs:
           name: shopify-pr-preview-failure-${{ github.run_id }}
           path: |
             playwright-report/
+            test-results-lemonade-authorized/
             test-results/
             artifacts/shopify-preview.json
             artifacts/media-fixtures.json
