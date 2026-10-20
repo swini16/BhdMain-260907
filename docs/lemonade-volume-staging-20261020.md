@@ -69,3 +69,18 @@ The workflow then uses `shopify theme dev` against that returned theme ID with a
 Configured Playwright projects are desktop Chromium 1440×900 and mobile Chromium 390×844 with touch/mobile emulation. Both use chromiumSandbox:true and the workflow selects installed Chrome. Cleanup always attempts to stop the renderer and delete only the returned development preview when an ID was recorded. This does not promise cleanup after every early failure or cancellation. No workflow or protection is changed.
 
 Supported sandboxed browser route: the existing CI route is configured correctly and is pending authorization for its full-theme staging side effect; its actual launch/access is unverified for this branch. No usable local sandboxed browser route was found. System Chromium fails because /usr/lib/chromium/chrome-sandbox is owned by nobody rather than root; a user-namespace capability check fails because /proc/self/uid_map is read-only. No exposed browser connector was available. We did not disable sandboxing, change helper ownership, change permissions, request elevated access or alter security controls.
+
+## Additional acceptance requirement: GRIN attribution and commission basis
+
+Status: UNVERIFIED — QA plan only. Current proposed seeding terms are 10% creator commission plus a 15% audience discount. These are proposed terms, not a claim that provider configuration has been verified or changed. The scheduled BFCM 20%/25% discounts are separate offers.
+
+Before claiming creator-channel acceptance:
+
+- Verify whether GRIN retains the intended creator attribution when an eligible automatic volume or BFCM discount wins over the creator code. Distinguish creator-link attribution from creator-code attribution; record which supported attribution path the evidence actually proves.
+- Establish whether the proposed 10% commission is calculated on list-price merchandise revenue or merchandise revenue after the winning discount. Record the applicable provider rule and any exclusions or adjustments shown by the evidence. Do not infer the basis from the headline commission rate.
+- Cover standard volume pricing versus the proposed 15% creator discount, including the equal-rate three-jar case, separately from BFCM 20%/25% beating that code. An equal-rate case is not evidence of a winning automatic discount. Record actual discount selection, attribution and commission basis as separate outcomes.
+- Prefer read-only provider settings/documentation and existing authorized transaction/attribution evidence, if a later verification task permits those reads. Configuration or documentation can establish intended rules; do not label it end-to-end observed behavior without matching existing evidence.
+
+Shopify non-stacking settings alone prove neither retained GRIN attribution nor the commission revenue basis. No GRIN verification was attempted as part of this plan-only update, and no pass is claimed. If verification requires creating an order, test purchase, commission or another consequential provider action, leave the relevant outcome UNVERIFIED and report the exact missing evidence and required action rather than execute it.
+
+No orders, test purchases, commissions, external messages, discount changes or provider-state changes are authorized by this requirement. Preserve the existing code and test evidence; do not rerun CI for this documentation-only addition. PR creation, full development-theme preview and all publication remain held pending the owner's reply to the exact development-theme approval request; publication still requires separate release authorization.
