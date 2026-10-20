@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { preparePreviewMarket } = require('./helpers/preview-localization.cjs');
 const BASE_URL = process.env.BASE_URL || 'https://besthydrate.com';
 const PREVIEW_THEME_ID = process.env.PREVIEW_THEME_ID || '';
 const PATHS = [...new Set((process.env.PREVIEW_PATHS || '/').split(',').map((v) => v.trim()).filter(Boolean))];
@@ -177,7 +178,8 @@ for (const market of [
     test.setTimeout(120000);
     test.skip(!PREVIEW_THEME_ID, 'Requires the governed development-theme preview; never fall back to live QA.');
     expect(new URL(BASE_URL).hostname).toBe('127.0.0.1');
-    const evidence = { country: market.country, project: testInfo.project.name, themeId: PREVIEW_THEME_ID, quantities: [], first15: [], checkout: 'not reached' };
+    const evidence = { country: market.country, project: testInfo.project.name, themeId: PREVIEW_THEME_ID, localization: {}, quantities: [], first15: [], checkout: 'not reached' };
+    let cartStarted = false;
     const api = async (path, data) => {
       const response = await page.request.post(new URL(path, BASE_URL).toString(), { data });
       expect(response.ok(), `${path} status ${response.status()}`).toBeTruthy();
@@ -196,14 +198,15 @@ for (const market of [
       ])],
     });
     try {
-      await page.goto(previewUrl('/'), { waitUntil: 'domcontentloaded' });
-      const localize = await page.request.post(new URL('/localization', BASE_URL).toString(), {
-        form: { form_type: 'localization', country_code: market.country, language_code: 'en', return_to: `/products/${market.handle}` },
+      const visit = await preparePreviewMarket(page, {
+        baseURL: BASE_URL, themeId: PREVIEW_THEME_ID,
+        country: market.country, currency: market.currency, evidence: evidence.localization,
       });
-      expect(localize.ok(), 'market localization').toBeTruthy();
+      // Arm cleanup only after the renderer, theme and market have been verified.
+      cartStarted = true;
       await api('/cart/clear.js', {});
       await api('/cart/update.js', { discount: '' });
-      await page.goto(previewUrl(`/products/${market.handle}`), { waitUntil: 'domcontentloaded' });
+      await visit(`/products/${market.handle}`);
       const widget = page.locator('bhd-lemonade-volume:visible');
       await expect(widget).toHaveCount(1);
       await expect(widget).toHaveAttribute('data-variant-id', market.variant);
@@ -220,7 +223,7 @@ for (const market of [
       const addResponse = page.waitForResponse(r => r.url().includes('/cart/add') && r.request().method() === 'POST');
       await page.locator('product-info form[action*="/cart/add"] button[type="submit"]').click();
       expect((await addResponse).ok()).toBeTruthy();
-      await page.goto(previewUrl('/cart'), { waitUntil: 'domcontentloaded' });
+      await visit('/cart');
       for (const quantity of [1, 2, 3, 1]) {
         const input = page.locator('cart-items input[name="updates[]"]').first();
         if (Number(await input.inputValue()) !== quantity) {
@@ -251,7 +254,7 @@ for (const market of [
         expect(summary.discounts.length, 'non-stacking: only one applied offer').toBe(1);
         if (!bfcm && quantity < 3) expect(summary.discounts[0]).toBe('FIRST15');
       }
-      await page.goto(previewUrl('/cart'), { waitUntil: 'domcontentloaded' });
+      await visit('/cart');
       await expect(page.locator('#main-cart-footer .bhd-lemonade-cart-offer__nudge')).toHaveCount(0);
       // Only open checkout. Do not fill customer/address/payment fields or click any checkout submit control.
       const checkout = await page.goto(previewUrl('/checkout'), { waitUntil: 'domcontentloaded' });
@@ -262,8 +265,16 @@ for (const market of [
       expect(evidence.checkout.first15Visible, 'FIRST15 visible at pre-order checkout').toBeTruthy();
     } finally {
       console.log('LEMONADE_ACCEPTANCE', JSON.stringify(evidence));
-      await api('/cart/clear.js', {}).catch(() => {});
-      await api('/cart/update.js', { discount: '' }).catch(() => {});
+      try {
+        await testInfo.attach(`lemonade-${market.country}-localization`, {
+          body: Buffer.from(JSON.stringify(evidence.localization, null, 2)), contentType: 'application/json',
+        });
+      } finally {
+        if (cartStarted) {
+          await api('/cart/clear.js', {}).catch(() => {});
+          await api('/cart/update.js', { discount: '' }).catch(() => {});
+        }
+      }
     }
   });
 }
