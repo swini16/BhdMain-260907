@@ -1,5 +1,33 @@
 # Lemonade quantity display — staging review
 
+## Current release instruction: October 20, 2026
+
+The owner has explicitly instructed this ChatGPT session to implement and release the existing eHP change: “why handoff why dont u jsut implement gogogo live to ehp”. This supersedes the earlier draft-only and publication holds recorded below. Continue PR238 through its existing protected merge and Shopify MAIN sync; preserve all required checks. The historical preparation and failed-run evidence below remain historical, not the status of the new candidate.
+
+Replace the three quantity cards and pricing estimates with one quantity-aware line:
+
+- 1 jar: `Add 1 for 10% off`
+- 2 jars: `Add 1 more for 15% off`
+- 3–9 jars: `15% off on 3–9 jars`
+- 10+ jars: `20% off on 10+ jars`
+- Terms: `Offers do not combine.`
+
+The actionable line increments the native quantity by one without submitting the purchase form. Product prompts count eligible one-time Lemonade already in the cart plus the selected addition. Cart prompts count the cart itself. Preserve the existing inventory, quantity-rule, variant and selling-plan guards; use `Best offer shown in cart.` when an upgrade cannot be established. A known equal-rate discount suppresses an upgrade prompt; a confirmation is suppressed only by a strictly higher rate or an unknown competing offer. Keep the stronger scheduled BFCM offer.
+
+Fresh Shopify readback confirms all three standard automatic offers are ACTIVE, have no end date, cover both Lemonade products and apply only to one-time purchases, with product/order/shipping combinations all false. The third offer is `gid://shopify/DiscountAutomaticNode/1575714488604`, minimum 10, 20%. The existing scheduled BFCM 20%/25% dates and settings are unchanged. Product descriptions already contain one compact static notice instead of the old table; the live enhancement should hide that duplicate only while its contextual offer is visible. No new price or currency estimates are added.
+
+The new preview candidate corrects the localization request to match Shopify's generated form and the existing purchase-flow test, and adds sanitized status/path, country, preview-theme and currency assertions. This corrects an observed request mismatch; it is not a claim that the previous failure's complete root cause or the new candidate has passed. Acceptance includes 1, 2, 3, 9, 10, 11 and back to 1, actual automatic/FIRST15 totals, both markets and desktop/mobile. No workflow, browser security or required gate is changed.
+
+The existing unit workflow also failed because the PR introduced a `jsdom` import without declaring that dependency. A private root `package.json` now declares the fixture dependencies `jsdom` and `liquidjs`, so the existing install step can run the tests. No workflow changes are required.
+
+Pre-commit verification: JavaScript/test syntax, whitespace and 31-locale preservation checks pass. Both existing dependency-free unit files pass. The actual new component passed 26 focused runtime cases plus the observed stock-refresh lifecycle regression. The complete jsdom/LiquidJS suite awaits the existing CI dependency install; no rendered pass is claimed yet.
+
+Fresh Shopify MAIN comparison confirms the product section, cart drawer and cart footer match this PR's starting files after removing only its new render calls. Existing English locale content also matches. The known live-only product-template settings remain outside this PR's diff. The stock-refresh race found during review is fixed: upgrades wait for the native input's own cart-quantity bounds update, while confirmations remain available.
+
+The protected preview result and release outcome will be recorded after execution. The owner has authorized the normal development preview and production release, with no order, payment or external message submission.
+
+## Historical preparation and evidence
+
 Prepared against `main` at `fa87925f226904c0cd9ea86f76d804f78b04cf4f` on October 20, 2026. Display-only proposal; no release, discount change, order, theme upload or publication authorized.
 
 ## Source and ownership

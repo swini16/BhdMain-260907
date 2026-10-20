@@ -1,6 +1,6 @@
 {% doc %}
-  Renders presentment-currency Lemonade quantity offers beside the native quantity control.
-  Prices are server rendered. Buttons only update the existing product form quantity.
+  Renders one Lemonade quantity prompt beside the native quantity control.
+  The prompt changes quantity only; Shopify determines the applied offer.
 
   @param {product} product - The product displayed by the enclosing product-info element.
   @param {string} section_id - The section ID used by Quantity- and product-form-.
@@ -33,6 +33,71 @@
   if product.selected_selling_plan != blank or product.requires_selling_plan
     assign volume_initial_subscription = true
   endif
+  assign volume_cart_quantity = 0
+  assign volume_known_percent = 0
+  assign volume_unknown_discount = false
+  assign volume_applications = cart.cart_level_discount_applications
+  for volume_item in cart.items
+    assign volume_line_applications = volume_item.line_level_discount_allocations | map: 'discount_application'
+    assign volume_applications = volume_applications | concat: volume_line_applications
+    assign volume_product_id = volume_item.product.id | default: volume_item.product_id
+    if volume_product_id == 8904882422044 or volume_product_id == 10168145281308
+      if volume_item.selling_plan_allocation == blank
+        assign volume_cart_quantity = volume_cart_quantity | plus: volume_item.quantity
+      endif
+    endif
+  endfor
+  for volume_application in volume_applications
+    assign volume_percent = 0
+    if volume_application.value_type == 'percentage'
+      assign volume_percent = volume_application.value | plus: 0
+    elsif volume_application.type == 'automatic'
+      case volume_application.title
+        when 'Lemonade: Buy 2+, save 10%'
+          assign volume_percent = 10
+        when 'Lemonade: Buy 3+, save 15%'
+          assign volume_percent = 15
+        when 'Lemonade: Buy 10+, save 20%', 'BHD BFCM 2026 · 20% · 1 jar'
+          assign volume_percent = 20
+        when 'BHD BFCM 2026 · 25% · 2+ jars'
+          assign volume_percent = 25
+        else
+          assign volume_unknown_discount = true
+      endcase
+    else
+      assign volume_unknown_discount = true
+    endif
+    if volume_percent > volume_known_percent
+      assign volume_known_percent = volume_percent
+    endif
+  endfor
+  assign volume_prospective = volume_variant.quantity_rule.min | default: 1 | plus: volume_cart_quantity
+  assign volume_initial_key = 'bhd.volume.confirmation'
+  assign volume_target_percent = 15
+  assign volume_is_upgrade = false
+  if volume_bfcm
+    assign volume_target_percent = 25
+    assign volume_initial_key = 'bhd.volume.confirmation_bfcm'
+    if volume_prospective == 1
+      assign volume_initial_key = 'bhd.volume.nudge_bfcm'
+      assign volume_is_upgrade = true
+    endif
+  elsif volume_prospective >= 10
+    assign volume_target_percent = 20
+    assign volume_initial_key = 'bhd.volume.confirmation_bulk'
+  elsif volume_prospective == 1
+    assign volume_target_percent = 10
+    assign volume_initial_key = 'bhd.volume.nudge_one'
+    assign volume_is_upgrade = true
+  elsif volume_prospective == 2
+    assign volume_initial_key = 'bhd.volume.nudge_two'
+    assign volume_is_upgrade = true
+  endif
+  if volume_unknown_discount or volume_known_percent > volume_target_percent
+    assign volume_initial_key = 'bhd.volume.generic'
+  elsif volume_is_upgrade and volume_known_percent == volume_target_percent
+    assign volume_initial_key = 'bhd.volume.better_offer'
+  endif
 -%}
 
 {%- if volume_eligible and volume_variant != blank -%}
@@ -47,80 +112,27 @@
     data-stock-limit="{{ volume_stock_limit }}"
     data-initial-subscription="{{ volume_initial_subscription }}"
     data-requires-selling-plan="{{ product.requires_selling_plan }}"
-    data-selected-message="{{ 'bhd.volume.selected_message' | t: quantity: '__QUANTITY__' | escape }}"
+    data-cart-quantity="{{ volume_cart_quantity }}"
+    data-known-percent="{{ volume_known_percent }}"
+    data-unknown-discount="{{ volume_unknown_discount }}"
+    data-bfcm="{{ volume_bfcm }}"
+    data-bfcm-start="{{ volume_bfcm_start }}"
+    data-bfcm-end="{{ volume_bfcm_end }}"
+    data-nudge-one="{{ 'bhd.volume.nudge_one' | t | escape }}"
+    data-nudge-two="{{ 'bhd.volume.nudge_two' | t | escape }}"
+    data-confirmation="{{ 'bhd.volume.confirmation' | t | escape }}"
+    data-confirmation-bulk="{{ 'bhd.volume.confirmation_bulk' | t | escape }}"
+    data-nudge-bfcm="{{ 'bhd.volume.nudge_bfcm' | t | escape }}"
+    data-confirmation-bfcm="{{ 'bhd.volume.confirmation_bfcm' | t | escape }}"
+    data-better-offer="{{ 'bhd.volume.better_offer' | t | escape }}"
+    data-generic="{{ 'bhd.volume.generic' | t | escape }}"
   >
-    <div class="bhd-volume__offers" data-volume-offers{% if volume_initial_subscription %} hidden{% endif %}>
-      <p class="bhd-volume__eyebrow">{{ 'bhd.volume.eyebrow' | t | escape }}</p>
-      <h2 class="bhd-volume__heading" id="BhdVolumeHeading-{{ section_id }}">
-        {%- if volume_bfcm -%}
-          {{ 'bhd.volume.heading_bfcm' | t | escape }}
-        {%- else -%}
-          {{ 'bhd.volume.heading_standard' | t | escape }}
-        {%- endif -%}
-      </h2>
-      <div class="bhd-volume__choices" role="group" aria-labelledby="BhdVolumeHeading-{{ section_id }}" aria-describedby="BhdVolumeTerms-{{ section_id }}">
-        {%- for volume_quantity in (1..3) -%}
-          {%- liquid
-            assign volume_rate = 0
-            if volume_bfcm
-              assign volume_rate = 25
-              if volume_quantity == 1
-                assign volume_rate = 20
-              endif
-            elsif volume_quantity == 2
-              assign volume_rate = 10
-            elsif volume_quantity == 3
-              assign volume_rate = 15
-            endif
-            assign volume_subtotal = volume_variant.price | times: volume_quantity
-            assign volume_discount = volume_subtotal | times: volume_rate | divided_by: 100.0 | round
-            assign volume_total = volume_subtotal | minus: volume_discount
-            assign volume_quantity_float = volume_quantity | times: 1.0
-            assign volume_each = volume_total | divided_by: volume_quantity_float | round
-            assign volume_total_money = volume_total | money_with_currency | strip_html
-            assign volume_each_money = volume_each | money_with_currency | strip_html
-            assign volume_quantity_label = 'bhd.volume.jars' | t: quantity: volume_quantity
-            if volume_quantity == 1
-              assign volume_quantity_label = 'bhd.volume.jar' | t
-            endif
-            assign volume_initial_selected = false
-            if volume_quantity == volume_variant.quantity_rule.min
-              assign volume_initial_selected = true
-            endif
-          -%}
-          <button
-            class="bhd-volume__choice"
-            type="button"
-            data-volume-quantity="{{ volume_quantity }}"
-            aria-pressed="{{ volume_initial_selected }}"
-            aria-controls="Quantity-{{ section_id }}"
-            disabled
-          >
-            <span class="bhd-volume__badge{% if volume_quantity != 3 or volume_bfcm %} bhd-volume__badge--plain{% endif %}">
-              {%- if volume_quantity == 3 and volume_bfcm == false -%}
-                {{ 'bhd.volume.best_value' | t | escape }}
-              {%- elsif volume_rate > 0 -%}
-                {{ 'bhd.volume.save_percent' | t: percent: volume_rate | escape }}
-              {%- else -%}
-                {{ 'bhd.volume.single_jar' | t | escape }}
-              {%- endif -%}
-            </span>
-            <span class="bhd-volume__quantity">{{ volume_quantity_label | escape }}</span>
-            <span class="bhd-volume__total">{{ volume_total_money | escape }}</span>
-            <span class="bhd-volume__each">{{ 'bhd.volume.each' | t: price: volume_each_money | escape }}</span>
-            <span class="bhd-volume__saving">
-              {%- if volume_rate > 0 -%}
-                {{ 'bhd.volume.save_percent' | t: percent: volume_rate | escape }}
-              {%- else -%}
-                {{ 'bhd.volume.regular_price' | t | escape }}
-              {%- endif -%}
-            </span>
-          </button>
-        {%- endfor -%}
-      </div>
+    <div data-volume-offers{% if volume_initial_subscription %} hidden{% endif %}>
+      <p class="bhd-volume__message" data-volume-message role="status" aria-live="polite" aria-atomic="true">
+        <button class="bhd-volume__prompt" type="button" data-volume-add aria-controls="Quantity-{{ section_id }}" aria-describedby="BhdVolumeTerms-{{ section_id }}" hidden disabled></button>
+        <span class="bhd-volume__confirmation" data-volume-confirmation>{{ volume_initial_key | t | escape }}</span>
+      </p>
       <p class="bhd-volume__terms" id="BhdVolumeTerms-{{ section_id }}">{{ 'bhd.volume.terms' | t | escape }}</p>
     </div>
-    <p class="bhd-volume__one-time">{{ 'bhd.volume.one_time' | t | escape }}</p>
-    <p class="visually-hidden" data-volume-status role="status" aria-live="polite" aria-atomic="true"></p>
   </bhd-lemonade-volume>
 {%- endif -%}

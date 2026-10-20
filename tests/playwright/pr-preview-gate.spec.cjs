@@ -174,10 +174,21 @@ for (const market of [
   { country: 'US', currency: 'USD', handle: 'lemonade-electrolyte-best-hydrate', variant: '51937870741788' },
 ]) {
   test(`Lemonade preview acceptance: ${market.country} quantity/cart/FIRST15/pre-order checkout`, async ({ page }, testInfo) => {
-    test.setTimeout(120000);
+    test.setTimeout(180000);
     test.skip(!PREVIEW_THEME_ID, 'Requires the governed development-theme preview; never fall back to live QA.');
     expect(new URL(BASE_URL).hostname).toBe('127.0.0.1');
-    const evidence = { country: market.country, project: testInfo.project.name, themeId: PREVIEW_THEME_ID, quantities: [], first15: [], checkout: 'not reached' };
+    const now = Date.now();
+    const bfcm = now >= Date.parse('2026-11-27T07:00:00Z') && now < Date.parse('2026-12-01T07:00:00Z');
+    const quantities = [1, 2, 3, 9, 10, 11];
+    const evidence = {
+      country: market.country, project: testInfo.project.name, themeId: PREVIEW_THEME_ID, bfcm,
+      localization: null, product: null, quantities: [], first15: [], checkout: 'not reached',
+    };
+    // Keep diagnostics useful without recording query strings, cookies, or response bodies.
+    const safeResponse = response => {
+      const url = new URL(response.url());
+      return { status: response.status(), origin: url.origin, path: url.pathname };
+    };
     const api = async (path, data) => {
       const response = await page.request.post(new URL(path, BASE_URL).toString(), { data });
       expect(response.ok(), `${path} status ${response.status()}`).toBeTruthy();
@@ -185,8 +196,10 @@ for (const market of [
     };
     const readCart = async () => {
       const response = await page.request.get(new URL('/cart.js', BASE_URL).toString());
-      expect(response.ok()).toBeTruthy();
-      return response.json();
+      expect(response.ok(), `/cart.js status ${response.status()}`).toBeTruthy();
+      const cart = await response.json();
+      expect(cart.currency, `${market.country} cart currency`).toBe(market.currency);
+      return cart;
     };
     const safeCart = cart => ({
       currency: cart.currency, quantity: cart.item_count, original: cart.original_total_price, total: cart.total_price,
@@ -195,71 +208,163 @@ for (const market of [
         ...cart.items.flatMap(item => (item.line_level_discount_allocations || []).map(d => d.discount_application.title)),
       ])],
     });
+    const automaticRate = quantity => bfcm
+      ? (quantity === 1 ? .20 : .25)
+      : (quantity >= 10 ? .20 : quantity >= 3 ? .15 : quantity === 2 ? .10 : 0);
+    const expectedPrompt = (quantity, first15 = false) => {
+      if (bfcm) return quantity === 1 ? 'Add 1 for 25% off' : '25% off on 2+ jars';
+      if (first15 && quantity < 3) return 'Best offer shown in cart.';
+      if (quantity === 1) return 'Add 1 for 10% off';
+      if (quantity === 2) return 'Add 1 more for 15% off';
+      return quantity < 10 ? '15% off on 3–9 jars' : '20% off on 10+ jars';
+    };
+    const assertCart = (cart, quantity, first15 = false) => {
+      const summary = safeCart(cart);
+      const rate = Math.max(automaticRate(quantity), first15 ? .15 : 0);
+      expect(cart.currency).toBe(market.currency);
+      expect(cart.item_count).toBe(quantity);
+      expect(cart.items).toHaveLength(1);
+      expect(String(cart.items[0].variant_id)).toBe(market.variant);
+      expect(cart.original_total_price).toBeGreaterThan(0);
+      // Shopify can round per unit; allow at most one cent per jar.
+      expect(Math.abs(cart.total_price - Math.round(cart.original_total_price * (1 - rate))))
+        .toBeLessThanOrEqual(quantity);
+      expect(summary.discounts.length, 'non-stacking: only the strongest eligible offer applies')
+        .toBe(rate > 0 ? 1 : 0);
+      if (first15 && automaticRate(quantity) < .15) expect(summary.discounts[0]).toBe('FIRST15');
+      if (first15 && automaticRate(quantity) > .15) expect(summary.discounts[0]).not.toBe('FIRST15');
+      return { ...summary, expectedRate: rate };
+    };
+    const cartOffer = page.locator('#main-cart-footer .bhd-lemonade-cart-offer');
+    const changeCartQuantity = async (quantity, first15 = false) => {
+      const input = page.locator('cart-items input[name="updates[]"]').first();
+      if (Number(await input.inputValue()) !== quantity) {
+        const changed = page.waitForResponse(r => r.url().includes('/cart/change') && r.request().method() === 'POST');
+        await input.fill(String(quantity));
+        await input.blur();
+        const response = await changed;
+        expect(response.ok(), `native cart quantity ${quantity}: status ${response.status()}`).toBeTruthy();
+        await response.finished();
+      }
+      await expect(input).toHaveValue(String(quantity));
+      await expect(cartOffer).toHaveCount(1);
+      await expect(cartOffer.locator('.bhd-lemonade-cart-offer__nudge'))
+        .toHaveText(expectedPrompt(quantity, first15));
+      const cart = await readCart();
+      const summary = assertCart(cart, quantity, first15);
+      await expect(page.locator('#main-cart-footer .totals__total-value'))
+        .toContainText((cart.total_price / 100).toFixed(2));
+      return summary;
+    };
     try {
-      await page.goto(previewUrl('/'), { waitUntil: 'domcontentloaded' });
+      const landing = await page.goto(previewUrl('/'), { waitUntil: 'domcontentloaded' });
+      expect(landing, 'preview home response').not.toBeNull();
+      expect(landing.status(), 'preview home status').toBeLessThan(400);
+      // Match Shopify's generated localization form and the existing purchase-flow test.
+      // Return home first: POST follows redirects, so a product 404 must not be mislabeled as localization failure.
       const localize = await page.request.post(new URL('/localization', BASE_URL).toString(), {
-        form: { form_type: 'localization', country_code: market.country, language_code: 'en', return_to: `/products/${market.handle}` },
+        form: { form_type: 'localization', utf8: '✓', _method: 'put', country_code: market.country, language_code: 'en', return_to: '/' },
       });
-      expect(localize.ok(), 'market localization').toBeTruthy();
+      evidence.localization = safeResponse(localize);
+      expect(localize.ok(), `market localization: ${JSON.stringify(evidence.localization)}`).toBeTruthy();
+      const productResponse = await page.goto(previewUrl(`/products/${market.handle}`), { waitUntil: 'domcontentloaded' });
+      expect(productResponse, 'market product response').not.toBeNull();
+      evidence.product = {
+        ...safeResponse(productResponse),
+        ...await page.evaluate(() => ({ country: window.Shopify?.country, themeId: String(window.Shopify?.theme?.id) })),
+      };
+      expect(productResponse.status(), `market product: ${JSON.stringify(evidence.product)}`).toBeLessThan(400);
+      expect(new URL(page.url()).origin, 'retain the governed renderer').toBe(new URL(BASE_URL).origin);
+      expect(evidence.product.country, 'selected Shopify market').toBe(market.country);
+      expect(evidence.product.themeId, 'selected development preview theme').toBe(String(PREVIEW_THEME_ID));
       await api('/cart/clear.js', {});
       await api('/cart/update.js', { discount: '' });
+      expect((await readCart()).item_count, 'isolated empty cart').toBe(0);
+      // Refresh the Liquid cart context after clearing any prior offer.
       await page.goto(previewUrl(`/products/${market.handle}`), { waitUntil: 'domcontentloaded' });
       const widget = page.locator('bhd-lemonade-volume:visible');
       await expect(widget).toHaveCount(1);
       await expect(widget).toHaveAttribute('data-variant-id', market.variant);
-      const quantityInput = page.locator('product-info input[name="quantity"]');
-      for (const quantity of [1, 2, 3, 1]) {
-        const button = widget.locator(`[data-volume-quantity="${quantity}"]`);
-        await expect(button).toBeEnabled();
-        await button.click();
-        await expect(quantityInput).toHaveValue(String(quantity));
-        await expect(button).toHaveAttribute('aria-pressed', 'true');
-      }
-      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(4);
-      await testInfo.attach(`lemonade-${market.country}-product`, { body: await widget.screenshot(), contentType: 'image/png' });
-      const addResponse = page.waitForResponse(r => r.url().includes('/cart/add') && r.request().method() === 'POST');
-      await page.locator('product-info form[action*="/cart/add"] button[type="submit"]').click();
-      expect((await addResponse).ok()).toBeTruthy();
-      await page.goto(previewUrl('/cart'), { waitUntil: 'domcontentloaded' });
-      for (const quantity of [1, 2, 3, 1]) {
-        const input = page.locator('cart-items input[name="updates[]"]').first();
-        if (Number(await input.inputValue()) !== quantity) {
-          const changed = page.waitForResponse(r => r.url().includes('/cart/change') && r.request().method() === 'POST');
-          await input.fill(String(quantity)); await input.blur();
-          expect((await changed).ok()).toBeTruthy();
+      await expect(widget).toHaveAttribute('data-bfcm', String(bfcm));
+      await expect(widget.locator('table, [role="table"], .bhd-volume__choices, [data-volume-quantity]')).toHaveCount(0);
+      const productInfo = page.locator('product-info').filter({ has: widget });
+      await expect(productInfo).toHaveCount(1);
+      const quantityInput = productInfo.locator('input[name="quantity"]');
+      await expect(quantityInput).toHaveCount(1);
+      const message = widget.locator('[data-volume-message]');
+      const addOne = widget.locator('button[data-volume-add]');
+      const confirmation = widget.locator('[data-volume-confirmation]');
+      const assertProductPrompt = async quantity => {
+        await expect(message).toHaveCount(1);
+        await expect(message).toBeVisible();
+        await expect(message).toHaveText(expectedPrompt(quantity), { useInnerText: true });
+        if (quantity === 1 || (!bfcm && quantity === 2)) {
+          await expect(addOne).toBeVisible();
+          await expect(addOne).toBeEnabled();
+          await expect(confirmation).toBeHidden();
+        } else {
+          await expect(addOne).toBeHidden();
+          await expect(confirmation).toBeVisible();
         }
-        await expect(page.locator('#main-cart-footer .bhd-lemonade-cart-offer')).toHaveCount(1);
-        const cart = await readCart();
-        expect(cart.currency).toBe(market.currency); expect(cart.item_count).toBe(quantity);
-        const bfcm = Date.now() >= Date.parse('2026-11-27T07:00:00Z') && Date.now() < Date.parse('2026-12-01T07:00:00Z');
-        const rate = bfcm ? (quantity === 1 ? .20 : .25) : (quantity === 1 ? 0 : quantity === 2 ? .10 : .15);
-        expect(Math.abs(cart.total_price - Math.round(cart.original_total_price * (1 - rate)))).toBeLessThanOrEqual(quantity);
-        const prompt = page.locator('#main-cart-footer .bhd-lemonade-cart-offer__nudge');
-        if (!bfcm && quantity < 3) await expect(prompt).toContainText(`${quantity + 1}-jar`);
-        else await expect(prompt).toHaveCount(0);
-        evidence.quantities.push(safeCart(cart));
+      };
+      for (const quantity of quantities) {
+        await quantityInput.fill(String(quantity));
+        await quantityInput.blur();
+        await expect(quantityInput).toHaveValue(String(quantity));
+        await assertProductPrompt(quantity);
+        if ([1, 3, 10].includes(quantity)) {
+          await testInfo.attach(`lemonade-${market.country}-product-${quantity}-jars`, {
+            body: await widget.screenshot(), contentType: 'image/png',
+          });
+        }
+      }
+      await quantityInput.fill('1');
+      await quantityInput.blur();
+      await assertProductPrompt(1);
+      for (const quantity of bfcm ? [2] : [2, 3]) {
+        await addOne.click();
+        await expect(quantityInput).toHaveValue(String(quantity));
+        await assertProductPrompt(quantity);
+      }
+      await quantityInput.fill('1');
+      await quantityInput.blur();
+      await assertProductPrompt(1);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(4);
+      const addResponse = page.waitForResponse(r => r.url().includes('/cart/add') && r.request().method() === 'POST');
+      await productInfo.locator('form[action*="/cart/add"] button[type="submit"]').click();
+      const added = await addResponse;
+      expect(added.ok(), `native add to cart: status ${added.status()}`).toBeTruthy();
+      await added.finished();
+      await page.goto(previewUrl('/cart'), { waitUntil: 'domcontentloaded' });
+      for (const quantity of [...quantities, 1]) {
+        evidence.quantities.push(await changeCartQuantity(quantity));
       }
       await testInfo.attach(`lemonade-${market.country}-cart`, { body: await page.locator('#main-cart-footer').screenshot(), contentType: 'image/png' });
       await api('/cart/update.js', { discount: 'FIRST15' });
-      for (const quantity of [1, 2, 3, 1]) {
-        const cart = await api('/cart/change.js', { line: 1, quantity });
-        const summary = safeCart(cart); evidence.first15.push(summary);
-        expect(cart.currency).toBe(market.currency); expect(cart.item_count).toBe(quantity);
-        const bfcm = Date.now() >= Date.parse('2026-11-27T07:00:00Z') && Date.now() < Date.parse('2026-12-01T07:00:00Z');
-        const rate = bfcm ? (quantity === 1 ? .20 : .25) : .15;
-        expect(Math.abs(cart.total_price - Math.round(cart.original_total_price * (1 - rate)))).toBeLessThanOrEqual(quantity);
-        expect(summary.discounts.length, 'non-stacking: only one applied offer').toBe(1);
-        if (!bfcm && quantity < 3) expect(summary.discounts[0]).toBe('FIRST15');
-      }
       await page.goto(previewUrl('/cart'), { waitUntil: 'domcontentloaded' });
-      await expect(page.locator('#main-cart-footer .bhd-lemonade-cart-offer__nudge')).toHaveCount(0);
+      for (const quantity of [...quantities, 1]) {
+        evidence.first15.push(await changeCartQuantity(quantity, true));
+      }
+      const checkoutOffer = evidence.first15.at(-1).discounts[0];
       // Only open checkout. Do not fill customer/address/payment fields or click any checkout submit control.
       const checkout = await page.goto(previewUrl('/checkout'), { waitUntil: 'domcontentloaded' });
-      expect(checkout && checkout.status()).toBeLessThan(400);
+      expect(checkout, 'pre-order checkout response').not.toBeNull();
+      expect(checkout.status()).toBeLessThan(400);
       await expect(page).toHaveURL(/\/checkouts?\//);
+      // The mobile checkout can collapse its order summary; opening it does not submit checkout.
+      const summaryToggle = page.getByRole('button', { name: /order summary/i, expanded: false }).first();
+      await expect.poll(async () =>
+        await summaryToggle.isVisible() || (await page.locator('body').innerText()).includes(checkoutOffer),
+      { message: 'checkout applied offer or collapsed order summary is ready' }).toBe(true);
+      if (await summaryToggle.isVisible()) await summaryToggle.click();
+      await expect(page.locator('body')).toContainText(checkoutOffer);
       const checkoutText = await page.locator('body').innerText();
-      evidence.checkout = { reached: true, first15Visible: checkoutText.includes('FIRST15'), orderPlaced: false };
-      expect(evidence.checkout.first15Visible, 'FIRST15 visible at pre-order checkout').toBeTruthy();
+      evidence.checkout = {
+        reached: true, appliedOffer: checkoutOffer, offerVisible: checkoutText.includes(checkoutOffer),
+        first15Visible: checkoutText.includes('FIRST15'), orderPlaced: false,
+      };
+      expect(evidence.checkout.offerVisible, 'strongest applied offer visible at pre-order checkout').toBeTruthy();
+      if (!bfcm) expect(evidence.checkout.first15Visible, 'FIRST15 visible for one jar at pre-order checkout').toBeTruthy();
     } finally {
       console.log('LEMONADE_ACCEPTANCE', JSON.stringify(evidence));
       await api('/cart/clear.js', {}).catch(() => {});
