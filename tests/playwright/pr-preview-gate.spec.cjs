@@ -190,6 +190,7 @@ for (const market of [
     expect(generatedPreview.username + generatedPreview.password + generatedPreview.port + generatedPreview.hash).toBe('');
     expect(generatedPreview.pathname).toBe('/');
     expect(generatedPreview.searchParams.getAll('preview_theme_id')).toEqual([PREVIEW_THEME_ID]);
+    let hostedOrigin = '';
     let cartActionsStarted = false;
     let cliVersion = 'unavailable';
     try {
@@ -201,16 +202,17 @@ for (const market of [
     const quantities = [1, 2, 3, 9, 10, 11];
     const evidence = {
       country: market.country, project: testInfo.project.name, themeId: PREVIEW_THEME_ID, bfcm,
-      transport: 'shopify-cli-renderer', cliVersion, stage: 'preview home', localizationPosts: [],
-      localization: null, product: null, quantities: [], first15: [], checkout: 'not reached',
+      transport: 'hosted-market-selection-and-cli-cart-fixture', cliVersion,
+      stage: 'hosted preview home', hostedLocalizationPosts: [], hostedSelection: null,
+      rendererFixture: null, product: null, quantities: [], first15: [], checkout: 'not reached',
     };
     // Keep diagnostics useful without recording query strings, cookies, or response bodies.
     const safeResponse = response => {
       const url = new URL(response.url());
       return { status: response.status(), origin: url.origin, path: url.pathname };
     };
-    const assertPreviewPage = async (response, requireMarket = true) => {
-      expect(response, 'development renderer response').not.toBeNull();
+    const assertPreviewPage = async (response, requireMarket = true, expectedOrigin = rendererOrigin) => {
+      expect(response, 'development preview response').not.toBeNull();
       const url = new URL(page.url());
       const state = {
         ...safeResponse(response),
@@ -219,10 +221,16 @@ for (const market of [
           country: window.Shopify?.country, currency: window.Shopify?.currency?.active,
         })),
       };
-      expect(response.status(), `development renderer: ${JSON.stringify(state)}`).toBeLessThan(400);
-      expect(url.origin, 'retain the existing authenticated CLI renderer').toBe(rendererOrigin);
+      expect(response.status(), `development preview: ${JSON.stringify(state)}`).toBeLessThan(400);
+      if (expectedOrigin) {
+        expect(url.origin, 'retain the independently validated preview origin').toBe(expectedOrigin);
+      } else {
+        // Only the initial generated hosted URL may resolve its canonical public origin.
+        expect(url.protocol).toBe('https:');
+        expect(url.port).toBe('');
+      }
       expect(url.username + url.password).toBe('');
-      expect(state.shop, 'same Shopify shop in the renderer').toBe(theme.shop);
+      expect(state.shop, 'same Shopify shop in this preview').toBe(theme.shop);
       expect(state.themeId, 'exact generated development theme, never the live theme').toBe(PREVIEW_THEME_ID);
       if (requireMarket) {
         expect(state.country, 'selected Shopify market').toBe(market.country);
@@ -304,19 +312,20 @@ for (const market of [
     };
     const recordLocalization = response => {
       const url = new URL(response.url());
-      if (url.origin === rendererOrigin && url.pathname === '/localization'
-          && response.request().method() === 'POST' && evidence.localizationPosts.length < 3) {
-        evidence.localizationPosts.push(safeResponse(response));
+      if (url.origin === hostedOrigin && url.pathname === '/localization'
+          && response.request().method() === 'POST' && evidence.hostedLocalizationPosts.length < 3) {
+        evidence.hostedLocalizationPosts.push(safeResponse(response));
       }
     };
     page.on('response', recordLocalization);
     try {
-      // Keep all theme/cart traffic on the existing official theme-dev server so its native
-      // session and crawler authorization remain inside the CLI, without exporting credentials.
-      const landing = await page.goto(previewUrl('/'), { waitUntil: 'domcontentloaded' });
-      await assertPreviewPage(landing, false);
+      // Verify market selection on the exact hosted development theme before seeding the
+      // separately validated CLI cart fixture below.
+      const landing = await page.goto(generatedPreview.toString(), { waitUntil: 'domcontentloaded' });
+      await assertPreviewPage(landing, false, null);
+      hostedOrigin = new URL(page.url()).origin;
       // Submit Shopify's documented native localization form, retaining the development preview on return.
-      evidence.stage = 'native localization';
+      evidence.stage = 'hosted native localization';
       const returnUrl = new URL(previewUrl('/'));
       const [localize] = await Promise.all([
         page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
@@ -339,9 +348,27 @@ for (const market of [
           language_code: 'en', return_to: returnUrl.pathname + returnUrl.search,
         }),
       ]);
-      evidence.localization = await assertPreviewPage(localize);
-      evidence.stage = 'market product';
+      evidence.hostedSelection = await assertPreviewPage(localize, true, hostedOrigin);
+      // Shopify documents localization as a public country preference. Seed only the observed
+      // preference as this same shop's CLI cart fixture, not a continuous cross-origin session.
+      // Never copy authentication, cart, currency, challenge, or other cookies.
+      evidence.stage = 'observed country preference fixture';
+      const localizationCookies = (await page.context().cookies(hostedOrigin + '/'))
+        .filter(cookie => cookie.name === 'localization');
+      expect(localizationCookies.length, 'exactly one observed public country preference').toBe(1);
+      const observedLocalization = localizationCookies[0];
+      expect(observedLocalization.value, 'observed country matches the verified hosted market').toBe(market.country);
+      await page.context().addCookies([{
+        name: 'localization', value: observedLocalization.value,
+        url: rendererOrigin + '/', sameSite: 'Lax',
+      }]);
+      evidence.stage = 'independent CLI market fixture';
       evidence.product = await visitPreview(`/products/${market.handle}`);
+      evidence.rendererFixture = {
+        ...evidence.product,
+        preference: 'observed localization only',
+        cartCurrency: (await readCart()).currency,
+      };
       evidence.stage = 'cart setup';
       await api('/cart/clear.js', {});
       await api('/cart/update.js', { discount: '' });
