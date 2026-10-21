@@ -8,7 +8,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '../..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-test('product quantity prompt uses available inline space, wraps when needed, and reports confirmed bulk savings', () => {
+test('product quantity prompt uses available inline space, wraps when needed, and reports the active bulk tier', () => {
   const script = read('assets/bhd-lemonade-volume.js');
   const styles = read('assets/bhd-lemonade-volume.css');
   const snippet = read('snippets/bhd-lemonade-volume.liquid');
@@ -21,7 +21,11 @@ test('product quantity prompt uses available inline space, wraps when needed, an
   assert.match(script, /data\.nextBulkTemplate|dataset\.nextBulkTemplate/);
   assert.match(script, /state\.dataset\.bulkPercent/);
   assert.match(script, /this\.dataset\.bulkPercent = String\(bulkPercent\)/);
-  assert.match(script, /appliedDiscountText\(\)/);
+  assert.match(script, /bulkTierPercent\(quantity, bfcm\)/);
+  assert.match(script, /quantity >= 10\) return 20/);
+  assert.match(script, /quantity >= 3\) return 15/);
+  assert.match(script, /quantity >= 2\) return 10/);
+  assert.match(script, /appliedDiscountText\(bulkTierPercent\)/);
   assert.match(script, /__PERCENT__% bulk discount applied/);
   assert.match(script, /`\$\{appliedText\} · \$\{visibleText\}`/);
   assert.match(script, /element\.dataset\.displayText = visibleText/);
