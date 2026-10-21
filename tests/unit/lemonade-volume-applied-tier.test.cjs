@@ -26,6 +26,7 @@ async function fixture({ now = normalNow, bfcm = false } = {}) {
       <bhd-lemonade-volume
         id="BhdLemonadeVolume-test"
         data-section-id="test"
+        data-details-id="BhdVolumeDetails-test"
         data-variant-id="123"
         data-available="true"
         data-stock-limit="30"
@@ -46,7 +47,6 @@ async function fixture({ now = normalNow, bfcm = false } = {}) {
         data-confirmation-bfcm="25% off on 2+ jars"
         data-better-offer="Best offer shown in cart."
         data-generic="Best offer shown in cart."
-        data-applied-template="__PERCENT__% bulk discount applied"
         data-next-bulk-template="Add __COUNT__ more for 20% off"
       >
         <div data-volume-offers>
@@ -54,7 +54,10 @@ async function fixture({ now = normalNow, bfcm = false } = {}) {
             <button type="button" data-volume-add hidden disabled></button>
             <span data-volume-confirmation></span>
           </p>
-          <span data-volume-announcement aria-live="polite"></span>
+          <div id="BhdVolumeDetails-test" class="bhd-volume__details">
+            <p>2 jars: 10% off · 3–9 jars: 15% off · 10+ jars: 20% off*</p>
+            <span data-volume-announcement aria-live="polite"></span>
+          </div>
         </div>
       </bhd-lemonade-volume>
     </product-info>
@@ -76,7 +79,8 @@ async function fixture({ now = normalNow, bfcm = false } = {}) {
 
   const host = dom.window.document.querySelector('bhd-lemonade-volume');
   const input = dom.window.document.getElementById('Quantity-test');
-  return { dom, host, input, events };
+  const details = dom.window.document.getElementById('BhdVolumeDetails-test');
+  return { dom, host, input, details, events };
 }
 
 function setQuantity(fixture, quantity) {
@@ -88,7 +92,7 @@ function visibleCopy(host) {
   const button = host.querySelector('[data-volume-add]');
   const confirmation = host.querySelector('[data-volume-confirmation]');
   const visible = button.hidden ? confirmation : button;
-  const announcement = host.querySelector('[data-volume-announcement]');
+  const announcement = host.ownerDocument.querySelector('[data-volume-announcement]');
   return {
     display: visible.dataset.displayText,
     aria: visible.getAttribute('aria-label'),
@@ -97,17 +101,28 @@ function visibleCopy(host) {
   };
 }
 
-test('standard tiers show the current bulk discount before the next threshold', async t => {
+test('prompt is beside quantity while tier details remain below the row', async t => {
+  const f = await fixture();
+  t.after(() => f.dom.window.close());
+
+  const container = f.dom.window.document.querySelector('.price-per-item__container');
+  assert.equal(f.host.parentElement, container);
+  assert.equal(f.host.previousElementSibling.localName, 'quantity-input');
+  assert.equal(f.details.previousElementSibling, container);
+  assert.equal(f.details.hidden, false);
+});
+
+test('standard tiers show only the next relevant threshold', async t => {
   const f = await fixture();
   t.after(() => f.dom.window.close());
 
   const expectations = [
     [1, 'Add 1 for 10% off', 'Add 1 for 10% off'],
-    [2, '10% bulk discount applied · Add 1 more for 15% off', 'Add 1 more for 15% off'],
-    [3, '15% bulk discount applied · Add 7 more for 20% off', '15% off on 3–9 jars'],
-    [9, '15% bulk discount applied · Add 1 more for 20% off', '15% off on 3–9 jars'],
-    [10, '20% bulk discount applied', '20% off on 10+ jars'],
-    [11, '20% bulk discount applied', '20% off on 10+ jars'],
+    [2, 'Add 1 more for 15% off', 'Add 1 more for 15% off'],
+    [3, 'Add 7 more for 20% off', '15% off on 3–9 jars'],
+    [9, 'Add 1 more for 20% off', '15% off on 3–9 jars'],
+    [10, '20% off on 10+ jars', '20% off on 10+ jars'],
+    [11, '20% off on 10+ jars', '20% off on 10+ jars'],
   ];
 
   for (const [quantity, expectedDisplay, expectedUnderlying] of expectations) {
@@ -120,17 +135,17 @@ test('standard tiers show the current bulk discount before the next threshold', 
   }
 });
 
-test('BFCM tiers identify the current 20% or 25% bulk discount', async t => {
+test('BFCM shows only the next stronger threshold or achieved tier', async t => {
   const f = await fixture({ now: bfcmNow, bfcm: true });
   t.after(() => f.dom.window.close());
 
   setQuantity(f, 1);
-  assert.equal(visibleCopy(f.host).display, '20% bulk discount applied · Add 1 for 25% off');
+  assert.equal(visibleCopy(f.host).display, 'Add 1 for 25% off');
   setQuantity(f, 2);
-  assert.equal(visibleCopy(f.host).display, '25% bulk discount applied');
+  assert.equal(visibleCopy(f.host).display, '25% off on 2+ jars');
 });
 
-test('stronger or uncertain competing offers suppress the bulk-applied claim', async t => {
+test('stronger or uncertain competing offers suppress the quantity prompt', async t => {
   const f = await fixture();
   t.after(() => f.dom.window.close());
 
