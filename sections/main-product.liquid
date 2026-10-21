@@ -252,6 +252,7 @@
               show_badges: true,
               price_class: 'price--large'
             -%}
+            {% render 'bhd-a056-value', claim_product: product, placement: 'A056-P02' %}
           </div>
           <p class="bhd-mobile-product-intro__lead">{{ 'products.product.mobile_intro_low_sugar' | t }}</p>
           <div class="bhd-mobile-product-intro__signals" aria-label="{{ 'products.product.mobile_intro_value_label' | t | escape }}">
@@ -305,6 +306,7 @@
                       show_badges: true,
                       price_class: 'price--large'
                     -%}
+                    {% render 'bhd-a056-value', claim_product: product, placement: 'A056-P02' %}
                   </div>
                   {%- if product.quantity_price_breaks_configured? -%}
                     <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">

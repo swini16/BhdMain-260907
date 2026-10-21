@@ -1,0 +1,35 @@
+{% doc %}
+  Renders the A056 first-wave value copy only for its substantiated Canadian offer.
+  @param {product} claim_product - Product for the value statement.
+  @param {string} placement - A056-P01 for the homepage or A056-P02 near the PDP price.
+{% enddoc %}
+{%- assign claim_variant = claim_product.selected_or_first_available_variant -%}
+{%- if localization.country.iso_code == 'CA' and localization.country.currency.iso_code == 'CAD' and cart.currency.iso_code == 'CAD' -%}
+  {%- if claim_product.id == 8904882422044 and claim_variant.id == 47373155631388 and claim_variant.price == 3999 and claim_variant.available -%}
+    {%- unless cart.taxes_included or claim_product.quantity_price_breaks_configured? or claim_product.selected_selling_plan -%}
+      {%- if placement == 'A056-P01' or placement == 'A056-P02' -%}
+        <div class="bhd-a056-value" data-hccms-id="mM-bhd-a056-value-claim-261008@v2" data-placement-id="{{ placement | escape }}">
+          {%- if placement == 'A056-P01' -%}
+            <p><strong>{{ 'a056.home_heading' | t }}</strong></p>
+            <p>{{ 'a056.home_body' | t }}</p>
+          {%- else -%}
+            <p><strong>{{ 'a056.product_heading' | t }}</strong></p>
+            <p>{{ 'a056.product_body' | t }}</p>
+          {%- endif -%}
+          <p class="bhd-a056-value__qualification">{{ 'a056.qualification' | t }}</p>
+        </div>
+      {%- endif -%}
+    {%- endunless -%}
+  {%- endif -%}
+{%- endif -%}
+
+{% stylesheet %}
+  .bhd-a056-value {
+    width: 100%;
+    margin-block: 1rem;
+    color: inherit;
+    line-height: 1.45;
+  }
+  .bhd-a056-value p { margin: 0 0 .35rem; }
+  .bhd-a056-value__qualification { font-size: .85em; }
+{% endstylesheet %}
