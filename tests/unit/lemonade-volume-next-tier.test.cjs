@@ -8,7 +8,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '../..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-test('product quantity prompt stays in the same row as the native control and shows only the next tier', () => {
+test('product quantity prompt stays in the same row as the native control with spacing and shows only the next tier', () => {
   const script = read('assets/bhd-lemonade-volume.js');
   const styles = read('assets/bhd-lemonade-volume.css');
   const snippet = read('snippets/bhd-lemonade-volume.liquid');
@@ -32,7 +32,7 @@ test('product quantity prompt stays in the same row as the native control and sh
   assert.match(script, /announcement\.textContent !== announcementText/);
   assert.match(script, /if \(button\.disabled === actionable\) button\.disabled = !actionable/);
 
-  assert.match(styles, /\.price-per-item__container:has\(> \.bhd-volume\[data-positioned="true"\]\)\s*{[^}]*flex-wrap:\s*nowrap/s);
+  assert.match(styles, /\.price-per-item__container:has\(> \.bhd-volume\[data-positioned="true"\]\)\s*{[^}]*display:\s*flex[^}]*flex-wrap:\s*nowrap[^}]*gap:\s*1rem/s);
   assert.match(styles, /\.bhd-volume\s*{[^}]*flex:\s*1 1 0[^}]*min-width:\s*0/s);
   assert.match(styles, /\.bhd-volume\[data-positioned="true"\]:not\(\[hidden\]\)\s*{\s*display:\s*block/);
   assert.doesNotMatch(styles, /\.bhd-volume\[data-positioned="true"\][^{]*{[^}]*display:\s*contents/s);
