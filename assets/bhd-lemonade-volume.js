@@ -163,9 +163,17 @@ if (!customElements.get('bhd-lemonade-volume')) {
       return true;
     }
 
-    appliedDiscountText() {
-      const percent = Number(this.dataset.bulkPercent || 0);
-      if (![10, 15, 20, 25].includes(percent) || this.dataset.unknownDiscount === 'true') return '';
+    bulkTierPercent(quantity, bfcm) {
+      if (!Number.isFinite(quantity) || quantity < 1) return 0;
+      if (bfcm) return quantity >= 2 ? 25 : 20;
+      if (quantity >= 10) return 20;
+      if (quantity >= 3) return 15;
+      if (quantity >= 2) return 10;
+      return 0;
+    }
+
+    appliedDiscountText(percent) {
+      if (![10, 15, 20, 25].includes(percent)) return '';
       return (this.dataset.appliedTemplate || '__PERCENT__% bulk discount applied')
         .replace('__PERCENT__', String(percent));
     }
@@ -183,6 +191,7 @@ if (!customElements.get('bhd-lemonade-volume')) {
       const now = Date.now() / 1000;
       const bfcm = now >= Number(this.dataset.bfcmStart) && now < Number(this.dataset.bfcmEnd);
       const prospective = selected + Number(this.dataset.cartQuantity || 0);
+      const bulkTierPercent = this.bulkTierPercent(prospective, bfcm);
       let key = bfcm ? 'confirmationBfcm' : 'confirmation';
       let targetPercent = bfcm ? 25 : 15;
       let canUpgrade = false;
@@ -239,10 +248,9 @@ if (!customElements.get('bhd-lemonade-volume')) {
       const text = this.dataset[key] || this.dataset.generic;
       let visibleText = displayText || text;
       if (!['generic', 'betterOffer'].includes(key)) {
-        const appliedText = this.appliedDiscountText();
+        const appliedText = this.appliedDiscountText(bulkTierPercent);
         if (appliedText) {
-          const appliedPercent = String(Number(this.dataset.bulkPercent || 0));
-          visibleText = visibleText.includes(`${appliedPercent}%`)
+          visibleText = visibleText.includes(`${bulkTierPercent}%`)
             ? appliedText
             : `${appliedText} · ${visibleText}`;
         }
