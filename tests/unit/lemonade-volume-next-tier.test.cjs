@@ -8,7 +8,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '../..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-test('product quantity prompt uses available inline space, wraps when needed, and reports the active bulk tier', () => {
+test('product quantity prompt stays immediately after the quantity control as a real button and reports the active bulk tier', () => {
   const script = read('assets/bhd-lemonade-volume.js');
   const styles = read('assets/bhd-lemonade-volume.css');
   const snippet = read('snippets/bhd-lemonade-volume.liquid');
@@ -34,10 +34,13 @@ test('product quantity prompt uses available inline space, wraps when needed, an
   assert.match(script, /if \(button\.disabled === actionable\) button\.disabled = !actionable/);
 
   assert.match(styles, /\.price-per-item__container:has\(> \.bhd-volume\[data-positioned="true"\]\)\s*{[^}]*flex-wrap:\s*wrap/s);
-  assert.match(styles, /\.bhd-volume\s*{[^}]*flex:\s*1 1 20rem[^}]*min-width:\s*min\(20rem, 100%\)/s);
+  assert.match(styles, /\.bhd-volume\s*{[^}]*flex:\s*0 1 24rem[^}]*min-width:\s*min\(14rem, 100%\)/s);
   assert.match(styles, /\.bhd-volume\[data-positioned="true"\]:not\(\[hidden\]\)\s*{\s*display:\s*block/);
   assert.doesNotMatch(styles, /\.bhd-volume\[data-positioned="true"\][^{]*{[^}]*display:\s*contents/s);
-  assert.match(styles, /\.bhd-volume__message\s*{[^}]*width:\s*100%/s);
+  assert.match(styles, /\.bhd-volume__message\s*{[^}]*width:\s*100%[^}]*background:\s*transparent/s);
+  assert.match(styles, /\.bhd-volume__prompt\s*{[^}]*border:\s*1px solid var\(--bhd-volume-navy\)[^}]*background:\s*var\(--bhd-volume-navy\)[^}]*text-decoration:\s*none/s);
+  assert.doesNotMatch(styles, /text-decoration:\s*underline/);
+  assert.match(styles, /\.bhd-volume__prompt\[data-display-text\]::after\s*{\s*color:\s*#fff/);
   assert.match(styles, /\.bhd-volume:has\(> \[data-volume-offers\]\[hidden\]\)/);
   assert.match(styles, /\[data-display-text\]::after/);
   assert.match(styles, /\.bhd-volume__terms::before\s*{\s*content:\s*attr\(data-prefix\)/);
