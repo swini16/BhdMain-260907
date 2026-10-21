@@ -10,6 +10,7 @@
   assign lemonade_quantity = 0
   assign lemonade_other_discount = false
   assign lemonade_known_percent = 0
+  assign lemonade_bulk_percent = 0
   assign lemonade_applications = cart.cart_level_discount_applications
   assign lemonade_can_add_one = false
   for lemonade_item in cart.items
@@ -40,26 +41,37 @@
   endfor
   for lemonade_application in lemonade_applications
     assign lemonade_percent = 0
+    assign lemonade_bulk_candidate = 0
     if lemonade_application.value_type == 'percentage'
       assign lemonade_percent = lemonade_application.value | plus: 0
-    elsif lemonade_application.type == 'automatic'
+    endif
+    if lemonade_application.type == 'automatic'
       case lemonade_application.title
         when 'Lemonade: Buy 2+, save 10%'
           assign lemonade_percent = 10
+          assign lemonade_bulk_candidate = 10
         when 'Lemonade: Buy 3+, save 15%'
           assign lemonade_percent = 15
+          assign lemonade_bulk_candidate = 15
         when 'Lemonade: Buy 10+, save 20%', 'BHD BFCM 2026 · 20% · 1 jar'
           assign lemonade_percent = 20
+          assign lemonade_bulk_candidate = 20
         when 'BHD BFCM 2026 · 25% · 2+ jars'
           assign lemonade_percent = 25
+          assign lemonade_bulk_candidate = 25
         else
-          assign lemonade_other_discount = true
+          if lemonade_application.value_type != 'percentage'
+            assign lemonade_other_discount = true
+          endif
       endcase
-    else
+    elsif lemonade_application.value_type != 'percentage'
       assign lemonade_other_discount = true
     endif
     if lemonade_percent > lemonade_known_percent
       assign lemonade_known_percent = lemonade_percent
+    endif
+    if lemonade_bulk_candidate > lemonade_bulk_percent
+      assign lemonade_bulk_percent = lemonade_bulk_candidate
     endif
   endfor
   assign lemonade_now = 'now' | date: '%s' | plus: 0
@@ -101,7 +113,7 @@
   endif
 -%}
 
-<span hidden data-volume-cart-state data-quantity="{{ lemonade_quantity }}" data-known-percent="{{ lemonade_known_percent }}" data-unknown-discount="{{ lemonade_other_discount }}"></span>
+<span hidden data-volume-cart-state data-quantity="{{ lemonade_quantity }}" data-known-percent="{{ lemonade_known_percent }}" data-bulk-percent="{{ lemonade_bulk_percent }}" data-unknown-discount="{{ lemonade_other_discount }}"></span>
 
 {%- if lemonade_quantity > 0 -%}
   <aside class="bhd-lemonade-cart-offer" aria-label="{{ 'bhd.volume.cart_heading' | t | escape }}">
