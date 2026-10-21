@@ -6,12 +6,19 @@ on:
       - draft/lemonade-volume-display-20261020
     paths:
       - .github/workflows/pr238-one-shot-playwright-fix.yml
+  pull_request:
+    branches:
+      - main
+    types:
+      - synchronize
+      - ready_for_review
 
 permissions:
   contents: write
 
 jobs:
   apply:
+    if: github.event_name == 'push' || github.event.pull_request.number == 238
     runs-on: ubuntu-latest
     steps:
       - name: Check out staged branch
