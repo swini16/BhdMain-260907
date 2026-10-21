@@ -126,13 +126,29 @@
     data-confirmation-bfcm="{{ 'bhd.volume.confirmation_bfcm' | t | escape }}"
     data-better-offer="{{ 'bhd.volume.better_offer' | t | escape }}"
     data-generic="{{ 'bhd.volume.generic' | t | escape }}"
+    data-next-bulk-template="Add __COUNT__ more for 20% off"
   >
     <div data-volume-offers{% if volume_initial_subscription %} hidden{% endif %}>
-      <p class="bhd-volume__message" data-volume-message role="status" aria-live="polite" aria-atomic="true">
+      <p class="bhd-volume__message" data-volume-message>
         <button class="bhd-volume__prompt" type="button" data-volume-add aria-controls="Quantity-{{ section_id }}" aria-describedby="BhdVolumeTerms-{{ section_id }}" hidden disabled></button>
-        <span class="bhd-volume__confirmation" data-volume-confirmation>{{ volume_initial_key | t | escape }}</span>
+        <span class="bhd-volume__confirmation" data-volume-confirmation aria-describedby="BhdVolumeTerms-{{ section_id }}">{{ volume_initial_key | t | escape }}</span>
       </p>
-      <p class="bhd-volume__terms" id="BhdVolumeTerms-{{ section_id }}">{{ 'bhd.volume.terms' | t | escape }}</p>
+      <div class="bhd-volume__details">
+        <p class="bhd-volume__tiers">
+          {%- if volume_bfcm -%}
+            1 jar: 20% off · 2+ jars: 25% off*
+          {%- else -%}
+            2 jars: 10% off · 3–9 jars: 15% off · 10+ jars: 20% off*
+          {%- endif -%}
+        </p>
+        <p
+          class="bhd-volume__terms"
+          data-prefix="*One-time purchases only. "
+          aria-hidden="true"
+        >{{ 'bhd.volume.terms' | t | escape }}</p>
+        <span class="visually-hidden" id="BhdVolumeTerms-{{ section_id }}">One-time purchases only. Offers do not combine.</span>
+        <span class="visually-hidden" data-volume-announcement aria-live="polite" aria-atomic="true"></span>
+      </div>
     </div>
   </bhd-lemonade-volume>
 {%- endif -%}

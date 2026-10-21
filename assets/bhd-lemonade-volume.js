@@ -2,9 +2,9 @@ if (!customElements.get('bhd-lemonade-volume')) {
   customElements.define('bhd-lemonade-volume', class extends HTMLElement {
     connectedCallback() {
       if (this.controller) return;
+      this.productInfo = this.closest('product-info');
       this.controller = new AbortController();
       const options = { signal: this.controller.signal };
-      this.productInfo = this.closest('product-info');
       this.addEventListener('click', (event) => this.choose(event), options);
       document.addEventListener('input', (event) => this.onFormChange(event), options);
       document.addEventListener('change', (event) => this.onFormChange(event), options);
@@ -47,6 +47,11 @@ if (!customElements.get('bhd-lemonade-volume')) {
         });
       }
       this.sync();
+      queueMicrotask(() => {
+        if (!this.isConnected) return;
+        this.positionBesideQuantity();
+        this.dataset.positioned = 'true';
+      });
     }
 
     disconnectedCallback() {
@@ -63,6 +68,12 @@ if (!customElements.get('bhd-lemonade-volume')) {
     get input() {
       const input = document.getElementById(`Quantity-${this.dataset.sectionId}`);
       return input?.form === this.form ? input : null;
+    }
+
+    positionBesideQuantity() {
+      const quantityControl = this.input?.closest('quantity-input');
+      const container = quantityControl?.closest('.price-per-item__container');
+      if (quantityControl && container && this.parentElement !== container) quantityControl.after(this);
     }
 
     hasSellingPlan() {
@@ -151,6 +162,7 @@ if (!customElements.get('bhd-lemonade-volume')) {
       const offers = this.querySelector('[data-volume-offers]');
       const button = this.querySelector('[data-volume-add]');
       const confirmation = this.querySelector('[data-volume-confirmation]');
+      const announcement = this.querySelector('[data-volume-announcement]');
       if (offers) offers.hidden = !eligible;
       const now = Date.now() / 1000;
       const bfcm = now >= Number(this.dataset.bfcmStart) && now < Number(this.dataset.bfcmEnd);
@@ -158,30 +170,84 @@ if (!customElements.get('bhd-lemonade-volume')) {
       let key = bfcm ? 'confirmationBfcm' : 'confirmation';
       let targetPercent = bfcm ? 25 : 15;
       let canUpgrade = false;
-      if (bfcm && prospective === 1) { key = 'nudgeBfcm'; canUpgrade = true; }
-      else if (!bfcm && prospective === 1) { key = 'nudgeOne'; targetPercent = 10; canUpgrade = true; }
-      else if (!bfcm && prospective === 2) { key = 'nudgeTwo'; canUpgrade = true; }
-      else if (!bfcm && prospective >= 10) { key = 'confirmationBulk'; targetPercent = 20; }
+      let isUpgrade = false;
+      let requiredSelected = selected;
+      let displayText = '';
+      if (bfcm && prospective === 1) {
+        key = 'nudgeBfcm';
+        canUpgrade = true;
+        isUpgrade = true;
+        requiredSelected = selected + 1;
+      } else if (!bfcm && prospective === 1) {
+        key = 'nudgeOne';
+        targetPercent = 10;
+        canUpgrade = true;
+        isUpgrade = true;
+        requiredSelected = selected + 1;
+      } else if (!bfcm && prospective === 2) {
+        key = 'nudgeTwo';
+        canUpgrade = true;
+        isUpgrade = true;
+        requiredSelected = selected + 1;
+      } else if (!bfcm && prospective >= 3 && prospective < 10) {
+        key = 'confirmation';
+        targetPercent = 20;
+        isUpgrade = true;
+        const remaining = 10 - prospective;
+        requiredSelected = selected + remaining;
+        displayText = (this.dataset.nextBulkTemplate || 'Add __COUNT__ more for 20% off')
+          .replace('__COUNT__', String(remaining));
+      } else if (!bfcm && prospective >= 10) {
+        key = 'confirmationBulk';
+        targetPercent = 20;
+      }
       const knownPercent = Number(this.dataset.knownPercent || 0);
-      if (knownPercent > targetPercent || (canUpgrade && knownPercent === targetPercent)) {
-        key = 'betterOffer'; canUpgrade = false;
+      if (knownPercent > targetPercent || (isUpgrade && knownPercent >= targetPercent)) {
+        key = 'betterOffer';
+        canUpgrade = false;
+        isUpgrade = false;
+        displayText = '';
       }
       if (this.cartUncertain || this.dataset.unknownDiscount === 'true' || bfcm !== (this.dataset.bfcm === 'true')) {
-        key = 'generic'; canUpgrade = false;
+        key = 'generic';
+        canUpgrade = false;
+        isUpgrade = false;
+        displayText = '';
       }
-      if (canUpgrade && (this.quantityRulesPending || !this.accepts(selected + 1))) { key = 'generic'; canUpgrade = false; }
+      if (isUpgrade && (this.quantityRulesPending || !this.accepts(requiredSelected))) {
+        key = 'generic';
+        canUpgrade = false;
+        isUpgrade = false;
+        displayText = '';
+      }
       const text = this.dataset[key] || this.dataset.generic;
+      const visibleText = displayText || text;
       const actionable = eligible && canUpgrade;
       if (button) {
         const buttonText = actionable ? text : '';
         if (button.textContent !== buttonText) button.textContent = buttonText;
         button.hidden = !actionable;
-        if (button.disabled === actionable) button.disabled = !actionable;
+        button.disabled = !actionable;
       }
       if (confirmation) {
         const confirmationText = actionable ? '' : text;
         if (confirmation.textContent !== confirmationText) confirmation.textContent = confirmationText;
         confirmation.hidden = actionable;
+      }
+      const visibleElement = eligible ? (actionable ? button : confirmation) : null;
+      if (announcement) {
+        const announcementText = eligible ? visibleText : '';
+        if (announcement.textContent !== announcementText) announcement.textContent = announcementText;
+      }
+      for (const element of [button, confirmation]) {
+        if (!element) continue;
+        if (element === visibleElement) {
+          element.dataset.displayText = visibleText;
+          element.setAttribute('aria-label', visibleText);
+        } else {
+          delete element.dataset.displayText;
+          element.removeAttribute('aria-label');
+        }
       }
     }
 
