@@ -112,8 +112,9 @@ if (!customElements.get('bhd-lemonade-volume')) {
         for (const state of document.querySelectorAll('[data-volume-cart-state]')) {
           const quantity = Number(state.dataset.quantity);
           const knownPercent = Number(state.dataset.knownPercent);
-          if (!Number.isInteger(quantity) || quantity < 0 || !Number.isFinite(knownPercent) || knownPercent < 0 || knownPercent > 100 || !['true', 'false'].includes(state.dataset.unknownDiscount)) return false;
-          states.push({ quantity, knownPercent, unknownDiscount: state.dataset.unknownDiscount === 'true' });
+          const bulkPercent = state.dataset.bulkPercent === undefined ? 0 : Number(state.dataset.bulkPercent);
+          if (!Number.isInteger(quantity) || quantity < 0 || !Number.isFinite(knownPercent) || knownPercent < 0 || knownPercent > 100 || !Number.isFinite(bulkPercent) || bulkPercent < 0 || bulkPercent > 100 || !['true', 'false'].includes(state.dataset.unknownDiscount)) return false;
+          states.push({ quantity, knownPercent, bulkPercent, unknownDiscount: state.dataset.unknownDiscount === 'true' });
         }
       }
       if (states.length) {
@@ -136,22 +137,37 @@ if (!customElements.get('bhd-lemonade-volume')) {
         'BHD BFCM 2026 · 25% · 2+ jars': 25
       };
       let knownPercent = 0;
+      let bulkPercent = 0;
       let unknownDiscount = false;
       for (const application of applications) {
-        const percent = application?.value_type === 'percentage'
-          ? Number(application.value)
-          : (application?.type === 'automatic' ? automaticRates[application.title] : undefined);
+        const recognizedAutomatic = application?.type === 'automatic'
+          ? automaticRates[application.title]
+          : undefined;
+        const percent = Number.isFinite(recognizedAutomatic)
+          ? recognizedAutomatic
+          : (application?.value_type === 'percentage' ? Number(application.value) : undefined);
         if (!Number.isFinite(percent) || percent < 0 || percent > 100) unknownDiscount = true;
-        else knownPercent = Math.max(knownPercent, percent);
+        else {
+          knownPercent = Math.max(knownPercent, percent);
+          if (Number.isFinite(recognizedAutomatic)) bulkPercent = Math.max(bulkPercent, recognizedAutomatic);
+        }
       }
-      return this.setCartState({ quantity, knownPercent, unknownDiscount });
+      return this.setCartState({ quantity, knownPercent, bulkPercent, unknownDiscount });
     }
 
-    setCartState({ quantity, knownPercent, unknownDiscount }) {
+    setCartState({ quantity, knownPercent, bulkPercent = 0, unknownDiscount }) {
       this.dataset.cartQuantity = String(quantity);
       this.dataset.knownPercent = String(knownPercent);
+      this.dataset.bulkPercent = String(bulkPercent);
       this.dataset.unknownDiscount = String(unknownDiscount);
       return true;
+    }
+
+    appliedDiscountText() {
+      const percent = Number(this.dataset.bulkPercent || 0);
+      if (![10, 15, 20, 25].includes(percent) || this.dataset.unknownDiscount === 'true') return '';
+      return (this.dataset.appliedTemplate || '__PERCENT__% bulk discount applied')
+        .replace('__PERCENT__', String(percent));
     }
 
     sync() {
@@ -221,7 +237,16 @@ if (!customElements.get('bhd-lemonade-volume')) {
         displayText = '';
       }
       const text = this.dataset[key] || this.dataset.generic;
-      const visibleText = displayText || text;
+      let visibleText = displayText || text;
+      if (!['generic', 'betterOffer'].includes(key)) {
+        const appliedText = this.appliedDiscountText();
+        if (appliedText) {
+          const appliedPercent = String(Number(this.dataset.bulkPercent || 0));
+          visibleText = visibleText.includes(`${appliedPercent}%`)
+            ? appliedText
+            : `${appliedText} · ${visibleText}`;
+        }
+      }
       const actionable = eligible && canUpgrade;
       if (button) {
         const buttonText = actionable ? text : '';
