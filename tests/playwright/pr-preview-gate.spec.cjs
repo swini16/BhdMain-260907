@@ -170,8 +170,8 @@ for (const path of PATHS) {
 
 // Approved temporary-preview acceptance only. Never place an order or enter identity/payment data.
 test.describe('Lemonade authorized hosted development preview', () => {
-  // Run signed requests with the line reporter only; retained SDK step errors can contain headers.
-  test.use({ trace: 'off', video: 'off' });
+  // The workflow invokes this credential-bearing group with the line reporter and trace off.
+  // The guard below verifies trace/video/reporting before credentials are read or installed.
   const {
     readCrawlerAuthorization,
     installCrawlerAuthorization,
