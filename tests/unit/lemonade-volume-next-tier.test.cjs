@@ -21,6 +21,7 @@ test('product quantity prompt sits beside the native control and shows only the 
   assert.match(script, /element\.dataset\.displayText = visibleText/);
   assert.match(script, /element\.setAttribute\('aria-label', visibleText\)/);
   assert.match(script, /announcement\.textContent !== announcementText/);
+  assert.match(script, /if \(button\.disabled === actionable\) button\.disabled = !actionable/);
 
   assert.match(styles, /\.bhd-volume\s*{[^}]*flex:\s*1 1 0/s);
   assert.match(styles, /\[data-display-text\]::after/);
