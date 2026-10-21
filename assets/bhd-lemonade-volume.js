@@ -227,7 +227,7 @@ if (!customElements.get('bhd-lemonade-volume')) {
         const buttonText = actionable ? text : '';
         if (button.textContent !== buttonText) button.textContent = buttonText;
         button.hidden = !actionable;
-        button.disabled = !actionable;
+        if (button.disabled === actionable) button.disabled = !actionable;
       }
       if (confirmation) {
         const confirmationText = actionable ? '' : text;
