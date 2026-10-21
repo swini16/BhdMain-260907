@@ -30,10 +30,11 @@ test('product quantity prompt uses available inline space, wraps when needed, an
   assert.match(script, /if \(button\.disabled === actionable\) button\.disabled = !actionable/);
 
   assert.match(styles, /\.price-per-item__container:has\(> \.bhd-volume\[data-positioned="true"\]\)\s*{[^}]*flex-wrap:\s*wrap/s);
-  assert.match(styles, /\.bhd-volume\[data-positioned="true"\]:not\(\[hidden\]\)\s*{\s*display:\s*contents/);
-  assert.match(styles, /\.bhd-volume > \[data-volume-offers\]:not\(\[hidden\]\)\s*{\s*display:\s*contents/);
-  assert.match(styles, /\.bhd-volume__message\s*{[^}]*flex:\s*1 1 20rem/s);
-  assert.match(styles, /\.bhd-volume__details\s*{[^}]*flex:\s*1 0 100%/s);
+  assert.match(styles, /\.bhd-volume\s*{[^}]*flex:\s*1 1 20rem[^}]*min-width:\s*min\(20rem, 100%\)/s);
+  assert.match(styles, /\.bhd-volume\[data-positioned="true"\]:not\(\[hidden\]\)\s*{\s*display:\s*block/);
+  assert.doesNotMatch(styles, /\.bhd-volume\[data-positioned="true"\][^{]*{[^}]*display:\s*contents/s);
+  assert.match(styles, /\.bhd-volume__message\s*{[^}]*width:\s*100%/s);
+  assert.match(styles, /\.bhd-volume:has\(> \[data-volume-offers\]\[hidden\]\)/);
   assert.match(styles, /\[data-display-text\]::after/);
   assert.match(styles, /\.bhd-volume__terms::before\s*{\s*content:\s*attr\(data-prefix\)/);
 
