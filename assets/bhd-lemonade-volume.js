@@ -27,7 +27,13 @@ if (!customElements.get('bhd-lemonade-volume')) {
           const sourceSection = this.productInfo?.dataset.originalSection || this.dataset.sectionId;
           if (String(data.sectionId) !== sourceSection) return;
           const source = data.html?.getElementById(`BhdLemonadeVolume-${sourceSection}`);
-          if (!source || !data.variant) { this.hidden = true; return; }
+          const currentDetails = this.details;
+          if (!source || !data.variant) {
+            this.hidden = true;
+            if (currentDetails) currentDetails.hidden = true;
+            return;
+          }
+          currentDetails?.remove();
           this.hidden = false;
           this.innerHTML = source.innerHTML;
           Object.entries(source.dataset).forEach(([key, value]) => {
@@ -35,6 +41,7 @@ if (!customElements.get('bhd-lemonade-volume')) {
           });
           this.cartUncertain = false;
           this.quantityRulesPending = false;
+          if (this.positionBesideQuantity()) this.dataset.positioned = 'true';
           this.sync();
         });
         this.unsubscribeQuantity = subscribe(PUB_SUB_EVENTS.quantityUpdate, () => this.sync());
@@ -49,8 +56,10 @@ if (!customElements.get('bhd-lemonade-volume')) {
       this.sync();
       queueMicrotask(() => {
         if (!this.isConnected) return;
-        this.positionBesideQuantity();
-        this.dataset.positioned = 'true';
+        if (this.positionBesideQuantity()) {
+          this.dataset.positioned = 'true';
+          this.sync();
+        }
       });
     }
 
@@ -70,10 +79,18 @@ if (!customElements.get('bhd-lemonade-volume')) {
       return input?.form === this.form ? input : null;
     }
 
+    get details() {
+      return this.dataset.detailsId ? document.getElementById(this.dataset.detailsId) : null;
+    }
+
     positionBesideQuantity() {
       const quantityControl = this.input?.closest('quantity-input');
       const container = quantityControl?.closest('.price-per-item__container');
-      if (quantityControl && container && this.parentElement !== container) quantityControl.after(this);
+      if (!quantityControl || !container) return false;
+      if (this.parentElement !== container) quantityControl.after(this);
+      const details = this.details;
+      if (details && details.previousElementSibling !== container) container.after(details);
+      return this.parentElement === container;
     }
 
     hasSellingPlan() {
@@ -163,35 +180,22 @@ if (!customElements.get('bhd-lemonade-volume')) {
       return true;
     }
 
-    bulkTierPercent(quantity, bfcm) {
-      if (!Number.isFinite(quantity) || quantity < 1) return 0;
-      if (bfcm) return quantity >= 2 ? 25 : 20;
-      if (quantity >= 10) return 20;
-      if (quantity >= 3) return 15;
-      if (quantity >= 2) return 10;
-      return 0;
-    }
-
-    appliedDiscountText(percent) {
-      if (![10, 15, 20, 25].includes(percent)) return '';
-      return (this.dataset.appliedTemplate || '__PERCENT__% bulk discount applied')
-        .replace('__PERCENT__', String(percent));
-    }
-
     sync() {
       const input = this.input;
       const selected = Number(input?.value);
       const variantMatches = this.form?.querySelector('[name="id"]')?.value === this.dataset.variantId;
       const eligible = !this.hasSellingPlan() && variantMatches && this.accepts(selected);
       const offers = this.querySelector('[data-volume-offers]');
+      const details = this.details;
       const button = this.querySelector('[data-volume-add]');
       const confirmation = this.querySelector('[data-volume-confirmation]');
-      const announcement = this.querySelector('[data-volume-announcement]');
+      const announcement = this.querySelector('[data-volume-announcement]')
+        || details?.querySelector('[data-volume-announcement]');
       if (offers) offers.hidden = !eligible;
+      if (details) details.hidden = !eligible;
       const now = Date.now() / 1000;
       const bfcm = now >= Number(this.dataset.bfcmStart) && now < Number(this.dataset.bfcmEnd);
       const prospective = selected + Number(this.dataset.cartQuantity || 0);
-      const bulkTierPercent = this.bulkTierPercent(prospective, bfcm);
       let key = bfcm ? 'confirmationBfcm' : 'confirmation';
       let targetPercent = bfcm ? 25 : 15;
       let canUpgrade = false;
@@ -246,15 +250,7 @@ if (!customElements.get('bhd-lemonade-volume')) {
         displayText = '';
       }
       const text = this.dataset[key] || this.dataset.generic;
-      let visibleText = displayText || text;
-      if (!['generic', 'betterOffer'].includes(key)) {
-        const appliedText = this.appliedDiscountText(bulkTierPercent);
-        if (appliedText) {
-          visibleText = visibleText.includes(`${bulkTierPercent}%`)
-            ? appliedText
-            : `${appliedText} · ${visibleText}`;
-        }
-      }
+      const visibleText = displayText || text;
       const actionable = eligible && canUpgrade;
       if (button) {
         const buttonText = actionable ? text : '';
