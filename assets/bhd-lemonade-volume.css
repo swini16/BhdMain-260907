@@ -1,8 +1,9 @@
 .price-per-item__container:has(> .bhd-volume[data-positioned="true"]) {
+  display: flex;
   width: 100%;
   flex-wrap: nowrap;
   align-items: center;
-  gap: .8rem;
+  gap: 1rem;
 }
 .price-per-item__container:has(> .bhd-volume[data-positioned="true"]) > quantity-input {
   flex: 0 0 auto;
