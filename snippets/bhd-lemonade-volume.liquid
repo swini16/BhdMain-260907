@@ -35,6 +35,7 @@
   endif
   assign volume_cart_quantity = 0
   assign volume_known_percent = 0
+  assign volume_bulk_percent = 0
   assign volume_unknown_discount = false
   assign volume_applications = cart.cart_level_discount_applications
   for volume_item in cart.items
@@ -49,26 +50,37 @@
   endfor
   for volume_application in volume_applications
     assign volume_percent = 0
+    assign volume_bulk_candidate = 0
     if volume_application.value_type == 'percentage'
       assign volume_percent = volume_application.value | plus: 0
-    elsif volume_application.type == 'automatic'
+    endif
+    if volume_application.type == 'automatic'
       case volume_application.title
         when 'Lemonade: Buy 2+, save 10%'
           assign volume_percent = 10
+          assign volume_bulk_candidate = 10
         when 'Lemonade: Buy 3+, save 15%'
           assign volume_percent = 15
+          assign volume_bulk_candidate = 15
         when 'Lemonade: Buy 10+, save 20%', 'BHD BFCM 2026 · 20% · 1 jar'
           assign volume_percent = 20
+          assign volume_bulk_candidate = 20
         when 'BHD BFCM 2026 · 25% · 2+ jars'
           assign volume_percent = 25
+          assign volume_bulk_candidate = 25
         else
-          assign volume_unknown_discount = true
+          if volume_application.value_type != 'percentage'
+            assign volume_unknown_discount = true
+          endif
       endcase
-    else
+    elsif volume_application.value_type != 'percentage'
       assign volume_unknown_discount = true
     endif
     if volume_percent > volume_known_percent
       assign volume_known_percent = volume_percent
+    endif
+    if volume_bulk_candidate > volume_bulk_percent
+      assign volume_bulk_percent = volume_bulk_candidate
     endif
   endfor
   assign volume_prospective = volume_variant.quantity_rule.min | default: 1 | plus: volume_cart_quantity
@@ -114,6 +126,7 @@
     data-requires-selling-plan="{{ product.requires_selling_plan }}"
     data-cart-quantity="{{ volume_cart_quantity }}"
     data-known-percent="{{ volume_known_percent }}"
+    data-bulk-percent="{{ volume_bulk_percent }}"
     data-unknown-discount="{{ volume_unknown_discount }}"
     data-bfcm="{{ volume_bfcm }}"
     data-bfcm-start="{{ volume_bfcm_start }}"
@@ -126,6 +139,7 @@
     data-confirmation-bfcm="{{ 'bhd.volume.confirmation_bfcm' | t | escape }}"
     data-better-offer="{{ 'bhd.volume.better_offer' | t | escape }}"
     data-generic="{{ 'bhd.volume.generic' | t | escape }}"
+    data-applied-template="__PERCENT__% bulk discount applied"
     data-next-bulk-template="Add __COUNT__ more for 20% off"
   >
     <div data-volume-offers{% if volume_initial_subscription %} hidden{% endif %}>
