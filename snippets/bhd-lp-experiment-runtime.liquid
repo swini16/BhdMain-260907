@@ -6,6 +6,10 @@
 
 <script>
   window.BHD_LP_PAGE_HANDLE = {{ page.handle | json }};
+  window.BHD_EXPERIMENT_CONTEXT = Object.freeze({
+    surface: 'landing_page',
+    handle: {{ page.handle | json }}
+  });
 </script>
 {{ 'bhd-lp-experiments.js' | asset_url | script_tag }}
 {{ 'bhd-lp-experiment-runtime.js' | asset_url | script_tag }}
