@@ -527,5 +527,20 @@
       "expanded": "ギフトカードカードの受取人フォームを展開しました",
       "collapsed": "ギフトカードカードの受取人フォームを折りたたみました"
     }
+  },
+  "bhd": {
+    "volume": {
+      "nudge_one": "Add 1 for 10% off",
+      "nudge_two": "Add 1 more for 15% off",
+      "confirmation": "15% off on 3–9 jars",
+      "confirmation_bulk": "20% off on 10+ jars",
+      "nudge_bfcm": "Add 1 for 25% off",
+      "confirmation_bfcm": "25% off on 2+ jars",
+      "better_offer": "Best offer shown in cart.",
+      "generic": "Best offer shown in cart.",
+      "cart_heading": "Lemonade quantity savings",
+      "terms": "Offers do not combine.",
+      "selected_message": "Quantity set to {{ quantity }}."
+    }
   }
 }

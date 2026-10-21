@@ -1,0 +1,12 @@
+{
+  "name": "besthydrate-theme-fixtures",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:unit": "node --test tests/unit/*.test.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0",
+    "liquidjs": "10.21.1"
+  }
+}

@@ -1,0 +1,137 @@
+{% doc %}
+  Shows the available Lemonade quantity offer once per cart surface.
+  Shopify's existing line and cart totals remain the source of applied savings.
+
+  @example
+  {% render 'bhd-lemonade-cart-offer' %}
+{% enddoc %}
+
+{%- liquid
+  assign lemonade_quantity = 0
+  assign lemonade_other_discount = false
+  assign lemonade_known_percent = 0
+  assign lemonade_applications = cart.cart_level_discount_applications
+  assign lemonade_can_add_one = false
+  for lemonade_item in cart.items
+    assign lemonade_line_applications = lemonade_item.line_level_discount_allocations | map: 'discount_application'
+    assign lemonade_applications = lemonade_applications | concat: lemonade_line_applications
+    assign lemonade_product_id = lemonade_item.product.id | default: lemonade_item.product_id
+    if lemonade_product_id == 8904882422044 or lemonade_product_id == 10168145281308
+      if lemonade_item.selling_plan_allocation == blank
+        assign lemonade_quantity = lemonade_quantity | plus: lemonade_item.quantity
+        assign lemonade_variant = lemonade_item.variant
+        assign lemonade_variant_quantity = cart | item_count_for_variant: lemonade_variant.id
+        assign lemonade_next_quantity = lemonade_variant_quantity | plus: 1
+        assign lemonade_can_increase = lemonade_variant.available
+        if lemonade_variant.quantity_rule.increment > 1 or lemonade_variant.quantity_price_breaks.size > 0
+          assign lemonade_can_increase = false
+        endif
+        if lemonade_variant.quantity_rule.max != blank and lemonade_next_quantity > lemonade_variant.quantity_rule.max
+          assign lemonade_can_increase = false
+        endif
+        if lemonade_variant.inventory_management == 'shopify' and lemonade_variant.inventory_policy == 'deny' and lemonade_next_quantity > lemonade_variant.inventory_quantity
+          assign lemonade_can_increase = false
+        endif
+        if lemonade_can_increase
+          assign lemonade_can_add_one = true
+        endif
+      endif
+    endif
+  endfor
+  for lemonade_application in lemonade_applications
+    assign lemonade_percent = 0
+    if lemonade_application.value_type == 'percentage'
+      assign lemonade_percent = lemonade_application.value | plus: 0
+    elsif lemonade_application.type == 'automatic'
+      case lemonade_application.title
+        when 'Lemonade: Buy 2+, save 10%'
+          assign lemonade_percent = 10
+        when 'Lemonade: Buy 3+, save 15%'
+          assign lemonade_percent = 15
+        when 'Lemonade: Buy 10+, save 20%', 'BHD BFCM 2026 · 20% · 1 jar'
+          assign lemonade_percent = 20
+        when 'BHD BFCM 2026 · 25% · 2+ jars'
+          assign lemonade_percent = 25
+        else
+          assign lemonade_other_discount = true
+      endcase
+    else
+      assign lemonade_other_discount = true
+    endif
+    if lemonade_percent > lemonade_known_percent
+      assign lemonade_known_percent = lemonade_percent
+    endif
+  endfor
+  assign lemonade_now = 'now' | date: '%s' | plus: 0
+  assign lemonade_bfcm_start = '2026-11-27T07:00:00Z' | date: '%s' | plus: 0
+  assign lemonade_bfcm_end = '2026-12-01T07:00:00Z' | date: '%s' | plus: 0
+  assign lemonade_bfcm = false
+  if lemonade_now >= lemonade_bfcm_start and lemonade_now < lemonade_bfcm_end
+    assign lemonade_bfcm = true
+  endif
+  assign lemonade_upgrade = false
+  if lemonade_bfcm
+    assign lemonade_target_percent = 25
+    assign lemonade_message = 'bhd.volume.confirmation_bfcm'
+    if lemonade_quantity == 1
+      assign lemonade_upgrade = true
+      assign lemonade_message = 'bhd.volume.nudge_bfcm'
+    endif
+  elsif lemonade_quantity == 1
+    assign lemonade_upgrade = true
+    assign lemonade_target_percent = 10
+    assign lemonade_message = 'bhd.volume.nudge_one'
+  elsif lemonade_quantity == 2
+    assign lemonade_upgrade = true
+    assign lemonade_target_percent = 15
+    assign lemonade_message = 'bhd.volume.nudge_two'
+  elsif lemonade_quantity >= 10
+    assign lemonade_target_percent = 20
+    assign lemonade_message = 'bhd.volume.confirmation_bulk'
+  else
+    assign lemonade_target_percent = 15
+    assign lemonade_message = 'bhd.volume.confirmation'
+  endif
+  if lemonade_other_discount or lemonade_known_percent > lemonade_target_percent
+    assign lemonade_message = 'bhd.volume.generic'
+  elsif lemonade_upgrade
+    if lemonade_can_add_one == false or lemonade_known_percent >= lemonade_target_percent
+      assign lemonade_message = 'bhd.volume.generic'
+    endif
+  endif
+-%}
+
+<span hidden data-volume-cart-state data-quantity="{{ lemonade_quantity }}" data-known-percent="{{ lemonade_known_percent }}" data-unknown-discount="{{ lemonade_other_discount }}"></span>
+
+{%- if lemonade_quantity > 0 -%}
+  <aside class="bhd-lemonade-cart-offer" aria-label="{{ 'bhd.volume.cart_heading' | t | escape }}">
+    <p class="bhd-lemonade-cart-offer__nudge">{{ lemonade_message | t | escape }}</p>
+    <small>{{ 'bhd.volume.terms' | t | escape }}</small>
+  </aside>
+{%- endif -%}
+
+{% stylesheet %}
+  .bhd-lemonade-cart-offer {
+    margin: 0 0 1rem;
+    padding: .7rem .9rem;
+    border-radius: .65rem;
+    background: #f4f8fd;
+    color: #0b2d67;
+    line-height: 1.4;
+  }
+
+  .bhd-lemonade-cart-offer p {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  .bhd-lemonade-cart-offer__nudge {
+    font-weight: 700;
+  }
+
+  .bhd-lemonade-cart-offer small {
+    display: block;
+    margin-top: .3rem;
+    font-size: 1rem;
+  }
+{% endstylesheet %}
