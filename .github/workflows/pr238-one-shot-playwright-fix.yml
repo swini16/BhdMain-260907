@@ -1,0 +1,76 @@
+name: PR238 one-shot Playwright fix
+
+on:
+  push:
+    branches:
+      - draft/lemonade-volume-display-20261020
+    paths:
+      - .github/workflows/pr238-one-shot-playwright-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out staged branch
+        uses: actions/checkout@v4
+        with:
+          ref: draft/lemonade-volume-display-20261020
+          fetch-depth: 0
+
+      - name: Remove invalid nested worker options and add regression contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          spec_path = Path('tests/playwright/pr-preview-gate.spec.cjs')
+          spec = spec_path.read_text(encoding='utf-8')
+          old = """test.describe('Lemonade authorized hosted development preview', () => {
+            // Run signed requests with the line reporter only; retained SDK step errors can contain headers.
+            test.use({ trace: 'off', video: 'off' });
+            const {
+          """
+          new = """test.describe('Lemonade authorized hosted development preview', () => {
+            // The workflow invokes this credential-bearing group with the line reporter and trace off.
+            // The guard below verifies trace/video/reporting before credentials are read or installed.
+            const {
+          """
+          if spec.count(old) != 1:
+              raise SystemExit('Expected exactly one nested trace/video test.use block')
+          spec_path.write_text(spec.replace(old, new), encoding='utf-8')
+
+          contract_path = Path('tests/unit/shopify-crawler-auth.test.cjs')
+          contract = contract_path.read_text(encoding='utf-8')
+          marker = "test('authorized preview security options remain parse-safe and fail closed'"
+          if marker not in contract:
+              contract += r'''
+
+test('authorized preview security options remain parse-safe and fail closed', () => {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const spec = fs.readFileSync(path.resolve(__dirname, '../playwright/pr-preview-gate.spec.cjs'), 'utf8');
+  const workflow = fs.readFileSync(path.resolve(__dirname, '../../.github/workflows/shopify-pr-preview-gate.yml'), 'utf8');
+  assert.doesNotMatch(spec, /test\.use\(\{\s*trace:\s*'off',\s*video:\s*'off'\s*\}\)/);
+  assert.match(spec, /Authorized storefront acceptance requires only --reporter=line with trace and video off\./);
+  assert.match(workflow, /--reporter=line --trace=off --output=test-results-lemonade-authorized/);
+});
+'''
+          contract_path.write_text(contract, encoding='utf-8')
+          PY
+
+      - name: Commit staged fix and remove this one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/pr238-one-shot-playwright-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/playwright/pr-preview-gate.spec.cjs tests/unit/shopify-crawler-auth.test.cjs .github/workflows/pr238-one-shot-playwright-fix.yml
+          git diff --cached --check
+          git diff --cached --quiet && { echo 'No staged correction'; exit 1; }
+          git commit -m "Keep signed preview gate parse-safe"
+          git push origin HEAD:draft/lemonade-volume-display-20261020
