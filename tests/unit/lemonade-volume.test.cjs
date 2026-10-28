@@ -282,4 +282,3 @@ test('quantity offer renders once from the native section rather than template s
   assert.equal(section.split("render 'bhd-lemonade-volume'").length - 1, 1);
   assert.doesNotMatch(read('templates/product.json'), /bhd-lemonade-volume|lemonade_volume/);
 });
-

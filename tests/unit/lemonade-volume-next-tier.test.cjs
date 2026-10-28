@@ -55,4 +55,3 @@ test('product quantity prompt stays in the same row as the native control with s
   assert.match(snippet, /data-next-bulk-template="Add __COUNT__ more for 15% off"/);
   assert.match(cartSnippet, /data-bulk-percent="\{\{ lemonade_bulk_percent \}\}"/);
 });
-

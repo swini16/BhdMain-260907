@@ -158,4 +158,3 @@ test('stronger or uncertain competing offers suppress the quantity prompt', asyn
   setQuantity(f, 3);
   assert.equal(visibleCopy(f.host).display, 'Best offer shown in cart.');
 });
-
