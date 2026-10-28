@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { validateShopifyPreviewReceipt } = require('./helpers/shopify-preview-receipt.cjs');
 const BASE_URL = process.env.BASE_URL || 'https://besthydrate.com';
 const PREVIEW_THEME_ID = process.env.PREVIEW_THEME_ID || '';
 const PATHS = [...new Set((process.env.PREVIEW_PATHS || '/').split(',').map((v) => v.trim()).filter(Boolean))];
@@ -204,17 +205,9 @@ test.describe('Lemonade authorized hosted development preview', () => {
       if (!crawlerAuth) throw new Error('Shopify crawler authorization was not initialized for this acceptance context.');
       expect(new URL(BASE_URL).hostname).toBe('127.0.0.1');
       expect(new URL(BASE_URL).protocol).toBe('http:');
-      const { theme } = JSON.parse(require('node:fs').readFileSync('artifacts/shopify-preview.json', 'utf8'));
-      expect(theme.role, 'generated preview role').toBe('development');
-      expect(String(theme.id), 'generated preview ID').toMatch(/^[1-9]\d*$/);
-      expect(String(theme.id), 'generated preview matches this run').toBe(PREVIEW_THEME_ID);
-      expect(theme.shop, 'generated preview shop').toBe('best-hydrate.myshopify.com');
-      const generatedPreview = new URL(theme.preview_url);
-      expect(generatedPreview.protocol).toBe('https:');
-      expect(generatedPreview.hostname).toBe(theme.shop);
-      expect(generatedPreview.username + generatedPreview.password + generatedPreview.port + generatedPreview.hash).toBe('');
-      expect(generatedPreview.pathname).toBe('/');
-      expect(generatedPreview.searchParams.getAll('preview_theme_id')).toEqual([PREVIEW_THEME_ID]);
+      const receipt = JSON.parse(require('node:fs').readFileSync('artifacts/shopify-preview.json', 'utf8'));
+      const preview = validateShopifyPreviewReceipt(receipt, PREVIEW_THEME_ID);
+      const generatedPreview = new URL(preview.previewUrl);
       let hostedOrigin = '';
       let cartActionsStarted = false;
       let cliVersion = 'unavailable';
@@ -255,7 +248,7 @@ test.describe('Lemonade authorized hosted development preview', () => {
           expect(url.port).toBe('');
         }
         expect(url.username + url.password).toBe('');
-        expect(state.shop, 'same Shopify shop in this preview').toBe(theme.shop);
+        expect(state.shop, 'same Shopify shop in this preview').toBe(preview.shop);
         expect(state.themeId, 'exact generated development theme, never the live theme').toBe(PREVIEW_THEME_ID);
         if (requireMarket) {
           expect(state.country, 'selected Shopify market').toBe(market.country);

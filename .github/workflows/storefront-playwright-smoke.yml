@@ -64,7 +64,11 @@ jobs:
         run: node scripts/check-responsive-surfaces.mjs
 
       - name: Run storefront Playwright validation
-        run: npx playwright test --config=playwright.config.cjs
+        # The required preview gate runs the signed checkout group separately,
+        # with its development receipt, credentials, line reporter, and trace off.
+        run: |
+          npx playwright test --config=playwright.config.cjs \
+            --grep-invert 'Lemonade authorized hosted development preview'
 
       - name: Prepare stable visual captures
         if: ${{ !cancelled() }}
