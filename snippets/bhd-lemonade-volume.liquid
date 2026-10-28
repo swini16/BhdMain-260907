@@ -56,13 +56,16 @@
     endif
     if volume_application.type == 'automatic'
       case volume_application.title
-        when 'Lemonade: Buy 2+, save 10%'
+        when 'Lemonade: Buy 2+, save 5%'
+          assign volume_percent = 5
+          assign volume_bulk_candidate = 5
+        when 'Lemonade: Buy 3+, save 10%'
           assign volume_percent = 10
           assign volume_bulk_candidate = 10
-        when 'Lemonade: Buy 3+, save 15%'
+        when 'Lemonade: Buy 10+, save 15%'
           assign volume_percent = 15
           assign volume_bulk_candidate = 15
-        when 'Lemonade: Buy 10+, save 20%', 'BHD BFCM 2026 · 20% · 1 jar'
+        when 'BHD BFCM 2026 · 20% · 1 jar'
           assign volume_percent = 20
           assign volume_bulk_candidate = 20
         when 'BHD BFCM 2026 · 25% · 2+ jars'
@@ -85,7 +88,7 @@
   endfor
   assign volume_prospective = volume_variant.quantity_rule.min | default: 1 | plus: volume_cart_quantity
   assign volume_initial_key = 'bhd.volume.confirmation'
-  assign volume_target_percent = 15
+  assign volume_target_percent = 10
   assign volume_is_upgrade = false
   if volume_bfcm
     assign volume_target_percent = 25
@@ -95,10 +98,10 @@
       assign volume_is_upgrade = true
     endif
   elsif volume_prospective >= 10
-    assign volume_target_percent = 20
+    assign volume_target_percent = 15
     assign volume_initial_key = 'bhd.volume.confirmation_bulk'
   elsif volume_prospective == 1
-    assign volume_target_percent = 10
+    assign volume_target_percent = 5
     assign volume_initial_key = 'bhd.volume.nudge_one'
     assign volume_is_upgrade = true
   elsif volume_prospective == 2
@@ -140,7 +143,7 @@
     data-confirmation-bfcm="{{ 'bhd.volume.confirmation_bfcm' | t | escape }}"
     data-better-offer="{{ 'bhd.volume.better_offer' | t | escape }}"
     data-generic="{{ 'bhd.volume.generic' | t | escape }}"
-    data-next-bulk-template="Add __COUNT__ more for 20% off"
+    data-next-bulk-template="Add __COUNT__ more for 15% off"
   >
     <div data-volume-offers{% if volume_initial_subscription %} hidden{% endif %}>
       <p class="bhd-volume__message" data-volume-message>
@@ -156,7 +159,7 @@
           {%- if volume_bfcm -%}
             1 jar: 20% off · 2+ jars: 25% off*
           {%- else -%}
-            2 jars: 10% off · 3–9 jars: 15% off · 10+ jars: 20% off*
+            2 jars: 5% off · 3–9 jars: 10% off · 10+ jars: 15% off*
           {%- endif -%}
         </p>
         <p

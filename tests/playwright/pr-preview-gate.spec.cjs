@@ -298,13 +298,13 @@ test.describe('Lemonade authorized hosted development preview', () => {
       });
       const automaticRate = quantity => bfcm
         ? (quantity === 1 ? .20 : .25)
-        : (quantity >= 10 ? .20 : quantity >= 3 ? .15 : quantity === 2 ? .10 : 0);
+        : (quantity >= 10 ? .15 : quantity >= 3 ? .10 : quantity === 2 ? .05 : 0);
       const expectedPrompt = (quantity, first15 = false) => {
         if (bfcm) return quantity === 1 ? 'Add 1 for 25% off' : '25% off on 2+ jars';
-        if (first15 && quantity < 3) return 'Best offer shown in cart.';
-        if (quantity === 1) return 'Add 1 for 10% off';
-        if (quantity === 2) return 'Add 1 more for 15% off';
-        return quantity < 10 ? '15% off on 3–9 jars' : '20% off on 10+ jars';
+        if (first15 && quantity < 10) return 'Best offer shown in cart.';
+        if (quantity === 1) return 'Add 1 for 5% off';
+        if (quantity === 2) return 'Add 1 more for 10% off';
+        return quantity < 10 ? '10% off on 3–9 jars' : '15% off on 10+ jars';
       };
       const assertCart = (cart, quantity, first15 = false) => {
         const summary = safeCart(cart);
@@ -511,3 +511,4 @@ test.describe('Lemonade authorized hosted development preview', () => {
     });
   }
 });
+

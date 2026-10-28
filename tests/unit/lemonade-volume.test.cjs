@@ -165,21 +165,21 @@ test('the product tier includes both eligible cart products and excludes subscri
 });
 test('known equal discounts suppress upgrade prompts but preserve equal tier confirmations', async t => {
   const f = await fixture(); t.after(() => f.dom.window.close());
-  for (const [quantity, percent, expected] of [[1, 10, copy.generic], [1, 15, copy.generic], [2, 10, copy.nudge_two], [2, 15, copy.generic], [3, 15, copy.confirmation], [9, 15, copy.confirmation], [10, 20, copy.confirmation_bulk], [10, 25, copy.generic]]) {
+  for (const [quantity, percent, expected] of [[1, 5, copy.generic], [1, 15, copy.generic], [2, 5, copy.nudge_two], [2, 10, copy.generic], [3, 10, copy.confirmation], [9, 10, copy.confirmation], [3, 15, copy.generic], [9, 15, copy.generic], [10, 15, copy.confirmation_bulk], [10, 25, copy.generic]]) {
     f.host.dataset.knownPercent = String(percent); select(f, quantity); assert.equal(message(f.host), expected);
   }
   f.host.dataset.unknownDiscount = 'true'; select(f, 3); assert.equal(message(f.host), copy.generic);
 });
 test('Liquid initial copy uses the same equal-discount and bulk-tier rules', async () => {
-  for (const [quantity, percent, expected] of [[1, 10, copy.generic], [2, 15, copy.generic], [3, 15, copy.confirmation], [9, 15, copy.confirmation], [10, 20, copy.confirmation_bulk], [10, 25, copy.generic]]) {
+  for (const [quantity, percent, expected] of [[1, 5, copy.generic], [2, 10, copy.generic], [3, 10, copy.confirmation], [9, 10, copy.confirmation], [3, 15, copy.generic], [9, 15, copy.generic], [10, 15, copy.confirmation_bulk], [10, 25, copy.generic]]) {
     const html = await render('bhd-lemonade-volume', { product: { id: ca, selected_or_first_available_variant: variant({ quantity_rule: { min: quantity, max: null, increment: 1 } }) }, section_id: 'test', cart: cartData([], [{ title: 'KNOWN', type: 'discount_code', value_type: 'percentage', value: percent }]) });
     assert.equal(new JSDOM(html).window.document.querySelector('[data-volume-confirmation]').textContent, expected);
   }
 });
-test('full cart refreshes recognize the 20% automatic and exclude subscription quantity', async t => {
+test('full cart refreshes recognize the 15% automatic and exclude subscription quantity', async t => {
   const f = await fixture(); t.after(() => f.dom.window.close());
-  f.events.cart({ cartData: cartData([item(9), item(5, { selling_plan_allocation: { id: 1 } })], [{ type: 'automatic', title: 'Lemonade: Buy 10+, save 20%' }]) });
-  assert.equal(f.host.dataset.cartQuantity, '9'); assert.equal(f.host.dataset.knownPercent, '20');
+  f.events.cart({ cartData: cartData([item(9), item(5, { selling_plan_allocation: { id: 1 } })], [{ type: 'automatic', title: 'Lemonade: Buy 10+, save 15%' }]) });
+  assert.equal(f.host.dataset.cartQuantity, '9'); assert.equal(f.host.dataset.knownPercent, '15');
   assert.equal(message(f.host), copy.confirmation_bulk);
   f.events.cart({ cartData: cartData([], [{ title: 'FIRST15', type: 'discount_code', value_type: 'percentage', value: '15.0' }]) });
   assert.equal(message(f.host), copy.generic);
@@ -189,7 +189,7 @@ test('full cart refreshes recognize the 20% automatic and exclude subscription q
 test('partial add payload fails safely; returned section evidence restores cart context including empty cart', async t => {
   const f = await fixture(); t.after(() => f.dom.window.close());
   f.events.cart({ cartData: { items: [item(1)] } }); assert.equal(message(f.host), copy.generic);
-  f.events.cart({ cartData: { items: [item(1)], sections: { 'cart-drawer': stateMarkup(9, 20), 'main-cart-footer': stateMarkup(9, 20) } } });
+  f.events.cart({ cartData: { items: [item(1)], sections: { 'cart-drawer': stateMarkup(9, 15), 'main-cart-footer': stateMarkup(9, 15) } } });
   assert.equal(message(f.host), copy.confirmation_bulk); assert.equal(f.host.cartUncertain, false);
   f.events.cart({ cartData: { sections: { 'cart-drawer': stateMarkup(0) } } });
   f.input.setAttribute('data-cart-quantity', '0');
@@ -250,10 +250,10 @@ test('cart competing discounts and unavailable increases use the generic line; s
     assert.equal(cartMessage(await cart(items, apps)), copy.generic);
   }
   assert.equal(cartMessage(await cart([item(1, { selling_plan_allocation: { id: 1 } })])), undefined);
-  assert.equal(cartMessage(await cart([item(2, { line_level_discount_allocations: [{ discount_application: { title: 'Lemonade: Buy 2+, save 10%', type: 'automatic' } }] })])), copy.nudge_two);
+  assert.equal(cartMessage(await cart([item(2, { line_level_discount_allocations: [{ discount_application: { title: 'Lemonade: Buy 2+, save 5%', type: 'automatic' } }] })])), copy.nudge_two);
 });
 test('cart known-equal comparison and BFCM use the same product rules', async () => {
-  for (const [quantity, percent, expected] of [[1, 10, copy.generic], [2, 15, copy.generic], [3, 15, copy.confirmation], [9, 15, copy.confirmation], [10, 20, copy.confirmation_bulk], [10, 25, copy.generic]]) {
+  for (const [quantity, percent, expected] of [[1, 5, copy.generic], [2, 10, copy.generic], [3, 10, copy.confirmation], [9, 10, copy.confirmation], [3, 15, copy.generic], [9, 15, copy.generic], [10, 15, copy.confirmation_bulk], [10, 25, copy.generic]]) {
     assert.equal(cartMessage(await cart([item(quantity)], [{ type: 'discount_code', value_type: 'percentage', value: percent }])), expected);
   }
   assert.equal(cartMessage(await cart([item(1)], [], { now: '2026-11-28T12:00:00Z' })), copy.nudge_bfcm);
@@ -282,3 +282,4 @@ test('quantity offer renders once from the native section rather than template s
   assert.equal(section.split("render 'bhd-lemonade-volume'").length - 1, 1);
   assert.doesNotMatch(read('templates/product.json'), /bhd-lemonade-volume|lemonade_volume/);
 });
+

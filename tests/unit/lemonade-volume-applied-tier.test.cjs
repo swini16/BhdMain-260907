@@ -39,15 +39,15 @@ async function fixture({ now = normalNow, bfcm = false } = {}) {
         data-bfcm="${bfcm}"
         data-bfcm-start="1795762800"
         data-bfcm-end="1796108400"
-        data-nudge-one="Add 1 for 10% off"
-        data-nudge-two="Add 1 more for 15% off"
-        data-confirmation="15% off on 3–9 jars"
-        data-confirmation-bulk="20% off on 10+ jars"
+        data-nudge-one="Add 1 for 5% off"
+        data-nudge-two="Add 1 more for 10% off"
+        data-confirmation="10% off on 3–9 jars"
+        data-confirmation-bulk="15% off on 10+ jars"
         data-nudge-bfcm="Add 1 for 25% off"
         data-confirmation-bfcm="25% off on 2+ jars"
         data-better-offer="Best offer shown in cart."
         data-generic="Best offer shown in cart."
-        data-next-bulk-template="Add __COUNT__ more for 20% off"
+        data-next-bulk-template="Add __COUNT__ more for 15% off"
       >
         <div data-volume-offers>
           <p data-volume-message>
@@ -55,7 +55,7 @@ async function fixture({ now = normalNow, bfcm = false } = {}) {
             <span data-volume-confirmation></span>
           </p>
           <div id="BhdVolumeDetails-test" class="bhd-volume__details">
-            <p>2 jars: 10% off · 3–9 jars: 15% off · 10+ jars: 20% off*</p>
+            <p>2 jars: 5% off · 3–9 jars: 10% off · 10+ jars: 15% off*</p>
             <span data-volume-announcement aria-live="polite"></span>
           </div>
         </div>
@@ -117,12 +117,12 @@ test('standard tiers show only the next relevant threshold', async t => {
   t.after(() => f.dom.window.close());
 
   const expectations = [
-    [1, 'Add 1 for 10% off', 'Add 1 for 10% off'],
-    [2, 'Add 1 more for 15% off', 'Add 1 more for 15% off'],
-    [3, 'Add 7 more for 20% off', '15% off on 3–9 jars'],
-    [9, 'Add 1 more for 20% off', '15% off on 3–9 jars'],
-    [10, '20% off on 10+ jars', '20% off on 10+ jars'],
-    [11, '20% off on 10+ jars', '20% off on 10+ jars'],
+    [1, 'Add 1 for 5% off', 'Add 1 for 5% off'],
+    [2, 'Add 1 more for 10% off', 'Add 1 more for 10% off'],
+    [3, 'Add 7 more for 15% off', '10% off on 3–9 jars'],
+    [9, 'Add 1 more for 15% off', '10% off on 3–9 jars'],
+    [10, '15% off on 10+ jars', '15% off on 10+ jars'],
+    [11, '15% off on 10+ jars', '15% off on 10+ jars'],
   ];
 
   for (const [quantity, expectedDisplay, expectedUnderlying] of expectations) {
@@ -158,3 +158,4 @@ test('stronger or uncertain competing offers suppress the quantity prompt', asyn
   setQuantity(f, 3);
   assert.equal(visibleCopy(f.host).display, 'Best offer shown in cart.');
 });
+
