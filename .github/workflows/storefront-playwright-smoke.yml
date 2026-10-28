@@ -35,6 +35,7 @@ jobs:
     timeout-minutes: 15
 
     env:
+      PLAYWRIGHT_BROWSER_CHANNEL: chrome
       BASE_URL: https://besthydrate.com
       PRODUCT_PATH: /products/lemonade-best-hydrate
 
