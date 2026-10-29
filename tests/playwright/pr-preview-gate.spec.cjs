@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { validateShopifyPreviewReceipt } = require('./helpers/shopify-preview-receipt.cjs');
 const BASE_URL = process.env.BASE_URL || 'https://besthydrate.com';
 const PREVIEW_THEME_ID = process.env.PREVIEW_THEME_ID || '';
 const PATHS = [...new Set((process.env.PREVIEW_PATHS || '/').split(',').map((v) => v.trim()).filter(Boolean))];
@@ -204,17 +205,9 @@ test.describe('Lemonade authorized hosted development preview', () => {
       if (!crawlerAuth) throw new Error('Shopify crawler authorization was not initialized for this acceptance context.');
       expect(new URL(BASE_URL).hostname).toBe('127.0.0.1');
       expect(new URL(BASE_URL).protocol).toBe('http:');
-      const { theme } = JSON.parse(require('node:fs').readFileSync('artifacts/shopify-preview.json', 'utf8'));
-      expect(theme.role, 'generated preview role').toBe('development');
-      expect(String(theme.id), 'generated preview ID').toMatch(/^[1-9]\d*$/);
-      expect(String(theme.id), 'generated preview matches this run').toBe(PREVIEW_THEME_ID);
-      expect(theme.shop, 'generated preview shop').toBe('best-hydrate.myshopify.com');
-      const generatedPreview = new URL(theme.preview_url);
-      expect(generatedPreview.protocol).toBe('https:');
-      expect(generatedPreview.hostname).toBe(theme.shop);
-      expect(generatedPreview.username + generatedPreview.password + generatedPreview.port + generatedPreview.hash).toBe('');
-      expect(generatedPreview.pathname).toBe('/');
-      expect(generatedPreview.searchParams.getAll('preview_theme_id')).toEqual([PREVIEW_THEME_ID]);
+      const receipt = JSON.parse(require('node:fs').readFileSync('artifacts/shopify-preview.json', 'utf8'));
+      const preview = validateShopifyPreviewReceipt(receipt, PREVIEW_THEME_ID);
+      const generatedPreview = new URL(preview.previewUrl);
       let hostedOrigin = '';
       let cartActionsStarted = false;
       let cliVersion = 'unavailable';
@@ -255,7 +248,7 @@ test.describe('Lemonade authorized hosted development preview', () => {
           expect(url.port).toBe('');
         }
         expect(url.username + url.password).toBe('');
-        expect(state.shop, 'same Shopify shop in this preview').toBe(theme.shop);
+        expect(state.shop, 'same Shopify shop in this preview').toBe(preview.shop);
         expect(state.themeId, 'exact generated development theme, never the live theme').toBe(PREVIEW_THEME_ID);
         if (requireMarket) {
           expect(state.country, 'selected Shopify market').toBe(market.country);
@@ -298,13 +291,13 @@ test.describe('Lemonade authorized hosted development preview', () => {
       });
       const automaticRate = quantity => bfcm
         ? (quantity === 1 ? .20 : .25)
-        : (quantity >= 10 ? .20 : quantity >= 3 ? .15 : quantity === 2 ? .10 : 0);
+        : (quantity >= 10 ? .15 : quantity >= 3 ? .10 : quantity === 2 ? .05 : 0);
       const expectedPrompt = (quantity, first15 = false) => {
         if (bfcm) return quantity === 1 ? 'Add 1 for 25% off' : '25% off on 2+ jars';
-        if (first15 && quantity < 3) return 'Best offer shown in cart.';
-        if (quantity === 1) return 'Add 1 for 10% off';
-        if (quantity === 2) return 'Add 1 more for 15% off';
-        return quantity < 10 ? '15% off on 3–9 jars' : '20% off on 10+ jars';
+        if (first15 && quantity < 10) return 'Best offer shown in cart.';
+        if (quantity === 1) return 'Add 1 for 5% off';
+        if (quantity === 2) return 'Add 1 more for 10% off';
+        return quantity < 10 ? '10% off on 3–9 jars' : '15% off on 10+ jars';
       };
       const assertCart = (cart, quantity, first15 = false) => {
         const summary = safeCart(cart);

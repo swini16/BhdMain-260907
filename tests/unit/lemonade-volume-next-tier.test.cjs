@@ -48,10 +48,10 @@ test('product quantity prompt stays in the same row as the native control with s
   assert.match(snippet, /id="BhdVolumeDetails-\{\{ section_id \}\}"/);
   assert.match(snippet, /data-bulk-percent="\{\{ volume_bulk_percent \}\}"/);
   assert.doesNotMatch(snippet, /data-applied-template/);
-  assert.match(snippet, /2 jars: 10% off · 3–9 jars: 15% off · 10\+ jars: 20% off\*/);
+  assert.match(snippet, /2 jars: 5% off · 3–9 jars: 10% off · 10\+ jars: 15% off\*/);
   assert.match(snippet, /data-prefix="\*One-time purchases only\. "/);
   assert.match(snippet, /id="BhdVolumeTerms-\{\{ section_id \}\}">One-time purchases only\. Offers do not combine\.<\/span>/);
   assert.match(snippet, /data-volume-announcement aria-live="polite"/);
-  assert.match(snippet, /data-next-bulk-template="Add __COUNT__ more for 20% off"/);
+  assert.match(snippet, /data-next-bulk-template="Add __COUNT__ more for 15% off"/);
   assert.match(cartSnippet, /data-bulk-percent="\{\{ lemonade_bulk_percent \}\}"/);
 });

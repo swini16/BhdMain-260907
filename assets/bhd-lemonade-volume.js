@@ -147,9 +147,9 @@ if (!customElements.get('bhd-lemonade-volume')) {
         (item.line_level_discount_allocations || item.discount_allocations || []).map((allocation) => allocation.discount_application)
       ));
       const automaticRates = {
-        'Lemonade: Buy 2+, save 10%': 10,
-        'Lemonade: Buy 3+, save 15%': 15,
-        'Lemonade: Buy 10+, save 20%': 20,
+        'Lemonade: Buy 2+, save 5%': 5,
+        'Lemonade: Buy 3+, save 10%': 10,
+        'Lemonade: Buy 10+, save 15%': 15,
         'BHD BFCM 2026 · 20% · 1 jar': 20,
         'BHD BFCM 2026 · 25% · 2+ jars': 25
       };
@@ -197,7 +197,7 @@ if (!customElements.get('bhd-lemonade-volume')) {
       const bfcm = now >= Number(this.dataset.bfcmStart) && now < Number(this.dataset.bfcmEnd);
       const prospective = selected + Number(this.dataset.cartQuantity || 0);
       let key = bfcm ? 'confirmationBfcm' : 'confirmation';
-      let targetPercent = bfcm ? 25 : 15;
+      let targetPercent = bfcm ? 25 : 10;
       let canUpgrade = false;
       let isUpgrade = false;
       let requiredSelected = selected;
@@ -209,7 +209,7 @@ if (!customElements.get('bhd-lemonade-volume')) {
         requiredSelected = selected + 1;
       } else if (!bfcm && prospective === 1) {
         key = 'nudgeOne';
-        targetPercent = 10;
+        targetPercent = 5;
         canUpgrade = true;
         isUpgrade = true;
         requiredSelected = selected + 1;
@@ -220,15 +220,15 @@ if (!customElements.get('bhd-lemonade-volume')) {
         requiredSelected = selected + 1;
       } else if (!bfcm && prospective >= 3 && prospective < 10) {
         key = 'confirmation';
-        targetPercent = 20;
+        targetPercent = 15;
         isUpgrade = true;
         const remaining = 10 - prospective;
         requiredSelected = selected + remaining;
-        displayText = (this.dataset.nextBulkTemplate || 'Add __COUNT__ more for 20% off')
+        displayText = (this.dataset.nextBulkTemplate || 'Add __COUNT__ more for 15% off')
           .replace('__COUNT__', String(remaining));
       } else if (!bfcm && prospective >= 10) {
         key = 'confirmationBulk';
-        targetPercent = 20;
+        targetPercent = 15;
       }
       const knownPercent = Number(this.dataset.knownPercent || 0);
       if (knownPercent > targetPercent || (isUpgrade && knownPercent >= targetPercent)) {

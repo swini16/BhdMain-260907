@@ -11,6 +11,7 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 test('authorized preview security options remain parse-safe and fail closed', () => {
   const spec = read('tests/playwright/pr-preview-gate.spec.cjs');
   const workflow = read('.github/workflows/shopify-pr-preview-gate.yml');
+  const smokeWorkflow = read('.github/workflows/storefront-playwright-smoke.yml');
 
   assert.doesNotMatch(
     spec,
@@ -25,4 +26,6 @@ test('authorized preview security options remain parse-safe and fail closed', ()
     workflow,
     /--reporter=line --trace=off --output=test-results-lemonade-authorized/
   );
+  assert.match(workflow, /--grep 'Lemonade authorized hosted development preview'/);
+  assert.match(smokeWorkflow, /--grep-invert 'Lemonade authorized hosted development preview'/);
 });
