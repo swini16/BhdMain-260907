@@ -79,6 +79,13 @@
           <span>RECOVER</span>
         </a>
       </div>
+      {% if localization.country.iso_code == 'CA' and cart.currency.iso_code == 'CAD' %}
+      <div class="bhd-hero-v4__value" aria-label="Best Hydrate price per serving">
+        <strong>Save up to 50% vs most single-serve drinks.</strong>
+        <span>32 servings per jar. About C$1.25 per prepared 500 mL serving.</span>
+        <small>*Based on 36 selected Canadian retailer listings, October 8, 2026: 26 showed at least 50% savings per 500 mL. Prices vary; excludes multipacks, taxes, delivery and water. Products and formulas differ.</small>
+      </div>
+      {% endif %}
     </div>
 
     <div class="bhd-hero-v4__visual">
@@ -104,6 +111,22 @@
 </section>
 
 <style>
+  /* Value comparison stays below the primary buying message, CTA and benefit row. */
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__value {
+    max-width:760px;
+    margin-top:1.1rem;
+    padding:.8rem .1rem .2rem;
+    border-top:1px solid rgba(13,29,83,.14);
+    color:#344b69;
+    display:flex;
+    flex-direction:column;
+    gap:.22rem;
+    line-height:1.35;
+  }
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__value strong {color:#0b63d1;font-weight:900;font-size:clamp(.95rem,1.05vw,1.12rem)}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__value span {font-size:clamp(.85rem,.95vw,1rem);font-weight:650}
+  #BhdHeroV4-{{ section.id }} .bhd-hero-v4__value small {font-size:clamp(.63rem,.71vw,.73rem);line-height:1.4;color:#52657f}
+
   #BhdHeroV4-{{ section.id }}{
     --bhd-navy:#0d1d53;
     --bhd-blue:#1475ef;
