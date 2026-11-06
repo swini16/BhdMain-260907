@@ -1,11 +1,34 @@
 {% doc %}
-  Shows the approved delay copy for an eligible tracked backorder.
-  @param {variant} variant - Current product or cart-line variant.
+  Shared configurable notice. Display only; never changes purchase availability.
+  @param {variant} variant - Product or cart-line variant.
+  @param {string} [placement] - product, drawer, cart, or notification.
 {% enddoc %}
 {%- liquid
-  assign eligible_ids = '47373155631388' | split: ','
+  assign scope = settings.bhd_backorder_variant_ids
+  if scope == nil
+    assign scope = '47373155631388'
+  endif
+  assign scope = scope | remove: ' '
+  assign eligible_ids = scope | split: ','
   assign variant_id = variant.id | append: ''
+  assign surface = placement | default: 'product'
+  assign placement_key = 'bhd_backorder_show_' | append: surface
+  assign show_notice = false
+  if eligible_ids contains variant_id and variant_id != '51937870741788'
+    if settings.bhd_backorder_mode == 'manual'
+      assign show_notice = true
+    elsif variant.inventory_management != blank and variant.inventory_policy == 'continue' and variant.inventory_quantity <= 0
+      assign show_notice = true
+    endif
+  endif
+  if settings.bhd_backorder_enabled == false or settings[placement_key] == false
+    assign show_notice = false
+  endif
+  assign notice_copy = settings.bhd_backorder_message | strip
+  if notice_copy == blank
+    assign notice_copy = 'products.product.backorder_delay' | t
+  endif
 -%}
-{%- if eligible_ids contains variant_id and variant.inventory_management != blank and variant.inventory_policy == 'continue' and variant.inventory_quantity <= 0 -%}
-  <p class="bhd-backorder-notice" role="status">{{ 'products.product.backorder_delay' | t }}</p>
+{%- if show_notice -%}
+  <p class="bhd-backorder-notice{% unless settings.bhd_backorder_suppress_claims == false %} bhd-backorder-notice--suppress{% endunless %}" role="status">{{ notice_copy | escape }}</p>
 {%- endif -%}

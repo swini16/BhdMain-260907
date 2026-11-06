@@ -200,6 +200,20 @@
 
 {% comment %}Canonical server-rendered navigation mirrors Shopify Admin MAIN. Company & People is ordered Meet Us, About Best Hydrate, Jobs & Careers. Sync marker: admin-main-reconciled-20260909.{% endcomment %}
 
+{%- if settings.cart_type == 'notification' -%}
+  {{ 'component-cart-notification.css' | asset_url | stylesheet_tag }}
+  <div class="bhd-header-cart-notification">
+    {%- render 'cart-notification', color_scheme: section.settings.color_scheme, desktop_menu_type: 'drawer' -%}
+  </div>
+  <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+  <style>
+    .bhd-header-cart-notification { position: fixed; top: 1rem; right: 1rem; z-index: 100; width: min(calc(100vw - 2rem), 38rem); pointer-events: none; }
+    .bhd-header-cart-notification .cart-notification { position: relative; right: auto; max-width: none; max-height: calc(100dvh - 2rem); overflow-y: auto; z-index: 1; }
+    .bhd-header-cart-notification .cart-notification.active { pointer-events: auto; }
+    body:has(.bhd-header-cart-notification .cart-notification.active) .bhd-mobile-sticky-buy { display: none !important; }
+  </style>
+{%- endif -%}
+
 {% schema %}
 {"name":"Best Hydrate header","enabled_on":{"groups":["header"]},"settings":[{"type":"text","id":"site_name","label":"Site name","default":"Best Hydrate"},{"type":"text","id":"tagline","label":"Tagline","default":"The Science of Hydration"},{"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-2"}],"presets":[{"name":"Best Hydrate header"}]}
 {% endschema %}

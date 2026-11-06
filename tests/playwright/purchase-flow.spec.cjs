@@ -2,9 +2,12 @@ const { test, expect } = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
 const simulated = process.env.SIMULATED_ZERO_STOCK === '1';
+// Current merchant state: CA inventory is zero and the approved release enables the delay.
+// A future explicitly in-stock acceptance can select EXPECT_CA_DELAY=0.
+const expectsNotice = simulated || process.env.EXPECT_CA_DELAY !== '0';
 const theme = process.env.PREVIEW_THEME_ID;
 const origin = process.env.BASE_URL || 'https://besthydrate.com';
-const copy = 'Due to high demand, may take an extra day or two to arrive';
+const copy = require('../../locales/en.default.json').products.product.backorder_delay;
 const url = route => {
   const u = new URL(route, origin);
   if(theme) u.searchParams.set('preview_theme_id', theme);
@@ -33,7 +36,7 @@ test('Canadian product to checkout navigation without placing an order', async (
   const button=product.locator('button[name="add"]').first();
   await expect(button).toBeEnabled();
   await expect(product.locator('input[name="id"]').first()).toHaveValue('47373155631388');
-  if(simulated) {
+  if(expectsNotice) {
     await expect(product.locator('.bhd-backorder-notice').first()).toHaveText(copy);
     await expect(page.locator('.bhd-pill--shipping').first()).toBeHidden();
     await expect(page.locator('.bhd-stock').first()).toBeHidden();
@@ -45,7 +48,7 @@ test('Canadian product to checkout navigation without placing an order', async (
   const drawer=page.locator('cart-drawer');
   await expect(drawer).toHaveClass(/active/);
   await expect(drawer.locator('.cart-item__name').first()).toBeVisible();
-  if(simulated) await expect(drawer.locator('.bhd-backorder-notice').first()).toHaveText(copy);
+  if(expectsNotice) await expect(drawer.locator('.bhd-backorder-notice').first()).toHaveText(copy);
   // Exercise the drawer redraw as well as the persisted server quantity.
   for(const desired of [2,1]) {
     const drawerChange = page.waitForResponse(r=>/\/cart\/change(?:\.js)?(?:[?#]|$)/.test(r.url()) && r.request().method()==='POST');
@@ -57,7 +60,10 @@ test('Canadian product to checkout navigation without placing an order', async (
     await expect(drawer.locator('#CartDrawer-CartErrors')).toBeEmpty();
   }
   await page.screenshot({path:path.join(dir,'drawer.png'),fullPage:true});
-  await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
+  {
+    const cartResponse = await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
+    expect(cartResponse.status(), 'cart navigation must succeed; stop on throttling or verification').toBe(200);
+  }
   const quantity=page.locator('cart-items input[name="updates[]"]').first();
   await expect(quantity).toHaveValue('1');
   const changed = page.waitForResponse(r => /\/cart\/change(?:\.js)?(?:[?#]|$)/.test(r.url()) && r.request().method() === 'POST');
@@ -68,9 +74,12 @@ test('Canadian product to checkout navigation without placing an order', async (
   expect(changedCart.items.find(i=>i.variant_id===47373155631388)?.quantity).toBe(2);
   await expect(page.locator('cart-items input[name="updates[]"]').first()).toHaveAttribute('value','2');
   await expect(page.locator('#cart-errors')).toBeEmpty();
-  await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
+  {
+    const cartResponse = await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
+    expect(cartResponse.status(), 'cart navigation must succeed; stop on throttling or verification').toBe(200);
+  }
   await expect(page.locator('cart-items input[name="updates[]"]').first()).toHaveValue('2');
-  if(simulated) await expect(page.locator('cart-items .bhd-backorder-notice').first()).toHaveText(copy);
+  if(expectsNotice) await expect(page.locator('cart-items .bhd-backorder-notice').first()).toHaveText(copy);
   await page.screenshot({path:path.join(dir,'cart.png'),fullPage:true});
   const expectedProduct = (await page.locator('cart-items .cart-item__name').first().innerText()).trim();
   // Existing advertised code only: no discount creation and no payment submission.
@@ -80,19 +89,26 @@ test('Canadian product to checkout navigation without placing an order', async (
   await checkout.click();
   try {
     await page.waitForURL(/\/checkouts?\//,{timeout:45000,waitUntil:'domcontentloaded'});
-    await expect(page.locator('input[type="email"], input[autocomplete="email"]').first()).toBeVisible({timeout:20000});
-    // Shopify's mobile checkout labels this disclosure 'Order summary',
-    // not necessarily 'Show order summary'. Require its collapsed state.
-    const expandSummary = page.locator('button[aria-controls="mobileOrderSummary"]');
+    // Shopify renders this as type="text" with autocomplete="shipping email".
+    // Assert the customer-facing contact control instead of implementation attributes.
+    const contact = page.getByRole('region', {name:'Contact', exact:true});
+    await expect(contact.getByRole('textbox', {name:'Email', exact:true})).toBeVisible({timeout:20000});
+    // Use the accessible disclosure name, as in the hosted preview gate. Shopify
+    // uses multiple summary IDs; still require and exercise the mobile collapsed state.
+    const expandSummary = page.getByRole('button', {name:/order summary/i}).first();
     if(info.project.name === 'mobile-chromium') {
       await expect(expandSummary).toBeVisible();
       await expect(expandSummary).toHaveAttribute('aria-expanded','false');
       await expandSummary.click();
       await expect(expandSummary).toHaveAttribute('aria-expanded','true');
     }
-    const checkoutItem = page.getByRole('row').filter({hasText:expectedProduct}).first();
+    const checkoutItem = page.getByRole('table', {name:'Shopping cart', exact:true})
+      .getByRole('row').filter({has:page.getByRole('cell', {name:expectedProduct, exact:true})});
     await expect(checkoutItem).toBeVisible();
-    await expect(checkoutItem.getByText('2', {exact:true})).toBeVisible();
+    // Shopify keeps the semantic quantity cell visually clipped and displays
+    // the quantity in the image badge. Require both representations to agree.
+    await expect(checkoutItem.getByRole('cell', {name:'2', exact:true})).toHaveText('2');
+    await expect(checkoutItem.getByText(/^Quantity\s*2$/)).toBeVisible();
     await expect(page.locator('body')).not.toContainText(/verify you are human|security challenge|your cart is empty|something went wrong/i);
   } catch(error) {
     const end = new URL(page.url());

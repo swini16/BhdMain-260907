@@ -2,10 +2,14 @@
 .bhd-backorder-notice { margin: .6rem 0; line-height: 1.4; }
 /* Suppress conflicting stock / speed claims while a disclosed backorder is present.
    Shipping-policy links, tax/duty details and checkout controls remain visible. */
-body:has(.bhd-backorder-notice) :is(
+body:has(.bhd-backorder-notice--suppress) :is(
   .bhd-pill--shipping, .bhd-benefit-pill--shipping, .bhd-delivery-note,
   .bhd-stock, .bhd-card-proof__stock, .bhd-marketplace-links__shipping,
   .bhd-header__shop-cta-shipping, .bhd-header__compact-shop-shipping,
-  .bhd-footer-nav__shipping, .bhd-product-story__shipping,
+  .bhd-footer-nav__shipping, .bhd-page-end-nav__shipping, .bhd-product-story__shipping,
   .bhd-free-shipping-note strong, .bhd-mobile-sticky-buy > span, .announcement-bar
 ) { display: none !important; }
+
+.bhd-mobile-sticky-buy .bhd-backorder-sticky-notice { margin: 0; font-size: 1.2rem; line-height: 1.35; color: rgb(var(--color-foreground)); text-align: center; }
+/* Never offer the floating shortcut before its disclosure has been mirrored. */
+product-info:has([id^="BhdBackorder-"] .bhd-backorder-notice) .bhd-mobile-sticky-buy:not(:has(.bhd-backorder-sticky-notice)) { display: none !important; }

@@ -29,3 +29,20 @@ test('authorized preview security options remain parse-safe and fail closed', ()
   assert.match(workflow, /--grep 'Lemonade authorized hosted development preview'/);
   assert.match(smokeWorkflow, /--grep-invert 'Lemonade authorized hosted development preview'/);
 });
+
+test('disabled US market is positively checked without skipping Canadian acceptance', () => {
+  const spec = read('tests/playwright/pr-preview-gate.spec.cjs');
+  assert.match(spec, /country: 'US'.*disabled: true/);
+  assert.match(spec, /disabled US selection stays in Canada/);
+  assert.match(spec, /disabled US product redirects to Canadian product/);
+  assert.match(spec, /51937870741788.*toHaveCount\(0\)/);
+  assert.match(spec, /evidence\.hostedSelection = await assertPreviewPage\(localize, true, hostedOrigin\)/);
+  assert.doesNotMatch(spec, /test\.skip\(.*US/);
+});
+
+test('current zero-stock Canadian acceptance requires the approved disclosure', () => {
+  const spec = read('tests/playwright/purchase-flow.spec.cjs');
+  assert.match(spec, /const expectsNotice = simulated \|\| process\.env\.EXPECT_CA_DELAY !== '0'/);
+  assert.equal((spec.match(/if\(expectsNotice\)/g) || []).length, 3);
+  assert.match(spec, /else await expect\(product\.locator\('\.bhd-backorder-notice'\)\)\.toHaveCount\(0\)/);
+});

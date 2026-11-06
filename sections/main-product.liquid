@@ -207,6 +207,7 @@
   {%- endstyle -%}
 
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'bhd-backorder-sticky.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
@@ -330,12 +331,17 @@
                     {%- endform -%}
                   </div>
                 {%- when 'inventory' -%}
+                  {%- capture bhd_backorder_copy -%}{%- render 'bhd-backorder-notice', variant: product.selected_or_first_available_variant, placement: 'product' -%}{%- endcapture -%}
                   <p
-                    class="product__inventory{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
+                    class="product__inventory{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' and bhd_backorder_copy == blank %} visibility-hidden{% endif %}"
                     {{ block.shopify_attributes }}
                     id="Inventory-{{ section.id }}"
                     role="status"
                   >
+
+                    {%- if bhd_backorder_copy != blank -%}
+                      {{ bhd_backorder_copy | strip_html | strip }}
+                    {%- else -%}
                     {%- if product.selected_or_first_available_variant.inventory_management == 'shopify' -%}
                       {%- if product.selected_or_first_available_variant.inventory_quantity > 0 -%}
                         {%- if product.selected_or_first_available_variant.inventory_quantity
@@ -356,8 +362,8 @@
                           <span class="svg-wrapper" style="color: rgb(62, 214, 96)">
                             {{- 'icon-inventory-status.svg' | inline_asset_content -}}
                           </span>
-                          {%- capture bhd_backorder_copy -%}{%- render 'bhd-backorder-notice', variant: product.selected_or_first_available_variant -%}{%- endcapture -%}
-                          {%- if bhd_backorder_copy != blank -%}{{ 'products.product.backorder_delay' | t }}{%- else -%}{{ 'products.product.inventory_out_of_stock_continue_selling' | t }}{%- endif -%}
+
+                          {{ 'products.product.inventory_out_of_stock_continue_selling' | t }}
                         {%- else -%}
                           <span class="svg-wrapper" style="color: rgb(200, 200, 200)">
                             {{- 'icon-inventory-status.svg' | inline_asset_content -}}
@@ -365,6 +371,7 @@
                           {{- 'products.product.inventory_out_of_stock' | t -}}
                         {%- endif -%}
                       {%- endif -%}
+                    {%- endif -%}
                     {%- endif -%}
                   </p>
                 {%- when 'description' -%}

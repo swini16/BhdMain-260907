@@ -25,7 +25,7 @@
     -%}
 
     <div id="BhdBackorder-{{ section_id }}">
-      {%- render 'bhd-backorder-notice', variant: product.selected_or_first_available_variant -%}
+      {%- render 'bhd-backorder-notice', variant: product.selected_or_first_available_variant, placement: 'product' -%}
     </div>
     <product-form
       class="product-form"
