@@ -48,6 +48,20 @@ const SUPPORT_PAGES = [
   { name: 'research-publications', path: '/pages/research-publications', terse: true },
 ];
 
+const HEADING_CONTRACT_PAGES = [
+  {
+    name: 'hydration-science',
+    path: '/pages/hydration-science',
+    h1: 'Hydration Science',
+    eyebrow: 'Science',
+  },
+  {
+    name: 'low-sugar-hydration',
+    path: '/pages/low-sugar-hydration-glucose-sglt1',
+    h1: 'LOW SUGAR HITS THE HYDRATION SWEET SPOT.',
+  },
+];
+
 const PRODUCT_PATHS = [
   process.env.PRODUCT_PATH || '/products/lemonade-best-hydrate',
   process.env.PRODUCT_PATH_FALLBACK || '/products/lemonade-electrolyte-best-hydrate',
@@ -523,9 +537,19 @@ test('support-page matrix stays healthy, terse and routed', async ({ page }) => 
 
     await assertPageHealth(page, response, target.name);
 
-    const h1 = page.locator('h1:visible').first();
-    await expect(h1, `${target.name}: visible H1`).toBeVisible();
+    const visibleH1s = page.locator('h1:visible');
+    await expect(visibleH1s, `${target.name}: exactly one visible H1`).toHaveCount(1);
+    const h1 = visibleH1s.first();
     await expect(h1, `${target.name}: non-empty H1`).not.toHaveText(/^\s*$/);
+
+    const visibleEyebrows = page.locator('.bhd-page__eyebrow:visible');
+    if (await visibleEyebrows.count()) {
+      await expect(visibleEyebrows, `${target.name}: at most one visible eyebrow`).toHaveCount(1);
+      const normalize = (value) => value.replace(/\s+/g, ' ').trim().toLowerCase();
+      const eyebrowText = normalize(await visibleEyebrows.first().innerText());
+      const h1Text = normalize(await h1.innerText());
+      expect(eyebrowText, `${target.name}: eyebrow must not repeat H1`).not.toBe(h1Text);
+    }
 
     const nextAction = page.locator('.bhd-page__brand-actions a:visible').first();
     await expect(nextAction, `${target.name}: visible next-step CTA`).toBeVisible();
@@ -546,6 +570,31 @@ test('support-page matrix stays healthy, terse and routed', async ({ page }) => 
 
     expect(firstPartyFailures, `${target.name}: first-party network failures`).toEqual([]);
     expect(pageErrors, `${target.name}: uncaught JavaScript errors`).toEqual([]);
+  }
+});
+
+test('critical heading semantics stay deduplicated', async ({ page }) => {
+  test.setTimeout(90000);
+
+  for (const target of HEADING_CONTRACT_PAGES) {
+    const response = await gotoWithTransientRetry(page, withQa(target.path));
+    expect(response, `${target.name}: navigation returned no response`).not.toBeNull();
+    expect(response.status(), `${target.name}: document HTTP status`).toBeLessThan(400);
+    expect(new URL(page.url()).pathname, `${target.name}: unexpected redirect`).toBe(target.path);
+
+    const visibleH1s = page.locator('h1:visible');
+    await expect(visibleH1s, `${target.name}: exactly one visible H1`).toHaveCount(1);
+    await expect(visibleH1s.first(), `${target.name}: canonical H1`).toHaveText(target.h1);
+
+    const visibleEyebrows = page.locator('.bhd-page__eyebrow:visible');
+    if (target.eyebrow) {
+      await expect(visibleEyebrows, `${target.name}: exactly one visible eyebrow`).toHaveCount(1);
+      await expect(visibleEyebrows.first(), `${target.name}: canonical eyebrow`).toHaveText(target.eyebrow);
+      expect(
+        (await visibleEyebrows.first().innerText()).trim().toLowerCase(),
+        `${target.name}: eyebrow must not repeat H1`
+      ).not.toBe((await visibleH1s.first().innerText()).trim().toLowerCase());
+    }
   }
 });
 
