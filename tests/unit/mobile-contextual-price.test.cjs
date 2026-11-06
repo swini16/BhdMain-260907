@@ -95,3 +95,26 @@ test('products without the mobile lemonade intro remain compatible', () => {
   assert.doesNotThrow(() => host.handleUpdateProductInfo('/products/other')(html));
   assert.equal(destination.get('#price-test').innerHTML, '$31.99 USD');
 });
+
+test('inventory visibility follows scoped and unscoped FBA variant refreshes in both directions', () => {
+  const { host, html, destination } = fixture();
+  const inventory = element('');
+  inventory.classList.add('visibility-hidden');
+  destination.set('#Inventory-test', inventory);
+  const original = html.getElementById;
+  let hide = false;
+  html.getElementById = id => {
+    if (id !== 'Inventory-test') return original(id);
+    const next = element(hide ? '' : 'Estimated delay: 1–2 weeks.');
+    next.innerText = next.innerHTML;
+    if (hide) next.classList.add('visibility-hidden');
+    return next;
+  };
+  host.handleUpdateProductInfo('/products/lemonade-best-hydrate')(html);
+  assert.equal(inventory.classList.contains('visibility-hidden'), false);
+  assert.match(inventory.innerHTML, /1–2 weeks/);
+  hide = true;
+  host.handleUpdateProductInfo('/products/lemonade-best-hydrate')(html);
+  assert.equal(inventory.classList.contains('visibility-hidden'), true);
+  assert.equal(inventory.innerHTML, '');
+});

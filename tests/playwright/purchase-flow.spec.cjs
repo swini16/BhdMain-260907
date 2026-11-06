@@ -4,7 +4,7 @@ const path = require('node:path');
 const simulated = process.env.SIMULATED_ZERO_STOCK === '1';
 const theme = process.env.PREVIEW_THEME_ID;
 const origin = process.env.BASE_URL || 'https://besthydrate.com';
-const copy = 'Due to high demand, may take an extra day or two to arrive';
+const copy = require('../../locales/en.default.json').products.product.backorder_delay;
 const url = route => {
   const u = new URL(route, origin);
   if(theme) u.searchParams.set('preview_theme_id', theme);

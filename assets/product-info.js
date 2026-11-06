@@ -198,6 +198,9 @@ if (!customElements.get('product-info')) {
             const destination = this.querySelector(`#${id}-${this.dataset.section}`);
             if (source && destination) {
               destination.innerHTML = source.innerHTML;
+              if (id === 'Inventory') {
+                destination.classList.toggle('visibility-hidden', source.classList.contains('visibility-hidden'));
+              }
               destination.classList.toggle('hidden', shouldHide(source));
             }
           };

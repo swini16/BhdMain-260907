@@ -88,7 +88,7 @@ class CartNotification extends HTMLElement {
       {
         id: 'cart-icon-bubble',
       },
-    ];
+    ].filter((section) => section.id !== 'cart-icon-bubble' || document.getElementById(section.id));
   }
 
   getSectionInnerHTML(html, selector = '.shopify-section') {
