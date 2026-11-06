@@ -389,8 +389,14 @@ test.describe('Lemonade authorized hosted development preview', () => {
           expect(evidence.product.country).toBe('CA');
           expect(evidence.product.currency).toBe('CAD');
           if (notFound) {
-            expect(new URL(page.url()).pathname).toBe(`/products/${market.handle}`);
-            await expect(page.locator('product-info form[action*="/cart/add"]')).toHaveCount(0);
+            // Shopify can return the unavailable US document then client-route to CA.
+            // Bind the 404 to its response URL, not the asynchronously changing page URL.
+            expect(new URL(unavailable.url()).pathname).toBe(`/products/${market.handle}`);
+            const canadian = await page.goto(hostedUrl('/products/lemonade-best-hydrate'), { waitUntil: 'domcontentloaded' });
+            evidence.product = await assertPreviewPage(canadian, false, hostedOrigin);
+            expect(evidence.product.country).toBe('CA');
+            expect(evidence.product.currency).toBe('CAD');
+            await expect(page.locator('product-info form[action*="/cart/add"] input[name="id"]').first()).toHaveValue('47373155631388');
           } else {
             expect(new URL(page.url()).pathname, 'disabled US product redirects to Canadian product').toBe('/products/lemonade-best-hydrate');
             await expect(page.locator('product-info form[action*="/cart/add"] input[name="id"]').first()).toHaveValue('47373155631388');

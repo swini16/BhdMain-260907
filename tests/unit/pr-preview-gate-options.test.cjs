@@ -39,3 +39,10 @@ test('disabled US market is positively checked without skipping Canadian accepta
   assert.match(spec, /evidence\.hostedSelection = await assertPreviewPage\(localize, true, hostedOrigin\)/);
   assert.doesNotMatch(spec, /test\.skip\(.*US/);
 });
+
+test('current zero-stock Canadian acceptance requires the approved disclosure', () => {
+  const spec = read('tests/playwright/purchase-flow.spec.cjs');
+  assert.match(spec, /const expectsNotice = simulated \|\| process\.env\.EXPECT_CA_DELAY !== '0'/);
+  assert.equal((spec.match(/if\(expectsNotice\)/g) || []).length, 3);
+  assert.match(spec, /else await expect\(product\.locator\('\.bhd-backorder-notice'\)\)\.toHaveCount\(0\)/);
+});
