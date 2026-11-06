@@ -187,7 +187,7 @@
       "mobile_intro_servings": "32 servings",
       "mobile_intro_value": "~{{ price }}/serving",
       "mobile_intro_taste": "Tastes great. Light, balanced, not too sweet.",
-      "backorder_delay": "Canadian Lemonade is temporarily out of stock. Estimated delay: 1–2 weeks."
+      "backorder_delay": "Canadian Lemonade is temporarily out of stock. Please allow an estimated 1–2-week delay."
     },
     "modal": {
       "label": "Media gallery"

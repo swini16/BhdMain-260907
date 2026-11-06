@@ -58,5 +58,5 @@ test('product inventory block uses shared copy in manual in-stock state',async()
 
 test('blank message uses the current localized delay, never the obsolete estimate',async()=>{
  const html=await render({bhd_backorder_message:'   '});
- assert.match(html,/1–2 weeks/);assert(!html.includes('extra day or two'));
+ assert(html.includes(JSON.parse(fs.readFileSync('locales/en.default.json')).products.product.backorder_delay));assert(!html.includes('extra day or two'));
 });

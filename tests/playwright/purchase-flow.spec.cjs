@@ -57,7 +57,10 @@ test('Canadian product to checkout navigation without placing an order', async (
     await expect(drawer.locator('#CartDrawer-CartErrors')).toBeEmpty();
   }
   await page.screenshot({path:path.join(dir,'drawer.png'),fullPage:true});
-  await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
+  {
+    const cartResponse = await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
+    expect(cartResponse.status(), 'cart navigation must succeed; stop on throttling or verification').toBe(200);
+  }
   const quantity=page.locator('cart-items input[name="updates[]"]').first();
   await expect(quantity).toHaveValue('1');
   const changed = page.waitForResponse(r => /\/cart\/change(?:\.js)?(?:[?#]|$)/.test(r.url()) && r.request().method() === 'POST');
@@ -68,7 +71,10 @@ test('Canadian product to checkout navigation without placing an order', async (
   expect(changedCart.items.find(i=>i.variant_id===47373155631388)?.quantity).toBe(2);
   await expect(page.locator('cart-items input[name="updates[]"]').first()).toHaveAttribute('value','2');
   await expect(page.locator('#cart-errors')).toBeEmpty();
-  await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
+  {
+    const cartResponse = await page.goto(url('/cart'),{waitUntil:'domcontentloaded'});
+    expect(cartResponse.status(), 'cart navigation must succeed; stop on throttling or verification').toBe(200);
+  }
   await expect(page.locator('cart-items input[name="updates[]"]').first()).toHaveValue('2');
   if(simulated) await expect(page.locator('cart-items .bhd-backorder-notice').first()).toHaveText(copy);
   await page.screenshot({path:path.join(dir,'cart.png'),fullPage:true});

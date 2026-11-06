@@ -471,7 +471,7 @@ jobs:
             --project=mobile-chromium
 
       - name: Stop local renderer before direct purchase preview
-        if: steps.scope.outputs.purchase == 'true'
+        if: ${{ always() && steps.scope.outputs.purchase == 'true' && steps.preview.outputs.theme_id != '' }}
         run: |
           if [ -f /tmp/bhd-preview-renderer.pid ]; then
             renderer_pid="$(cat /tmp/bhd-preview-renderer.pid)"
@@ -483,8 +483,10 @@ jobs:
         env:
           BASE_URL: https://besthydrate.com
         run: |
+          # Pace direct storefront requests after hosted acceptance; never retry cart writes.
+          sleep 45
           node tests/cart-update.cjs
-          npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0
+          npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --workers=1 --retries=0
 
       - name: Stage isolated zero-stock Liquid fixture
         if: ${{ always() && steps.scope.outputs.purchase == 'true' && steps.preview.outputs.theme_id != '' }}
@@ -513,7 +515,10 @@ jobs:
         env:
           BASE_URL: https://besthydrate.com
           SIMULATED_ZERO_STOCK: '1'
-        run: npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --retries=0
+        run: |
+          # Allow Shopify rate limits to settle before the second serial purchase suite.
+          sleep 45
+          npx playwright test --config=playwright.config.cjs tests/playwright/purchase-flow.spec.cjs --workers=1 --retries=0
 
       - name: Retain purchase-flow review evidence
         if: ${{ always() && steps.scope.outputs.purchase == 'true' }}

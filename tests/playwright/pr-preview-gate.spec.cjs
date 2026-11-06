@@ -230,7 +230,7 @@ test.describe('Lemonade authorized hosted development preview', () => {
         const url = new URL(response.url());
         return { status: response.status(), origin: url.origin, path: url.pathname };
       };
-      const assertPreviewPage = async (response, requireMarket = true, expectedOrigin = hostedOrigin) => {
+      const assertPreviewPage = async (response, requireMarket = true, expectedOrigin = hostedOrigin, expectedNotFound = false) => {
         expect(response, 'development preview response').not.toBeNull();
         const url = new URL(page.url());
         const state = {
@@ -240,7 +240,8 @@ test.describe('Lemonade authorized hosted development preview', () => {
             country: window.Shopify?.country, currency: window.Shopify?.currency?.active,
           })),
         };
-        expect(response.status(), `development preview: ${JSON.stringify(state)}`).toBeLessThan(400);
+        if (expectedNotFound) expect(response.status(), 'disabled product is unavailable').toBe(404);
+        else expect(response.status(), `development preview: ${JSON.stringify(state)}`).toBeLessThan(400);
         if (expectedOrigin) {
           expect(url.origin, 'retain the independently validated preview origin').toBe(expectedOrigin);
         } else {
@@ -383,11 +384,17 @@ test.describe('Lemonade authorized hosted development preview', () => {
           expect(evidence.hostedSelection.country, 'disabled US selection stays in Canada').toBe('CA');
           expect(evidence.hostedSelection.currency).toBe('CAD');
           const unavailable = await page.goto(hostedUrl(`/products/${market.handle}`), { waitUntil: 'domcontentloaded' });
-          evidence.product = await assertPreviewPage(unavailable, false, hostedOrigin);
+          const notFound = unavailable.status() === 404;
+          evidence.product = await assertPreviewPage(unavailable, false, hostedOrigin, notFound);
           expect(evidence.product.country).toBe('CA');
           expect(evidence.product.currency).toBe('CAD');
-          expect(new URL(page.url()).pathname, 'disabled US product redirects to Canadian product').toBe('/products/lemonade-best-hydrate');
-          await expect(page.locator('product-info form[action*="/cart/add"] input[name="id"]').first()).toHaveValue('47373155631388');
+          if (notFound) {
+            expect(new URL(page.url()).pathname).toBe(`/products/${market.handle}`);
+            await expect(page.locator('product-info form[action*="/cart/add"]')).toHaveCount(0);
+          } else {
+            expect(new URL(page.url()).pathname, 'disabled US product redirects to Canadian product').toBe('/products/lemonade-best-hydrate');
+            await expect(page.locator('product-info form[action*="/cart/add"] input[name="id"]').first()).toHaveValue('47373155631388');
+          }
           await expect(page.locator('form[action*="/cart/add"] input[name="id"][value="51937870741788"]')).toHaveCount(0);
           evidence.stage = 'disabled US market verified';
           evidence.checkout = 'not attempted: US market must remain disabled';

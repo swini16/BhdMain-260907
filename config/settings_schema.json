@@ -1488,7 +1488,7 @@
         "type": "textarea",
         "id": "bhd_backorder_message",
         "label": "Shared notice text",
-        "default": "Canadian Lemonade is temporarily out of stock. Estimated delay: 1–2 weeks."
+        "default": "Canadian Lemonade is temporarily out of stock. Please allow an estimated 1–2-week delay."
       },
       {
         "type": "checkbox",
