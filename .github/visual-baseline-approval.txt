@@ -1,0 +1,5 @@
+Approved visual baseline
+Source storefront commit: f1eadcab3578a655f2514514d5534a5863f75f1e
+Current main includes later SEO-only content changes.
+Scope: intentional product-page visual changes after rounded sugar copy and always-free-shipping updates.
+Validated: repeated full-site QA reports 88 routes, 0 hard defects; product desktop and mobile captures were intentionally changed.
