@@ -196,7 +196,8 @@ test.describe('Lemonade authorized hosted development preview', () => {
 
   for (const market of [
     { country: 'CA', currency: 'CAD', handle: 'lemonade-best-hydrate', variant: '47373155631388' },
-    { country: 'US', currency: 'USD', handle: 'lemonade-electrolyte-best-hydrate', variant: '51937870741788' },
+    // Current merchant policy: US market disabled; assert rejection, never silently skip it.
+    { country: 'US', currency: 'USD', handle: 'lemonade-electrolyte-best-hydrate', variant: '51937870741788', disabled: true },
   ]) {
     test(`Lemonade preview acceptance: ${market.country} quantity/cart/FIRST15/pre-order checkout`, async ({ page }, testInfo) => {
       test.setTimeout(180000);
@@ -376,6 +377,22 @@ test.describe('Lemonade authorized hosted development preview', () => {
             language_code: 'en', return_to: returnUrl.pathname + returnUrl.search,
           }),
         ]);
+        if (market.disabled) {
+          evidence.stage = 'disabled US market rejection';
+          evidence.hostedSelection = await assertPreviewPage(localize, false, hostedOrigin);
+          expect(evidence.hostedSelection.country, 'disabled US selection stays in Canada').toBe('CA');
+          expect(evidence.hostedSelection.currency).toBe('CAD');
+          const unavailable = await page.goto(hostedUrl(`/products/${market.handle}`), { waitUntil: 'domcontentloaded' });
+          evidence.product = await assertPreviewPage(unavailable, false, hostedOrigin);
+          expect(evidence.product.country).toBe('CA');
+          expect(evidence.product.currency).toBe('CAD');
+          expect(new URL(page.url()).pathname, 'disabled US product redirects to Canadian product').toBe('/products/lemonade-best-hydrate');
+          await expect(page.locator('product-info form[action*="/cart/add"] input[name="id"]').first()).toHaveValue('47373155631388');
+          await expect(page.locator('form[action*="/cart/add"] input[name="id"][value="51937870741788"]')).toHaveCount(0);
+          evidence.stage = 'disabled US market verified';
+          evidence.checkout = 'not attempted: US market must remain disabled';
+          return;
+        }
         evidence.hostedSelection = await assertPreviewPage(localize, true, hostedOrigin);
         evidence.stage = 'hosted market product';
         evidence.product = await visitPreview(`/products/${market.handle}`);

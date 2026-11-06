@@ -80,19 +80,23 @@ test('Canadian product to checkout navigation without placing an order', async (
   await checkout.click();
   try {
     await page.waitForURL(/\/checkouts?\//,{timeout:45000,waitUntil:'domcontentloaded'});
-    await expect(page.locator('input[type="email"], input[autocomplete="email"]').first()).toBeVisible({timeout:20000});
-    // Shopify's mobile checkout labels this disclosure 'Order summary',
-    // not necessarily 'Show order summary'. Require its collapsed state.
-    const expandSummary = page.locator('button[aria-controls="mobileOrderSummary"]');
+    // Shopify renders this as type="text" with autocomplete="shipping email".
+    // Assert the customer-facing contact control instead of implementation attributes.
+    const contact = page.getByRole('region', {name:'Contact', exact:true});
+    await expect(contact.getByRole('textbox', {name:'Email', exact:true})).toBeVisible({timeout:20000});
+    // Use the accessible disclosure name, as in the hosted preview gate. Shopify
+    // uses multiple summary IDs; still require and exercise the mobile collapsed state.
+    const expandSummary = page.getByRole('button', {name:/order summary/i}).first();
     if(info.project.name === 'mobile-chromium') {
       await expect(expandSummary).toBeVisible();
       await expect(expandSummary).toHaveAttribute('aria-expanded','false');
       await expandSummary.click();
       await expect(expandSummary).toHaveAttribute('aria-expanded','true');
     }
-    const checkoutItem = page.getByRole('row').filter({hasText:expectedProduct}).first();
+    const checkoutItem = page.getByRole('table', {name:'Shopping cart', exact:true})
+      .getByRole('row').filter({has:page.getByRole('cell', {name:expectedProduct, exact:true})});
     await expect(checkoutItem).toBeVisible();
-    await expect(checkoutItem.getByText('2', {exact:true})).toBeVisible();
+    await expect(checkoutItem.getByRole('cell', {name:'2', exact:true})).toBeVisible();
     await expect(page.locator('body')).not.toContainText(/verify you are human|security challenge|your cart is empty|something went wrong/i);
   } catch(error) {
     const end = new URL(page.url());

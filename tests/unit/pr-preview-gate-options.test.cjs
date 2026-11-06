@@ -29,3 +29,13 @@ test('authorized preview security options remain parse-safe and fail closed', ()
   assert.match(workflow, /--grep 'Lemonade authorized hosted development preview'/);
   assert.match(smokeWorkflow, /--grep-invert 'Lemonade authorized hosted development preview'/);
 });
+
+test('disabled US market is positively checked without skipping Canadian acceptance', () => {
+  const spec = read('tests/playwright/pr-preview-gate.spec.cjs');
+  assert.match(spec, /country: 'US'.*disabled: true/);
+  assert.match(spec, /disabled US selection stays in Canada/);
+  assert.match(spec, /disabled US product redirects to Canadian product/);
+  assert.match(spec, /51937870741788.*toHaveCount\(0\)/);
+  assert.match(spec, /evidence\.hostedSelection = await assertPreviewPage\(localize, true, hostedOrigin\)/);
+  assert.doesNotMatch(spec, /test\.skip\(.*US/);
+});
