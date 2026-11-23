@@ -8,6 +8,7 @@
 
 {%- liquid
   assign lemonade_quantity = 0
+  assign lemonade_ca_quantity = 0
   assign lemonade_other_discount = false
   assign lemonade_known_percent = 0
   assign lemonade_bulk_percent = 0
@@ -20,6 +21,9 @@
     if lemonade_product_id == 8904882422044 or lemonade_product_id == 10168145281308
       if lemonade_item.selling_plan_allocation == blank
         assign lemonade_quantity = lemonade_quantity | plus: lemonade_item.quantity
+        if lemonade_product_id == 8904882422044
+          assign lemonade_ca_quantity = lemonade_ca_quantity | plus: lemonade_item.quantity
+        endif
         assign lemonade_variant = lemonade_item.variant
         assign lemonade_variant_quantity = cart | item_count_for_variant: lemonade_variant.id
         assign lemonade_next_quantity = lemonade_variant_quantity | plus: 1
@@ -118,7 +122,18 @@
 
 <span hidden data-volume-cart-state data-quantity="{{ lemonade_quantity }}" data-known-percent="{{ lemonade_known_percent }}" data-bulk-percent="{{ lemonade_bulk_percent }}" data-unknown-discount="{{ lemonade_other_discount }}"></span>
 
-{%- if lemonade_quantity > 0 -%}
+{%- assign bhd_flat_now = 'now' | date: '%s' | plus: 0 -%}
+{%- assign bhd_flat_active = false -%}
+{%- if settings.bhd_bfcm25_enabled and localization.country.iso_code == 'CA' and bhd_flat_now < 1796277600 -%}
+  {%- assign bhd_flat_active = true -%}
+{%- endif -%}
+{%- if bhd_flat_active -%}
+  {%- if lemonade_ca_quantity > 0 -%}
+    <aside class="bhd-lemonade-cart-offer" aria-label="{{ 'bhd.volume.cart_heading' | t | escape }}">
+      <p class="bhd-lemonade-cart-offer__nudge">25% off Lemonade with <strong>BFCM25</strong>. Even one jar qualifies.</p>
+    </aside>
+  {%- endif -%}
+{%- elsif lemonade_quantity > 0 -%}
   <aside class="bhd-lemonade-cart-offer" aria-label="{{ 'bhd.volume.cart_heading' | t | escape }}">
     <p class="bhd-lemonade-cart-offer__nudge">{{ lemonade_message | t | escape }}</p>
     <small>{{ 'bhd.volume.terms' | t | escape }}</small>
