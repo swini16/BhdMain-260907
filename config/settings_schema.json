@@ -1521,5 +1521,16 @@
         "default": true
       }
     ]
+  },
+  {
+    "name": "Canada Black Friday sale",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "bhd_bfcm25_enabled",
+        "label": "Enable BFCM25 storefront copy after checkout verification",
+        "default": false
+      }
+    ]
   }
 ]
