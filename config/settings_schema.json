@@ -1530,6 +1530,12 @@
         "id": "bhd_bfcm25_enabled",
         "label": "Enable BFCM25 storefront copy after checkout verification",
         "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "bhd_bfcm25_header_enabled",
+        "label": "Show the Canadian BFCM25 header banner",
+        "default": true
       }
     ]
   }

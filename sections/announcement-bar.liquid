@@ -30,7 +30,11 @@
         assign announcement_text = section.blocks.first.settings.text
         assign announcement_link = section.blocks.first.settings.link
         assign sale_now = 'now' | date: '%s' | plus: 0
-        if settings.bhd_bfcm25_enabled and localization.country.iso_code == 'CA' and section.blocks.first.id == 'launch_offer'
+        assign sale_header_enabled = settings.bhd_bfcm25_header_enabled
+        if settings.bhd_bfcm25_enabled
+          assign sale_header_enabled = true
+        endif
+        if sale_header_enabled and localization.country.iso_code == 'CA' and section.blocks.first.id == 'launch_offer'
           if sale_now < 1796277600
             assign sale_phase = 'Black Friday Week Sale'
             if sale_now >= 1795996800
