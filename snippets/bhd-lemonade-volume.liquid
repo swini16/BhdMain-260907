@@ -115,7 +115,17 @@
   endif
 -%}
 
-{%- if volume_eligible and volume_variant != blank -%}
+{%- assign bhd_flat_now = 'now' | date: '%s' | plus: 0 -%}
+{%- assign bhd_flat_active = false -%}
+{%- if settings.bhd_bfcm25_enabled and localization.country.iso_code == 'CA' and bhd_flat_now < 1796277600 -%}
+  {%- assign bhd_flat_active = true -%}
+{%- endif -%}
+{%- if bhd_flat_active and product.id == 8904882422044 -%}
+  <style>#lemonade-quantity-offer { display: none; }</style>
+  {% unless volume_initial_subscription %}
+    <p class="bhd-volume__tiers">25% off Lemonade with <strong>BFCM25</strong>. Even one jar qualifies.</p>
+  {% endunless %}
+{%- elsif volume_eligible and volume_variant != blank -%}
   {{ 'bhd-lemonade-volume.css' | asset_url | stylesheet_tag }}
   <script src="{{ 'bhd-lemonade-volume.js' | asset_url }}" defer="defer"></script>
   <bhd-lemonade-volume

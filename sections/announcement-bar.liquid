@@ -26,26 +26,49 @@
       {%- render 'social-icons' -%}
     {%- endif -%}
     {%- if section.blocks.size == 1 -%}
+      {%- liquid
+        assign announcement_text = section.blocks.first.settings.text
+        assign announcement_link = section.blocks.first.settings.link
+        assign sale_now = 'now' | date: '%s' | plus: 0
+        if settings.bhd_bfcm25_enabled and localization.country.iso_code == 'CA' and section.blocks.first.id == 'launch_offer'
+          if sale_now < 1796277600
+            assign sale_phase = 'Black Friday Week Sale'
+            if sale_now >= 1795996800
+              assign sale_phase = 'Cyber Monday'
+            elsif sale_now >= 1795737600
+              assign sale_phase = 'Black Friday'
+            endif
+            assign announcement_text = sale_phase | append: ' • 25% Off Lemonade • BFCM25'
+            assign announcement_link = '/discount/BFCM25?redirect=%2Fproducts%2Flemonade-best-hydrate'
+          else
+            assign announcement_text = 'Shop Best Hydrate Lemonade'
+            assign announcement_link = '/products/lemonade-best-hydrate'
+          endif
+        elsif localization.country.iso_code == 'CA' and sale_now >= 1796058000 and announcement_text contains 'CODE FIRST15'
+          assign announcement_text = 'Shop Best Hydrate Lemonade'
+          assign announcement_link = '/products/lemonade-best-hydrate'
+        endif
+      -%}
       <div
         class="announcement-bar{% if section.settings.show_social %} announcement-bar--one-announcement{% endif %}"
         role="region"
         aria-label="{{ 'sections.header.announcement' | t }}"
         {{ section.blocks.first.shopify_attributes }}
       >
-        {%- if section.blocks.first.settings.text != blank -%}
-          {%- if section.blocks.first.settings.link != blank -%}
+        {%- if announcement_text != blank -%}
+          {%- if announcement_link != blank -%}
             <a
-              href="{{ section.blocks.first.settings.link }}"
+              href="{{ announcement_link }}"
               class="announcement-bar__link link link--text focus-inset animate-arrow"
             >
           {%- endif -%}
           <p class="announcement-bar__message h5">
-            <span>{{ section.blocks.first.settings.text | escape }}</span>
-            {%- if section.blocks.first.settings.link != blank -%}
+            <span>{{ announcement_text | escape }}</span>
+            {%- if announcement_link != blank -%}
               {{- 'icon-arrow.svg' | inline_asset_content -}}
             {%- endif -%}
           </p>
-          {%- if section.blocks.first.settings.link != blank -%}
+          {%- if announcement_link != blank -%}
             </a>
           {%- endif -%}
         {%- endif -%}
